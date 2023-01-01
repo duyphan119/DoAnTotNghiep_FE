@@ -1,0 +1,187 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 5px;
+  box-shadow: 0 0 2px 0 gray;
+  gap: 4px;
+  overflow: hidden;
+  /* padding: 16px; */
+}
+.card:hover {
+  box-shadow: 0 0 2px 1px var(--primary-color);
+}
+.thumbnail {
+  text-align: center;
+  display: block;
+  position: relative;
+}
+.thumbnail-wrapper {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+.card:hover .downbar {
+  transform: translateY(0);
+  transition: transform 0.3s linear;
+}
+.downbar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 16px;
+  transform: translateY(100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
+}
+.variant-type {
+  text-align: center;
+}
+.variant-type-name {
+  margin-bottom: 4px;
+}
+.variants {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.variant,
+.variant-active {
+  box-shadow: 0 0 1px 1px var(--primary-color);
+  background-color: #f2f2f2f2;
+  cursor: pointer;
+  padding: 6px;
+  font-size: 11px;
+  border-radius: 2px;
+}
+.variant-active,
+.variant:hover {
+  color: #fff;
+  background-color: var(--primary-color);
+  text-decoration: underline;
+}
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+.quantity {
+  display: flex;
+  align-items: center;
+  border: 1px solid gray;
+  background-color: rgba(255, 255, 255, 0.704);
+}
+.quantity span {
+  width: 36px;
+  height: 24px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.quantity .inc,
+.quantity .desc {
+  background-color: transparent;
+  border: none;
+  width: 24px;
+  height: 34px;
+}
+.quantity .inc {
+  border-left: 1px solid gray;
+}
+.quantity .desc {
+  border-right: 1px solid gray;
+}
+.addToCartBtn {
+  background: #000;
+  color: #fff;
+  height: 36px;
+  width: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.addToCartBtn:hover {
+  box-shadow: 0 0 1px 2px darkgray;
+}
+.name-wrapper {
+  position: relative;
+  width: calc(100% - 24px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.name {
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+}
+.name:hover {
+  color: var(--primary-color);
+}
+.wishlist-icon {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+}
+.wishlist-icon svg {
+  font-size: 24px;
+}
+.wishlist-icon.active {
+  color: red;
+}
+.price {
+  display: flex;
+  gap: 8px;
+  color: red;
+  margin: 4px 0 12px 0;
+}
+.thumbnail {
+  width: 100%;
+  overflow: hidden;
+  display: block;
+  position: relative;
+  height: 300px;
+}
+.old-price {
+  color: gray;
+  font-weight: 500;
+  text-decoration: line-through;
+}
+@media only screen and (max-width: 400px) {
+  .thumbnail {
+    height: 340px;
+  }
+}
+@media only screen and (min-width: 400px) and (max-width: 500px) {
+  .thumbnail {
+    height: 460px;
+  }
+}
+@media only screen and (min-width: 500px) and (max-width: 600px) {
+  .thumbnail {
+    height: 560px;
+  }
+}
+@media only screen and (min-width: 700px) and (max-width: 900px) {
+  .thumbnail {
+    height: 360px;
+  }
+}

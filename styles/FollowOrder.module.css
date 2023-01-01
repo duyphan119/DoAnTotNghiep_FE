@@ -1,0 +1,68 @@
+.order {
+  box-shadow: 0 0 1px 1px lightgray;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.title {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.title .left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.title .right {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+}
+.title .right .row {
+  display: flex;
+  align-items: center;
+}
+.title .right .row span {
+  display: block;
+  width: 80px;
+}
+.title .right .row span:last-child {
+  display: block;
+  text-align: right;
+}
+.title .btn {
+  background-color: rgba(234, 182, 182, 0.618);
+  color: red;
+  border: none;
+  padding: 6px 18px;
+  border-radius: 5px;
+}
+.title .btn:disabled:hover {
+  box-shadow: none;
+  cursor: default;
+}
+.title .btn:hover {
+  box-shadow: 0 0 1px 1px rgb(234, 182, 182);
+}
+.item {
+  display: flex;
+  gap: 16px;
+}
+.name {
+  font-weight: 500;
+  font-size: 2rem;
+}
+.product {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.variant {
+  color: gray;
+}
+.product .price {
+  color: red;
+}

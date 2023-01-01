@@ -1,0 +1,27 @@
+.paper {
+  padding: 16px;
+}
+.paperTitle {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+.actionsWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 16px 0;
+}
+.actionsWrapperLeft {
+  display: flex;
+  gap: 32px;
+}
+.searchWrapper,
+.sortForm {
+  display: flex;
+  gap: 8px;
+}
+.visibleCheckboxWrapper {
+  text-align: center;
+  cursor: pointer;
+}

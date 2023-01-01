@@ -1,0 +1,110 @@
+.radio {
+  border: 1px solid #000;
+  display: flex;
+  position: relative;
+}
+.radio label {
+  user-select: none;
+  flex: 1;
+  padding: 16px 8px 16px 32px;
+  cursor: pointer;
+  line-height: 16px;
+}
+.circle {
+  position: absolute;
+  top: 50%;
+  left: 8px;
+  transform: translateY(calc(1px - 50%));
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid gray;
+}
+.radio input:checked ~ .circle {
+  background-color: var(--primary-color);
+  padding: 2px;
+  background-clip: content-box;
+}
+.items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.center {
+  flex: 1;
+}
+.name {
+  font-weight: 500;
+  font-size: 18px;
+}
+.right {
+  text-align: right;
+}
+.variants {
+  color: gray;
+  font-size: 14px;
+}
+.right .total {
+  font-weight: 500;
+}
+.first-row {
+  margin-top: 16px;
+}
+.first-row,
+.row,
+.last-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.last-row {
+  font-weight: 500;
+  font-size: 18px;
+}
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+.actions a {
+  text-decoration: underline;
+  color: var(--primary-color);
+}
+.actions button {
+  border: none;
+  padding: 16px 32px;
+  box-shadow: 0 0 1px 1px var(--primary-color);
+}
+.actions button:hover {
+  box-shadow: 0 0 1px 2px var(--primary-color);
+}
+.discount {
+  display: flex;
+  gap: 16px;
+}
+.discount input {
+  flex: 1;
+  padding: 8px;
+  outline: none;
+}
+.discount button {
+  padding: 8px 16px;
+  box-shadow: 0 0 1px 0px #000;
+}
+.usingDiscount {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.cancelDiscount {
+  color: red;
+  text-decoration: underline;
+  cursor: pointer;
+}

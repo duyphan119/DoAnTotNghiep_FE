@@ -1,0 +1,196 @@
+/* 
+  xs: 0px
+  sm: 600px
+  md: 900px
+  lg: 1200px
+  xl: 1536px
+*/
+
+:root {
+  --primary-color: #f379a7;
+
+  /* --logo-bg-color: #1976d2; */
+  /* --logo-bg-color-opacity: #d8e0ff; */
+}
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+body {
+  font-size: 16px;
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+* {
+  box-sizing: border-box;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+  body {
+    color: white;
+    background: black;
+  }
+}
+ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+button {
+  cursor: pointer;
+  outline: none;
+}
+.form-group {
+  position: relative;
+  width: 100%;
+}
+.form-control {
+  padding: 28px 8px 8px 8px;
+  border: 2px solid #000;
+  outline: none;
+  border-radius: 2px;
+  width: 100%;
+  font-size: 14px;
+}
+
+.form-control:focus {
+  border: 2px solid var(--primary-color);
+}
+.form-label {
+  position: absolute;
+  top: 8px;
+  left: 9px;
+  color: #000;
+  transition: 0.25s ease;
+  pointer-events: none;
+  user-select: none;
+  font-size: 12px;
+}
+.form-error {
+  position: absolute;
+  top: -14px;
+  right: 8px;
+  background-color: red;
+  border-radius: 5px;
+  font-size: 14px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  color: rgb(49, 3, 3);
+}
+.form-error ~ .form-control {
+  border-color: red;
+}
+.form-error::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 10px;
+  border-bottom: 10px solid transparent;
+  border-top: 10px solid red;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  width: 0;
+}
+.form-label.required::before {
+  content: "* ";
+  color: red;
+}
+/* .form-control:not(:placeholder-shown) + .form-label,
+.form-control:focus + .form-label {
+  top: 0;
+  padding: 0 4px;
+  background-color: #fff;
+  font-size: 12px;
+} */
+/* .form-control:focus + .form-label {
+  color: var(--primary-color);
+} */
+.form-error {
+  position: absolute;
+}
+.table {
+  width: 100%;
+}
+.table th,
+.table td {
+  box-shadow: 0 0 1px 0 gray;
+  padding: 8px;
+  position: relative;
+}
+.btnSearch,
+.btnSort,
+.btnAdd,
+.btnEdit,
+.btnDelete {
+  color: #fff;
+  border: none;
+  padding: 8px;
+  border-radius: 5px;
+  font-size: 12px;
+}
+.btnSort,
+.btnSearch {
+  background-color: var(--primary-color);
+  box-shadow: 0 0 1px 0 var(--primary-color);
+}
+.btnAdd {
+  background-color: var(--primary-color);
+  box-shadow: 0 0 1px 0 var(--primary-color);
+}
+.btnEdit {
+  background-color: #d1a544;
+  box-shadow: 0 0 1px 0 #d1a544;
+}
+.btnDelete {
+  background-color: #d32f2f;
+  box-shadow: 0 0 1px 0 #d32f2f;
+}
+.btnSort:disabled:hover {
+  box-shadow: unset;
+  cursor: default;
+}
+.btnSort:hover,
+.btnSearch:hover {
+  box-shadow: 0 0 1px 1px var(--primary-color);
+}
+.btnAdd:hover {
+  box-shadow: 0 0 1px 1px var(--primary-color);
+}
+.btnEdit:hover {
+  box-shadow: 0 0 1px 1px #d1a544;
+}
+.btnDelete:hover {
+  box-shadow: 0 0 1px 1px #d32f2f;
+}
+.ql-container {
+  border-top: 2px solid transparent !important;
+  border-bottom: 2px solid #000 !important;
+  border-left: 2px solid #000 !important;
+  border-right: 2px solid #000 !important;
+}
+.ql-toolbar {
+  border: 2px solid #000 !important;
+}
+.MuiBackdrop-root {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+}
+.MuiDialog-container .MuiPaper-root {
+  box-shadow: none;
+}

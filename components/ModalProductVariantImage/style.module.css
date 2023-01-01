@@ -1,0 +1,22 @@
+.images {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.imageItem {
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+}
+.variants {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-block: 8px;
+}
+.imageImageBtns {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}

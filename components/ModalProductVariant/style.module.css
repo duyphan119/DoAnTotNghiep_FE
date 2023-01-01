@@ -1,0 +1,56 @@
+.title {
+  font-weight: 600;
+  margin-bottom: 16px;
+  font-size: 20px;
+}
+.wrapper {
+  flex: 1;
+  max-height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.variants {
+  border: 1px solid #000;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 8px;
+}
+.variantName {
+  margin-bottom: 4px;
+}
+.variantValues {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.variantValue.active,
+.variantValue:hover {
+  border: 1px solid var(--primary-color);
+  background-color: var(--primary-color);
+  color: #fff;
+}
+.variantValue {
+  border: 1px solid #000;
+  padding: 4px 12px;
+  cursor: pointer;
+}
+.generatedSelectedWrapper {
+  margin-top: 16px;
+  border: 1px solid #000;
+  padding: 8px;
+  height: 100%;
+}
+.generatedSelectedTitle {
+  width: 600px;
+  margin-bottom: 8px;
+}
+.generatedSelected {
+  width: fit-content;
+}
+.generatedSelected th {
+  text-align: left;
+}
+.generatedSelected input[type="number"] {
+  padding: 4px;
+}

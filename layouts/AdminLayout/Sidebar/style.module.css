@@ -1,0 +1,71 @@
+.sidebar {
+  min-height: 100vh;
+  width: 320px;
+  border-right: 1px solid lightgray;
+}
+.logo {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid lightgray;
+}
+.nav {
+  margin-top: 8px;
+}
+.logout {
+  cursor: pointer;
+}
+.logout:hover,
+.hasMenu:hover,
+.navLink:hover {
+  background-color: #f2f2f2;
+}
+.hasMenu,
+.logout,
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  position: relative;
+}
+.navLink.active {
+  background-color: var(--primary-color);
+  color: #fff;
+}
+.logout svg,
+.hasMenu svg,
+.navLink svg {
+  font-size: 28px;
+}
+.hasMenu {
+  cursor: pointer;
+  user-select: none;
+}
+.hasMenu .closeMenuIcon,
+.hasMenu .openMenuIcon {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+}
+.checkbox:checked + .hasMenu .closeMenuIcon {
+  display: none;
+}
+.checkbox:checked + .hasMenu .openMenuIcon {
+  display: inline;
+}
+.checkbox + .hasMenu .openMenuIcon {
+  display: none;
+}
+.checkbox + .hasMenu .closeMenuIcon {
+  display: inline;
+}
+.navMenu {
+  display: none;
+  padding-inline: 16px;
+}
+.checkbox:checked + .hasMenu + .navMenu {
+  display: block;
+}
