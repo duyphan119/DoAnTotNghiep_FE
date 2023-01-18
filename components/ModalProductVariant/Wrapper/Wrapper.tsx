@@ -13,11 +13,17 @@ type Props = {
   product?: Product;
 };
 
-const Wrapper = (props: Props) => {
+const Wrapper = ({
+  children,
+  title,
+  inputs,
+  productVariants,
+  product,
+}: Props) => {
   const { onUpdate, onCreate } = useModalProductVariantContext();
   const handleClick = async () => {
     try {
-      if (props.productVariants) {
+      if (productVariants) {
         onUpdate();
       } else {
         onCreate();
@@ -29,7 +35,7 @@ const Wrapper = (props: Props) => {
 
   return (
     <div className={styles.generatedSelectedWrapper}>
-      <div className={styles.generatedSelectedTitle}>{props.title}</div>
+      <div className={styles.generatedSelectedTitle}>{title}</div>
       <table className={styles.generatedSelected}>
         <thead>
           <tr>
@@ -40,13 +46,12 @@ const Wrapper = (props: Props) => {
           </tr>
         </thead>
         <tbody>
-          {props.inputs?.map((input: Input, index: number) => {
-            //   variantValues.sort(
-            //     (a: VariantValue, b: VariantValue) => a.id - b.id
-            //   );
-            return <TrItem key={index} input={input} />;
-          })}
-          {props.productVariants?.map((productVariant: ProductVariant) => {
+          {inputs
+            ? inputs.map((input: Input, index: number) => (
+                <TrItem key={index} input={input} />
+              ))
+            : null}
+          {productVariants?.map((productVariant: ProductVariant) => {
             return (
               <TrItem
                 key={productVariant.id}

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { getAllGroupProducts } from "../../../../apis/groupProduct";
 import { useGroupProductContext } from "../../../../context/GroupProductContext";
 import { MSG_SUCCESS } from "../../../../utils/constants";
@@ -10,8 +10,8 @@ type Props = {};
 const HeaderBottom = (props: Props) => {
   const { groupProducts, setGroupProducts } = useGroupProductContext();
 
-  React.useEffect(() => {
-    (async () => {
+  useEffect(() => {
+    const fetchGroupProducts = async () => {
       try {
         const res = await getAllGroupProducts({
           sortBy: "name",
@@ -22,9 +22,10 @@ const HeaderBottom = (props: Props) => {
           setGroupProducts(data.items);
         }
       } catch (error) {
-        console.log(error);
+        console.log("FETCH GROUP PRODUCTS ERROR", error);
       }
-    })();
+    };
+    fetchGroupProducts();
   }, []);
 
   return (
@@ -57,8 +58,8 @@ const HeaderBottom = (props: Props) => {
           ) : null}
         </li>
         <li className={styles["nav-item"]}>
-          <Link href="/tin-tuc" className={styles["nav-item-link"]}>
-            Tin tức
+          <Link href="/blog" className={styles["nav-item-link"]}>
+            Bài viết
           </Link>
         </li>
         <li className={styles["nav-item"]}>

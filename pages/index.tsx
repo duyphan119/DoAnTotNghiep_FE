@@ -1,37 +1,38 @@
-import { Container, Grid, Box } from "@mui/material";
+import { Box, Container, Grid } from "@mui/material";
+import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
+import Image from "next/image";
 import Link from "next/link";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { getAllAdvertisements } from "../apis/advertisement";
+import { getAllBlogsPublic } from "../apis/blog";
 import { getAllProducts } from "../apis/product";
 import { ProductCard } from "../components";
 import { DefaultLayout } from "../layouts";
 import styles from "../styles/Home.module.css";
-import { Advertisement, Blog, Product, ResponseItems } from "../utils/types";
-import Image from "next/image";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { getAllBlogs } from "../apis/blog";
-import { GetServerSidePropsContext } from "next";
-import { COOKIE_ACCESSTOKEN_NAME } from "../utils/constants";
 import { formatDateTime } from "../utils/helpers";
-import { getAllAdvertisements } from "../apis/advertisement";
+import { Advertisement, Blog, Product, ResponseItems } from "../utils/types";
 type ProductsProps = {
-  products?: Product[];
+  products: Product[];
 };
-const Products = (props: ProductsProps) => {
+const Products = ({ products }: ProductsProps) => {
   return (
     <Container maxWidth="lg">
-      <Grid container columnSpacing={2} rowSpacing={2}>
-        {props.products?.map((product) => {
+      <Grid container columnSpacing={3} rowSpacing={3}>
+        {products.map((product) => {
           return (
             <Grid item xs={12} sm={6} md={4} lg={3} key={Math.random() + ""}>
               <ProductCard product={product} />
             </Grid>
           );
         })}
-        <Grid item xs={12} className={styles.viewAllWrapper}>
-          <Link href="/product" className={styles.viewAll}>
-            Xem tất cả sản phẩm
-          </Link>
-        </Grid>
+        {products.length > 0 ? (
+          <Grid item xs={12} className={styles.viewAllWrapper}>
+            <Link href="/product" className={styles.viewAll}>
+              Xem tất cả sản phẩm
+            </Link>
+          </Grid>
+        ) : null}
       </Grid>
     </Container>
   );
@@ -73,11 +74,11 @@ type BlogProps = {
   blogs: Blog[];
 };
 
-const Blogs = (props: BlogProps) => {
+const Blogs = ({ blogs }: BlogProps) => {
   return (
     <Container maxWidth="lg">
       <Grid container columnSpacing={2} rowSpacing={2}>
-        {props.blogs.map((blog: Blog) => {
+        {blogs.map((blog: Blog) => {
           return (
             <Grid item xs={12} md={4} key={blog.id}>
               <Link
@@ -101,11 +102,13 @@ const Blogs = (props: BlogProps) => {
             </Grid>
           );
         })}
-        <Grid item xs={12} className={styles.viewAllWrapper}>
-          <Link href="/blog" className={styles.viewAll}>
-            Xem tất cả bài viết
-          </Link>
-        </Grid>
+        {blogs.length > 0 ? (
+          <Grid item xs={12} className={styles.viewAllWrapper}>
+            <Link href="/blog" className={styles.viewAll}>
+              Xem tất cả bài viết
+            </Link>
+          </Grid>
+        ) : null}
       </Grid>
     </Container>
   );
@@ -139,36 +142,36 @@ export default function Home({ productData, blogData, advertisements }: Props) {
   );
 }
 export async function getServerSideProps(context: GetServerSidePropsContext) {
+  let productData = { items: [], count: 0, totalPages: 0 };
+  let blogData = { items: [], count: 0, totalPages: 0 };
+  let advData = { items: [] };
   try {
-    const [{ data: productData }, { data: blogData }, { data: advData }] =
-      await Promise.all([
-        getAllProducts({
-          limit: 24,
-          product_variants: true,
-          images: true,
-        }),
-        getAllBlogs(
-          {
-            limit: 3,
-          },
-          context.req.cookies[COOKIE_ACCESSTOKEN_NAME]
-        ),
-        getAllAdvertisements({ page: "Trang chủ", sortType: "asc" }),
-      ]);
-    return {
-      props: {
-        productData,
-        blogData,
-        advertisements: advData.items,
-      },
-    };
-  } catch (error) {
-    return {
-      props: {
-        productData: { items: [], count: 0, totalPages: 0 },
-        blogData: { items: [], count: 0, totalPages: 0 },
-        advertisements: [],
-      },
-    };
-  }
+    const [res1, res2, res3] = await Promise.allSettled([
+      getAllProducts({
+        limit: 24,
+        product_variants: true,
+        images: true,
+      }),
+      getAllBlogsPublic({
+        limit: 3,
+      }),
+      getAllAdvertisements({ page: "Trang chủ", sortType: "asc" }),
+    ]);
+    if (res1.status === "fulfilled") {
+      productData = res1.value.data;
+    }
+    if (res2.status === "fulfilled") {
+      blogData = res2.value.data;
+    }
+    if (res3.status === "fulfilled") {
+      advData = res3.value.data;
+    }
+  } catch (error) {}
+  return {
+    props: {
+      productData,
+      blogData,
+      advertisements: advData.items,
+    },
+  };
 }

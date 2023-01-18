@@ -1,5 +1,9 @@
-export const BASE_URL = process.env.BASE_URL;
+export const API_URL = process.env.API_URL;
+export const API_VERSION = process.env.API_VERSION;
+export const BASE_URL = `${API_URL}/${API_VERSION}`;
 export const CODE_OK = 200;
 export const MSG_SUCCESS = "Success";
 export const COOKIE_ACCESSTOKEN_NAME = "accessToken";
+export const COOKIE_REFRESHTOKEN_NAME = "RT";
 export const COOKIE_ORDER_DISCOUNT_CODE_NAME = "coupon";
+export const COOKIE_USER_ID = "userId";

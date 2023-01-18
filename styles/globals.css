@@ -7,7 +7,7 @@
 */
 
 :root {
-  --primary-color: #f379a7;
+  --primary-color: #2196f3;
 
   /* --logo-bg-color: #1976d2; */
   /* --logo-bg-color-opacity: #d8e0ff; */
@@ -80,6 +80,25 @@ button {
   pointer-events: none;
   user-select: none;
   font-size: 12px;
+  background: inherit;
+}
+.three-dot {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+.three-dot-1 {
+  -webkit-line-clamp: 1;
+}
+.three-dot-2 {
+  -webkit-line-clamp: 2;
+}
+.three-dot-3 {
+  -webkit-line-clamp: 3;
+}
+.three-dot-4 {
+  -webkit-line-clamp: 4;
 }
 .form-error {
   position: absolute;

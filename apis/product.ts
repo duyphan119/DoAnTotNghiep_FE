@@ -13,6 +13,7 @@ export type ProductQueryParams = QueryParams &
     product_variants: boolean;
     images: boolean;
     group_product: boolean;
+    q: string;
   }>;
 
 export type CreateProductDTO = {
@@ -33,6 +34,11 @@ export const getProductById = (id: number): Promise<any> =>
 export const createProduct = (body: CreateProductDTO): Promise<any> =>
   privateAxios().post("product", body);
 
+export const updateProduct = (
+  id: number,
+  body: Partial<CreateProductDTO>
+): Promise<any> => privateAxios().patch(`product/${id}`, body);
+
 export const getFavoriteProducts = (params?: PaginationParams): Promise<any> =>
   privateAxios().get("product/favorite/user", { params });
 
@@ -41,10 +47,6 @@ export const createFavoriteProduct = (productId: number): Promise<any> =>
 
 export const deleteFavoriteProduct = (productId: number): Promise<any> =>
   privateAxios().delete("product/favorite/" + productId);
-
-export const search = (
-  params?: SearchQueryParams & ProductQueryParams
-): Promise<any> => publicAxios().get("product/search", { params });
 
 export const updateThumbnailProduct = (
   productId: number,

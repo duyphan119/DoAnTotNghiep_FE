@@ -1,6 +1,11 @@
 import { useState, useEffect, ChangeEvent, ReactNode } from "react";
 import { Modal, Typography, Box, Button, Grid, Tooltip } from "@mui/material";
-import { Product, ProductVariantImage, Variant } from "../../utils/types";
+import {
+  Product,
+  ProductVariantImage,
+  Variant,
+  VariantValue,
+} from "../../utils/types";
 import {
   createProductVariantImages,
   deleteProductVariantImage,
@@ -16,7 +21,7 @@ import { uploadMultiple, uploadSingle } from "../../apis/upload";
 import { updateThumbnailProduct } from "../../apis/product";
 import ConfirmDialog from "../ConfirmDialog";
 import { ConfirmDialogProps } from "../ConfirmDialog/ConfirmDialog";
-import { getAllVariants } from "../../apis/variant";
+import { getAllVariantValues } from "../../apis/variantvalue";
 
 type Props = {
   open?: boolean;
@@ -30,13 +35,13 @@ type ImageItemProps = {
   onSelect: any;
   onDelete: any;
   hasSelectBtn: boolean;
-  variants: Variant[];
-  variantId: string;
+  variantValues: VariantValue[];
+  variantValueId: string;
 };
 
 const ImageItem = (props: ImageItemProps) => {
   const [propsConfirm, setPropsConfirm] = useState<ConfirmDialogProps>();
-  const [value, setValue] = useState<string>("" + props.variantId);
+  const [value, setValue] = useState<string>("" + props.variantValueId);
   const handleClose = () => {
     setPropsConfirm({
       ...propsConfirm,
@@ -83,9 +88,9 @@ const ImageItem = (props: ImageItemProps) => {
           Màu:&nbsp;
           <select onChange={handleChange} value={value}>
             <option>Chọn màu</option>
-            {props.variants.map((variant: Variant) => (
-              <option key={variant.id} value={variant.id}>
-                {variant.name}
+            {props.variantValues.map((variantValue: VariantValue) => (
+              <option key={variantValue.id} value={variantValue.id}>
+                {variantValue.value}
               </option>
             ))}
           </select>
@@ -119,7 +124,7 @@ const ImageItem = (props: ImageItemProps) => {
 
 const ModalProductVariantImage = (props: Props) => {
   const [images, setImages] = useState<ProductVariantImage[]>([]);
-  const [variants, setVariants] = useState<Variant[]>([]);
+  const [variantValues, setVariantValues] = useState<VariantValue[]>([]);
   const [thumbnail, setThumbnail] = useState<string>(
     props.product ? props.product.thumbnail || "" : ""
   );
@@ -190,7 +195,7 @@ const ModalProductVariantImage = (props: Props) => {
             getAllProductVariantImages({
               productId: props.product.id,
             }),
-            getAllVariants({ type: "Màu sắc" }),
+            getAllVariantValues({ type: "Màu sắc" }),
           ]);
           if (re1.status === "fulfilled") {
             if (re1.value.message === MSG_SUCCESS) {
@@ -200,7 +205,7 @@ const ModalProductVariantImage = (props: Props) => {
 
           if (res2.status === "fulfilled") {
             if (res2.value.message === MSG_SUCCESS) {
-              setVariants(res2.value.data.items);
+              setVariantValues(res2.value.data.items);
             }
           }
         }
@@ -243,8 +248,8 @@ const ModalProductVariantImage = (props: Props) => {
                       onSelect={() => handleSelect(image.path)}
                       onDelete={() => handleDelete(image.id)}
                       hasSelectBtn={image.path !== thumbnail}
-                      variants={variants}
-                      variantId={"" + image.variantValueId || ""}
+                      variantValues={variantValues}
+                      variantValueId={"" + image.variantValueId || ""}
                     />
                   </Grid>
                 ))}

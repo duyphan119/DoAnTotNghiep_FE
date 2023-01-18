@@ -3,17 +3,16 @@ import React from "react";
 import { ProductVariantImage } from "../../../utils/types";
 import styles from "../style.module.css";
 type Props = {
-  images: any[];
+  images: ProductVariantImage[];
   thumbnail: string;
 };
 
-const Left = (props: Props) => {
+const Left = ({ images, thumbnail }: Props) => {
   const [index, setIndex] = React.useState<number>(-1);
-  console.log(props.images);
   return (
     <div className={styles.left}>
       <div className={styles.images} style={{ height: 548 }}>
-        {props.images.map((image: ProductVariantImage, i: number) => {
+        {images.map((image: ProductVariantImage, i: number) => {
           return (
             <Image
               src={image.path}
@@ -28,7 +27,7 @@ const Left = (props: Props) => {
         })}
       </div>
       <Image
-        src={index > -1 ? props.images[index].path : props.thumbnail}
+        src={index > -1 ? images[index].path : thumbnail}
         alt=""
         width={480}
         height={548}

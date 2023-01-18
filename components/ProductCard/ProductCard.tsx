@@ -1,8 +1,9 @@
+import StarIcon from "@mui/icons-material/Star";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useCartContext } from "../../context/CartContext";
-import { formatProductVariants } from "../../utils/helpers";
+import { formatProductVariants, rangePrice } from "../../utils/helpers";
 import {
   Product,
   ProductVariant,
@@ -17,7 +18,7 @@ type Props = {
   product?: Product;
 };
 
-const ProductCard = (props: Props) => {
+const ProductCard = ({ product }: Props) => {
   const { addToCart } = useCartContext();
   const [selected, setSelected] = useState<VariantValue[]>([]);
   const [variants, setVariants] = useState<any>({
@@ -28,18 +29,18 @@ const ProductCard = (props: Props) => {
     useState<ProductVariant>();
   useEffect(() => {
     if (
-      props.product &&
-      props.product.productVariants &&
-      props.product.productVariants.length > 0
+      product &&
+      product.productVariants &&
+      product.productVariants.length > 0
     ) {
-      setVariants(formatProductVariants(props.product));
+      setVariants(formatProductVariants(product));
     }
-  }, [props.product]);
+  }, [product]);
 
   useEffect(() => {
     if (selected.length === variants.keys.length) {
       setSelectedProductVariant(
-        props.product?.productVariants?.find((pv: ProductVariant) =>
+        product?.productVariants?.find((pv: ProductVariant) =>
           pv.variantValues.every(
             (vv: VariantValue) =>
               selected.findIndex((_vv: VariantValue) => vv.id === _vv.id) !== -1
@@ -62,30 +63,7 @@ const ProductCard = (props: Props) => {
     setSelected(newArr);
   };
 
-  const handleAddToCart = (quantity: number) => {
-    if (props.product && selected.length === variants.keys.length) {
-      const productVariant = props.product?.productVariants?.find(
-        (pv: ProductVariant) =>
-          pv.variantValues.every(
-            (vv: VariantValue) =>
-              selected.findIndex((_vv: VariantValue) => vv.id === _vv.id) !== -1
-          )
-      );
-
-      if (productVariant) {
-        addToCart({
-          quantity,
-          ...(props.product.productVariants && productVariant
-            ? { productVariant, productVariantId: productVariant.id }
-            : {}),
-          productId: props.product.id,
-          product: props.product,
-        });
-      }
-    }
-  };
-
-  return props.product ? (
+  return product ? (
     <div className={styles.card}>
       <div className={styles["thumbnail-wrapper"]}>
         <Link
@@ -93,20 +71,20 @@ const ProductCard = (props: Props) => {
           href={{
             pathname: "/product/[slug]",
             query: {
-              slug: props.product.slug,
+              slug: product.slug,
             },
           }}
         >
           <Image
             src={
-              selected && props.product.images
-                ? props.product.images.find(
+              selected && product.images
+                ? product.images.find(
                     (img: ProductVariantImage) =>
                       selected.findIndex(
                         (vv: VariantValue) => vv.id === img.variantValueId
                       ) !== -1
-                  )?.path || props.product.thumbnail
-                : props.product.thumbnail
+                  )?.path || product.thumbnail
+                : product.thumbnail
             }
             alt=""
             priority={true}
@@ -114,33 +92,40 @@ const ProductCard = (props: Props) => {
             sizes="(max-width: 768px) 1vw"
           />
         </Link>
-        <Downbar
+        {/* <Downbar
           variants={variants}
           onAddToCart={handleAddToCart}
           onClickVariant={clickVariantValue}
           selected={selected}
-        />
+        /> */}
+        {product.star ? (
+          <div className={styles.star}>
+            <StarIcon className={styles.starIcon} />
+            <span className={styles.starValue}>{product.star.toFixed(1)}</span>
+          </div>
+        ) : null}
       </div>
       <div className={styles["name-wrapper"]}>
         <Link
           href={{
             pathname: "/product/[slug]",
             query: {
-              slug: props.product.slug,
+              slug: product.slug,
             },
           }}
-          className={styles.name}
+          className={styles.name + " three-dot three-dot-2"}
         >
-          {props.product.name}
+          {product.name}
         </Link>
-        <WishlistIcon productId={props.product.id} />
+        {/* <WishlistIcon productId={product.id} /> */}
+        {/* <div className={styles.star}>
+          <Rating value={product.star} readOnly />
+        </div> */}
         <div className={styles.price}>
           <span>
             {selectedProductVariant
               ? selectedProductVariant.price
-              : props.product.minPrice === props.product.maxPrice
-              ? props.product.minPrice
-              : `${props.product.minPrice} - ${props.product.maxPrice}`}
+              : rangePrice(product)}
             đ
           </span>
         </div>

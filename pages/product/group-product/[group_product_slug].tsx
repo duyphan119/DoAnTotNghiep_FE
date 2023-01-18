@@ -1,10 +1,11 @@
 import { Grid, Pagination, Box } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { getAllProducts } from "../../../apis/product";
 import { ProductCard } from "../../../components";
 import { useGroupProductContext } from "../../../context/GroupProductContext";
+import { useProductsLayoutContext } from "../../../context/ProductsLayoutContext";
 import { ProductsLayout } from "../../../layouts";
 import { CODE_OK, MSG_SUCCESS } from "../../../utils/constants";
 import {
@@ -22,7 +23,7 @@ const Products = (props: Props) => {
   const { groupProducts } = useGroupProductContext();
   const router = useRouter();
   const { p } = router.query;
-  const [filter, setFilter] = React.useState<Filter>({
+  const [filter, setFilter] = useState<Filter>({
     ...router.query,
     p: p ? +p : 1,
   });
@@ -32,10 +33,14 @@ const Products = (props: Props) => {
   };
 
   const handleFilter = (f: Filter) => {
-    setFilter({ ...f, p: f.p && f.p > 1 ? 1 : f.p || 1 });
+    setFilter((state) => ({
+      ...state,
+      ...f,
+      p: f.p && f.p > 1 ? 1 : f.p || 1,
+    }));
   };
-
-  React.useEffect(() => {
+  console.log("filter::", filter);
+  useEffect(() => {
     const paramsObj: any = {};
     Object.keys(filter).forEach((key: string) => {
       if (key !== "group_product_slug")

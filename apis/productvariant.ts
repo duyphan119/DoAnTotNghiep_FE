@@ -21,9 +21,8 @@ export const deleteProductVariant = (id: number): Promise<any> =>
   privateAxios().delete("product-variant/" + id);
 
 export const updateProductVariants = (
-  productVariants: ProductVariant[]
-): Promise<any> =>
-  privateAxios().patch("product-variant/many", { productVariants });
+  inputs: Array<Partial<ProductVariant>>
+): Promise<any> => privateAxios().patch("product-variant/many", { inputs });
 
 export const createProductVariants = (
   inputs: CreateProductVariant[]

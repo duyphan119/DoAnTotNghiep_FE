@@ -31,9 +31,9 @@ const HeaderTop = (props: Props) => {
         </div>
         <div className={styles.right}>
           <ul className={styles.items}>
-            <li className={styles.item}>
+            {/* <li className={styles.item}>
               <WishlistIcon />
-            </li>
+            </li> */}
             <li className={styles.item}>
               <CartIcon />
             </li>

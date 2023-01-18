@@ -135,7 +135,7 @@ const EditOrder = (props: Props) => {
                               />
                               <Box ml={1}>
                                 <Typography variant="subtitle1">
-                                  {orderItem.product?.name}
+                                  {orderItem.productVariant?.product?.name}
                                 </Typography>
                                 <Typography variant="caption">
                                   {orderItem.productVariant?.name}

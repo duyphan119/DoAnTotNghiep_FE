@@ -1,18 +1,15 @@
-import React from "react";
-import {
-  Product,
-  ProductVariantImage,
-  Variant,
-  VariantValue,
-} from "../../utils/types";
+import { useState } from "react";
+import { useProductDetailContext } from "../../pages/product/[slug]";
+import { ProductVariantImage, VariantValue } from "../../utils/types";
+import DownTabs from "./DownTabs";
 import Left from "./Left";
 import Right from "./Right";
 import styles from "./style.module.css";
-type Props = {
-  product?: Product;
-};
+type Props = {};
+
 const ProductInfo = (props: Props) => {
-  const [selectedVariantValues, setSelectedVariantValues] = React.useState<
+  const { product } = useProductDetailContext();
+  const [selectedVariantValues, setSelectedVariantValues] = useState<
     VariantValue[]
   >([]);
 
@@ -29,29 +26,30 @@ const ProductInfo = (props: Props) => {
     setSelectedVariantValues(newArr);
   };
 
-  return props.product ? (
-    <div className={styles.body}>
-      <Left
-        thumbnail={props.product.thumbnail}
-        images={
-          props.product.images
-            ? [...props.product.images].filter((i: ProductVariantImage) =>
-                selectedVariantValues.length > 0
-                  ? selectedVariantValues.findIndex(
-                      (vv: VariantValue) => vv.id === i.variantValueId
-                    ) !== -1
-                  : true
-              )
-            : []
-        }
-      />
-      <Right
-        product={props.product}
-        selectedVariantValues={selectedVariantValues}
-        onClickVariantValue={clickVariantValue}
-      />
-    </div>
-  ) : null;
+  const getImages = () => {
+    if (!product.images) return [];
+    const images = [...product.images];
+    return images.filter((i: ProductVariantImage) =>
+      selectedVariantValues.length > 0
+        ? selectedVariantValues.findIndex(
+            (vv: VariantValue) => vv.id === i.variantValueId
+          ) !== -1
+        : true
+    );
+  };
+
+  return (
+    <>
+      <div className={styles.body}>
+        <Left thumbnail={product.thumbnail} images={getImages()} />
+        <Right
+          selectedVariantValues={selectedVariantValues}
+          onClickVariantValue={clickVariantValue}
+        />
+      </div>
+      <DownTabs />
+    </>
+  );
 };
 
 export default ProductInfo;

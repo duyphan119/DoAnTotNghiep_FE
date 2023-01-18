@@ -2,7 +2,6 @@ import { Box, Modal, Tab, Tabs } from "@mui/material";
 import React from "react";
 import Login from "./Login";
 import Register from "./Register";
-import styles from "./style.module.css";
 
 type Props = {
   open: boolean;

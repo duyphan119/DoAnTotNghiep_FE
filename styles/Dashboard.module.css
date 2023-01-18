@@ -1,0 +1,20 @@
+.widgetWrapper {
+  padding: 16px;
+}
+.widgetMain {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.widgetValue {
+  font-size: 24px;
+  font-weight: 500;
+  margin: 8px 0;
+}
+.widgetIcon svg {
+  font-size: 36px;
+}
+.widgetViewMore {
+  text-decoration: underline;
+  color: var(--primary-color);
+}

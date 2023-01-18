@@ -38,7 +38,7 @@
   min-width: 320px;
   position: relative;
   border-radius: 50px;
-  overflow: hidden;
+  width: 100%;
 }
 .center .search button {
   background: var(--primary-color);
@@ -46,6 +46,8 @@
   color: #fff;
   padding: 6px 16px;
   box-shadow: 0 0 2px 0px var(--primary-color);
+  border-top-right-radius: 50px;
+  border-bottom-right-radius: 50px;
 }
 .center .search svg {
   font-size: 24px;
@@ -67,10 +69,11 @@
 .search-result-wrapper {
   position: absolute;
   top: 100%;
-  left: 0;
-  right: 0;
+  left: 16px;
+  right: 16px;
   z-index: 9999;
   background-color: #fff;
+  box-shadow: 0 0 1px 1px lightgray;
 }
 .search-result-wrapper ul {
   display: flex;

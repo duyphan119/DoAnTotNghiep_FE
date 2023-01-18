@@ -1,11 +1,11 @@
 import React from "react";
 import styles from "./style.module.css";
 import SearchIcon from "@mui/icons-material/Search";
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import { Badge, IconButton } from "@mui/material";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
-import Link from "next/link";
 import MenuIcon from "@mui/icons-material/Menu";
+import NotifyIcon from "./NotifyIcon";
+import AccountIcon from "./AccountIcon";
 type Props = {
   pageTitle: string;
 };
@@ -26,19 +26,13 @@ const Header = (props: Props) => {
         </form>
       </div>
       <div className={styles.right}>
-        <span className={styles.iconSpan}>
-          <Badge badgeContent={3} color="error">
-            <NotificationsNoneIcon className={styles.icon} />
-          </Badge>
-        </span>
+        <NotifyIcon />
         <span className={styles.iconSpan}>
           <Badge badgeContent={3} color="error">
             <ChatBubbleOutlineIcon className={styles.icon} />
           </Badge>
         </span>
-        <Link href="/admin/profile">
-          Xin chào, <strong>Duy Phan</strong>
-        </Link>
+        <AccountIcon />
       </div>
     </header>
   );

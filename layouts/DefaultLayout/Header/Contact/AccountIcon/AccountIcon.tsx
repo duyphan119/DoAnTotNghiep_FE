@@ -7,11 +7,10 @@ import styles from "../../../style.module.css";
 type Props = {};
 
 const AccountIcon = (props: Props) => {
-  const { isLogged } = useAuthContext();
-  const [open, setOpen] = useState<boolean>(false);
+  const { isLogged, setOpenModal } = useAuthContext();
   const handleClick = async (e: any) => {
     e.preventDefault();
-    setOpen(true);
+    setOpenModal(true);
   };
   return isLogged ? (
     <Link href="/profile" className={styles.contactLink}>
@@ -24,7 +23,6 @@ const AccountIcon = (props: Props) => {
         <PersonIcon />
         Đăng nhập
       </span>
-      {open ? <ModalAuth open={open} onClose={() => setOpen(false)} /> : null}
     </>
   );
 };

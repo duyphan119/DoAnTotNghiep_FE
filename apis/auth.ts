@@ -1,3 +1,4 @@
+import { GenericAbortSignal } from "axios";
 import { privateAxios, publicAxios } from "../config/configAxios";
 
 export type ChangeProfile = {
@@ -23,20 +24,31 @@ export type ChangePassword = {
 
 export const logout = (): Promise<any> => publicAxios().delete("auth/logout");
 
-export const changeProfile = (body: ChangeProfile): Promise<any> =>
-  privateAxios().patch("auth/change-profile", body);
+export const changeProfile = (
+  body: ChangeProfile,
+  signal?: GenericAbortSignal
+): Promise<any> => privateAxios(signal).patch("auth/change-profile", body);
 
-export const login = (body: LoginDTO): Promise<any> =>
-  publicAxios().post("auth/login", body);
+export const login = (
+  body: LoginDTO,
+  signal?: GenericAbortSignal
+): Promise<any> => publicAxios(signal).post("auth/login", body);
 
-export const register = (body: RegisterDTO): Promise<any> =>
-  publicAxios().post("auth/register", body);
+export const register = (
+  body: RegisterDTO,
+  signal?: GenericAbortSignal
+): Promise<any> => publicAxios(signal).post("auth/register", body);
 
-export const refreshToken = (): Promise<any> =>
-  publicAxios().patch("auth/refresh");
+export const refreshToken = (
+  token?: string,
+  signal?: GenericAbortSignal
+): Promise<any> =>
+  publicAxios(signal).patch("auth/refresh", { refreshToken: token });
 
-export const changePassword = (body: ChangePassword): Promise<any> =>
-  privateAxios().patch("auth/change-password", body);
+export const changePassword = (
+  body: ChangePassword,
+  signal?: GenericAbortSignal
+): Promise<any> => privateAxios(signal).patch("auth/change-password", body);
 
-export const getProfile = (): Promise<any> =>
-  privateAxios().get("auth/profile");
+export const getProfile = (signal?: GenericAbortSignal): Promise<any> =>
+  privateAxios(signal).get("auth/profile");

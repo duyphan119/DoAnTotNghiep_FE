@@ -12,19 +12,19 @@ type Props = {
   input: Input;
 };
 
-const TrItem = (props: Props) => {
+const TrItem = ({ input, hasDeleteBtn }: Props) => {
   const { onDelete, onChange } = useModalProductVariantContext();
-  // const NAME = props.productVariant
-  //   ? props.productVariant.name
-  //   : props.variantValues
+  // const NAME = productVariant
+  //   ? productVariant.name
+  //   : variantValues
   //       ?.map((variantValue: VariantValue) => variantValue.value)
   //       .join(" / ");
   // const [input, setInput] = useState<Input>(() =>
-  //   props.productVariant
+  //   productVariant
   //     ? {
   //         name: NAME || "",
-  //         price: props.productVariant.price,
-  //         inventory: props.productVariant.inventory,
+  //         price: productVariant.price,
+  //         inventory: productVariant.inventory,
   //       }
   //     : {
   //         name: NAME || "",
@@ -35,7 +35,7 @@ const TrItem = (props: Props) => {
   const [open, setOpen] = useState<boolean>(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    onChange({ ...props.input, [e.target.name]: +e.target.value });
+    onChange({ ...input, [e.target.name]: +e.target.value });
   };
 
   const handleClose = () => {
@@ -47,8 +47,8 @@ const TrItem = (props: Props) => {
   };
 
   const handleConfirm = async () => {
-    // if (props.productVariant) {
-    //   const { id } = props.productVariant;
+    // if (productVariant) {
+    //   const { id } = productVariant;
     //   try {
     //     const { message } = await deleteProductVariant(id);
     //     if (message === MSG_SUCCESS) {
@@ -62,14 +62,14 @@ const TrItem = (props: Props) => {
 
   return (
     <tr className={styles.generatedSelectedItem}>
-      <td>{props.input.name}</td>
+      <td>{input.name}</td>
       <td>
         <input
           type="number"
           style={{ width: "80px" }}
           min={0}
           name="inventory"
-          value={props.input.inventory}
+          value={input.inventory}
           onChange={handleChange}
         />
       </td>
@@ -80,12 +80,12 @@ const TrItem = (props: Props) => {
           min={0}
           step={1000}
           name="price"
-          value={props.input.price}
+          value={input.price}
           onChange={handleChange}
         />
       </td>
       <td>
-        {props.hasDeleteBtn ? (
+        {hasDeleteBtn ? (
           <>
             <span
               style={{ color: "#d32f2f", cursor: "pointer" }}

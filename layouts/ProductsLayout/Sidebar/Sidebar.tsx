@@ -52,7 +52,7 @@ type Selected = {
   price?: Price;
 };
 
-const Sidebar = (props: Props) => {
+const Sidebar = ({ onClose, onFilter, query }: Props) => {
   const { groupProducts } = useGroupProductContext();
   const [variantValues, setVariantValues] = useState<RenderVariantValues>({
     keys: [],
@@ -119,7 +119,7 @@ const Sidebar = (props: Props) => {
   };
 
   const handleClick = () => {
-    if (props.onFilter) {
+    if (onFilter) {
       const { groupProduct, price, variantValues } = selected;
       const obj: any = {};
       if (groupProduct) {
@@ -134,14 +134,17 @@ const Sidebar = (props: Props) => {
       if (variantValues.length > 0) {
         obj.v_ids = variantValues.map((vv: VariantValue) => vv.id).join("-");
       }
-      props.onFilter(obj);
-      props.onClose && props.onClose();
+      onFilter(obj);
+      onClose && onClose();
     }
   };
 
   useEffect(() => {
     (async () => {
-      const { message, data } = await getAllVariantValues({ sortType: "asc" });
+      const { message, data } = await getAllVariantValues({
+        sortType: "asc",
+        variant: true,
+      });
 
       if (message === MSG_SUCCESS) {
         setVariantValues(formatVariants(data.items));
@@ -151,7 +154,7 @@ const Sidebar = (props: Props) => {
 
   useEffect(() => {
     if (variantValues.keys.length > 0) {
-      const { group_product_slug, min_price, max_price, v_ids } = props.query;
+      const { group_product_slug, min_price, max_price, v_ids } = query;
 
       const groupProduct = groupProducts.find(
         (gp: GroupProduct) =>
@@ -186,7 +189,7 @@ const Sidebar = (props: Props) => {
       };
       setSelected(s);
     }
-  }, [groupProducts, props.query, variantValues]);
+  }, [groupProducts, query, variantValues]);
 
   return (
     <div className={styles.sidebar}>

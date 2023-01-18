@@ -1,72 +1,81 @@
-import React from "react";
+import { Rating } from "@mui/material";
+import { useState, useEffect } from "react";
 import { useCartContext } from "../../../context/CartContext";
-import { formatProductVariants } from "../../../utils/helpers";
-import {
-  Product,
-  ProductVariant,
-  Variant,
-  VariantValue,
-} from "../../../utils/types";
+import { useSocketContext } from "../../../context/SocketContext";
+import { useProductDetailContext } from "../../../pages/product/[slug]";
+import { formatProductVariants, rangePrice } from "../../../utils/helpers";
+import { Product, ProductVariant, VariantValue } from "../../../utils/types";
 import styles from "../style.module.css";
 
 type Props = {
-  product?: Product;
   selectedVariantValues?: VariantValue[];
   onClickVariantValue?: any;
 };
 
-const Right = (props: Props) => {
+const Right = ({ selectedVariantValues, onClickVariantValue }: Props) => {
+  const { product } = useProductDetailContext();
   const { addToCart } = useCartContext();
-  const [quantity, setQuantity] = React.useState<number>(1);
+  const { socket } = useSocketContext();
+  const [quantity, setQuantity] = useState<number>(1);
   const [selectedProductVariant, setSelectedProductVariant] =
-    React.useState<ProductVariant>();
-  const [variants, setVariants] = React.useState<any>({
+    useState<ProductVariant>();
+  const [variants, setVariants] = useState<any>({
     keys: [],
     values: {},
   });
 
-  React.useEffect(() => {
-    if (props.product) {
-      setVariants(formatProductVariants(props.product));
+  useEffect(() => {
+    if (product) {
+      setVariants(formatProductVariants(product));
+      // socket.emit("join room", product.slug);
     }
-  }, [props.product]);
+  }, [product]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (
-      props.selectedVariantValues &&
-      props.selectedVariantValues.length === variants.keys.length
+      selectedVariantValues &&
+      selectedVariantValues.length === variants.keys.length
     ) {
       setSelectedProductVariant(
-        props.product?.productVariants?.find((pv: ProductVariant) =>
+        product?.productVariants?.find((pv: ProductVariant) =>
           pv.variantValues.every(
             (vv: VariantValue) =>
-              props.selectedVariantValues &&
-              props.selectedVariantValues.findIndex(
+              selectedVariantValues &&
+              selectedVariantValues.findIndex(
                 (_vv: VariantValue) => vv.id === _vv.id
               ) !== -1
           )
         )
       );
     }
-  }, [props.selectedVariantValues]);
+  }, [selectedVariantValues]);
 
   const handleAddToCart = () => {
     if (selectedProductVariant)
-      addToCart({
-        quantity,
-        productVariant: selectedProductVariant,
-        productVariantId: selectedProductVariant.id,
-      });
+      addToCart(
+        {
+          quantity,
+          productVariant: selectedProductVariant,
+          productVariantId: selectedProductVariant.id,
+        },
+        selectedProductVariant.price
+      );
   };
   const changeQuantity = (newQuantity: number) => {
     newQuantity > 0 && setQuantity(newQuantity);
   };
-  return props.product ? (
+
+  return product ? (
     <div className={styles.right}>
-      <div className={styles.name}>{props.product.name}</div>
+      <div className={styles.name}>{product.name}</div>
+      <div className={styles.star}>
+        <Rating value={product.star} readOnly />
+      </div>
       <div className={styles.price}>
-        99000đ
-        {/* <span>{props.product.productVariants[0].price}</span> */}
+        {selectedProductVariant
+          ? selectedProductVariant.price
+          : rangePrice(product)}
+        đ
       </div>
       {variants.keys.map((key: string) => {
         return (
@@ -77,10 +86,10 @@ const Right = (props: Props) => {
                 return (
                   <li
                     key={variantValue.id}
-                    onClick={() => props.onClickVariantValue(variantValue)}
+                    onClick={() => onClickVariantValue(variantValue)}
                     className={
-                      props.selectedVariantValues &&
-                      props.selectedVariantValues.findIndex(
+                      selectedVariantValues &&
+                      selectedVariantValues.findIndex(
                         (i: VariantValue) => i.id === variantValue.id
                       ) !== -1
                         ? styles.active
@@ -104,6 +113,11 @@ const Right = (props: Props) => {
         <button>Mua ngay</button>
         <button onClick={handleAddToCart}>Thêm vào giỏ hàng</button>
       </div>
+      <ul className={styles.description}>
+        {product.description.split("\n").map((text: string, index: number) => (
+          <li key={index}>{text}</li>
+        ))}
+      </ul>
     </div>
   ) : null;
 };

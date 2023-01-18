@@ -13,32 +13,40 @@ import Header from "./Header";
 import Sidebar from "./Sidebar";
 import Link from "next/link";
 import styles from "./style.module.css";
+import ProductsLayoutWrapper from "../../context/ProductsLayoutContext";
 
 type BreadcrumbLink = {
   label: string;
   href: string;
 };
 
-type Props = {
-  children?: React.ReactNode;
-  totalProducts: number;
-  onFilter?: any;
-  query?: any;
-  breadcrumbs?: {
-    links: Array<BreadcrumbLink>;
-    current: string;
-  };
+type Breadcrumb = {
+  links: BreadcrumbLink[];
+  current: string;
 };
+type Props = Partial<{
+  children: React.ReactNode;
+  totalProducts: number;
+  onFilter: any;
+  query: any;
+  breadcrumbs: Breadcrumb;
+}>;
 
-const ProductsLayout = (props: Props) => {
+const ProductsLayout = ({
+  children,
+  totalProducts,
+  onFilter,
+  query,
+  breadcrumbs,
+}: Props) => {
   const [open, setOpen] = useState<boolean>(false);
   return (
     <DefaultLayout>
       <Container maxWidth="lg">
-        {props.breadcrumbs ? (
+        {breadcrumbs ? (
           <div className={styles.breadcrumbs}>
             <Breadcrumbs>
-              {props.breadcrumbs.links.map((link: BreadcrumbLink) => (
+              {breadcrumbs.links.map((link: BreadcrumbLink) => (
                 <Link
                   className={styles["breadcrumb-link"]}
                   href={link.href}
@@ -49,7 +57,7 @@ const ProductsLayout = (props: Props) => {
               ))}
             </Breadcrumbs>
             <div className={styles["breadcrumb-current"]}>
-              {props.breadcrumbs.current}
+              {breadcrumbs.current}
             </div>
           </div>
         ) : null}
@@ -77,17 +85,17 @@ const ProductsLayout = (props: Props) => {
               <Drawer open={open} onClose={() => setOpen(false)} anchor="left">
                 <Box sx={{ maxWidth: "50vw", padding: "16px" }}>
                   <Sidebar
-                    onFilter={props.onFilter}
-                    query={props.query}
+                    onFilter={onFilter}
+                    query={query}
                     onClose={() => setOpen(false)}
                   />
                 </Box>
               </Drawer>
             </Box>
             <Header
-              onFilter={props.onFilter}
-              totalProducts={props.totalProducts}
-              query={props.query}
+              onFilter={onFilter}
+              totalProducts={totalProducts}
+              query={query}
             />
           </Grid>
           <Grid
@@ -101,10 +109,10 @@ const ProductsLayout = (props: Props) => {
               },
             }}
           >
-            <Sidebar onFilter={props.onFilter} query={props.query} />
+            <Sidebar onFilter={onFilter} query={query} />
           </Grid>
           <Grid item xs={12} lg={8} xl={9}>
-            {props.children}
+            {children}
           </Grid>
         </Grid>
       </Container>

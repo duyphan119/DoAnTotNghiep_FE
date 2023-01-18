@@ -1,8 +1,124 @@
+import { Grid, Paper, Typography } from "@mui/material";
 import Head from "next/head";
-import React from "react";
-import { AdminLayout } from "../../layouts";
+import React, { ReactElement } from "react";
+import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import ReceiptIcon from "@mui/icons-material/Receipt";
+import StarRateIcon from "@mui/icons-material/StarRate";
+import Link from "next/link";
 
+import { AdminLayout } from "../../layouts";
+import {
+  BarChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  Bar,
+  ResponsiveContainer,
+} from "recharts";
+import { formatYAxisPrice } from "../../utils/helpers";
+import styles from "../../styles/Dashboard.module.css";
+const data = [
+  {
+    key: "Jan",
+    value: 2000000,
+  },
+  {
+    key: "Feb",
+    value: 2500000,
+  },
+  {
+    key: "Mar",
+    value: 2200000,
+  },
+
+  {
+    key: "Apr",
+    value: 2500000,
+  },
+
+  {
+    key: "May",
+    value: 1900000,
+  },
+
+  {
+    key: "Jun",
+    value: 3000000,
+  },
+
+  {
+    key: "Jul",
+    value: 2200000,
+  },
+
+  {
+    key: "Aug",
+    value: 1200000,
+  },
+  {
+    key: "Sep",
+    value: 1300000,
+  },
+  {
+    key: "Oct",
+    value: 2400000,
+  },
+  {
+    key: "Nov",
+    value: 1700000,
+  },
+  {
+    key: "Dec",
+    value: 3000000,
+  },
+];
 type Props = {};
+
+type WidgetProps = Partial<{
+  title: string;
+  value: string | number;
+  icon: ReactElement;
+  iconColor: string;
+  hrefViewMore: string;
+  wrapperColor: string;
+}>;
+
+const Widget = ({
+  title,
+  value,
+  icon,
+  iconColor,
+  hrefViewMore,
+  wrapperColor,
+}: WidgetProps) => {
+  return (
+    <Paper
+      className={styles.widgetWrapper}
+      style={{ backgroundColor: wrapperColor || "#fff" }}
+    >
+      <div className={styles.widgetMain}>
+        <div className={styles.widgetContent}>
+          <div className={styles.widgetTitle}>{title}</div>
+          <div className={styles.widgetValue}>{value}</div>
+        </div>
+        <div
+          style={{ color: iconColor || "#000" }}
+          className={styles.widgetIcon}
+        >
+          {icon}
+        </div>
+      </div>
+      {hrefViewMore ? (
+        <div className={styles.widgetViewMore}>
+          <Link href={hrefViewMore}>Xem thêm</Link>
+        </div>
+      ) : null}
+    </Paper>
+  );
+};
 
 const Dashboard = (props: Props) => {
   return (
@@ -14,6 +130,60 @@ const Dashboard = (props: Props) => {
           <link rel="icon" href="/favicon.ico" />
         </Head>
       </>
+      <Grid container columnSpacing={2} rowSpacing={2}>
+        <Grid item xs={3}>
+          <Widget
+            title="Người dùng"
+            value={100}
+            icon={<PersonAddAltIcon />}
+            hrefViewMore={"/admin/account"}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <Widget
+            title="Đơn hàng"
+            value={100}
+            icon={<ReceiptIcon />}
+            hrefViewMore={"/admin/order"}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <Widget
+            title="Doanh thu"
+            value={100}
+            icon={<AttachMoneyIcon />}
+            hrefViewMore={"/admin/statistics"}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <Widget
+            title="Đánh giá"
+            value={100}
+            icon={<StarRateIcon />}
+            iconColor="yellow"
+            hrefViewMore={"/admin/comment-product"}
+          />
+        </Grid>
+        <Grid item xs={8}>
+          <Paper sx={{ height: 400, p: 2 }}>
+            <Typography sx={{ mb: 2 }}>Doanh thu</Typography>
+            <ResponsiveContainer height="90%" width="100%">
+              <BarChart data={data}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="key" />
+                <YAxis tickFormatter={(value) => formatYAxisPrice(value)} />
+                <Tooltip />
+                <Legend />
+                <Bar
+                  name="Doanh thu"
+                  dataKey="value"
+                  fill="var(--primary-color)"
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </Paper>
+        </Grid>
+      </Grid>
     </AdminLayout>
   );
 };

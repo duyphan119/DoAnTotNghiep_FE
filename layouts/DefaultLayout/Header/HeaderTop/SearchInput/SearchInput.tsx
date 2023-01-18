@@ -2,12 +2,13 @@ import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import styles from "../style.module.css";
 import { Product, ResponseItems } from "../../../../../utils/types";
-import { search as apiSearch } from "../../../../../apis/product";
+import { getAllProducts as apiSearch } from "../../../../../apis/product";
 import { MSG_SUCCESS } from "../../../../../utils/constants";
 import Link from "next/link";
 import Image from "next/image";
 import { ClickAwayListener } from "@mui/material";
 import { useRouter } from "next/router";
+import { rangePrice } from "../../../../../utils/helpers";
 
 type Props = {};
 
@@ -32,7 +33,11 @@ const SearchInput = (props: Props) => {
           count: 0,
         });
       } else {
-        const { message, data } = await apiSearch({ q, limit: 3 });
+        const { message, data } = await apiSearch({
+          q,
+          limit: 3,
+          product_variants: true,
+        });
         if (message === MSG_SUCCESS) {
           setProductData(data);
         }
@@ -97,9 +102,7 @@ const SearchInput = (props: Props) => {
                       <div className={styles.product}>
                         <div className={styles.name}>{product.name}</div>
                         <div className={styles.price}>
-                          {product.minPrice === product.maxPrice
-                            ? `${product.minPrice}`
-                            : `${product.minPrice} - ${product.maxPrice}`}
+                          {rangePrice(product, "", "đ")}
                         </div>
                       </div>
                     </Link>

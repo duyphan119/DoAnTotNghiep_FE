@@ -3,7 +3,6 @@ import {
   Product,
   ProductVariantImage,
   RenderVariantValues,
-  Variant,
   VariantValue,
 } from "./types";
 
@@ -52,6 +51,7 @@ export const formatProductVariants = (
   keys.forEach((key: string) => {
     _variants[key].sort((a: VariantValue, b: VariantValue) => a.id - b.id);
   });
+  keys.sort((a, b) => a.localeCompare(b) * -1);
   return {
     keys,
     values: _variants,
@@ -85,13 +85,13 @@ export const formatDateTime = (input: string | number | Date): string => {
 export const getPriceCartItem = (orderItem: OrderItem): number => {
   return orderItem.productVariant
     ? orderItem.productVariant.price
-    : orderItem.product
-    ? orderItem.product.price
-    : 0;
+    : // : orderItem.product
+      // ? orderItem.product.price
+      0;
 };
 export const getThumbnailOrderItem = (orderItem: OrderItem): string => {
   let pv = orderItem.productVariant;
-  let p = orderItem.product;
+  let p = orderItem.productVariant?.product;
   if (pv) {
     let p = pv.product;
     if (p) {
@@ -111,4 +111,23 @@ export const getThumbnailOrderItem = (orderItem: OrderItem): string => {
     }
   }
   return p ? p.thumbnail : "";
+};
+export const rangePrice = (
+  product: Product,
+  preffix?: string,
+  suffix?: string
+) => {
+  const _preffix = preffix || "";
+  const _suffix = suffix || "";
+  return product.minPrice === product.maxPrice
+    ? `${_preffix}${product.minPrice}${_suffix}`
+    : `${_preffix}${product.minPrice}${_suffix} - ${_preffix}${product.maxPrice}${_suffix}`;
+};
+
+export const formatYAxisPrice = (value: number) => {
+  return value === 0
+    ? "0"
+    : value >= 1000000
+    ? `${(value / 1000000).toFixed(1)}tr`
+    : `${value / 1000}k`;
 };

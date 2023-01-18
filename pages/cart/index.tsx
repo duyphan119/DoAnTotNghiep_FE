@@ -52,10 +52,10 @@ const CartItem = React.memo((props: CartItemProps) => {
             <Link
               href={{
                 pathname: "/product/[slug]",
-                query: { slug: props.item.product?.slug },
+                query: { slug: props.item.productVariant?.product?.slug },
               }}
             >
-              {props.item.product?.name}
+              {props.item.productVariant?.product?.name}
             </Link>
             {props.item.productVariant ? (
               <div className={styles.variant}>

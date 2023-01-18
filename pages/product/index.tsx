@@ -1,13 +1,12 @@
-import { Grid, Pagination, Breadcrumbs } from "@mui/material";
+import { Grid, Pagination } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import React from "react";
+import { useEffect, useState } from "react";
 import { getAllProducts } from "../../apis/product";
 import { ProductCard } from "../../components";
 import { ProductsLayout } from "../../layouts";
-import { CODE_OK, MSG_SUCCESS } from "../../utils/constants";
+import { MSG_SUCCESS } from "../../utils/constants";
 import { Filter, Product, ResponseItems } from "../../utils/types";
-import Link from "next/link";
 
 type Props = {
   productData: ResponseItems<Product>;
@@ -17,7 +16,7 @@ const LIMIT = 24;
 const AllProducts = (props: Props) => {
   const router = useRouter();
   const { p } = router.query;
-  const [filter, setFilter] = React.useState<Filter>({
+  const [filter, setFilter] = useState<Filter>({
     ...router.query,
     p: p ? +p : 1,
   });
@@ -27,11 +26,14 @@ const AllProducts = (props: Props) => {
   };
 
   const handleFilter = (f: Filter) => {
-    console.log("HandleFILTER:::::::;", f);
-    setFilter({ ...f, p: f.p && f.p > 1 ? 1 : f.p || 1 });
+    setFilter((state) => ({
+      ...state,
+      ...f,
+      p: f.p && f.p > 1 ? 1 : f.p || 1,
+    }));
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const paramsObj: any = {};
     Object.keys(filter).forEach((key: string) => {
       if (key !== "group_product_slug")
@@ -91,7 +93,7 @@ const AllProducts = (props: Props) => {
           <Grid container columnSpacing={2} rowSpacing={2}>
             {props.productData.items.map((product: Product) => {
               return (
-                <Grid item xs={12} sm={6} md={3} lg={4} xl={3} key={product.id}>
+                <Grid item xs={12} sm={6} md={3} lg={4} key={product.id}>
                   <ProductCard product={product} />
                 </Grid>
               );

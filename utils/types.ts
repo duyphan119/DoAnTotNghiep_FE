@@ -38,6 +38,7 @@ export type Product = {
   price: number;
   inventory: number;
   detail: string;
+  star: number;
 } & Timestamp &
   Partial<{
     images: ProductVariantImage[];
@@ -45,6 +46,18 @@ export type Product = {
     groupProduct: GroupProduct;
     minPrice: number;
     maxPrice: number;
+  }>;
+
+export type CommentProduct = {
+  id: number;
+  productId: number;
+  userId: number;
+  star: number;
+  content: string;
+} & Timestamp &
+  Partial<{
+    user: User;
+    product: Product;
   }>;
 
 export type Variant = {
@@ -76,12 +89,12 @@ export type ProductVariantImage = {
   path: string;
 } & Timestamp;
 export type CartItem = {
-  productId: number;
+  // productId: number;
   quantity: number;
+  productVariantId: number;
 } & Partial<{
   productVariant: ProductVariant;
-  productVariantId: number;
-  product: Product;
+  // product: Product;
 }>;
 export type OrderDiscount = {
   id: number;
@@ -142,6 +155,15 @@ export type UserAddress = {
   address: string;
 } & Timestamp;
 
+export type Notification = {
+  id: number;
+  message: string;
+  userId: number;
+  type: string;
+  readAt: string;
+  readBy: number;
+} & Timestamp;
+
 export type Advertisement = {
   id: number;
   title: string;
@@ -179,4 +201,8 @@ export type FormattedVariants = {
 export type FetchState = {
   loading: boolean;
   isSuccess: boolean;
+};
+export type ErrorInput = {
+  key: string;
+  value: string;
 };

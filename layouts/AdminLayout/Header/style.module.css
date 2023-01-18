@@ -47,8 +47,96 @@
 }
 .iconSpan {
   cursor: pointer;
+  position: relative;
 }
 .iconSpan .icon {
   font-size: 22px;
   color: var(--primary-color);
+}
+.notifications {
+  position: absolute;
+  top: calc(100% + 16px);
+  right: -16px;
+  width: 300px;
+  border-radius: 2px;
+  border: 1px solid lightcyan;
+}
+.notifications::before {
+  content: "";
+  position: absolute;
+  top: -16px;
+  right: 0;
+  left: 0;
+  height: 16px;
+  background-color: transparent;
+}
+.notifications::after {
+  content: "";
+  position: absolute;
+  top: -12px;
+  right: 12px;
+  border-bottom: 16px solid #00bcd4;
+  border-right: 16px solid transparent;
+  border-left: 16px solid transparent;
+}
+.notificationsHeading {
+  background-color: #00bcd4;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  cursor: default;
+}
+.notificationsHeadingLeft {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.notificationsHeadingRight {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.notifyItems {
+  background-color: #fff;
+  max-height: 336px;
+  overflow: hidden auto;
+}
+
+.notifyItemLink:hover {
+  background-color: #c9f7ff;
+}
+.notifyItemLink {
+  display: flex;
+  gap: 8px;
+  padding: 8px 24px 8px 8px;
+  position: relative;
+}
+.notifyItemLink.unread::before {
+  content: "";
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+}
+.notifyItemIcon {
+  width: 48px;
+}
+.notifyItemContent {
+  flex: 1;
+}
+.unread .notifyItemMessage {
+  color: #000;
+}
+.notifyItemMessage {
+  color: gray;
+}
+.notifyItemFromNow {
+  font-size: 14px;
+  color: gray;
 }

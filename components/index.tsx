@@ -8,3 +8,6 @@ export { default as ConfirmDialog } from "./ConfirmDialog";
 export { default as ModalProductVariant } from "./ModalProductVariant";
 export { default as DataManagement } from "./DataManagement";
 export { default as ModalUserAddress } from "./ModalUserAddress";
+export { default as ModalPreviewProduct } from "./ModalPreviewProduct";
+export { default as InputControl } from "./InputControl";
+export { default as CheckControl } from "./CheckControl";

@@ -9,8 +9,7 @@ import { GroupProduct, Product } from "../../../../utils/types";
 import { useRouter } from "next/router";
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
-import { privateAxios } from "../../../../config/configAxios";
-import { createProduct, getProductById } from "../../../../apis/product";
+import { updateProduct, getProductById } from "../../../../apis/product";
 import { uploadSingle } from "../../../../apis/upload";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -28,7 +27,7 @@ type ProductInputs = {
   inventory: number;
 };
 
-const UpdateProduct = (props: Props) => {
+const UpdateProduct = ({ product }: Props) => {
   const router = useRouter();
 
   const [detail, setDetail] = useState<string>("");
@@ -41,13 +40,13 @@ const UpdateProduct = (props: Props) => {
     formState: { errors },
   } = useForm<ProductInputs>({
     defaultValues: {
-      name: props.product.name,
-      groupProductId: props.product.groupProductId,
-      slug: props.product.slug,
-      detail: props.product.detail,
-      inventory: props.product.inventory,
-      description: props.product.description,
-      price: props.product.price,
+      name: product.name,
+      groupProductId: product.groupProductId,
+      slug: product.slug,
+      detail: product.detail,
+      inventory: product.inventory,
+      description: product.description,
+      price: product.price,
     },
   });
   const onSubmit: SubmitHandler<ProductInputs> = async (data) => {
@@ -59,7 +58,7 @@ const UpdateProduct = (props: Props) => {
         if (message === MSG_SUCCESS) {
           console.log("Uploaded file: ", dataImage);
           const url = dataImage.secure_url;
-          const { message: msg } = await createProduct({
+          const { message: msg } = await updateProduct(product.id, {
             ...data,
             detail,
             groupProductId: +data.groupProductId,

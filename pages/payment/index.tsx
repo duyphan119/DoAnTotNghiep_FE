@@ -9,6 +9,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { checkout as apiCheckout } from "../../apis/order";
 import { checkOrderDiscount } from "../../apis/orderdiscount";
 import { getMyUserAddresses } from "../../apis/useraddress";
+import { InputControl } from "../../components";
 import { useCartContext } from "../../context/CartContext";
 import provinces from "../../province.json";
 import styles from "../../styles/Payment.module.css";
@@ -163,6 +164,8 @@ const Payment = (props: Props) => {
     return () => subscription.unsubscribe();
   }, [watch]);
 
+  console.log({ visible, userAddress });
+
   return (
     <div>
       <>
@@ -179,48 +182,36 @@ const Payment = (props: Props) => {
               <h1>Thông tin đặt hàng</h1>
               <Grid container columnSpacing={2} rowSpacing={2}>
                 <Grid item xs={12} md={6}>
-                  <div className="form-group">
-                    {errors.fullName && errors.fullName.type === "required" && (
-                      <div className="form-error">
-                        Họ tên không được để trống
-                      </div>
-                    )}
-                    <input
-                      type="text"
-                      className="form-control"
-                      {...register("fullName", {
-                        required: true,
-                      })}
-                    />
-                    <label htmlFor="" className="form-label required">
-                      Họ tên
-                    </label>
-                  </div>
+                  <InputControl
+                    label="Họ tên"
+                    error={errors.fullName}
+                    register={register("fullName", {
+                      required: {
+                        value: true,
+                        message: "Họ tên không được để trống",
+                      },
+                      minLength: {
+                        value: 6,
+                        message: "Mật khẩu ít nhất 6 kí tự",
+                      },
+                    })}
+                  />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <div className="form-group">
-                    {errors.phone && errors.phone.type === "required" && (
-                      <div className="form-error">
-                        Số điện thoại không được để trống
-                      </div>
-                    )}
-                    {errors.phone && errors.phone.type === "pattern" && (
-                      <div className="form-error">
-                        Số điện thoại không hợp lệ
-                      </div>
-                    )}
-                    <input
-                      type="text"
-                      className="form-control"
-                      {...register("phone", {
-                        required: true,
-                        pattern: /(84|0[3|5|7|8|9])+([0-9]{8})\b/g,
-                      })}
-                    />
-                    <label htmlFor="" className="form-label required">
-                      Số điện thoại
-                    </label>
-                  </div>
+                  <InputControl
+                    label="Số điện thoại"
+                    error={errors.phone}
+                    register={register("phone", {
+                      required: {
+                        value: true,
+                        message: "Số điện thoại không được để trống",
+                      },
+                      pattern: {
+                        value: /(84|0[3|5|7|8|9])+([0-9]{8})\b/g,
+                        message: "Số điện thoại không hợp lệ",
+                      },
+                    })}
+                  />
                 </Grid>
                 {visible && userAddress ? (
                   <Grid item xs={12}>
@@ -334,22 +325,16 @@ const Payment = (props: Props) => {
                       </div>
                     </Grid>
                     <Grid item xs={12}>
-                      <div className="form-group">
-                        {errors.address &&
-                          errors.address.type === "required" && (
-                            <div className="form-error">
-                              Địa chỉ không được để trống
-                            </div>
-                          )}
-                        <input
-                          type="text"
-                          className="form-control"
-                          {...register("address", { required: true })}
-                        />
-                        <label htmlFor="" className="form-label required">
-                          Địa chỉ
-                        </label>
-                      </div>
+                      <InputControl
+                        label="Địa chỉ"
+                        error={errors.address}
+                        register={register("address", {
+                          required: {
+                            value: true,
+                            message: "Địa chỉ không được để trống",
+                          },
+                        })}
+                      />
                     </Grid>
                   </>
                 ) : null}
@@ -410,7 +395,9 @@ const Payment = (props: Props) => {
                         />
                       </div>
                       <div className={styles.center}>
-                        <div className={styles.name}>{item.product?.name}</div>
+                        <div className={styles.name}>
+                          {item.productVariant?.product?.name}
+                        </div>
                         <div className={styles.variants}>
                           {item.productVariant?.variantValues.map(
                             (variantValue: VariantValue) => {

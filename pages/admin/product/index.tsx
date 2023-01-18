@@ -1,6 +1,9 @@
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
-import { Button } from "@mui/material";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import PreviewIcon from "@mui/icons-material/Preview";
+import { Button, IconButton, Tooltip } from "@mui/material";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,6 +17,7 @@ import {
 import {
   ConfirmDialog,
   DataManagement,
+  ModalPreviewProduct,
   ModalProductVariant,
   ModalProductVariantImage,
 } from "../../../components";
@@ -27,26 +31,46 @@ type Props = {
 };
 const LIMIT = 10;
 const Products = (props: Props) => {
-  const [openModalPVI, setModalPVI] = useState<boolean>(false);
-  const [openModalPV, setModalPV] = useState<boolean>(false);
+  const [openModalPVI, setOpenModalPVI] = useState<boolean>(false);
+  const [openModalPV, setOpenModalPV] = useState<boolean>(false);
+  const [openModalPreview, setOpenModalPreview] = useState<boolean>(false);
   const [product, setProduct] = useState<Product>();
   const [productData, setProductData] = useState<ResponseItems<Product>>(
     props.productData
   );
   const [current, setCurrent] = useState<Product | null>(null);
   const handleCloseModalPV = () => {
-    setModalPV(false);
+    setOpenModalPV(false);
   };
   const handleCloseModalPVI = () => {
-    setModalPVI(false);
+    setOpenModalPVI(false);
   };
   const handleOpenModalPVI = (row: Product) => {
     setProduct(row);
-    setModalPVI(true);
+    setOpenModalPVI(true);
   };
   const handleOpenModalPV = (row: Product) => {
     setProduct(row);
-    setModalPV(true);
+    setOpenModalPV(true);
+  };
+  const handlePreview = async (row: Product) => {
+    try {
+      const { message, data } = await getAllProducts({
+        slug: row.slug,
+        group_product: true,
+        product_variants: true,
+        images: true,
+      });
+      if (message === MSG_SUCCESS) {
+        setProduct(data.items[0]);
+        setOpenModalPreview(true);
+      }
+    } catch (error) {
+      console.log("PREVIEW PRODUCT ERROR");
+    }
+  };
+  const handleCloseModalPreview = () => {
+    setOpenModalPreview(false);
   };
   const handleUploadThumbnail = (id: number, thumbnail: string) => {
     setProductData({
@@ -218,16 +242,30 @@ const Products = (props: Props) => {
                 ),
             },
             {
-              style: { width: 100 },
+              style: { width: 80 },
               key: "actions",
               render: (row: Product) => (
                 <div style={{ display: "flex", alignItems: "center" }}>
-                  <Link href={`/admin/product/${row.id}/update`}>
-                    <button className="btnEdit">Sửa</button>
-                  </Link>
-                  <button className="btnDelete" style={{ marginLeft: "8px" }}>
-                    Xóa
-                  </button>
+                  <Tooltip title="Xem trước">
+                    <IconButton
+                      color="secondary"
+                      onClick={() => handlePreview(row)}
+                    >
+                      <PreviewIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Sửa sản phẩm">
+                    <Link href={`/admin/product/${row.id}/update`}>
+                      <IconButton color="warning">
+                        <ModeEditIcon />
+                      </IconButton>
+                    </Link>
+                  </Tooltip>
+                  <Tooltip title="Xóa sản phẩm">
+                    <IconButton color="error" onClick={() => setCurrent(row)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </Tooltip>
                   {current ? (
                     <ConfirmDialog
                       open={current.id === row.id ? true : false}
@@ -254,6 +292,13 @@ const Products = (props: Props) => {
           <ModalProductVariant
             open={openModalPV}
             onClose={handleCloseModalPV}
+            product={product}
+          />
+        ) : null}
+        {openModalPreview ? (
+          <ModalPreviewProduct
+            open={openModalPreview}
+            onClose={handleCloseModalPreview}
             product={product}
           />
         ) : null}

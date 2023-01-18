@@ -1,19 +1,23 @@
+import { deleteCookie, setCookie } from "cookies-next";
 import {
   createContext,
-  useContext,
   ReactNode,
+  useContext,
   useEffect,
   useState,
 } from "react";
-import { Product, User } from "../utils/types";
-import { logout as apiLogout, RegisterDTO } from "../apis/auth";
-import { COOKIE_ACCESSTOKEN_NAME, MSG_SUCCESS } from "../utils/constants";
-import { useSnackbarContext } from "./SnackbarContext";
-import { setCookie, deleteCookie, hasCookie } from "cookies-next";
-import jwtDecode from "jwt-decode";
+import { getProfile } from "../apis/auth";
 import { getCart } from "../apis/order";
 import { getFavoriteProducts } from "../apis/product";
+import { ModalAuth } from "../components";
+import {
+  COOKIE_ACCESSTOKEN_NAME,
+  COOKIE_USER_ID,
+  MSG_SUCCESS,
+} from "../utils/constants";
+import { Product, User } from "../utils/types";
 import { useCartContext } from "./CartContext";
+import { useSnackbarContext } from "./SnackbarContext";
 import { useWishlistContext } from "./WishlistContext";
 const AuthContext = createContext<any>({});
 
@@ -25,6 +29,8 @@ const AuthWrapper = ({ children }: Props) => {
   const { show } = useSnackbarContext();
   const [profile, setProfile] = useState<User | null>();
   const [isLogged, setIsLogged] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const { setCart } = useCartContext();
   const { setListId } = useWishlistContext();
 
@@ -34,13 +40,10 @@ const AuthWrapper = ({ children }: Props) => {
   };
   const login = async (user: User, accessToken: string) => {
     if (accessToken && user) {
+      setCookie(COOKIE_USER_ID, user.id);
       setProfile(user);
       localStorage.setItem("user", JSON.stringify(user));
-      let decoded: any = jwtDecode(accessToken);
-      console.log(decoded.exp);
-      setCookie(COOKIE_ACCESSTOKEN_NAME, accessToken, {
-        maxAge: 6000,
-      });
+      setCookie(COOKIE_ACCESSTOKEN_NAME, accessToken);
       show("Đăng nhập thành công", "success");
       try {
         let [resCart, resWishlist] = await Promise.all([
@@ -73,12 +76,22 @@ const AuthWrapper = ({ children }: Props) => {
   };
 
   useEffect(() => {
-    if (!hasCookie(COOKIE_ACCESSTOKEN_NAME)) {
-      setProfile(null);
-    } else {
-      const profile = JSON.parse(localStorage.getItem("user") || "null");
-      setProfile(profile);
-    }
+    // const abortController = new AbortController();
+    const checkLogged = async () => {
+      try {
+        // const { message, data } = await getProfile(abortController.signal);
+        const { message, data } = await getProfile();
+        console.log("FETCH profile:::", data);
+        if (message === MSG_SUCCESS) {
+          setProfile(data);
+        }
+      } catch (error) {
+        console.log("CHECK LOGGED ERROR", error);
+      }
+      setLoading(false);
+    };
+    checkLogged();
+    // return () => abortController.abort();
   }, []);
 
   useEffect(() => {
@@ -94,9 +107,12 @@ const AuthWrapper = ({ children }: Props) => {
         logout,
         register,
         isLogged,
+        setOpenModal: setOpen,
+        loading,
       }}
     >
       {children}
+      {open ? <ModalAuth open={open} onClose={() => setOpen(false)} /> : null}
     </AuthContext.Provider>
   );
 };

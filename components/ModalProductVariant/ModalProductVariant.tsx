@@ -37,7 +37,7 @@ export type Input = {
 
 const ModalProductVariantContext = createContext<any>({});
 
-const ModalProductVariant = (props: Props) => {
+const ModalProductVariant = ({ open, onClose, product }: Props) => {
   const { show } = useSnackbarContext();
   const [variants, setVariants] = useState<Variant[]>([]);
   const [selected, setSelected] = useState<Variant[]>([]);
@@ -118,8 +118,8 @@ const ModalProductVariant = (props: Props) => {
               .map((variantValue: VariantValue) => variantValue.value)
               .join(" / ");
           })(),
-          price: 0,
-          inventory: 0,
+          price: product ? product.price : 0,
+          inventory: product ? product.inventory : 0,
           variantValues,
         };
       })
@@ -148,8 +148,8 @@ const ModalProductVariant = (props: Props) => {
   };
 
   const handleCreate = async () => {
-    if (props.product) {
-      const productId = props.product.id;
+    if (product) {
+      const productId = product.id;
       try {
         console.log(inputs.map((input: Input) => ({ ...input, productId })));
         const { message: msg1 } = await createProductVariants(
@@ -173,7 +173,13 @@ const ModalProductVariant = (props: Props) => {
 
   const handleUpdate = async () => {
     try {
-      const { message } = await updateProductVariants(productVariants);
+      const { message } = await updateProductVariants(
+        productVariants.map((productVariant: ProductVariant) => ({
+          id: productVariant.id,
+          inventory: productVariant.inventory,
+          price: productVariant.price,
+        }))
+      );
       if (message === MSG_SUCCESS) {
         show("Đã lưu", "success");
       }
@@ -185,7 +191,7 @@ const ModalProductVariant = (props: Props) => {
   useEffect(() => {
     const fetch = async () => {
       try {
-        if (props.product) {
+        if (product) {
           const [
             { message: msg1, data: data1 },
             { message: msg2, data: data2 },
@@ -194,7 +200,7 @@ const ModalProductVariant = (props: Props) => {
               variant_values: true,
             }),
             getAllProductVariants({
-              productId: props.product.id,
+              productId: product.id,
               variant_values: true,
             }),
           ]);
@@ -211,7 +217,7 @@ const ModalProductVariant = (props: Props) => {
     };
 
     fetch();
-  }, [props.product]);
+  }, [product]);
 
   return (
     <ModalProductVariantContext.Provider
@@ -222,7 +228,7 @@ const ModalProductVariant = (props: Props) => {
         onChange: handleChange,
       }}
     >
-      <Modal open={props.open || false} onClose={props.onClose}>
+      <Modal open={open || false} onClose={onClose}>
         <Box
           sx={{
             position: "absolute",
@@ -299,7 +305,7 @@ const ModalProductVariant = (props: Props) => {
                         <Wrapper
                           title="Các biến thể sản phẩm"
                           productVariants={productVariants}
-                          product={props.product}
+                          product={product}
                         />
                       </Grid>
                     ) : null}
@@ -308,7 +314,7 @@ const ModalProductVariant = (props: Props) => {
                         <Wrapper
                           title="Các biến thể sản phẩm vừa tạo"
                           inputs={inputs}
-                          product={props.product}
+                          product={product}
                         />
                       </Grid>
                     ) : null}

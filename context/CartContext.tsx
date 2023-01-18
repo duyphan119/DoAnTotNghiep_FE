@@ -1,8 +1,8 @@
 import { hasCookie } from "cookies-next";
 import {
   createContext,
-  useContext,
   ReactNode,
+  useContext,
   useEffect,
   useState,
 } from "react";
@@ -14,7 +14,6 @@ import {
 } from "../apis/order";
 import { COOKIE_ACCESSTOKEN_NAME, MSG_SUCCESS } from "../utils/constants";
 import { Cart, CartItem, OrderItem } from "../utils/types";
-import { useAuthContext } from "./AuthContext";
 import { useSnackbarContext } from "./SnackbarContext";
 type Props = {
   children?: ReactNode;
@@ -28,40 +27,44 @@ const CartWrapper = (props: Props) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    (async () => {
+    const fetchData = async () => {
       try {
         if (hasCookie(COOKIE_ACCESSTOKEN_NAME)) {
           const { message, data } = await getCart();
-          if (message === MSG_SUCCESS) {
-            setCart(data && data.items ? data : { ...data, items: [] });
-          }
+          setCart(
+            message === MSG_SUCCESS && data && data.items && data.items[0]
+              ? data.items[0]
+              : { items: [] }
+          );
         }
       } catch (error) {
         console.log("Get Cart Error", error);
       }
       setLoading(false);
-    })();
+    };
+    fetchData();
   }, []);
 
   const checkout = () => {
     setCart({ items: [] });
   };
 
-  const addToCart = async (item: CartItem) => {
+  console.log(cart);
+
+  const addToCart = async (item: CartItem, price: number) => {
     try {
       const { message, data } = await createCartItem({
-        ...(item.productVariantId
-          ? { productVariantId: item.productVariantId }
-          : {}),
+        productVariantId: item.productVariantId,
         quantity: item.quantity,
-        productId: item.productId,
+        price,
+        // productId: item.productId,
       });
 
       if (message === MSG_SUCCESS) {
         setCart((c: Cart) => {
           const index = c.items.findIndex(
             (i: OrderItem) =>
-              i.productId === item.productId &&
+              // i.productId === item.productId &&
               i.productVariantId === item.productVariantId
           );
 
@@ -83,7 +86,7 @@ const CartWrapper = (props: Props) => {
 
   const updateCart = async (item: OrderItem) => {
     try {
-      const { message, data } = await updateCartItem(item.id, item.quantity);
+      const { message } = await updateCartItem(item.id, item.quantity);
 
       if (message === MSG_SUCCESS) {
         setCart((c: Cart) => {
@@ -131,9 +134,9 @@ const CartWrapper = (props: Props) => {
           p +
           (c.productVariant
             ? c.productVariant.price
-            : c.product
-            ? c.product.price
-            : 0) *
+            : // : c.product
+              // ? c.product.price
+              0) *
             c.quantity,
         0
       )

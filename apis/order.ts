@@ -2,9 +2,10 @@ import { privateAxios, serverSideAxios } from "../config/configAxios";
 import { QueryParams } from "../utils/types";
 
 export type CreateCartItem = {
-  productId: number;
-  productVariantId?: number;
+  // productId: number;
+  productVariantId: number;
   quantity: number;
+  price: number;
 };
 
 export type Checkout = {
@@ -18,13 +19,15 @@ export type Checkout = {
   phone: string;
 };
 
-export type OrderQueryParams = {
-  start?: string;
-  end?: string;
-  address?: string;
-  fullName?: string;
-  phone?: string;
-} & QueryParams;
+export type OrderQueryParams = Partial<{
+  start: string;
+  end: string;
+  address: string;
+  fullName: string;
+  phone: string;
+  items: boolean;
+}> &
+  QueryParams;
 
 export const getAllOrders = (
   params: OrderQueryParams,
@@ -40,7 +43,8 @@ export const updateCartItem = (id: number, newQuantity: number): Promise<any> =>
 export const deleteCartItem = (id: number): Promise<any> =>
   privateAxios().delete("cart/" + id);
 
-export const getCart = (): Promise<any> => privateAxios().get("/cart/user");
+export const getCart = (): Promise<any> =>
+  privateAxios().get("/cart/user", { params: { items: true } });
 
 export const checkout = (body: Checkout): Promise<any> =>
   privateAxios().patch("order/checkout", body);

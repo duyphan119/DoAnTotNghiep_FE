@@ -15,6 +15,7 @@ import {
 import styles from "../../styles/FollowOrder.module.css";
 import Image from "next/image";
 import { formatDateTime, getThumbnailOrderItem } from "../../utils/helpers";
+import { useAuthContext } from "../../context/AuthContext";
 
 const LIMIT = 10;
 
@@ -39,7 +40,9 @@ const Item = (props: OrderItemProps) => {
         priority={true}
       />
       <div className={styles.product}>
-        <div className={styles.name}>{props.item.product?.name}</div>
+        <div className={styles.name}>
+          {props.item.productVariant?.product?.name}
+        </div>
         {props.item.productVariant?.variantValues?.map(
           (variantValue: VariantValue) => {
             return (
@@ -120,6 +123,7 @@ const MyOrder = (props: OrderProps) => {
 
 const FollowOrder = (props: Props) => {
   const router = useRouter();
+  const { profile, loading } = useAuthContext();
   const [orderData, setOrderData] = useState<ResponseItems<Order>>({
     items: [],
     count: 0,
@@ -137,11 +141,12 @@ const FollowOrder = (props: Props) => {
   };
 
   useEffect(() => {
-    (async () => {
+    const fetchData = async () => {
       try {
         const { message, data } = await myOrders({
           ...router.query,
           limit: LIMIT,
+          items: true,
         });
         if (message === MSG_SUCCESS) {
           setOrderData(data);
@@ -149,8 +154,15 @@ const FollowOrder = (props: Props) => {
       } catch (error) {
         console.log(error);
       }
-    })();
-  }, [router.query]);
+    };
+    if (!loading) {
+      if (profile) {
+        fetchData();
+      } else {
+        router.push("/");
+      }
+    }
+  }, [profile, loading, router.query]);
 
   return (
     <AccountLayout titleHeading="Đơn hàng của tôi">
