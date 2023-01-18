@@ -13,7 +13,6 @@ import Header from "./Header";
 import Sidebar from "./Sidebar";
 import Link from "next/link";
 import styles from "./style.module.css";
-import ProductsLayoutWrapper from "../../context/ProductsLayoutContext";
 
 type BreadcrumbLink = {
   label: string;

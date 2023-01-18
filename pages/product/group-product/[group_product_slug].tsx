@@ -5,7 +5,6 @@ import React, { useEffect, useState } from "react";
 import { getAllProducts } from "../../../apis/product";
 import { ProductCard } from "../../../components";
 import { useGroupProductContext } from "../../../context/GroupProductContext";
-import { useProductsLayoutContext } from "../../../context/ProductsLayoutContext";
 import { ProductsLayout } from "../../../layouts";
 import { CODE_OK, MSG_SUCCESS } from "../../../utils/constants";
 import {

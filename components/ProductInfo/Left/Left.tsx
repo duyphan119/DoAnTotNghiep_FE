@@ -30,7 +30,7 @@ const Left = ({ images, thumbnail }: Props) => {
         src={index > -1 ? images[index].path : thumbnail}
         alt=""
         width={480}
-        height={548}
+        height={580}
         priority={true}
       />
     </div>

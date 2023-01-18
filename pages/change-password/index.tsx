@@ -1,16 +1,16 @@
 import Head from "next/head";
 import { useRef } from "react";
-import { useAuthContext } from "../../context/AuthContext";
-import { AccountLayout } from "../../layouts";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import {
-  ChangeProfile,
   changePassword as apiChangePassword,
   ChangePassword,
 } from "../../apis/auth";
+import { InputControl } from "../../components";
+import { useAuthContext } from "../../context/AuthContext";
+import { useSnackbarContext } from "../../context/SnackbarContext";
+import { AccountLayout } from "../../layouts";
 import styles from "../../styles/Profile.module.css";
 import { MSG_SUCCESS } from "../../utils/constants";
-import { useSnackbarContext } from "../../context/SnackbarContext";
 
 type Props = {};
 
@@ -52,53 +52,42 @@ const ChangePassword = (props: Props) => {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-          <div className="form-group">
-            {errors.oldPassword && errors.oldPassword.type === "required" && (
-              <div className="form-error">
-                Mật khẩu hiện tại không được bỏ trống
-              </div>
-            )}
-            <input
-              type="password"
-              className="form-control"
-              {...register("oldPassword", {
-                required: true,
-              })}
-            />
-            <label htmlFor="" className="form-label required">
-              Mật khẩu hiện tại
-            </label>
-          </div>
-          <div className="form-group">
-            {errors.newPassword && errors.newPassword.type === "required" && (
-              <div className="form-error">Mật khẩu mới không được bỏ trống</div>
-            )}
-            <input
-              type="password"
-              className="form-control"
-              {...register("newPassword", { required: true })}
-            />
-            <label htmlFor="" className="form-label required">
-              Mật khẩu mới
-            </label>
-          </div>
-          <div className="form-group">
-            {errors.reTypePassword &&
-              errors.reTypePassword.type === "validate" && (
-                <div className="form-error">Nhập lại mật khẩu không đúng</div>
-              )}
-            <input
-              type="password"
-              className="form-control"
-              {...register("reTypePassword", {
-                validate: (value) =>
-                  value === password.current || "The passwords do not match",
-              })}
-            />
-            <label htmlFor="" className="form-label required">
-              Nhập lại mật khẩu mới
-            </label>
-          </div>
+          <InputControl
+            type="password"
+            label="Mật khẩu hiện tại"
+            error={errors.oldPassword}
+            register={register("oldPassword", {
+              required: {
+                value: true,
+                message: "Mật khẩu hiện tại không được bỏ trống",
+              },
+            })}
+          />
+          <InputControl
+            type="password"
+            label="Mật khẩu mới"
+            error={errors.newPassword}
+            register={register("newPassword", {
+              required: {
+                value: true,
+                message: "Mật khẩu mới không được bỏ trống",
+              },
+              minLength: {
+                value: 6,
+                message: "Mật khẩu mới ít nhất 6 kí tự",
+              },
+            })}
+          />
+          <InputControl
+            type="password"
+            label="Mật khẩu mới"
+            error={errors.reTypePassword}
+            register={register("reTypePassword", {
+              validate: (value) =>
+                value === password.current ||
+                "Nhập lại mật khẩu không chính xác",
+            })}
+          />
           <div>
             <button type="submit" className={styles.btn}>
               Cập nhật

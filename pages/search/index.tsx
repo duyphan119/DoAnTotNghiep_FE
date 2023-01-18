@@ -1,7 +1,7 @@
 import { Container, Grid, Pagination } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { search } from "../../apis/product";
+import { getAllProducts } from "../../apis/product";
 import { ProductCard } from "../../components";
 import { DefaultLayout } from "../../layouts";
 import { MSG_SUCCESS } from "../../utils/constants";
@@ -11,7 +11,7 @@ type Props = {
   productData: ResponseItems<Product>;
 };
 
-const Search = (props: Props) => {
+const Page = (props: Props) => {
   const router = useRouter();
   const { q } = router.query;
 
@@ -55,7 +55,7 @@ const Search = (props: Props) => {
 
 export async function getServerSideProps(context: any) {
   const { q } = context.query;
-  const { message, data } = await search({
+  const { message, data } = await getAllProducts({
     q,
     limit: 12,
     product_variants: true,
@@ -68,4 +68,4 @@ export async function getServerSideProps(context: any) {
   };
 }
 
-export default Search;
+export default Page;

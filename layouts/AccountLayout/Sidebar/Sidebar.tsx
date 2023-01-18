@@ -1,4 +1,3 @@
-import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
@@ -26,11 +25,6 @@ const items: any[] = [
     href: "/order",
     label: "Theo dõi đơn hàng",
     icon: <LocalShippingOutlinedIcon />,
-  },
-  {
-    href: "/favorite",
-    label: "Sản phẩm yêu thích",
-    icon: <FavoriteBorderOutlinedIcon />,
   },
   {
     href: "/change-password",

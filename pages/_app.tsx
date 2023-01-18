@@ -27,7 +27,7 @@ function App({ Component, pageProps }: AppProps) {
                   height={3}
                   showOnShallow={true}
                 />
-                {/* <Facebook /> */}
+                <Facebook />
                 <Component {...pageProps} />
               </GroupProductWrapper>
             </AuthWrapper>
