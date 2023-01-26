@@ -6,19 +6,19 @@ type Props = {
   changeQuantity: any;
 };
 
-const Quantity = (props: Props) => {
+const Quantity = ({ quantity, changeQuantity }: Props) => {
   return (
     <div className={styles.quantity}>
       <button
         className={styles.desc}
-        onClick={() => props.changeQuantity(props.quantity - 1)}
+        onClick={() => changeQuantity(quantity - 1)}
       >
         -
       </button>
-      <span>{props.quantity}</span>
+      <span>{quantity}</span>
       <button
         className={styles.inc}
-        onClick={() => props.changeQuantity(props.quantity + 1)}
+        onClick={() => changeQuantity(quantity + 1)}
       >
         +
       </button>

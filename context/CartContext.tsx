@@ -15,13 +15,13 @@ import {
 import { COOKIE_ACCESSTOKEN_NAME, MSG_SUCCESS } from "../utils/constants";
 import { Cart, CartItem, OrderItem } from "../utils/types";
 import { useSnackbarContext } from "./SnackbarContext";
-type Props = {
-  children?: ReactNode;
-};
+type Props = Partial<{
+  children: ReactNode;
+}>;
 
 const CartContext = createContext({} as any);
 
-const CartWrapper = (props: Props) => {
+const CartWrapper = ({ children }: Props) => {
   const [cart, setCart] = useState<Cart>({ items: [] });
   const { show } = useSnackbarContext();
   const [loading, setLoading] = useState<boolean>(true);
@@ -156,7 +156,7 @@ const CartWrapper = (props: Props) => {
         setCart,
       }}
     >
-      {props.children}
+      {children}
     </CartContext.Provider>
   );
 };

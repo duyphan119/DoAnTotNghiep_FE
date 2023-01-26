@@ -18,20 +18,20 @@ type CartItemProps = {
   item: OrderItem;
 };
 
-const CartItem = React.memo((props: CartItemProps) => {
+const CartItem = React.memo(({ item }: CartItemProps) => {
   const { updateCart, deleteItem } = useCartContext();
 
   const handleUpdateItem = (newQuantity: number) => {
-    updateCart({ ...props.item, quantity: newQuantity });
+    updateCart({ ...item, quantity: newQuantity });
   };
 
   const handleDeleteItem = () => {
-    deleteItem(props.item.id);
+    deleteItem(item.id);
   };
 
   const getPrice = useMemo(() => {
-    return props.item ? getPriceCartItem(props.item) : 0;
-  }, [props.item]);
+    return item ? getPriceCartItem(item) : 0;
+  }, [item]);
 
   return (
     <tr>
@@ -46,22 +46,20 @@ const CartItem = React.memo((props: CartItemProps) => {
               height={72}
               priority={true}
               alt=""
-              src={props.item ? getThumbnailOrderItem(props.item) : ""}
+              src={item ? getThumbnailOrderItem(item) : ""}
             />
           </div>
           <div>
             <Link
               href={{
                 pathname: "/product/[slug]",
-                query: { slug: props.item.productVariant?.product?.slug },
+                query: { slug: item.productVariant?.product?.slug },
               }}
             >
-              {props.item.productVariant?.product?.name}
+              {item.productVariant?.product?.name}
             </Link>
-            {props.item.productVariant ? (
-              <div className={styles.variant}>
-                {props.item.productVariant.name}
-              </div>
+            {item.productVariant ? (
+              <div className={styles.variant}>{item.productVariant.name}</div>
             ) : null}
           </div>
         </div>
@@ -73,22 +71,22 @@ const CartItem = React.memo((props: CartItemProps) => {
           <div className={styles.quantity}>
             <button
               className={styles.inc}
-              onClick={() => handleUpdateItem(props.item.quantity - 1)}
+              onClick={() => handleUpdateItem(item.quantity - 1)}
             >
               -
             </button>
-            {props.item.quantity}
+            {item.quantity}
             <button
               className={styles.desc}
-              onClick={() => handleUpdateItem(props.item.quantity + 1)}
+              onClick={() => handleUpdateItem(item.quantity + 1)}
             >
               +
             </button>
           </div>
-          <div>{props.item.quantity * getPrice}</div>
+          <div>{item.quantity * getPrice}</div>
         </div>
       </td>
-      <td>{props.item.quantity * getPrice}</td>
+      <td>{item.quantity * getPrice}</td>
     </tr>
   );
 });

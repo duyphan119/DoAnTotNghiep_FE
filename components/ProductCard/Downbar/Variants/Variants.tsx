@@ -8,27 +8,27 @@ type Props = {
   clickVariant: any;
 };
 
-const Variants = (props: Props) => {
+const Variants = ({ variants, selected, clickVariant }: Props) => {
   return (
     <>
-      {props.variants.keys.map((key: string) => {
+      {variants.keys.map((key: string) => {
         return (
           <div className={styles["variant-type"]} key={key}>
             <div className={styles["variant-type-name"]}>{key}</div>
             <ul className={styles.variants}>
-              {props.variants.values[key].map((variantValue: VariantValue) => {
+              {variants.values[key].map((variantValue: VariantValue) => {
                 return (
                   <li
                     className={
-                      props.selected &&
-                      props.selected.findIndex(
+                      selected &&
+                      selected.findIndex(
                         (i: any) => i.value === variantValue.value
                       ) !== -1
                         ? styles["variant-active"]
                         : styles.variant
                     }
                     key={variantValue.id}
-                    onClick={() => props.clickVariant(variantValue)}
+                    onClick={() => clickVariant(variantValue)}
                   >
                     {variantValue.value}
                   </li>

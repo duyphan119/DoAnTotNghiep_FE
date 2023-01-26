@@ -21,10 +21,9 @@ type Props = {
   orderData: ResponseItems<Order>;
 };
 const LIMIT = 10;
-const Orders = (props: Props) => {
-  const [orderData, setOrderData] = useState<ResponseItems<Order>>(
-    props.orderData
-  );
+const Orders = ({ orderData: propOrderData }: Props) => {
+  const [orderData, setOrderData] =
+    useState<ResponseItems<Order>>(propOrderData);
   const [current, setCurrent] = useState<GroupProduct | null>(null);
 
   const handleSoftDelete = async (id: number) => {
@@ -77,8 +76,8 @@ const Orders = (props: Props) => {
   };
 
   useEffect(() => {
-    setOrderData(props.orderData);
-  }, [props.orderData]);
+    setOrderData(propOrderData);
+  }, [propOrderData]);
 
   return (
     <AdminLayout pageTitle="Đơn hàng">

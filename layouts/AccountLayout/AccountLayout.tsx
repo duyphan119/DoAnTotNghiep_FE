@@ -1,23 +1,23 @@
 import { Container, Grid } from "@mui/material";
-import React from "react";
+import { ReactNode } from "react";
 import DefaultLayout from "../DefaultLayout";
 import Sidebar from "./Sidebar";
-type Props = {
-  children?: React.ReactNode;
-  titleHeading?: string;
-};
+type Props = Partial<{
+  children: ReactNode;
+  titleHeading: string;
+}>;
 
-const AccountLayout = (props: Props) => {
+const AccountLayout = ({ children, titleHeading }: Props) => {
   return (
     <DefaultLayout>
       <main>
         <Container maxWidth="lg">
           <Grid container columnSpacing={3}>
-            {props.titleHeading ? (
+            {titleHeading ? (
               <>
                 <Grid item md={3} xs={12}></Grid>
                 <Grid item md={9} xs={12}>
-                  <h1>{props.titleHeading}</h1>
+                  <h1>{titleHeading}</h1>
                 </Grid>
               </>
             ) : null}
@@ -25,7 +25,7 @@ const AccountLayout = (props: Props) => {
               <Sidebar />
             </Grid>
             <Grid item md={9} xs={12}>
-              {props.children}
+              {children}
             </Grid>
           </Grid>
         </Container>

@@ -15,9 +15,9 @@ import {
 import { COOKIE_ACCESSTOKEN_NAME, MSG_SUCCESS } from "../utils/constants";
 import { Product } from "../utils/types";
 import { useSnackbarContext } from "./SnackbarContext";
-type Props = {
-  children?: ReactNode;
-};
+type Props = Partial<{
+  children: ReactNode;
+}>;
 const WishlistContext = createContext({} as any);
 
 const WishlistWrapper = (props: Props) => {

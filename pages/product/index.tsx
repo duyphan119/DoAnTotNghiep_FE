@@ -13,7 +13,7 @@ type Props = {
   onFilter?: any;
 };
 const LIMIT = 24;
-const AllProducts = (props: Props) => {
+const AllProducts = ({ productData: propProductData }: Props) => {
   const router = useRouter();
   const { p } = router.query;
   const [filter, setFilter] = useState<Filter>({
@@ -71,7 +71,7 @@ const AllProducts = (props: Props) => {
     <>
       <ProductsLayout
         onFilter={handleFilter}
-        totalProducts={props.productData.count}
+        totalProducts={propProductData.count}
         query={router.query}
         breadcrumbs={{
           links: [
@@ -91,7 +91,7 @@ const AllProducts = (props: Props) => {
           </Head>
 
           <Grid container columnSpacing={2} rowSpacing={2}>
-            {props.productData.items.map((product: Product) => {
+            {propProductData.items.map((product: Product) => {
               return (
                 <Grid item xs={12} sm={6} md={3} lg={4} key={product.id}>
                   <ProductCard product={product} />
@@ -100,7 +100,7 @@ const AllProducts = (props: Props) => {
             })}
             <Grid item xs={12}>
               <Pagination
-                count={Math.ceil(props.productData.count / LIMIT)}
+                count={Math.ceil(propProductData.count / LIMIT)}
                 sx={{ ul: { justifyContent: "center" } }}
                 variant="outlined"
                 shape="rounded"

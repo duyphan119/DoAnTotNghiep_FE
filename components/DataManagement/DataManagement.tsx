@@ -26,7 +26,15 @@ type Props = Partial<{
   limit: number;
 }>;
 
-const DataManagement = (props: Props) => {
+const DataManagement = ({
+  paperTitle,
+  sortBys,
+  columns,
+  hasCheck,
+  rows,
+  count,
+  limit,
+}: Props) => {
   const router = useRouter();
   const { p } = router.query;
   const PAGE = p ? +p : 1;
@@ -79,7 +87,7 @@ const DataManagement = (props: Props) => {
   };
   return (
     <Paper className={styles.paper}>
-      <div className={styles.paperTitle}>{props.paperTitle || "Tiêu đề"}</div>
+      <div className={styles.paperTitle}>{paperTitle || "Tiêu đề"}</div>
       <Box className={styles.actionsWrapper}>
         <Box className={styles.actionsWrapperLeft}>
           <form className={styles.searchWrapper} onSubmit={handleSearch}>
@@ -96,7 +104,7 @@ const DataManagement = (props: Props) => {
           <form className={styles.sortForm} onSubmit={handleSort}>
             <select onChange={(e) => setSortBy(e.target.value)} value={sortBy}>
               <option value="">Sắp xếp theo</option>
-              {props.sortBys?.map((sb: SortBy) => (
+              {sortBys?.map((sb: SortBy) => (
                 <option key={sb.value + ""} value={sb.value}>
                   {sb.display}
                 </option>
@@ -123,14 +131,14 @@ const DataManagement = (props: Props) => {
       <table className="table">
         <thead>
           <tr>
-            {props.hasCheck ? (
+            {hasCheck ? (
               <th style={{ backgroundColor: "rgb(250, 250, 250)", width: 40 }}>
                 <label htmlFor="checkAll">
                   <input type="checkbox" id="checkAll" />
                 </label>
               </th>
             ) : null}
-            {props.columns?.map((column: Column) => (
+            {columns?.map((column: Column) => (
               <th
                 key={column.key || column.display}
                 style={{
@@ -145,18 +153,18 @@ const DataManagement = (props: Props) => {
           </tr>
         </thead>
         <tbody>
-          {props.rows && props.rows.length > 0 ? (
-            props.rows.map((row: any, index: number) => {
+          {rows && rows.length > 0 ? (
+            rows.map((row: any, index: number) => {
               return (
                 <tr key={row.id}>
-                  {props.hasCheck ? (
+                  {hasCheck ? (
                     <td>
                       <label htmlFor={"check" + row.id}>
                         <input type="checkbox" id={"check" + row.id} />
                       </label>
                     </td>
                   ) : null}
-                  {props.columns?.map((column: Column) => (
+                  {columns?.map((column: Column) => (
                     <td key={column.key} style={column.style}>
                       {showRow(column, row, index)}
                     </td>
@@ -166,27 +174,17 @@ const DataManagement = (props: Props) => {
             })
           ) : (
             <tr>
-              <td
-                colSpan={
-                  props.columns
-                    ? props.columns.length + (props.hasCheck ? 1 : 0)
-                    : 0
-                }
-              >
+              <td colSpan={columns ? columns.length + (hasCheck ? 1 : 0) : 0}>
                 Không có bản ghi nào!
               </td>
             </tr>
           )}
         </tbody>
       </table>
-      {props.rows && props.rows.length > 0 ? (
+      {rows && rows.length > 0 ? (
         <Pagination
           page={PAGE}
-          count={
-            props.count && props.limit
-              ? Math.ceil(props.count / props.limit)
-              : 0
-          }
+          count={count && limit ? Math.ceil(count / limit) : 0}
           sx={{ ul: { justifyContent: "center", marginTop: "16px" } }}
           variant="outlined"
           shape="rounded"

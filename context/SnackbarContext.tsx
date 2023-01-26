@@ -9,9 +9,9 @@ import { Snackbar, Slide, Alert } from "@mui/material";
 import { SlideProps } from "@mui/material/Slide";
 const SnackbarContext = createContext<any>({});
 
-type Props = {
-  children?: ReactNode;
-};
+type Props = Partial<{
+  children: ReactNode;
+}>;
 
 type TransitionProps = Omit<SlideProps, "direction">;
 function TransitionLeft(props: TransitionProps) {

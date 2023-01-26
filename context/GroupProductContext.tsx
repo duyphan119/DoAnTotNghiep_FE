@@ -11,9 +11,9 @@ import { GroupProduct } from "../utils/types";
 
 const GroupProductContext = createContext<any>({});
 
-type Props = {
-  children?: ReactNode;
-};
+type Props = Partial<{
+  children: ReactNode;
+}>;
 
 export type GroupProductHeader = {
   name: string;

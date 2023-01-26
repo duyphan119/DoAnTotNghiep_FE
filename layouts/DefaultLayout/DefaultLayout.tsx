@@ -4,16 +4,16 @@ import Header from "./Header";
 
 import styles from "./style.module.css";
 
-type Props = {
-  children?: ReactNode;
-};
+type Props = Partial<{
+  children: ReactNode;
+}>;
 
-const DefaultLayout = (props: Props) => {
+const DefaultLayout = ({ children }: Props) => {
   return (
     <div className={styles.wrapper}>
       <Header />
       <div className={styles.body}>
-        <div className={styles.content}>{props.children}</div>
+        <div className={styles.content}>{children}</div>
         <Footer />
       </div>
     </div>

@@ -14,3 +14,4 @@ export { default as CheckControl } from "./CheckControl";
 export { default as FooterForm } from "./FooterForm";
 export { default as SelectControl } from "./SelectControl";
 export { default as RadioControl } from "./RadioControl";
+export { default as AdminFormPaper } from "./AdminFormPaper";

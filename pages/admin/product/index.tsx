@@ -30,14 +30,13 @@ type Props = {
   productData: ResponseItems<Product>;
 };
 const LIMIT = 10;
-const Products = (props: Props) => {
+const Products = ({ productData: propProductData }: Props) => {
   const [openModalPVI, setOpenModalPVI] = useState<boolean>(false);
   const [openModalPV, setOpenModalPV] = useState<boolean>(false);
   const [openModalPreview, setOpenModalPreview] = useState<boolean>(false);
   const [product, setProduct] = useState<Product>();
-  const [productData, setProductData] = useState<ResponseItems<Product>>(
-    props.productData
-  );
+  const [productData, setProductData] =
+    useState<ResponseItems<Product>>(propProductData);
   const [current, setCurrent] = useState<Product | null>(null);
   const handleCloseModalPV = () => {
     setOpenModalPV(false);
@@ -133,8 +132,8 @@ const Products = (props: Props) => {
   };
 
   useEffect(() => {
-    setProductData(props.productData);
-  }, [props.productData]);
+    setProductData(propProductData);
+  }, [propProductData]);
 
   return (
     <AdminLayout pageTitle="Sản phẩm">

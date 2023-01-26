@@ -23,12 +23,12 @@ import ConfirmDialog from "../ConfirmDialog";
 import { ConfirmDialogProps } from "../ConfirmDialog/ConfirmDialog";
 import { getAllVariantValues } from "../../apis/variantvalue";
 
-type Props = {
-  open?: boolean;
-  onClose?: any;
-  product?: Product;
-  onUpdateThumbnail?: any;
-};
+type Props = Partial<{
+  open: boolean;
+  onClose: any;
+  product: Product;
+  onUpdateThumbnail: any;
+}>;
 
 type ImageItemProps = {
   image: ProductVariantImage;
@@ -39,9 +39,16 @@ type ImageItemProps = {
   variantValueId: string;
 };
 
-const ImageItem = (props: ImageItemProps) => {
+const ImageItem = ({
+  image,
+  onSelect,
+  onDelete,
+  hasSelectBtn,
+  variantValues,
+  variantValueId,
+}: ImageItemProps) => {
   const [propsConfirm, setPropsConfirm] = useState<ConfirmDialogProps>();
-  const [value, setValue] = useState<string>("" + props.variantValueId);
+  const [value, setValue] = useState<string>("" + variantValueId);
   const handleClose = () => {
     setPropsConfirm({
       ...propsConfirm,
@@ -58,16 +65,13 @@ const ImageItem = (props: ImageItemProps) => {
       confirmText: "Có",
       cancelText: "Không",
       onClose: handleClose,
-      onConfirm: action === "select" ? props.onSelect : props.onDelete,
+      onConfirm: action === "select" ? onSelect : onDelete,
     });
   };
   const handleChange = async (e: ChangeEvent<HTMLSelectElement>) => {
     const _value = e.target.value;
     try {
-      await updateProductVariantImage(
-        props.image.id,
-        _value === "" ? null : +_value
-      );
+      await updateProductVariantImage(image.id, _value === "" ? null : +_value);
       setValue(_value);
     } catch (error) {
       console.log("Update variant id error", error);
@@ -82,13 +86,13 @@ const ImageItem = (props: ImageItemProps) => {
           priority={true}
           width={160}
           height={180}
-          src={props.image.path}
+          src={image.path}
         />
         <div className={styles.variants}>
           Màu:&nbsp;
           <select onChange={handleChange} value={value}>
             <option>Chọn màu</option>
-            {props.variantValues.map((variantValue: VariantValue) => (
+            {variantValues.map((variantValue: VariantValue) => (
               <option key={variantValue.id} value={variantValue.id}>
                 {variantValue.value}
               </option>
@@ -96,7 +100,7 @@ const ImageItem = (props: ImageItemProps) => {
           </select>
         </div>
         <div className={styles.imageImageBtns}>
-          {props.hasSelectBtn ? (
+          {hasSelectBtn ? (
             <Tooltip title="Chọn ảnh đại diện">
               <Button
                 variant="contained"
@@ -122,24 +126,26 @@ const ImageItem = (props: ImageItemProps) => {
   );
 };
 
-const ModalProductVariantImage = (props: Props) => {
+const ModalProductVariantImage = ({
+  onClose,
+  onUpdateThumbnail,
+  product,
+  open,
+}: Props) => {
   const [images, setImages] = useState<ProductVariantImage[]>([]);
   const [variantValues, setVariantValues] = useState<VariantValue[]>([]);
   const [thumbnail, setThumbnail] = useState<string>(
-    props.product ? props.product.thumbnail || "" : ""
+    product ? product.thumbnail || "" : ""
   );
 
   const handleSelect = async (path: string) => {
     try {
-      if (props.product) {
-        const { message } = await updateThumbnailProduct(
-          props.product.id,
-          path
-        );
+      if (product) {
+        const { message } = await updateThumbnailProduct(product.id, path);
 
         if (message === MSG_SUCCESS) {
           setThumbnail(path);
-          props.onUpdateThumbnail(props.product.id, path);
+          onUpdateThumbnail(product.id, path);
         }
       }
     } catch (error) {
@@ -175,7 +181,7 @@ const ModalProductVariantImage = (props: Props) => {
         if (results.length > 0) {
           const { message: msg, data: imgs } = await createProductVariantImages(
             results.map((res: any) => ({
-              productId: props.product?.id,
+              productId: product?.id,
               path: res.data.secure_url,
             }))
           );
@@ -190,10 +196,10 @@ const ModalProductVariantImage = (props: Props) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (props.product) {
+        if (product) {
           const [re1, res2] = await Promise.allSettled([
             getAllProductVariantImages({
-              productId: props.product.id,
+              productId: product.id,
             }),
             getAllVariantValues({ type: "Màu sắc" }),
           ]);
@@ -214,9 +220,9 @@ const ModalProductVariantImage = (props: Props) => {
       }
     };
     fetchData();
-  }, [props.product]);
-  return props.product ? (
-    <Modal open={props.open || false} onClose={props.onClose}>
+  }, [product]);
+  return product ? (
+    <Modal open={open || false} onClose={onClose}>
       <Box
         sx={{
           position: "absolute",

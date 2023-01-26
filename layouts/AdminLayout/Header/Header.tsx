@@ -6,18 +6,18 @@ import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import MenuIcon from "@mui/icons-material/Menu";
 import NotifyIcon from "./NotifyIcon";
 import AccountIcon from "./AccountIcon";
-type Props = {
+type Props = Partial<{
   pageTitle: string;
-};
+}>;
 
-const Header = (props: Props) => {
+const Header = ({ pageTitle }: Props) => {
   return (
     <header className={styles.header}>
       <div className={styles.left}>
         <IconButton>
           <MenuIcon />
         </IconButton>
-        {props.pageTitle}
+        {pageTitle}
       </div>
       <div className={styles.center}>
         <form className={styles.formSearch}>

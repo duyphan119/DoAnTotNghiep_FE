@@ -21,65 +21,63 @@ const LIMIT = 10;
 
 type Props = {};
 
-type OrderProps = {
-  order?: Order;
-};
+type OrderProps = Partial<{
+  order: Order;
+}>;
 
-type OrderItemProps = {
-  item?: OrderItem;
-};
+type OrderItemProps = Partial<{
+  item: OrderItem;
+}>;
 
-const Item = (props: OrderItemProps) => {
-  return props.item ? (
+const Item = ({ item }: OrderItemProps) => {
+  return item ? (
     <>
       <Image
         width={100}
         height={120}
-        src={getThumbnailOrderItem(props.item)}
+        src={getThumbnailOrderItem(item)}
         alt="thumbnail"
         priority={true}
       />
       <div className={styles.product}>
-        <div className={styles.name}>
-          {props.item.productVariant?.product?.name}
-        </div>
-        {props.item.productVariant?.variantValues?.map(
+        <div className={styles.name}>{item.productVariant?.product?.name}</div>
+        {item.productVariant?.variantValues?.map(
           (variantValue: VariantValue) => {
             return (
               <div
                 className={styles.variantValue}
-                key={`${props.item?.productVariantId} - ${variantValue.id}`}
+                key={`${item?.productVariantId} - ${variantValue.id}`}
               >
                 {variantValue.variant?.name}: {variantValue.value}
               </div>
             );
           }
         )}
-        <div className={styles.quantity}>Số lượng: {props.item.quantity}</div>
-        <div className={styles.price}>{props.item.price}</div>
+        <div className={styles.quantity}>Số lượng: {item.quantity}</div>
+        <div className={styles.price}>{item.price}</div>
       </div>
     </>
   ) : null;
 };
 
-const MyOrder = (props: OrderProps) => {
-  const total = props.order?.items.reduce(
+const MyOrder = ({ order }: OrderProps) => {
+  const total = order?.items.reduce(
     (p: number, c: OrderItem) => p + c.quantity * c.price,
     0
   );
-  return props.order ? (
+  return order ? (
     <div className={styles.order}>
       <div className={styles.title}>
         <div className={styles.left}>
           <div>
-            Đơn hàng {props.order.id} - {props.order.status}
+            Đơn hàng {order.id} - {order.status}
           </div>
-          <div>Ngày: {formatDateTime(props.order.createdAt)}</div>
-          <div>Họ tên: {props.order.fullName}</div>
-          <div>Điện thoại: {props.order.phone}</div>
+          <div>Ngày: {formatDateTime(order.createdAt)}</div>
+          <div>Họ tên: {order.fullName}</div>
+          <div>Điện thoại: {order.phone}</div>
           <div>
-            Địa chỉ: {props.order.address}, {props.order.ward},{" "}
-            {props.order.district}, {props.order.province}
+            Địa chỉ: {order.address}, {order.ward}, {order.district},{" "}
+            {order.province}
           </div>
         </div>
         <div className={styles.right}>
@@ -98,7 +96,7 @@ const MyOrder = (props: OrderProps) => {
           <div>
             <button
               className={styles.btn}
-              disabled={props.order.status !== "Đang xử lý"}
+              disabled={order.status !== "Đang xử lý"}
             >
               Hủy
             </button>
@@ -106,11 +104,11 @@ const MyOrder = (props: OrderProps) => {
         </div>
       </div>
       <ul className={styles.items}>
-        {props.order.items.map((item: OrderItem) => {
+        {order.items.map((item: OrderItem) => {
           return (
             <li
               className={styles.item}
-              key={`${props.order?.id} - ${item.productVariantId}`}
+              key={`${order?.id} - ${item.productVariantId}`}
             >
               <Item item={item} />
             </li>

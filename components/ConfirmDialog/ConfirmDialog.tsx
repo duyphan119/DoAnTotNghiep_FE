@@ -8,39 +8,45 @@ import {
   Button,
 } from "@mui/material";
 
-export type ConfirmDialogProps = {
-  open?: boolean;
-  onClose?: any;
-  onConfirm?: any;
-  title?: string;
-  text?: string;
-  cancelText?: string;
-  confirmText?: string;
-};
+export type ConfirmDialogProps = Partial<{
+  open: boolean;
+  onClose: any;
+  onConfirm: any;
+  title: string;
+  text: string;
+  cancelText: string;
+  confirmText: string;
+}>;
 
-const ConfirmDialog = (props: ConfirmDialogProps) => {
+const ConfirmDialog = ({
+  open,
+  onClose,
+  onConfirm,
+  title,
+  text,
+  cancelText,
+  confirmText,
+}: ConfirmDialogProps) => {
   const handleClose = () => {
-    props.onClose();
+    onClose();
   };
   const handleConfirm = () => {
-    props.onConfirm();
+    onConfirm();
     handleClose();
   };
   return (
-    <Dialog open={props.open || false} onClose={handleClose}>
+    <Dialog open={open || false} onClose={handleClose}>
       <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
-        {props.title || "Tiêu đề"}
+        {title || "Tiêu đề"}
       </DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          {props.text || "Bạn có chắc chắn?"}
-        </DialogContentText>
+        <DialogContentText>{text || "Bạn có chắc chắn?"}</DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button autoFocus onClick={handleClose}>
-          {props.cancelText || "Đóng"}
+          {cancelText || "Đóng"}
         </Button>
-        <Button onClick={handleConfirm}>{props.confirmText || "Có"}</Button>
+        <Button onClick={handleConfirm}>{confirmText || "Có"}</Button>
       </DialogActions>
     </Dialog>
   );

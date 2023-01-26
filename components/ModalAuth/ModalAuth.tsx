@@ -1,12 +1,21 @@
-import { Box, Modal, Tab, Tabs } from "@mui/material";
-import React from "react";
+import ClearIcon from "@mui/icons-material/Clear";
+import { Box, Modal } from "@mui/material";
+import { useState } from "react";
+
 import Login from "./Login";
 import Register from "./Register";
+import styles from "./style.module.css";
 
 type Props = {
   open: boolean;
   onClose?: any;
 };
+type TabProps = Partial<{
+  label: string;
+  onClick: any;
+  index: number;
+  value: number;
+}>;
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -27,36 +36,51 @@ function TabPanel(props: TabPanelProps) {
     </div>
   );
 }
-const ModalAuth = (props: Props) => {
-  const [value, setValue] = React.useState(0);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+const Tab = ({ onClick, label, index, value }: TabProps) => {
+  return (
+    <Box
+      className={`${styles.tab} ${index === value ? styles.active : ""}`}
+      onClick={() => onClick(index)}
+    >
+      {label}
+    </Box>
+  );
+};
+
+const ModalAuth = ({ open, onClose }: Props) => {
+  const [value, setValue] = useState<number>(0);
+
+  const handleClick = (newValue: number) => {
     setValue(newValue);
   };
+
   return (
-    <Modal open={props.open} onClose={props.onClose}>
-      <Box
-        bgcolor="#fff"
-        width={400}
-        position="absolute"
-        top="50%"
-        left="50%"
-        sx={{ transform: "translate(-50%, -50%)" }}
-      >
+    <Modal open={open} onClose={onClose}>
+      <Box className={styles.modalAuth}>
+        <Box className={styles.closeIcon} onClick={onClose}>
+          <ClearIcon />
+        </Box>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            aria-label="basic tabs example"
-          >
-            <Tab label="Đăng nhập" />
-            <Tab label="Đăng ký" />
-          </Tabs>
+          <Box className={styles.tabs}>
+            <Tab
+              label="Đăng nhập"
+              onClick={handleClick}
+              value={value}
+              index={0}
+            />
+            <Tab
+              label="Đăng ký"
+              onClick={handleClick}
+              value={value}
+              index={1}
+            />
+          </Box>
           <TabPanel value={value} index={0}>
-            <Login onClose={props.onClose} />
+            <Login onClose={onClose} />
           </TabPanel>
           <TabPanel value={value} index={1}>
-            <Register onClose={props.onClose} />
+            <Register onClose={onClose} />
           </TabPanel>
         </Box>
       </Box>

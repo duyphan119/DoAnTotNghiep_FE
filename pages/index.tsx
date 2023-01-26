@@ -39,14 +39,14 @@ const Products = ({ products }: ProductsProps) => {
   );
 };
 
-type BannersProps = {
-  banners?: Advertisement[];
-};
+type BannersProps = Partial<{
+  banners: Advertisement[];
+}>;
 
-const Banners = (props: BannersProps) => {
-  return props.banners ? (
+const Banners = ({ banners }: BannersProps) => {
+  return banners ? (
     <Swiper slidesPerView={1}>
-      {props.banners.map((adv: Advertisement) => {
+      {banners.map((adv: Advertisement) => {
         return (
           <SwiperSlide key={adv.id}>
             <Link href={adv.href} rel="preloaded">

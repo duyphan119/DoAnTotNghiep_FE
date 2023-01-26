@@ -10,6 +10,7 @@ import {
 import styles from "../../styles/Profile.module.css";
 import { MSG_SUCCESS } from "../../utils/constants";
 import { useSnackbarContext } from "../../context/SnackbarContext";
+import { InputControl } from "../../components";
 
 type Props = {};
 
@@ -44,62 +45,50 @@ const Profile = (props: Props) => {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-          <div className="form-group">
-            {errors.email && errors.email.type === "pattern" && (
-              <div className="form-error">Địa chỉ email không hợp lệ</div>
-            )}
-            {errors.email && errors.email.type === "required" && (
-              <div className="form-error">Email không được bỏ trống</div>
-            )}
-            <input
-              type="text"
-              className="form-control"
-              defaultValue={profile.email}
-              {...register("email", {
-                pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-                required: true,
-              })}
-            />
-            <label htmlFor="" className="form-label required">
-              Email
-            </label>
-          </div>
-          <div className="form-group">
-            {errors.fullName && errors.fullName.type === "required" && (
-              <div className="form-error">Họ tên không được bỏ trống</div>
-            )}
-            <input
-              type="text"
-              className="form-control"
-              defaultValue={profile.fullName}
-              {...register("fullName", { required: true })}
-            />
-            <label htmlFor="" className="form-label required">
-              Họ tên
-            </label>
-          </div>
-          <div className="form-group">
-            {errors.phone && errors.phone.type === "required" && (
-              <div className="form-error">
-                Số điện thoại không được bỏ trống
-              </div>
-            )}
-            {errors.phone && errors.phone.type === "pattern" && (
-              <div className="form-error">Số điện thoại không hợp lệ</div>
-            )}
-            <input
-              type="text"
-              className="form-control required"
-              defaultValue={profile.phone}
-              {...register("phone", {
-                required: true,
-                pattern: /(84|0[3|5|7|8|9])+([0-9]{8})\b/g,
-              })}
-            />
-            <label htmlFor="" className="form-label required">
-              Số điện thoại
-            </label>
-          </div>
+          <InputControl
+            defaultValue={profile.email}
+            required={true}
+            register={register("email", {
+              required: {
+                value: true,
+                message: "Email không được bỏ trống",
+              },
+              pattern: {
+                value: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+                message: "Địa chỉ email không hợp lệ",
+              },
+            })}
+            error={errors.email}
+            label="Email"
+          />
+          <InputControl
+            defaultValue={profile.fullName}
+            required={true}
+            register={register("fullName", {
+              required: {
+                value: true,
+                message: "Họ tên không được bỏ trống",
+              },
+            })}
+            error={errors.fullName}
+            label="Họ tên"
+          />
+          <InputControl
+            defaultValue={profile.phone}
+            required={true}
+            register={register("phone", {
+              required: {
+                value: true,
+                message: "Số điện thoại không được bỏ trống",
+              },
+              pattern: {
+                value: /(84|0[3|5|7|8|9])+([0-9]{8})\b/g,
+                message: "Số điện thoại không hợp lệ",
+              },
+            })}
+            error={errors.phone}
+            label="Số điện thoại"
+          />
           <div>
             <button type="submit" className={styles.btn}>
               Cập nhật

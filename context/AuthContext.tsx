@@ -21,9 +21,9 @@ import { useSnackbarContext } from "./SnackbarContext";
 import { useWishlistContext } from "./WishlistContext";
 const AuthContext = createContext<any>({});
 
-type Props = {
-  children?: ReactNode;
-};
+type Props = Partial<{
+  children: ReactNode;
+}>;
 
 const AuthWrapper = ({ children }: Props) => {
   const { show } = useSnackbarContext();

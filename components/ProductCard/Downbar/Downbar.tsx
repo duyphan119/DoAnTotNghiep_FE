@@ -16,7 +16,12 @@ type Props = {
   variants: any;
 };
 
-const Downbar = (props: Props) => {
+const Downbar = ({
+  selected,
+  onAddToCart,
+  onClickVariant,
+  variants,
+}: Props) => {
   const [quantity, setQuantity] = React.useState<number>(1);
   const { show } = useSnackbarContext();
 
@@ -26,7 +31,7 @@ const Downbar = (props: Props) => {
 
   const handleAddToCart = () => {
     if (hasCookie(COOKIE_ACCESSTOKEN_NAME)) {
-      props.onAddToCart(quantity);
+      onAddToCart(quantity);
     } else {
       show("Bạn cần đăng nhập để thực hiện thao tác này");
     }
@@ -35,9 +40,9 @@ const Downbar = (props: Props) => {
   return (
     <div className={styles.downbar}>
       <Variants
-        variants={props.variants}
-        selected={props.selected}
-        clickVariant={props.onClickVariant}
+        variants={variants}
+        selected={selected}
+        clickVariant={onClickVariant}
       />
       <div className={styles.footer}>
         <Quantity quantity={quantity} changeQuantity={changeQuantity} />

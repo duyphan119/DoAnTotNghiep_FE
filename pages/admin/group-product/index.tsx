@@ -20,10 +20,9 @@ type Props = {
   groupProductData: ResponseItems<GroupProduct>;
 };
 const LIMIT = 10;
-const GroupProducts = (props: Props) => {
-  const [groupProductData, setGroupProductData] = useState<
-    ResponseItems<GroupProduct>
-  >(props.groupProductData);
+const GroupProducts = ({ groupProductData: propGroupProductData }: Props) => {
+  const [groupProductData, setGroupProductData] =
+    useState<ResponseItems<GroupProduct>>(propGroupProductData);
   const [current, setCurrent] = useState<GroupProduct | null>(null);
 
   const handleSoftDelete = async (id: number) => {
@@ -82,8 +81,8 @@ const GroupProducts = (props: Props) => {
   };
 
   useEffect(() => {
-    setGroupProductData(props.groupProductData);
-  }, [props.groupProductData]);
+    setGroupProductData(propGroupProductData);
+  }, [propGroupProductData]);
 
   return (
     <AdminLayout pageTitle="Nhóm sản phẩm">

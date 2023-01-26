@@ -17,9 +17,8 @@ type Props = {
   blogData: ResponseItems<Blog>;
 };
 const LIMIT = 10;
-const Orders = (props: Props) => {
-  console.log(props.blogData);
-  const [blogData, setBlogData] = useState<ResponseItems<Blog>>(props.blogData);
+const Orders = ({ blogData: propBlogData }: Props) => {
+  const [blogData, setBlogData] = useState<ResponseItems<Blog>>(propBlogData);
   const [current, setCurrent] = useState<Blog | null>(null);
 
   const handleSoftDelete = async (id: number) => {
@@ -72,8 +71,8 @@ const Orders = (props: Props) => {
   };
 
   useEffect(() => {
-    setBlogData(props.blogData);
-  }, [props.blogData]);
+    setBlogData(propBlogData);
+  }, [propBlogData]);
 
   return (
     <AdminLayout pageTitle="Bài viết">

@@ -1,17 +1,19 @@
-import { Button, Grid, Paper } from "@mui/material";
+import { Grid, Paper } from "@mui/material";
+import dynamic from "next/dynamic";
 import Head from "next/head";
-import React, { useEffect, ChangeEvent, useState } from "react";
+import { useRouter } from "next/router";
+import { ChangeEvent, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+
+import "react-quill/dist/quill.snow.css";
 import { getAllGroupProducts } from "../../../apis/groupProduct";
+import { createProduct } from "../../../apis/product";
+import { uploadSingle } from "../../../apis/upload";
+import { FooterForm, InputControl, SelectControl } from "../../../components";
 import { AdminLayout } from "../../../layouts";
 import { MSG_SUCCESS } from "../../../utils/constants";
 import { GroupProduct } from "../../../utils/types";
-import { useRouter } from "next/router";
-import "react-quill/dist/quill.snow.css";
-import dynamic from "next/dynamic";
-import { privateAxios } from "../../../config/configAxios";
-import { createProduct } from "../../../apis/product";
-import { uploadSingle } from "../../../apis/upload";
+
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 type Props = {};
@@ -62,10 +64,6 @@ const AddProduct = (props: Props) => {
     }
   };
 
-  const handleBack = () => {
-    router.back();
-  };
-
   useEffect(() => {
     (async () => {
       const { message, data } = await getAllGroupProducts();
@@ -92,89 +90,48 @@ const AddProduct = (props: Props) => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container rowSpacing={3} columnSpacing={3}>
               <Grid item xs={12}>
-                <div className="form-group">
-                  {errors.groupProductId &&
-                    errors.groupProductId.type === "required" && (
-                      <div className="form-error">
-                        Nhóm sản phẩm không được để trống
-                      </div>
-                    )}
-                  <select
-                    className="form-control"
-                    {...register("groupProductId", { required: true })}
-                  >
-                    <option value="">Chọn nhóm sản phẩm</option>
-                    {groupProducts.map((item: GroupProduct) => {
-                      return (
-                        <option value={item.id} key={item.id}>
-                          {item.name}
-                        </option>
-                      );
-                    })}
-                  </select>
-                  <label
-                    htmlFor="groupProductId"
-                    className="form-label required"
-                  >
-                    Nhóm sản phẩm
-                  </label>
-                </div>
+                <SelectControl
+                  label="Nhóm sản phẩm"
+                  register={register("groupProductId", {
+                    required: {
+                      value: true,
+                      message: "Nhóm sản phẩm không được để trống",
+                    },
+                  })}
+                  error={errors.groupProductId}
+                  required={true}
+                  options={groupProducts.map((item: GroupProduct) => ({
+                    value: item.id,
+                    display: item.name,
+                  }))}
+                />
               </Grid>
               <Grid item xs={12}>
-                <div className="form-group">
-                  <input
-                    type="text"
-                    id="name"
-                    className="form-control"
-                    autoComplete="off"
-                    {...register("name")}
-                  />
-                  <label htmlFor="name" className="form-label required">
-                    Tên sản phẩm
-                  </label>
-                </div>
+                <InputControl
+                  required={true}
+                  register={register("name", {
+                    required: {
+                      value: true,
+                      message: "Tên sản phẩm không được để trống",
+                    },
+                  })}
+                  error={errors.name}
+                  label="Tên sản phẩm"
+                />
               </Grid>
               <Grid item xs={12}>
-                <div className="form-group">
-                  <input
-                    type="text"
-                    id="slug"
-                    className="form-control"
-                    autoComplete="off"
-                    {...register("slug")}
-                  />
-                  <label htmlFor="slug" className="form-label">
-                    Bí danh
-                  </label>
-                </div>
+                <InputControl
+                  type="number"
+                  register={register("price")}
+                  label="Giá bán"
+                />
               </Grid>
               <Grid item xs={12}>
-                <div className="form-group">
-                  <input
-                    type="number"
-                    id="price"
-                    className="form-control"
-                    autoComplete="off"
-                    {...register("price")}
-                  />
-                  <label htmlFor="price" className="form-label">
-                    Giá bán
-                  </label>
-                </div>
-              </Grid>
-              <Grid item xs={12}>
-                <div className="form-group">
-                  <input
-                    type="number"
-                    id="inventory"
-                    className="form-control"
-                    autoComplete="off"
-                    {...register("inventory")}
-                  />
-                  <label htmlFor="inventory" className="form-label">
-                    Số lượng
-                  </label>
-                </div>
+                <InputControl
+                  type="number"
+                  register={register("inventory")}
+                  label="Số lượng"
+                />
               </Grid>
               <Grid item xs={12}>
                 <div className="form-group">
@@ -191,39 +148,19 @@ const AddProduct = (props: Props) => {
                 </div>
               </Grid>
               <Grid item xs={12}>
-                <div className="form-group">
-                  <input
-                    type="file"
-                    id="thumbnail"
-                    className="form-control"
-                    autoComplete="off"
-                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                      setFiles(e.target.files)
-                    }
-                  />
-                  <label htmlFor="thumbnail" className="form-label">
-                    Ảnh đại diện
-                  </label>
-                </div>
+                <InputControl
+                  type="file"
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    setFiles(e.target.files)
+                  }
+                  label="Ảnh đại diện"
+                />
               </Grid>
               <Grid item xs={12}>
                 <ReactQuill theme="snow" value={detail} onChange={setDetail} />
               </Grid>
               <Grid item xs={12}>
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  onClick={handleBack}
-                >
-                  Quay lại
-                </Button>
-                <Button
-                  variant="contained"
-                  type="submit"
-                  style={{ marginLeft: 8 }}
-                >
-                  Lưu
-                </Button>
+                <FooterForm onBack={() => router.back()} />
               </Grid>
             </Grid>
           </form>

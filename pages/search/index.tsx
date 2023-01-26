@@ -11,7 +11,7 @@ type Props = {
   productData: ResponseItems<Product>;
 };
 
-const Page = (props: Props) => {
+const Page = ({ productData: propProductData }: Props) => {
   const router = useRouter();
   const { q } = router.query;
 
@@ -26,17 +26,17 @@ const Page = (props: Props) => {
         <Container maxWidth="lg">
           <h1>Kết quả tìm kiếm "{q || ""}"</h1>
           <Grid container columnSpacing={2} rowSpacing={2}>
-            {props.productData.items.map((product: Product) => {
+            {propProductData.items.map((product: Product) => {
               return (
                 <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
                   <ProductCard product={product} />
                 </Grid>
               );
             })}
-            {props.productData.count > 0 ? (
+            {propProductData.count > 0 ? (
               <Grid item xs={12}>
                 <Pagination
-                  count={Math.ceil(props.productData.count / 12)}
+                  count={Math.ceil(propProductData.count / 12)}
                   sx={{ ul: { justifyContent: "center" } }}
                   variant="outlined"
                   shape="rounded"

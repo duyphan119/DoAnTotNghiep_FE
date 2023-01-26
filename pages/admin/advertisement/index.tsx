@@ -17,11 +17,9 @@ type Props = {
   advData: ResponseItems<Advertisement>;
 };
 const LIMIT = 10;
-const Orders = (props: Props) => {
-  console.log(props.advData);
-  const [advData, setAdvData] = useState<ResponseItems<Advertisement>>(
-    props.advData
-  );
+const Orders = ({ advData: propsAdvData }: Props) => {
+  const [advData, setAdvData] =
+    useState<ResponseItems<Advertisement>>(propsAdvData);
   const [current, setCurrent] = useState<Advertisement | null>(null);
 
   const handleDelete = async () => {
@@ -42,8 +40,8 @@ const Orders = (props: Props) => {
   };
 
   useEffect(() => {
-    setAdvData(props.advData);
-  }, [props.advData]);
+    setAdvData(propsAdvData);
+  }, [propsAdvData]);
 
   return (
     <AdminLayout pageTitle="Quảng cáo">

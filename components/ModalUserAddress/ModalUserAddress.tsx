@@ -8,7 +8,9 @@ import {
 } from "../../apis/useraddress";
 import { MSG_SUCCESS } from "../../utils/constants";
 import provinces from "../../province.json";
-import { UserAddress } from "../../utils/types";
+import { District, Province, UserAddress, Ward } from "../../utils/types";
+import SelectControl from "../SelectControl";
+import InputControl from "../InputControl";
 
 type Props = Partial<{
   open: boolean;
@@ -18,12 +20,12 @@ type Props = Partial<{
   row: UserAddress | null;
 }>;
 
-const ModalUserAddress = (props: Props) => {
+const ModalUserAddress = ({ open, onClose, onCreate, onEdit, row }: Props) => {
   const [districts, setDistricts] = useState<any>(() => {
     const province = provinces.find(
-      (province: any) =>
+      (province: Province) =>
         province.districts.findIndex(
-          (district: any) => props.row && district.name === props.row.district
+          (district: District) => row && district.name === row.district
         ) !== -1
     );
     if (province) return province.districts;
@@ -31,10 +33,8 @@ const ModalUserAddress = (props: Props) => {
   });
   const [wards, setWards] = useState<any>(() => {
     const district = districts.find(
-      (d: any) =>
-        d.wards.findIndex(
-          (ward: any) => props.row && ward.name === props.row.ward
-        ) !== -1
+      (d: District) =>
+        d.wards.findIndex((ward: Ward) => row && ward.name === row.ward) !== -1
     );
     if (district) return district.wards;
     return [];
@@ -46,24 +46,24 @@ const ModalUserAddress = (props: Props) => {
     formState: { errors },
   } = useForm<CreateUserAddressDTO>({
     defaultValues: {
-      address: props.row ? props.row.address : "",
-      ward: props.row ? props.row.ward : "",
-      district: props.row ? props.row.district : "",
-      province: props.row ? props.row.province : "",
+      address: row ? row.address : "",
+      ward: row ? row.ward : "",
+      district: row ? row.district : "",
+      province: row ? row.province : "",
     },
   });
 
   const onSubmit: SubmitHandler<CreateUserAddressDTO> = async (values) => {
     try {
-      if (props.row) {
-        const { message, data } = await updateUserAddress(props.row.id, values);
+      if (row) {
+        const { message, data } = await updateUserAddress(row.id, values);
         if (message === MSG_SUCCESS) {
-          props.onEdit(props.row.id, data);
+          onEdit(row.id, data);
         }
       } else {
         const { message, data } = await createUserAddress(values);
         if (message === MSG_SUCCESS) {
-          props.onCreate(data);
+          onCreate(data);
         }
       }
     } catch (error) {
@@ -104,7 +104,7 @@ const ModalUserAddress = (props: Props) => {
   console.log(errors);
 
   return (
-    <Modal open={props.open || false} onClose={props.onClose}>
+    <Modal open={open || false} onClose={onClose}>
       <Box
         bgcolor="#fff"
         position="absolute"
@@ -124,98 +124,62 @@ const ModalUserAddress = (props: Props) => {
         <Grid container columnSpacing={2} rowSpacing={2}>
           <Grid item xs={12}>
             <Typography component="h4" variant="h4">
-              {props.row ? "Sửa địa chỉ" : "Thêm địa chỉ"}
+              {row ? "Sửa địa chỉ" : "Thêm địa chỉ"}
             </Typography>
           </Grid>
           <Grid item xs={12}>
-            <div className="form-group">
-              {errors.province && errors.province.type === "required" && (
-                <div className="form-error">
-                  Tỉnh / Thành phố không được để trống
-                </div>
-              )}
-              <select
-                className="form-control"
-                {...register("province", { required: true })}
-              >
-                <option value="">Chọn Tỉnh / Thành phố</option>
-                {provinces.map((pro: any) => {
-                  return (
-                    <option value={pro.name} key={pro.name}>
-                      {pro.name}
-                    </option>
-                  );
-                })}
-              </select>
-              <label htmlFor="" className="form-label required">
-                Tỉnh / Thành phố
-              </label>
-            </div>
+            <SelectControl
+              error={errors.province}
+              required={true}
+              options={provinces.map((pro: any) => ({ value: pro.name }))}
+              label="Tỉnh / Thành phố"
+              register={register("province", {
+                required: {
+                  value: true,
+                  message: "Tỉnh / Thành phố không được để trống",
+                },
+              })}
+            />
           </Grid>
           <Grid item xs={12}>
-            <div className="form-group">
-              {errors.district && errors.district.type === "required" && (
-                <div className="form-error">
-                  Quận / Huyện không được để trống
-                </div>
-              )}
-              <select
-                className="form-control"
-                {...register("district", { required: true })}
-              >
-                <option value="">Chọn Quận / Huyện</option>
-                {districts.map((dis: any) => {
-                  return (
-                    <option value={dis.name} key={dis.name}>
-                      {dis.name}
-                    </option>
-                  );
-                })}
-              </select>
-              <label htmlFor="" className="form-label required">
-                Quận / Huyện
-              </label>
-            </div>
+            <SelectControl
+              error={errors.district}
+              required={true}
+              options={districts.map((dis: any) => ({ value: dis.name }))}
+              label="Quận / Huyện"
+              register={register("district", {
+                required: {
+                  value: true,
+                  message: "Quận / Huyện không được để trống",
+                },
+              })}
+            />
           </Grid>
           <Grid item xs={12}>
-            <div className="form-group">
-              {errors.ward && errors.ward.type === "required" && (
-                <div className="form-error">
-                  Phường / Xã không được để trống
-                </div>
-              )}
-              <select
-                className="form-control"
-                {...register("ward", { required: true })}
-              >
-                <option value="">Chọn Phường / Xã</option>
-                {wards.map((w: any) => {
-                  return (
-                    <option value={w.name} key={w.name}>
-                      {w.name}
-                    </option>
-                  );
-                })}
-              </select>
-              <label htmlFor="" className="form-label required">
-                Phường / Xã
-              </label>
-            </div>
+            <SelectControl
+              error={errors.ward}
+              required={true}
+              options={wards.map((w: any) => ({ value: w.name }))}
+              label="Phường / Xã"
+              register={register("ward", {
+                required: {
+                  value: true,
+                  message: "Phường / Xã không được để trống",
+                },
+              })}
+            />
           </Grid>
           <Grid item xs={12}>
-            <div className="form-group">
-              {errors.address && errors.address.type === "required" && (
-                <div className="form-error">Địa chỉ không được để trống</div>
-              )}
-              <input
-                type="text"
-                className="form-control"
-                {...register("address", { required: true })}
-              />
-              <label htmlFor="" className="form-label required">
-                Địa chỉ
-              </label>
-            </div>
+            <InputControl
+              error={errors.address}
+              register={register("address", {
+                required: {
+                  value: true,
+                  message: "Địa chỉ không được để trống",
+                },
+              })}
+              label="Địa chỉ"
+            />
           </Grid>
           <Grid item xs={12}>
             <Box
@@ -223,7 +187,7 @@ const ModalUserAddress = (props: Props) => {
               justifyContent="flex-end"
               style={{ gap: "8px" }}
             >
-              <Button type="button" variant="outlined" onClick={props.onClose}>
+              <Button type="button" variant="outlined" onClick={onClose}>
                 Đóng
               </Button>
               <Button type="submit" variant="contained">

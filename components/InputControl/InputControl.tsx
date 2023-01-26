@@ -9,6 +9,7 @@ type Props = Partial<{
   register: any;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   value: any;
+  defaultValue: any;
 }>;
 
 const InputControl = ({
@@ -19,6 +20,7 @@ const InputControl = ({
   register,
   onChange,
   value,
+  defaultValue,
 }: Props) => {
   const id = useId();
   return (
@@ -31,6 +33,7 @@ const InputControl = ({
         autoComplete="off"
         value={value}
         onChange={onChange}
+        defaultValue={defaultValue}
         {...register}
       />
       <label

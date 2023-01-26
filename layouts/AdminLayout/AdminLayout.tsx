@@ -8,12 +8,12 @@ import { COOKIE_ACCESSTOKEN_NAME, MSG_SUCCESS } from "../../utils/constants";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 
-type Props = {
-  children?: ReactNode;
+type Props = Partial<{
+  children: ReactNode;
   pageTitle: string;
-};
+}>;
 
-const AdminLayout = (props: Props) => {
+const AdminLayout = ({ children, pageTitle }: Props) => {
   const router = useRouter();
   const [isLogged, setIsLogged] = useState<boolean>(false);
   const { login, changeProfile } = useAuthContext();
@@ -43,9 +43,9 @@ const AdminLayout = (props: Props) => {
     <Box display="flex">
       <Sidebar />
       <Box display="flex" flexDirection="column" flex={1}>
-        <Header pageTitle={props.pageTitle} />
+        <Header pageTitle={pageTitle} />
         <Box flex={1} padding="16px">
-          {props.children}
+          {children}
         </Box>
       </Box>
     </Box>
