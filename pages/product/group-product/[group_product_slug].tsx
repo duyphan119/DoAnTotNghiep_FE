@@ -7,6 +7,7 @@ import { ProductCard } from "../../../components";
 import { useGroupProductContext } from "../../../context/GroupProductContext";
 import { ProductsLayout } from "../../../layouts";
 import { CODE_OK, MSG_SUCCESS } from "../../../utils/constants";
+import { fullNameGroupProduct } from "../../../utils/helpers";
 import {
   Filter,
   GroupProduct,
@@ -18,7 +19,7 @@ type Props = {
   productData: ResponseItems<Product>;
 };
 const LIMIT = 24;
-const Products = (props: Props) => {
+const Products = ({ productData }: Props) => {
   const { groupProducts } = useGroupProductContext();
   const router = useRouter();
   const { p } = router.query;
@@ -38,7 +39,14 @@ const Products = (props: Props) => {
       p: f.p && f.p > 1 ? 1 : f.p || 1,
     }));
   };
-  console.log("filter::", filter);
+
+  useEffect(() => {
+    setFilter((f) => ({
+      ...f,
+      group_product_slug: "" + router.query.group_product_slug,
+    }));
+  }, [router.query.group_product_slug]);
+
   useEffect(() => {
     const paramsObj: any = {};
     Object.keys(filter).forEach((key: string) => {
@@ -71,9 +79,39 @@ const Products = (props: Props) => {
     }
   }, [filter]);
 
+  const getCurrentBreadcrumb = () => {
+    const slug = router.query.group_product_slug;
+    let groupProduct = groupProducts.find(
+      (gp: GroupProduct) => gp.slug === slug
+    );
+    if (groupProduct) {
+      return fullNameGroupProduct(groupProduct);
+    }
+
+    groupProduct = groupProducts.find((gp: GroupProduct) =>
+      gp.slug.includes("" + slug)
+    );
+
+    if (
+      groupProduct &&
+      (slug === "nam" ||
+        slug === "nu" ||
+        slug === "be-trai" ||
+        slug === "be-gai")
+    ) {
+      const { sex, isAdult } = groupProduct;
+      if (!isAdult && sex === "Nam") return "Bé trai";
+      else if (!isAdult && sex === "Nữ") return "Bé gái";
+      else if (isAdult && sex === "Nam") return "Nam";
+      else if (isAdult && sex === "Nữ") return "Nữ";
+    }
+
+    return groupProduct ? groupProduct.name : "";
+  };
+
   return (
     <ProductsLayout
-      totalProducts={props.productData.count}
+      totalProducts={productData.count}
       onFilter={handleFilter}
       query={router.query}
       breadcrumbs={{
@@ -87,9 +125,7 @@ const Products = (props: Props) => {
             label: "Sản phẩm",
           },
         ],
-        current: groupProducts.find(
-          (gp: GroupProduct) => gp.slug === router.query.group_product_slug
-        )?.name,
+        current: getCurrentBreadcrumb(),
       }}
     >
       <>
@@ -100,17 +136,17 @@ const Products = (props: Props) => {
         </Head>
       </>
       <Grid container columnSpacing={2} rowSpacing={2}>
-        {props.productData.items.map((product: Product) => {
+        {productData.items.map((product: Product) => {
           return (
             <Grid item xs={12} sm={6} md={3} lg={4} key={product.id}>
               <ProductCard product={product} />
             </Grid>
           );
         })}
-        {props.productData.count > 0 ? (
+        {productData.count > 0 ? (
           <Grid item xs={12}>
             <Pagination
-              count={Math.ceil(props.productData.count / LIMIT)}
+              count={Math.ceil(productData.count / LIMIT)}
               sx={{ ul: { justifyContent: "center" } }}
               variant="outlined"
               shape="rounded"

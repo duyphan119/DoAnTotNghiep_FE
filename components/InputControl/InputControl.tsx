@@ -1,4 +1,4 @@
-import React, { useId } from "react";
+import React, { useId, ChangeEvent } from "react";
 import { FieldError } from "react-hook-form";
 
 type Props = Partial<{
@@ -7,9 +7,19 @@ type Props = Partial<{
   required: boolean;
   label: string;
   register: any;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  value: any;
 }>;
 
-const InputControl = ({ error, type, required, label, register }: Props) => {
+const InputControl = ({
+  error,
+  type,
+  required,
+  label,
+  register,
+  onChange,
+  value,
+}: Props) => {
   const id = useId();
   return (
     <div className="form-group">
@@ -19,6 +29,8 @@ const InputControl = ({ error, type, required, label, register }: Props) => {
         id={id}
         className="form-control"
         autoComplete="off"
+        value={value}
+        onChange={onChange}
         {...register}
       />
       <label

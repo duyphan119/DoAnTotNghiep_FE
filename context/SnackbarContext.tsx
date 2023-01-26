@@ -18,19 +18,26 @@ function TransitionLeft(props: TransitionProps) {
   return <Slide {...props} direction="right" />;
 }
 type SnackbarType = "success" | "info" | "error" | "warning";
+type State = {
+  open: boolean;
+  text: string;
+  type: SnackbarType;
+};
 const SnackbarWrapper = ({ children }: Props) => {
-  const [open, setOpen] = useState<boolean>(false);
-  const [text, setText] = useState<string>("Thành công");
-  const [type, setType] = useState<SnackbarType>("info");
+  const [state, setState] = useState<State>({
+    open: false,
+    text: "Thành công",
+    type: "info",
+  });
+
+  const { open, text, type } = state;
 
   const handleClose = () => {
-    setOpen(false);
+    setState((s) => ({ ...s, open: false }));
   };
 
   const show = (msg: string, type?: SnackbarType) => {
-    setText(msg);
-    setOpen(true);
-    setType(type || "info");
+    setState({ text: msg, open: true, type: type || "info" });
   };
 
   return (

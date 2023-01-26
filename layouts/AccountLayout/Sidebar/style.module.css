@@ -20,10 +20,10 @@
 }
 .item button:hover,
 .item:hover {
-  color: var(--primary-color);
+  color: var(--blue);
 }
 .item.active {
-  color: var(--primary-color);
-  border-right: 4px solid var(--primary-color);
-  background-color: var(--primary-color-opacity);
+  color: var(--blue);
+  border-right: 4px solid var(--blue);
+  background-color: var(--blue-opacity);
 }

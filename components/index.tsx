@@ -11,3 +11,6 @@ export { default as ModalUserAddress } from "./ModalUserAddress";
 export { default as ModalPreviewProduct } from "./ModalPreviewProduct";
 export { default as InputControl } from "./InputControl";
 export { default as CheckControl } from "./CheckControl";
+export { default as FooterForm } from "./FooterForm";
+export { default as SelectControl } from "./SelectControl";
+export { default as RadioControl } from "./RadioControl";

@@ -162,7 +162,7 @@ const Orders = (props: Props) => {
               render: (row: any) => (
                 <>
                   <div style={{ display: "flex", alignItems: "center" }}>
-                    <Link href={`/admin/don-hang/${row.id}/update`}>
+                    <Link href={`/admin/order/${row.id}/update`}>
                       <button className="btnEdit">Sửa</button>
                     </Link>
                     <button

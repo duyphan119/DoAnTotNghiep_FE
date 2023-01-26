@@ -19,7 +19,12 @@ export type SearchQueryParams = {
 type Timestamp = {
   createdAt: string;
   updatedAt: string;
-} & Partial<{ deletedAt?: string | null }>;
+} & Partial<{ deletedAt: string | null }>;
+export type SettingWebsite = {
+  id: number;
+  key: string;
+  value: string;
+};
 export type Blog = {
   id: number;
   title: string;
@@ -119,6 +124,10 @@ export type Order = {
   discountId: number | null;
   user: User;
   items: OrderItem[];
+  allowCannceled: boolean;
+  isPaid: boolean;
+  isOrdered: boolean;
+  orderDate: string;
 } & Timestamp &
   Partial<{
     discount: OrderDiscount;
@@ -136,14 +145,17 @@ export type User = {
   email: string;
   phone: string;
   isAdmin: boolean;
+  point: number;
 } & Timestamp;
-
+export type Sex = "Nam" | "Nữ" | "Unisex";
 export type GroupProduct = {
   id: number;
   name: string;
   slug: string;
   description: string;
   thumbnail: string;
+  sex: Sex;
+  isAdult: boolean;
 } & Timestamp;
 
 export type UserAddress = {
@@ -205,4 +217,23 @@ export type FetchState = {
 export type ErrorInput = {
   key: string;
   value: string;
+};
+export type SelectOption = {
+  value: any;
+  display?: any;
+};
+export type Province = {
+  name: string;
+  districts: District[];
+};
+export type District = {
+  name: string;
+  wards: Ward[];
+};
+export type Ward = {
+  name: string;
+};
+export type BarChartData = {
+  key: string;
+  value: number;
 };

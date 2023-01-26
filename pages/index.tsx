@@ -11,6 +11,7 @@ import { ProductCard } from "../components";
 import { DefaultLayout } from "../layouts";
 import styles from "../styles/Home.module.css";
 import { formatDateTime } from "../utils/helpers";
+import { protectedRoutes, publicRoutes } from "../utils/routes";
 import { Advertisement, Blog, Product, ResponseItems } from "../utils/types";
 type ProductsProps = {
   products: Product[];
@@ -28,7 +29,7 @@ const Products = ({ products }: ProductsProps) => {
         })}
         {products.length > 0 ? (
           <Grid item xs={12} className={styles.viewAllWrapper}>
-            <Link href="/product" className={styles.viewAll}>
+            <Link href={publicRoutes.products()} className={styles.viewAll}>
               Xem tất cả sản phẩm
             </Link>
           </Grid>
@@ -104,7 +105,10 @@ const Blogs = ({ blogs }: BlogProps) => {
         })}
         {blogs.length > 0 ? (
           <Grid item xs={12} className={styles.viewAllWrapper}>
-            <Link href="/blog" className={styles.viewAll}>
+            <Link
+              href={protectedRoutes.blogManagement}
+              className={styles.viewAll}
+            >
               Xem tất cả bài viết
             </Link>
           </Grid>

@@ -9,6 +9,7 @@ import { DefaultLayout } from "../../layouts";
 import emptyCartPng from "../../public/empty-cart.png";
 import styles from "../../styles/Cart.module.css";
 import { getPriceCartItem, getThumbnailOrderItem } from "../../utils/helpers";
+import { publicRoutes } from "../../utils/routes";
 import { OrderItem } from "../../utils/types";
 
 type Props = {};
@@ -126,7 +127,7 @@ const CartResult = () => {
         <span>Tổng cộng</span>
         <span>{total}</span>
       </div>
-      <Link href="/payment" className={styles.checkout}>
+      <Link href={publicRoutes.payment} className={styles.checkout}>
         Thanh toán
       </Link>
     </div>
@@ -146,7 +147,7 @@ const EmptyCart = () => {
         />
       </div>
       <p>Giỏ hàng của bạn đang trống</p>
-      <Link href="/product">Xem tất cả sản phẩm</Link>
+      <Link href={publicRoutes.products()}>Xem tất cả sản phẩm</Link>
     </div>
   );
 };

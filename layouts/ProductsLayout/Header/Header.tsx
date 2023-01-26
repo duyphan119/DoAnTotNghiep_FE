@@ -3,8 +3,6 @@ import React, { useState } from "react";
 import styles from "../style.module.css";
 type Props = Partial<{
   onFilter: any;
-  sortBy: string;
-  sortType: string;
   totalProducts: number;
   query: any;
 }>;
@@ -41,13 +39,7 @@ const items: Item[] = [
   },
 ];
 
-const Header = ({
-  query,
-  onFilter,
-  sortBy,
-  sortType,
-  totalProducts,
-}: Props) => {
+const Header = ({ query, onFilter, totalProducts }: Props) => {
   const [hidden, setHidden] = useState<boolean>(true);
   const [selected, setSelected] = useState<Item>(() => {
     const item = items.find(
@@ -63,6 +55,7 @@ const Header = ({
     onFilter && onFilter({ sortBy: item.sortBy, sortType: item.sortType });
     setHidden(true);
   };
+
   return (
     <div className={styles.header}>
       <div>{totalProducts} sản phẩm</div>

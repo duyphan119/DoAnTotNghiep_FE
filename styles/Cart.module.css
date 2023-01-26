@@ -24,7 +24,7 @@
   font-size: 18px;
 }
 .table-cart td a:hover {
-  color: var(--primary-color);
+  color: var(--blue);
 }
 .variant {
   color: gray;
@@ -36,7 +36,7 @@
   gap: 16px;
 }
 .quantity button {
-  box-shadow: 0 0 1px 1px var(--primary-color);
+  box-shadow: 0 0 1px 1px var(--blue);
   width: 24px;
   height: 24px;
   display: flex;
@@ -46,7 +46,7 @@
   background-color: inherit;
 }
 .quantity button:hover {
-  box-shadow: 0 0 1px 2px var(--primary-color);
+  box-shadow: 0 0 1px 2px var(--blue);
 }
 .table-cart svg {
   font-size: 24px;
@@ -63,16 +63,16 @@
   padding: 8px 4px;
   outline: none;
   border: none;
-  box-shadow: 0 0 1px 1px var(--primary-color);
+  box-shadow: 0 0 1px 1px var(--blue);
 }
 .coupon button:hover,
 .coupon input:focus {
-  box-shadow: 0 0 1px 2px var(--primary-color);
+  box-shadow: 0 0 1px 2px var(--blue);
 }
 .coupon button {
   padding: 8px 16px;
   border: none;
-  box-shadow: 0 0 1px 1px var(--primary-color);
+  box-shadow: 0 0 1px 1px var(--blue);
 }
 .cart-result {
   width: 50%;
@@ -139,17 +139,17 @@
 }
 .checkout {
   padding: 16px;
-  box-shadow: 0 0 1px 1px var(--primary-color);
+  box-shadow: 0 0 1px 1px var(--blue);
   display: flex;
   align-items: center;
   justify-content: center;
   margin-left: auto;
   width: 160px;
   margin-top: 24px;
-  background-color: var(--primary-color-opacity);
+  background-color: var(--blue-opacity);
 }
 .checkout:hover {
-  box-shadow: 0 0 1px 2px var(--primary-color);
+  box-shadow: 0 0 1px 2px var(--blue);
 }
 .empty {
   display: flex;
@@ -163,11 +163,11 @@
   font-size: 36px;
 }
 .empty a {
-  background-color: var(--primary-color);
+  background-color: var(--blue);
   color: #fff;
   padding: 16px 32px;
   font-size: 18px;
 }
 .empty a:hover {
-  box-shadow: 0 0 1px 2px var(--primary-color-opacity);
+  box-shadow: 0 0 1px 2px var(--blue-opacity);
 }

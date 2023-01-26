@@ -10,12 +10,12 @@
 }
 .viewAll {
   padding: 12px 24px;
-  background-color: var(--primary-color);
+  background-color: var(--blue);
   color: #fff;
   border-radius: 5px;
 }
 .viewAll:hover {
-  box-shadow: 0 0 1px 1px var(--primary-color);
+  box-shadow: 0 0 1px 1px var(--blue);
 }
 .blogThumbnail {
   position: relative;
@@ -34,7 +34,7 @@
 }
 .blogThumbnail:hover + .blogTitle,
 .blogTitle:hover {
-  color: var(--primary-color);
+  color: var(--blue);
 }
 .blogThumbnail:hover img {
   transform: scale(1.01);

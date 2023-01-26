@@ -7,6 +7,7 @@ import { DefaultLayout } from "../../../layouts";
 import { MSG_SUCCESS } from "../../../utils/constants";
 import styles from "../../../styles/AdminAuth.module.css";
 import { useRouter } from "next/router";
+import { InputControl } from "../../../components";
 type Props = {};
 
 const Login = (props: Props) => {
@@ -14,7 +15,6 @@ const Login = (props: Props) => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<LoginDTO>();
   const router = useRouter();
@@ -40,30 +40,35 @@ const Login = (props: Props) => {
         <main className={styles.wrapper}>
           <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
             <h1>Đăng nhập</h1>
-            <div className="form-group">
-              <input
-                type="text"
-                id="email"
-                className="form-control"
-                autoComplete="off"
-                {...register("email")}
-              />
-              <label htmlFor="email" className="form-label">
-                Email
-              </label>
-            </div>
-            <div className="form-group">
-              <input
-                type="password"
-                id="password"
-                className="form-control"
-                autoComplete="off"
-                {...register("password")}
-              />
-              <label htmlFor="password" className="form-label">
-                Mật khẩu
-              </label>
-            </div>
+            <InputControl
+              label="Email"
+              error={errors.email}
+              register={register("email", {
+                required: {
+                  value: true,
+                  message: "Email không được để trống",
+                },
+                pattern: {
+                  value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g,
+                  message: "Email không hợp lệ",
+                },
+              })}
+            />
+            <InputControl
+              type="password"
+              label="Mật khẩu"
+              error={errors.password}
+              register={register("password", {
+                required: {
+                  value: true,
+                  message: "Mật khẩu không được để trống",
+                },
+                minLength: {
+                  value: 6,
+                  message: "Mật khẩu ít nhất 6 kí tự",
+                },
+              })}
+            />
             <button className={styles.btn} type="submit">
               Đăng nhập
             </button>

@@ -41,5 +41,5 @@
   transform: translateY(1px);
 }
 .contactLink:hover {
-  color: var(--primary-color);
+  color: var(--blue);
 }

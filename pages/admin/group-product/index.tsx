@@ -139,6 +139,22 @@ const GroupProducts = (props: Props) => {
               ),
             },
             {
+              style: { width: 90, textAlign: "center" },
+              key: "sex",
+              display: "Giới tính",
+            },
+            {
+              style: { width: 90, textAlign: "center" },
+              key: "isAdult",
+              display: "Người lớn",
+              render: (row: GroupProduct) =>
+                row.isAdult ? (
+                  <CheckIcon style={{ color: "#33eb91" }} />
+                ) : (
+                  <ClearIcon style={{ color: "#d32f2f" }} />
+                ),
+            },
+            {
               style: { textAlign: "left" },
               key: "slug",
               display: "Bí danh",
@@ -172,7 +188,7 @@ const GroupProducts = (props: Props) => {
               render: (row: GroupProduct) => (
                 <>
                   <div style={{ display: "flex", alignItems: "center" }}>
-                    <Link href={`/admin/nhom-product/${row.id}/update`}>
+                    <Link href={`/admin/group-product/${row.id}/update`}>
                       <button className="btnEdit">Sửa</button>
                     </Link>
                     <button

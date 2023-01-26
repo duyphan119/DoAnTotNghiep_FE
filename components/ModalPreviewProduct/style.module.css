@@ -69,10 +69,10 @@
   width: 36px;
   border: none;
   outline: none;
-  box-shadow: 0 0 1px 1px var(--primary-color);
+  box-shadow: 0 0 1px 1px var(--blue);
 }
 .quantity button:hover {
-  box-shadow: 0 0 1px 2px var(--primary-color);
+  box-shadow: 0 0 1px 2px var(--blue);
 }
 .buttons {
   display: flex;
@@ -84,20 +84,20 @@
   padding: 16px 40px;
   font-size: 18px;
   font-weight: 500;
-  border: 1px solid var(--primary-color);
+  border: 1px solid var(--blue);
 }
 .buttons button:first-child {
-  background-color: var(--primary-color);
+  background-color: var(--blue);
   color: #fff;
 }
 .buttons button:last-child {
-  color: var(--primary-color);
+  color: var(--blue);
 }
 .buttons button:hover {
-  box-shadow: 0 0 1px 2px var(--primary-color-opacity);
+  box-shadow: 0 0 1px 2px var(--blue-opacity);
 }
 .variant li.active {
-  border: 1px solid var(--primary-color);
-  color: var(--primary-color);
-  box-shadow: 0 0 1px 2px var(--primary-color-opacity);
+  border: 1px solid var(--blue);
+  color: var(--blue);
+  box-shadow: 0 0 1px 2px var(--blue-opacity);
 }

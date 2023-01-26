@@ -5,16 +5,55 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  height: 100%;
+}
+.widgetContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  height: 100%;
 }
 .widgetValue {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 500;
-  margin: 8px 0;
+}
+.widgetValueDown {
+  color: red;
+}
+.widgetValueUp {
+  color: green;
+}
+.widgetOldValue {
+  font-size: 14px;
+  color: gray;
 }
 .widgetIcon svg {
   font-size: 36px;
 }
-.widgetViewMore {
+.widgetViewMore,
+.recentOrdersViewMore,
+.productVariantsViewMore {
   text-decoration: underline;
-  color: var(--primary-color);
+  color: var(--blue);
+}
+.recentOrdersViewMore {
+  margin-top: 2px;
+}
+.spanStatus {
+  padding: 3px 6px;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 13px;
+}
+.listRevenueTab {
+  font-size: 12px;
+  cursor: pointer;
+  background-color: #f2f2f2;
+  box-shadow: 0 0 1px 0 lightgray;
+  padding: 5px 10px;
+}
+.listRevenueTab.active {
+  background-color: #456;
+  color: #fff;
 }

@@ -1,76 +1,110 @@
 import { Container, Grid } from "@mui/material";
-import { getCookie, hasCookie, setCookie } from "cookies-next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useReducer, useRef } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { checkout as apiCheckout } from "../../apis/order";
+import { CheckoutDTO, checkout as apiCheckout } from "../../apis/order";
 import { checkOrderDiscount } from "../../apis/orderdiscount";
 import { getMyUserAddresses } from "../../apis/useraddress";
-import { InputControl } from "../../components";
+import { InputControl, RadioControl, SelectControl } from "../../components";
+import { useAuthContext } from "../../context/AuthContext";
 import { useCartContext } from "../../context/CartContext";
+import { useSnackbarContext } from "../../context/SnackbarContext";
 import provinces from "../../province.json";
 import styles from "../../styles/Payment.module.css";
-import {
-  COOKIE_ORDER_DISCOUNT_CODE_NAME,
-  MSG_SUCCESS,
-} from "../../utils/constants";
+import { MSG_SUCCESS } from "../../utils/constants";
 import { getPriceCartItem, getThumbnailOrderItem } from "../../utils/helpers";
+import { publicRoutes } from "../../utils/routes";
 import {
+  District,
   OrderDiscount,
   OrderItem,
+  Province,
   UserAddress,
   VariantValue,
+  Ward,
 } from "../../utils/types";
 
 type Props = {};
 
-type Inputs = {
-  fullName: string;
-  phone: string;
-  address: string;
-  province: string;
-  district: string;
-  ward: string;
+type Action = {
+  payload: any;
+  type?: string;
 };
 
-type Discount = {
+enum ActionType {}
+
+type State = {
+  districts: District[];
+  wards: Ward[];
+  paymentMethod: "COD" | "MOMO";
+  userAddresses: UserAddress[];
+  userAddress: UserAddress | null;
+  visible: boolean;
   code: string;
-  value: number;
-  id: number;
+  orderDiscount: OrderDiscount | null;
+  usePoint: boolean;
+};
+
+const reducers = (state: State, action: Action) => {
+  const { type, payload } = action;
+
+  switch (type) {
+    default: {
+      return { ...state, ...payload };
+    }
+  }
+};
+
+const initialState: State = {
+  districts: [],
+  wards: [],
+  paymentMethod: "COD",
+  userAddresses: [],
+  userAddress: null,
+  visible: false,
+  code: "",
+  orderDiscount: null,
+  usePoint: false,
 };
 
 const Payment = (props: Props) => {
   const router = useRouter();
   const { cart, checkout, total } = useCartContext();
-  const [districts, setDistricts] = useState<any>([]);
-  const [wards, setWards] = useState<any>([]);
-  const [paymentMethod, setPaymentMethod] = useState<string>("COD");
-  const [userAddresses, setUserAddresses] = useState<UserAddress[]>([]);
-  const [userAddress, setUserAddress] = useState<UserAddress | null>(null);
-  const [visible, setVisible] = useState<boolean>(false);
-  const [code, setCode] = useState<string>("");
-  const [orderDiscount, setOrderDiscount] = useState<OrderDiscount | null>(
-    null
-  );
+  const { show } = useSnackbarContext();
+  const { profile } = useAuthContext();
+
+  const [state, dispatch] = useReducer(reducers, initialState);
+  const {
+    districts,
+    orderDiscount,
+    userAddress,
+    userAddresses,
+    visible,
+    wards,
+    usePoint,
+  } = state as State;
+
+  const discountRef = useRef<HTMLInputElement>(null);
+
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
     setValue,
-  } = useForm<Inputs>();
+  } = useForm<CheckoutDTO>();
   useEffect(() => {
     setValue("phone", cart.phone || "");
     setValue("fullName", cart.fullName || "");
+    setValue("point", 0);
   }, [cart]);
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+  const onSubmit: SubmitHandler<CheckoutDTO> = async (data) => {
     try {
-      const { message } = await apiCheckout({
+      const reqData = {
         ...data,
-        paymentMethod,
         shippingPrice: 0,
         ...(visible && userAddress
           ? {
@@ -81,7 +115,9 @@ const Payment = (props: Props) => {
             }
           : {}),
         ...(orderDiscount ? { discountId: orderDiscount.id } : {}),
-      });
+        point: usePoint ? +data.point : 0,
+      };
+      const { message } = await apiCheckout(reqData);
       if (message === MSG_SUCCESS) {
         checkout();
         router.push("/payment/success");
@@ -96,17 +132,21 @@ const Payment = (props: Props) => {
     const result = userAddresses.find((_) => _.id === id);
 
     if (result) {
-      setUserAddress(result);
+      dispatch({ payload: { userAddress: result } });
     }
   };
 
   const handleUse = async () => {
     try {
-      if (code !== "") {
-        const { message, data } = await checkOrderDiscount(code, total);
-        if (message === MSG_SUCCESS) {
-          setOrderDiscount(data);
-          setCode("");
+      if (discountRef.current) {
+        const code = discountRef.current.value;
+        if (code !== "") {
+          const { message, data } = await checkOrderDiscount(code, total);
+          if (message === MSG_SUCCESS) {
+            dispatch({ payload: { orderDiscount: data, code: "" } });
+          } else {
+            show("Mã giảm giá không hợp lệ");
+          }
         }
       }
     } catch (error) {
@@ -114,17 +154,20 @@ const Payment = (props: Props) => {
     }
   };
 
+  const handleUsePoint = () => {
+    dispatch({ payload: { usePoint: true } });
+  };
+
   useEffect(() => {
     const fetchUserAddresses = async () => {
       try {
         const { message, data } = await getMyUserAddresses();
         if (message === MSG_SUCCESS) {
-          setUserAddresses(data.items);
-          if (data.count > 0) {
-            const userAddress = data.items[0];
-            setUserAddress(userAddress);
-          }
-          setVisible(data.count > 0);
+          const visible = data.count > 0;
+          const userAddress = visible ? data.items[0] : null;
+          dispatch({
+            payload: { userAddress, userAddresses: data.items, visible },
+          });
         }
       } catch (error) {
         console.log("FETCH USER ADDRESS ERROR", error);
@@ -140,9 +183,12 @@ const Payment = (props: Props) => {
         if (name === "province") {
           const { province } = value;
           if (province !== "") {
-            setDistricts(
-              provinces.find((p: any) => p.name === province)?.districts
+            const findProvince = provinces.find(
+              (p: Province) => p.name === province
             );
+            const districts = findProvince ? findProvince.districts : [];
+            dispatch({ payload: { districts } });
+
             value.district = "";
             value.ward = "";
           }
@@ -150,21 +196,20 @@ const Payment = (props: Props) => {
         if (name === "district") {
           const { district, province } = value;
           if (province !== "" && district !== "") {
-            const dis = provinces
-              .find((p: any) => p.name === province)
-              ?.districts.find((d: any) => d.name === district);
-            setWards(dis ? dis.wards : []);
+            const findDistrict = provinces
+              .find((p: Province) => p.name === province)
+              ?.districts.find((d: District) => d.name === district);
+            const wards = findDistrict ? findDistrict.wards : [];
+            dispatch({ payload: { wards } });
             value.ward = "";
           } else {
-            console.log("ngu");
+            console.log("Error");
           }
         }
       }
     });
     return () => subscription.unsubscribe();
   }, [watch]);
-
-  console.log({ visible, userAddress });
 
   return (
     <div>
@@ -215,32 +260,23 @@ const Payment = (props: Props) => {
                 </Grid>
                 {visible && userAddress ? (
                   <Grid item xs={12}>
-                    <div className="form-group">
-                      <select
-                        className="form-control"
-                        value={userAddress.id}
-                        onChange={handleChange}
-                      >
-                        {userAddresses.map((item: UserAddress) => {
-                          return (
-                            <option value={item.id} key={item.id}>
-                              {item.address},&nbsp;{item.ward}
-                              ,&nbsp;{item.district},&nbsp;
-                              {item.province}
-                            </option>
-                          );
-                        })}
-                      </select>
-                      <label htmlFor="" className="form-label required">
-                        Địa chỉ
-                      </label>
-                    </div>
+                    <SelectControl
+                      label="Địa chỉ"
+                      options={userAddresses.map((item: UserAddress) => ({
+                        value: item.id,
+                        display: `${item.address}, ${item.ward}
+                        , ${item.district}, 
+                        ${item.province}`,
+                      }))}
+                      value={userAddress.id}
+                      onChange={handleChange}
+                    />
                   </Grid>
                 ) : null}
                 <Grid item xs={12}>
                   <div
-                    style={{ cursor: "pointer", color: "var(--primary-color)" }}
-                    onClick={() => setVisible((v) => !v)}
+                    style={{ cursor: "pointer", color: "var(--blue)" }}
+                    onClick={() => dispatch({ payload: { visible: !visible } })}
                   >
                     {visible ? "+ Thêm địa chỉ khác" : "Sổ địa chỉ"}
                   </div>
@@ -248,81 +284,49 @@ const Payment = (props: Props) => {
                 {!visible ? (
                   <>
                     <Grid item xs={12}>
-                      <div className="form-group">
-                        {errors.province &&
-                          errors.province.type === "required" && (
-                            <div className="form-error">
-                              Tỉnh / Thành phố không được để trống
-                            </div>
-                          )}
-                        <select
-                          className="form-control"
-                          {...register("province", { required: true })}
-                        >
-                          <option value="">Chọn Tỉnh / Thành phố</option>
-                          {provinces.map((pro: any) => {
-                            return (
-                              <option value={pro.name} key={pro.name}>
-                                {pro.name}
-                              </option>
-                            );
-                          })}
-                        </select>
-                        <label htmlFor="" className="form-label required">
-                          Tỉnh / Thành phố
-                        </label>
-                      </div>
+                      <SelectControl
+                        label="Tỉnh / Thành phố"
+                        options={provinces.map((pro: any) => ({
+                          value: pro.name,
+                        }))}
+                        register={register("province", {
+                          required: {
+                            value: true,
+                            message: "Tỉnh / Thành phố không được để trống",
+                          },
+                        })}
+                        required={true}
+                      />
                     </Grid>
                     <Grid item xs={12}>
-                      <div className="form-group">
-                        {errors.district &&
-                          errors.district.type === "required" && (
-                            <div className="form-error">
-                              Quận / Huyện không được để trống
-                            </div>
-                          )}
-                        <select
-                          className="form-control"
-                          {...register("district", { required: true })}
-                        >
-                          <option value="">Chọn Quận / Huyện</option>
-                          {districts.map((dis: any) => {
-                            return (
-                              <option value={dis.name} key={dis.name}>
-                                {dis.name}
-                              </option>
-                            );
-                          })}
-                        </select>
-                        <label htmlFor="" className="form-label required">
-                          Quận / Huyện
-                        </label>
-                      </div>
+                      <SelectControl
+                        label="Quận / Huyện"
+                        options={districts.map((dis: any) => ({
+                          value: dis.name,
+                        }))}
+                        register={register("district", {
+                          required: {
+                            value: true,
+                            message: "Quận / Huyện không được để trống",
+                          },
+                        })}
+                        required={true}
+                      />
                     </Grid>
                     <Grid item xs={12}>
-                      <div className="form-group">
-                        {errors.ward && errors.ward.type === "required" && (
-                          <div className="form-error">
-                            Phường / Xã không được để trống
-                          </div>
-                        )}
-                        <select
-                          className="form-control"
-                          {...register("ward", { required: true })}
-                        >
-                          <option value="">Chọn Phường / Xã</option>
-                          {wards.map((w: any) => {
-                            return (
-                              <option value={w.name} key={w.name}>
-                                {w.name}
-                              </option>
-                            );
-                          })}
-                        </select>
-                        <label htmlFor="" className="form-label required">
-                          Phường / Xã
-                        </label>
-                      </div>
+                      <SelectControl
+                        label="Phường / Xã"
+                        options={wards.map((w: any) => ({
+                          value: w.name,
+                        }))}
+                        register={register("ward", {
+                          required: {
+                            value: true,
+                            message: "Phường / Xã không được để trống",
+                          },
+                        })}
+                        required={true}
+                      />
                     </Grid>
                     <Grid item xs={12}>
                       <InputControl
@@ -342,40 +346,19 @@ const Payment = (props: Props) => {
               <h1>Phương thức thanh toán</h1>
               <Grid container columnSpacing={2} rowSpacing={2}>
                 <Grid item xs={12}>
-                  <div className={styles.radio}>
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      id="paymentMethod1"
-                      hidden
-                      defaultChecked={paymentMethod === "COD"}
-                    />
-                    <div className={styles.circle}></div>
-                    <label
-                      htmlFor="paymentMethod1"
-                      onClick={() => setPaymentMethod("COD")}
-                    >
-                      Thanh toán khi nhận hàng (COD)
-                    </label>
-                  </div>
+                  <RadioControl
+                    defaultChecked={true}
+                    register={register("paymentMethod")}
+                    label="Thanh toán khi nhận hàng (COD)"
+                    value="COD"
+                  />
                 </Grid>
                 <Grid item xs={12}>
-                  <div className={styles.radio}>
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      id="paymentMethod2"
-                      hidden
-                      defaultChecked={paymentMethod === "Momo"}
-                    />
-                    <div className={styles.circle}></div>
-                    <label
-                      htmlFor="paymentMethod2"
-                      onClick={() => setPaymentMethod("Momo")}
-                    >
-                      Thanh toán qua Momo
-                    </label>
-                  </div>
+                  <RadioControl
+                    register={register("paymentMethod")}
+                    label="Thanh toán qua MOMO"
+                    value="MOMO"
+                  />
                 </Grid>
               </Grid>
             </Grid>
@@ -422,12 +405,11 @@ const Payment = (props: Props) => {
                   );
                 })}
                 <li>
+                  <div className={styles.discountTitle}>
+                    Sử dụng mã giảm giá
+                  </div>
                   <div className={styles.discount}>
-                    <input
-                      placeholder="Nhập mã giảm giá"
-                      value={code}
-                      onChange={(e) => setCode(e.target.value)}
-                    />
+                    <input placeholder="Nhập mã giảm giá" ref={discountRef} />
                     <button type="button" onClick={handleUse}>
                       Sử dụng
                     </button>
@@ -437,12 +419,33 @@ const Payment = (props: Props) => {
                       Đã áp dụng mã giảm giá {orderDiscount.code}.
                       <span
                         className={styles.cancelDiscount}
-                        onClick={() => setOrderDiscount(null)}
+                        onClick={() =>
+                          dispatch({ payload: { orderDiscount: null } })
+                        }
                       >
                         Hủy
                       </span>
                     </div>
                   ) : null}
+                </li>
+                <li>
+                  <div className={styles.dPointTitle}>
+                    Sử dụng D-point <span>(1 D-point = 1000đ)</span>
+                  </div>
+                  <div className={styles.dPoint}>
+                    <input
+                      type="number"
+                      step={1}
+                      max={profile ? profile.point : 0}
+                      defaultValue={0}
+                      placeholder="Nhập số lượng D-point"
+                      min={0}
+                      {...register("point")}
+                    />
+                    <button type="button" onClick={handleUsePoint}>
+                      Sử dụng
+                    </button>
+                  </div>
                 </li>
                 <li className={styles["first-row"]}>
                   <span>Giá gốc</span>
@@ -463,7 +466,7 @@ const Payment = (props: Props) => {
                   </span>
                 </li>
                 <li className={styles.actions}>
-                  <Link href="/cart">Quay lại giỏ hàng</Link>
+                  <Link href={publicRoutes.cart}>Quay lại giỏ hàng</Link>
                   <button type="submit">Thanh toán</button>
                 </li>
               </ul>

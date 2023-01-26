@@ -49,8 +49,6 @@ const CartWrapper = (props: Props) => {
     setCart({ items: [] });
   };
 
-  console.log(cart);
-
   const addToCart = async (item: CartItem, price: number) => {
     try {
       const { message, data } = await createCartItem({
@@ -68,13 +66,15 @@ const CartWrapper = (props: Props) => {
               i.productVariantId === item.productVariantId
           );
 
+          const { order, ...orderItem } = data;
+
           if (index !== -1) {
-            c.items[index].quantity += data.quantity;
+            c.items[index].quantity += orderItem.quantity;
           } else {
-            c.items.push(data);
+            c.items.push(orderItem);
           }
 
-          return { ...c };
+          return { ...order, ...c };
         });
         show("Sản phẩm đã được thêm vào giỏ hàng", "success");
       }

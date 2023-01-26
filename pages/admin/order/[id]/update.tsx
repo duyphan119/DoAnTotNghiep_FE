@@ -12,49 +12,48 @@ import Image from "next/image";
 import { getThumbnailOrderItem } from "../../../../utils/helpers";
 import { useRouter } from "next/router";
 import { useSnackbarContext } from "../../../../context/SnackbarContext";
+import { FooterForm } from "../../../../components";
 type Props = {
   order: Order;
 };
 
-const statuses: string[] = [
-  "Đang xử lý",
-  "Đang giao hàng",
-  "Giao hàng thành công",
-];
-
-const EditOrder = (props: Props) => {
+const EditOrder = ({ order }: Props) => {
   const router = useRouter();
-  const [status, setStatus] = useState<string>(
-    props.order.status || statuses[0]
-  );
   const { show } = useSnackbarContext();
 
   const total = useMemo(() => {
-    const sumQuantity = props.order.items.reduce(
+    const sumQuantity = order.items.reduce(
       (p: number, c: OrderItem) => p + c.quantity,
       0
     );
-    const sumPrice = props.order.items.reduce(
+    const sumPrice = order.items.reduce(
       (p: number, c: OrderItem) => p + c.quantity * c.price,
       0
     );
-    const price =
-      sumPrice - (props.order.discount ? props.order.discount.value : 0);
+    const price = sumPrice - (order.discount ? order.discount.value : 0);
     return { sumQuantity, sumPrice, price };
   }, []);
 
-  const handleBack = () => {
-    router.back();
+  const getSubmitText = () => {
+    const { allowCannceled, isPaid, isOrdered } = order;
+    console.log({ allowCannceled, isPaid, isOrdered });
+    if (isOrdered) {
+      if (allowCannceled && !isPaid) {
+        return "Xác nhận đơn hàng";
+      } else if (!allowCannceled && !isPaid) return "Xác nhận đã giao";
+    }
+    return "";
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-      const { message } = await updateStatus(props.order.id, status);
+      const { message } = await updateStatus(order.id, status);
 
       if (message === MSG_SUCCESS) {
         show("Cập nhật trạng thái đơn hàng thành công", "success");
+        router.back();
       }
     } catch (error) {
       console.log("UPDATE ORDER STATUS ERROR", error);
@@ -80,26 +79,14 @@ const EditOrder = (props: Props) => {
             >
               Thông tin đơn hàng
             </div>
-            <Box>Mã đơn hàng {props.order.id}</Box>
-            <Box>Họ tên: {props.order.fullName}</Box>
-            <Box>Số điện thoại: {props.order.phone}</Box>
+            <Box>Mã đơn hàng {order.id}</Box>
+            <Box>Họ tên: {order.fullName}</Box>
+            <Box>Số điện thoại: {order.phone}</Box>
             <Box>
-              Địa chỉ: {props.order.address},&nbsp;{props.order.ward},&nbsp;
-              {props.order.district},&nbsp;{props.order.province}
+              Địa chỉ: {order.address},&nbsp;{order.ward},&nbsp;
+              {order.district},&nbsp;{order.province}
             </Box>
-            <Box>
-              Trạng thái:{" "}
-              <select
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-              >
-                {statuses.map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            </Box>
+            <Box>Trạng thái: {order.status}</Box>
             <Box>
               <Typography
                 variant="h6"
@@ -119,43 +106,41 @@ const EditOrder = (props: Props) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {props.order.items.map(
-                    (orderItem: OrderItem, index: number) => {
-                      return (
-                        <tr key={orderItem.id}>
-                          <td style={{ textAlign: "center" }}>{index + 1}</td>
-                          <td>
-                            <Box display="flex" alignItems="center">
-                              <Image
-                                width={80}
-                                height={88}
-                                alt=""
-                                src={getThumbnailOrderItem(orderItem)}
-                                priority={true}
-                              />
-                              <Box ml={1}>
-                                <Typography variant="subtitle1">
-                                  {orderItem.productVariant?.product?.name}
-                                </Typography>
-                                <Typography variant="caption">
-                                  {orderItem.productVariant?.name}
-                                </Typography>
-                              </Box>
+                  {order.items.map((orderItem: OrderItem, index: number) => {
+                    return (
+                      <tr key={orderItem.id}>
+                        <td style={{ textAlign: "center" }}>{index + 1}</td>
+                        <td>
+                          <Box display="flex" alignItems="center">
+                            <Image
+                              width={80}
+                              height={88}
+                              alt=""
+                              src={getThumbnailOrderItem(orderItem)}
+                              priority={true}
+                            />
+                            <Box ml={1}>
+                              <Typography variant="subtitle1">
+                                {orderItem.productVariant?.product?.name}
+                              </Typography>
+                              <Typography variant="caption">
+                                {orderItem.productVariant?.name}
+                              </Typography>
                             </Box>
-                          </td>
-                          <td style={{ textAlign: "center" }}>
-                            {orderItem.price}đ
-                          </td>
-                          <td style={{ textAlign: "center" }}>
-                            {orderItem.quantity}
-                          </td>
-                          <td style={{ textAlign: "center" }}>
-                            {orderItem.quantity * orderItem.price}đ
-                          </td>
-                        </tr>
-                      );
-                    }
-                  )}
+                          </Box>
+                        </td>
+                        <td style={{ textAlign: "center" }}>
+                          {orderItem.price}đ
+                        </td>
+                        <td style={{ textAlign: "center" }}>
+                          {orderItem.quantity}
+                        </td>
+                        <td style={{ textAlign: "center" }}>
+                          {orderItem.quantity * orderItem.price}đ
+                        </td>
+                      </tr>
+                    );
+                  })}
                   <tr>
                     <td colSpan={3} style={{ textAlign: "center" }}>
                       Tổng
@@ -171,11 +156,11 @@ const EditOrder = (props: Props) => {
                     <td>Giá gốc&nbsp;</td>
                     <td style={{ textAlign: "right" }}>{total.sumPrice}đ</td>
                   </tr>
-                  {props.order.discount ? (
+                  {order.discount ? (
                     <tr>
                       <td>Giảm giá&nbsp;</td>
                       <td style={{ textAlign: "right", color: "red" }}>
-                        {props.order.discount.value}đ
+                        {order.discount.value}đ
                       </td>
                     </tr>
                   ) : null}
@@ -186,20 +171,10 @@ const EditOrder = (props: Props) => {
                 </tbody>
               </table>
               <div>
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  onClick={handleBack}
-                >
-                  Quay lại
-                </Button>
-                <Button
-                  variant="contained"
-                  type="submit"
-                  style={{ marginLeft: 8 }}
-                >
-                  Lưu
-                </Button>
+                <FooterForm
+                  onBack={() => router.back()}
+                  submitText={getSubmitText()}
+                />
               </div>
             </Box>
           </Paper>

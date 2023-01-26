@@ -1,13 +1,11 @@
-import { useState, useEffect } from "react";
-import { getAllVariants } from "../../../apis/variant";
+import { useEffect, useState } from "react";
 import { getAllVariantValues } from "../../../apis/variantvalue";
 import { useGroupProductContext } from "../../../context/GroupProductContext";
 import { MSG_SUCCESS } from "../../../utils/constants";
-import { formatVariants } from "../../../utils/helpers";
+import { formatVariants, fullNameGroupProduct } from "../../../utils/helpers";
 import {
   GroupProduct,
   RenderVariantValues,
-  Variant,
   VariantValue,
 } from "../../../utils/types";
 import styles from "../style.module.css";
@@ -204,7 +202,7 @@ const Sidebar = ({ onClose, onFilter, query }: Props) => {
                     clickGroupProduct(selected.groupProduct as GroupProduct)
                   }
                 >
-                  {selected.groupProduct.name}
+                  {fullNameGroupProduct(selected.groupProduct)}
                 </li>
               ) : null}
               {selected.variantValues.map((variantValue: VariantValue) => {
@@ -246,7 +244,7 @@ const Sidebar = ({ onClose, onFilter, query }: Props) => {
                   onClick={() => clickGroupProduct(groupProduct)}
                 ></div>
                 <label htmlFor={`checkbox${groupProduct.id}`}>
-                  {groupProduct.name}
+                  {fullNameGroupProduct(groupProduct)}
                 </label>
               </li>
             );

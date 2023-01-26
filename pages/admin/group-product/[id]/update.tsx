@@ -1,40 +1,44 @@
-import { Button, Grid, Paper } from "@mui/material";
-import dynamic from "next/dynamic";
+import { Grid, Paper } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { ChangeEvent, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import "react-quill/dist/quill.snow.css";
 import {
   CreateGroupProductDTO,
   getGroupProductById,
   updateGroupProduct,
 } from "../../../../apis/groupProduct";
 import { uploadSingle } from "../../../../apis/upload";
+import {
+  FooterForm,
+  InputControl,
+  SelectControl,
+} from "../../../../components";
 import { AdminLayout } from "../../../../layouts";
 import { MSG_SUCCESS } from "../../../../utils/constants";
 import { GroupProduct } from "../../../../utils/types";
 
-type Props = {
-  groupProduct: GroupProduct;
-};
+type Props = { groupProduct: GroupProduct };
 
-const UpdateGroupProduct = (props: Props) => {
+const UpdateGroupProduct = ({ groupProduct }: Props) => {
   const router = useRouter();
 
   const [files, setFiles] = useState<FileList | null>(null);
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<CreateGroupProductDTO>({
     defaultValues: {
-      name: props.groupProduct.name,
-      slug: props.groupProduct.slug,
-      description: props.groupProduct.description,
+      name: groupProduct.name,
+      description: groupProduct.description,
+      sex: groupProduct.sex,
+      isAdult: groupProduct.isAdult,
     },
   });
+
+  console.log({ groupProduct });
+
   const onSubmit: SubmitHandler<CreateGroupProductDTO> = async (data) => {
     try {
       let url = "";
@@ -47,20 +51,17 @@ const UpdateGroupProduct = (props: Props) => {
           url = dataImage.secure_url;
         }
       }
-      const { message: msg } = await updateGroupProduct(props.groupProduct.id, {
+      const { message: msg } = await updateGroupProduct(groupProduct.id, {
         ...data,
+        isAdult: "" + data.isAdult === "true" ? true : false,
         ...(url !== "" ? { thumbnail: url } : {}),
       });
       if (msg === MSG_SUCCESS) {
-        router.push("/admin/nhom-product");
+        router.push("/admin/group-product");
       }
     } catch (error) {
       console.log(error);
     }
-  };
-
-  const handleBack = () => {
-    router.back();
   };
 
   return (
@@ -80,81 +81,58 @@ const UpdateGroupProduct = (props: Props) => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container rowSpacing={3} columnSpacing={3}>
               <Grid item xs={12}>
-                <div className="form-group">
-                  {errors.name && errors.name.type === "required" && (
-                    <div className="form-error">Tên không được để trống</div>
-                  )}
-                  <input
-                    type="text"
-                    id="name"
-                    className="form-control"
-                    autoComplete="off"
-                    {...register("name")}
-                  />
-                  <label htmlFor="name" className="form-label required">
-                    Tên nhóm sản phẩm
-                  </label>
-                </div>
+                <InputControl
+                  label="Tên nhóm sản phẩm"
+                  error={errors.name}
+                  register={register("name", {
+                    required: {
+                      value: true,
+                      message: "Tên không được để trống",
+                    },
+                  })}
+                  required={true}
+                />
               </Grid>
               <Grid item xs={12}>
-                <div className="form-group">
-                  <input
-                    type="text"
-                    id="slug"
-                    className="form-control"
-                    autoComplete="off"
-                    {...register("slug")}
-                  />
-                  <label htmlFor="slug" className="form-label">
-                    Bí danh
-                  </label>
-                </div>
+                <InputControl
+                  label="Mô tả"
+                  error={errors.description}
+                  register={register("description")}
+                />
               </Grid>
               <Grid item xs={12}>
-                <div className="form-group">
-                  <input
-                    type="text"
-                    id="description"
-                    className="form-control"
-                    autoComplete="off"
-                    {...register("description")}
-                  />
-                  <label htmlFor="description" className="form-label">
-                    Mô tả
-                  </label>
-                </div>
+                <SelectControl
+                  label="Giới tính"
+                  register={register("sex")}
+                  options={[
+                    { value: "Nam" },
+                    { value: "Nữ" },
+                    { value: "Unisex" },
+                  ]}
+                />
               </Grid>
               <Grid item xs={12}>
-                <div className="form-group">
-                  <input
-                    type="file"
-                    id="thumbnail"
-                    className="form-control"
-                    autoComplete="off"
-                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                      setFiles(e.target.files)
-                    }
-                  />
-                  <label htmlFor="thumbnail" className="form-label">
-                    Ảnh đại diện
-                  </label>
-                </div>
+                <SelectControl
+                  label="Đối tượng"
+                  register={register("isAdult")}
+                  options={[
+                    { value: true, display: "Người lớn" },
+                    { value: false, display: "Trẻ em" },
+                  ]}
+                />
               </Grid>
               <Grid item xs={12}>
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  onClick={handleBack}
-                >
-                  Quay lại
-                </Button>
-                <Button
-                  variant="contained"
-                  type="submit"
-                  style={{ marginLeft: 8 }}
-                >
-                  Lưu
-                </Button>
+                <InputControl
+                  label="Ảnh đại diện"
+                  error={errors.description}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    setFiles(e.target.files)
+                  }
+                  type="file"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FooterForm onBack={() => router.back()} />
               </Grid>
             </Grid>
           </form>

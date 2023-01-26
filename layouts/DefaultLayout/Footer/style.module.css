@@ -37,7 +37,7 @@
   margin-bottom: 8px;
 }
 .footer a:hover {
-  color: var(--primary-color);
+  color: var(--blue);
 }
 .footer ul {
   display: flex;

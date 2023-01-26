@@ -109,7 +109,7 @@ const CommentInput = (props: Props) => {
       <span
         onClick={() => setOpenModal(true)}
         style={{
-          color: "var(--primary-color)",
+          color: "var(--blue)",
           textDecoration: "underline",
           cursor: "pointer",
         }}

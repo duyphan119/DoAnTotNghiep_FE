@@ -4,6 +4,7 @@ import styles from "../../styles/CheckoutSuccess.module.css";
 import checkoutSuccessSvg from "../../public/checkout_success.svg";
 import Image from "next/image";
 import Link from "next/link";
+import { publicRoutes } from "../../utils/routes";
 
 type Props = {};
 
@@ -29,7 +30,7 @@ const CheckoutSuccess = (props: Props) => {
           Chúng tôi sẽ thông tin đến bạn và trạng thái đơn hàng thông qua{" "}
           <strong>Email</strong>
         </p>
-        <Link href="/" className={styles.link}>
+        <Link href={publicRoutes.home} className={styles.link}>
           Quay về trang chủ
         </Link>
       </div>

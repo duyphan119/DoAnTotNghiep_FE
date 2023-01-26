@@ -8,7 +8,7 @@ export type CreateCartItem = {
   price: number;
 };
 
-export type Checkout = {
+export type CheckoutDTO = {
   province: string;
   district: string;
   ward: string;
@@ -17,6 +17,7 @@ export type Checkout = {
   shippingPrice: number;
   fullName: string;
   phone: string;
+  point: number;
 };
 
 export type OrderQueryParams = Partial<{
@@ -46,7 +47,7 @@ export const deleteCartItem = (id: number): Promise<any> =>
 export const getCart = (): Promise<any> =>
   privateAxios().get("/cart/user", { params: { items: true } });
 
-export const checkout = (body: Checkout): Promise<any> =>
+export const checkout = (body: CheckoutDTO): Promise<any> =>
   privateAxios().patch("order/checkout", body);
 
 export const myOrders = (params?: OrderQueryParams): Promise<any> =>

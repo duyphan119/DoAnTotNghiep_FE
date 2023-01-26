@@ -7,7 +7,7 @@
   margin-bottom: 8px;
 }
 .breadcrumb-link:hover {
-  color: var(--primary-color);
+  color: var(--blue);
 }
 .breadcrumb-current {
   font-size: 24px;
@@ -61,7 +61,7 @@
   display: flex;
   gap: 8px;
   white-space: nowrap;
-  align-items: center;
+  flex-direction: column;
 }
 .top-sidebar .result ul {
   display: flex;
@@ -75,11 +75,11 @@
 .top-sidebar button {
   padding: 8px 16px;
   border: none;
-  box-shadow: 0 0 1px 1px var(--primary-color);
+  box-shadow: 0 0 1px 1px var(--blue);
   border-radius: 2px;
 }
 .top-sidebar button:hover {
-  box-shadow: 0 0 1px 2px var(--primary-color);
+  box-shadow: 0 0 1px 2px var(--blue);
 }
 .sidebar .title {
   font-weight: 500;
@@ -110,7 +110,7 @@
   user-select: none;
 }
 .checkbox input:checked ~ .checked {
-  background-color: var(--primary-color);
+  background-color: var(--blue);
   background-clip: content-box;
   padding: 1px;
 }
@@ -127,5 +127,5 @@
   user-select: none;
 }
 .variant.active {
-  box-shadow: 0 0 1px 2px var(--primary-color);
+  box-shadow: 0 0 1px 2px var(--blue);
 }

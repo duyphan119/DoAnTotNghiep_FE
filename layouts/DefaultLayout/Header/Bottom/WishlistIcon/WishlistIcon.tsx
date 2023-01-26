@@ -14,7 +14,7 @@ const WishlistIcon = (props: Props) => {
         badgeContent={listId.length}
         sx={{
           "& .MuiBadge-badge": {
-            backgroundColor: "var(--primary-color)",
+            backgroundColor: "var(--blue)",
             color: "white",
           },
         }}

@@ -1,9 +1,10 @@
 import { privateAxios, publicAxios } from "../config/configAxios";
-import { GroupProduct, QueryParams } from "../utils/types";
+import { GroupProduct, QueryParams, Sex } from "../utils/types";
 
 export type GroupProductQueryParams = {
   slug?: string;
   name?: string;
+  forHeader?: boolean;
 } & QueryParams;
 
 export type CreateGroupProductDTO = {
@@ -11,6 +12,8 @@ export type CreateGroupProductDTO = {
   slug?: string;
   description?: string;
   thumbnail?: string;
+  sex?: Sex;
+  isAdult?: boolean;
 };
 
 export const getAllGroupProducts = (

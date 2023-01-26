@@ -1,8 +1,7 @@
-import React from "react";
-import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import Link from "next/link";
-import { Badge, withStyles } from "@mui/material";
 import { useCartContext } from "../../../../../context/CartContext";
+import { publicRoutes } from "../../../../../utils/routes";
+import styles from "../style.module.css";
 type Props = {};
 
 const CartIcon = (props: Props) => {
@@ -13,7 +12,7 @@ const CartIcon = (props: Props) => {
         badgeContent={count}
         sx={{
           "& .MuiBadge-badge": {
-            backgroundColor: "var(--primary-color)",
+            backgroundColor: "var(--blue)",
             color: "white",
           },
         }}
@@ -22,7 +21,9 @@ const CartIcon = (props: Props) => {
           <ShoppingBagOutlinedIcon />
         </Link>
       </Badge> */}
-      <Link href="/cart">Giỏ hàng ({count})</Link>
+      <Link href={publicRoutes.cart} className={styles.cartLink}>
+        Giỏ hàng ({count})
+      </Link>
     </>
   );
 };

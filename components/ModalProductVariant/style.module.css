@@ -26,8 +26,8 @@
 }
 .variantValue.active,
 .variantValue:hover {
-  border: 1px solid var(--primary-color);
-  background-color: var(--primary-color);
+  border: 1px solid var(--blue);
+  background-color: var(--blue);
   color: #fff;
 }
 .variantValue {

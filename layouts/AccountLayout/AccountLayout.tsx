@@ -1,6 +1,6 @@
+import { Container, Grid } from "@mui/material";
 import React from "react";
 import DefaultLayout from "../DefaultLayout";
-import { Container, Grid } from "@mui/material";
 import Sidebar from "./Sidebar";
 type Props = {
   children?: React.ReactNode;

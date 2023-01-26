@@ -1,4 +1,5 @@
 import {
+  GroupProduct,
   OrderItem,
   Product,
   ProductVariantImage,
@@ -79,7 +80,10 @@ export const formatTime = (input: string | number | Date): string => {
     minute < 10 ? "0" + minute : minute
   }:${second < 10 ? "0" + second : second}`;
 };
-export const formatDateTime = (input: string | number | Date): string => {
+export const formatDateTime = (
+  input: string | number | Date | null
+): string => {
+  if (!input) return "";
   return `${formatDate(input)} ${formatTime(input)}`;
 };
 export const getPriceCartItem = (orderItem: OrderItem): number => {
@@ -130,4 +134,16 @@ export const formatYAxisPrice = (value: number) => {
     : value >= 1000000
     ? `${(value / 1000000).toFixed(1)}tr`
     : `${value / 1000}k`;
+};
+
+export const fullNameGroupProduct = (groupProduct: GroupProduct) => {
+  const { name, sex, isAdult } = groupProduct;
+  let fullName = name;
+
+  if (!isAdult && sex === "Nam") fullName += " bé trai";
+  else if (!isAdult && sex === "Nữ") fullName += " bé gái";
+  else if (isAdult && sex === "Nam") fullName += " nam";
+  else if (isAdult && sex === "Nữ") fullName += " nữ";
+
+  return fullName;
 };

@@ -1,16 +1,13 @@
-import React from "react";
-import Contact from "./Contact";
-import HeaderBottom from "./HeaderBottom";
-import HeaderTop from "./HeaderTop";
+import Bottom from "./Bottom";
+import Top from "./Top";
 
 type Props = {};
 
 const Header = (props: Props) => {
   return (
     <header>
-      <Contact />
-      <HeaderTop />
-      <HeaderBottom />
+      <Top />
+      <Bottom />
     </header>
   );
 };
