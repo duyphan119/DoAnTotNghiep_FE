@@ -15,7 +15,6 @@ import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
 import { useRouter } from "next/router";
 import { MSG_SUCCESS } from "../../../utils/constants";
-//import { useSnackbarContext } from "../../../context/SnackbarContext";
 import { uploadSingle } from "../../../apis/upload";
 import { AdminFormPaper, FooterForm, InputControl } from "../../../components";
 const ReactQuill = dynamic(import("react-quill"), { ssr: false });
@@ -30,7 +29,6 @@ export type RenderContentProps = {
 
 const CreateBlog = (props: Props) => {
   const router = useRouter();
-  // const { show } = useSnackbarContext();
   const [files, setFiles] = useState<FileList | null>(null);
   const {
     register,

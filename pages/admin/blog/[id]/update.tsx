@@ -10,7 +10,6 @@ import { Blog } from "../../../../utils/types";
 import { useRouter } from "next/router";
 import "react-quill/dist/quill.snow.css";
 import { uploadSingle } from "../../../../apis/upload";
-//import { useSnackbarContext } from "../../../../context/SnackbarContext";
 import { RenderContentProps } from "../create";
 import {
   AdminFormPaper,
@@ -25,7 +24,6 @@ type Props = {
 
 const UpdateBlog = ({ blog }: Props) => {
   const router = useRouter();
-  // const { show } = useSnackbarContext();
   const [files, setFiles] = useState<FileList | null>(null);
   const {
     register,

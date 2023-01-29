@@ -11,7 +11,6 @@ import { Paper, Button, Box, Typography } from "@mui/material";
 import Image from "next/image";
 import { getThumbnailOrderItem } from "../../../../utils/helpers";
 import { useRouter } from "next/router";
-//import { useSnackbarContext } from "../../../../context/SnackbarContext";
 import { FooterForm } from "../../../../components";
 type Props = {
   order: Order;
@@ -19,7 +18,6 @@ type Props = {
 
 const EditOrder = ({ order }: Props) => {
   const router = useRouter();
-  // const { show } = useSnackbarContext();
 
   const total = useMemo(() => {
     const sumQuantity = order.items.reduce(
