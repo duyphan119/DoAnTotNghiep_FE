@@ -2,8 +2,9 @@ import { Box } from "@mui/material";
 import { hasCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import { ReactNode, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { getProfile } from "../../apis/auth";
-import { useAuthContext } from "../../context/AuthContext";
+import { authSelector } from "../../redux/slice/authSlice";
 import { COOKIE_ACCESSTOKEN_NAME, MSG_SUCCESS } from "../../utils/constants";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
@@ -15,31 +16,14 @@ type Props = Partial<{
 
 const AdminLayout = ({ children, pageTitle }: Props) => {
   const router = useRouter();
-  const [isLogged, setIsLogged] = useState<boolean>(false);
-  const { login, changeProfile } = useAuthContext();
+  const { profile, isSuccess } = useSelector(authSelector);
 
   useEffect(() => {
-    (async () => {
-      try {
-        if (hasCookie(COOKIE_ACCESSTOKEN_NAME)) {
-          const { message, data } = await getProfile();
-          if (message !== MSG_SUCCESS) {
-            if (router.pathname.includes("/admin"))
-              router.push("/admin/signin");
-            changeProfile(null);
-          } else {
-            setIsLogged(true);
-            login(data);
-            return;
-          }
-        }
-      } catch (error) {}
-      if (router.pathname.includes("/admin")) router.push("/admin/signin");
-      changeProfile(null);
-    })();
-  }, []);
+    if (router.pathname.includes("/admin") && isSuccess && !profile)
+      router.push("/admin/signin");
+  }, [isSuccess, profile]);
 
-  return isLogged ? (
+  return profile ? (
     <Box display="flex">
       <Sidebar />
       <Box display="flex" flexDirection="column" flex={1}>

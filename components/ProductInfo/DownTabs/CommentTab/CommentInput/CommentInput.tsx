@@ -1,28 +1,32 @@
 import { Button, Rating } from "@mui/material";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
 import {
   CommentProductDTO,
   createCommentProduct,
   updateCommentProduct,
 } from "../../../../../apis/commentproduct";
-import { useAuthContext } from "../../../../../context/AuthContext";
-import { useSnackbarContext } from "../../../../../context/SnackbarContext";
 import { useProductDetailContext } from "../../../../../pages/product/[slug]";
+import {
+  authActions,
+  authSelector,
+} from "../../../../../redux/slice/authSlice";
+import {
+  productDetailActions,
+  productDetailSelector,
+} from "../../../../../redux/slice/productDetailSlice";
+import { snackbarActions } from "../../../../../redux/slice/snackbarSlice";
+import { useAppDispatch } from "../../../../../redux/store";
 import { MSG_SUCCESS } from "../../../../../utils/constants";
 import styles from "../../../style.module.css";
 
 type Props = {};
 
 const CommentInput = (props: Props) => {
-  const {
-    product,
-    commentProductData,
-    onAddCommentProduct,
-    onEditCommentProduct,
-  } = useProductDetailContext();
-  const { show } = useSnackbarContext();
-  const { isLogged, setOpenModal } = useAuthContext();
+  const appDispatch = useAppDispatch();
+  const { product, commentProductData } = useSelector(productDetailSelector);
+  const { profile } = useSelector(authSelector);
 
   const { userComment } = commentProductData;
 
@@ -38,36 +42,35 @@ const CommentInput = (props: Props) => {
 
   const onSubmit: SubmitHandler<CommentProductDTO> = async (data) => {
     try {
-      if (star > 0) {
+      if (star > 0 && product) {
         const input = {
           ...data,
           star,
           productId: product.id,
         };
         if (!userComment) {
-          const { message, data } = await createCommentProduct(input);
-          if (message === MSG_SUCCESS) {
-            onAddCommentProduct(data);
-            show("Cảm ơn bài đánh giá của bạn", "success");
-          }
+          appDispatch(productDetailActions.fetchAddCommnetProduct(input));
         } else {
-          const { message, data } = await updateCommentProduct(
-            userComment.id,
-            input
+          appDispatch(
+            productDetailActions.fetchUpdateCommentProduct({
+              id: userComment.id,
+              ...input,
+            })
           );
-          if (message === MSG_SUCCESS) {
-            onEditCommentProduct({ ...userComment, ...data });
-            show("Sửa bài đánh giá thành công", "success");
-          }
         }
       }
     } catch (error) {
       console.log(error);
-      show("Đã có lỗi xảy ra, vui lòng thử lại sau", "error");
+      appDispatch(
+        snackbarActions.show({
+          msg: "Đã có lỗi xảy ra, vui lòng thử lại sau",
+          type: "error",
+        })
+      );
     }
   };
 
-  return isLogged ? (
+  return profile ? (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className={styles.commentInputTitle}>Đánh giá của bạn</div>
       <div className={styles.commentInputStar}>
@@ -107,7 +110,7 @@ const CommentInput = (props: Props) => {
   ) : (
     <span>
       <span
-        onClick={() => setOpenModal(true)}
+        onClick={() => appDispatch(authActions.showModalAuth())}
         style={{
           color: "var(--blue)",
           textDecoration: "underline",

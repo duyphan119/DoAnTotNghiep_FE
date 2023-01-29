@@ -135,7 +135,7 @@ export type Order = {
 export type OrderItem = CartItem & {
   price: number;
   id: number;
-};
+} & Partial<{ order: Order }>;
 export type Cart = {
   items: OrderItem[];
 };
@@ -210,10 +210,6 @@ export type SortState = {
 export type FormattedVariants = {
   [key: string]: VariantValue[];
 };
-export type FetchState = {
-  loading: boolean;
-  isSuccess: boolean;
-};
 export type ErrorInput = {
   key: string;
   value: string;
@@ -236,4 +232,14 @@ export type Ward = {
 export type BarChartData = {
   key: string;
   value: number;
+};
+export type GroupProductHeader = {
+  name: string;
+  slug: string;
+  items: GroupProduct[];
+};
+export type FetchState = {
+  isLoading: boolean;
+  isError: boolean;
+  isSuccess: boolean;
 };

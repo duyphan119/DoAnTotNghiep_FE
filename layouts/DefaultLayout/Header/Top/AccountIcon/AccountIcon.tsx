@@ -1,30 +1,33 @@
 import PersonIcon from "@mui/icons-material/Person";
 import Link from "next/link";
-import { useState } from "react";
-import { ModalAuth } from "../../../../../components";
-import { useAuthContext } from "../../../../../context/AuthContext";
-import { protectedRoutes, publicRoutes } from "../../../../../utils/routes";
-import styles from "../../../style.module.css";
+import { MouseEvent } from "react";
+import { useSelector } from "react-redux";
+import { useAppDispatch } from "../../../../../redux/store";
+import {
+  authActions,
+  authSelector,
+} from "../../../../../redux/slice/authSlice";
+import { protectedRoutes } from "../../../../../utils/routes";
+import styles from "../style.module.css";
 type Props = {};
 
 const AccountIcon = (props: Props) => {
-  const { isLogged, setOpenModal } = useAuthContext();
-  const handleClick = async (e: any) => {
+  const { profile } = useSelector(authSelector);
+  const appDispatch = useAppDispatch();
+  const handleClick = (e: MouseEvent<HTMLSpanElement>) => {
     e.preventDefault();
-    setOpenModal(true);
+    appDispatch(authActions.showModalAuth());
   };
-  return isLogged ? (
+  return profile ? (
     <Link href={protectedRoutes.profile} className={styles.contactLink}>
       <PersonIcon />
       Tài khoản
     </Link>
   ) : (
-    <>
-      <span onClick={handleClick} className={styles.contactLink}>
-        <PersonIcon />
-        Đăng nhập
-      </span>
-    </>
+    <span onClick={handleClick} className={styles.contactLink}>
+      <PersonIcon />
+      Đăng nhập
+    </span>
   );
 };
 

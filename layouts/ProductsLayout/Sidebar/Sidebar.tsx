@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { getAllVariantValues } from "../../../apis/variantvalue";
-import { useGroupProductContext } from "../../../context/GroupProductContext";
+import { groupProductSelector } from "../../../redux/slice/groupProductSlice";
 import { MSG_SUCCESS } from "../../../utils/constants";
 import { formatVariants, fullNameGroupProduct } from "../../../utils/helpers";
 import {
@@ -51,7 +52,7 @@ type Selected = {
 };
 
 const Sidebar = ({ onClose, onFilter, query }: Props) => {
-  const { groupProducts } = useGroupProductContext();
+  const { groupProducts } = useSelector(groupProductSelector);
   const [variantValues, setVariantValues] = useState<RenderVariantValues>({
     keys: [],
     values: {},

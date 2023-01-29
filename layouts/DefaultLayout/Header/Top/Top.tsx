@@ -3,10 +3,10 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import { Container } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getSettingWebsiteByKeys } from "../../../../apis/settingwebsite";
-import { MSG_SUCCESS } from "../../../../utils/constants";
 import { SettingWebsite } from "../../../../utils/types";
-import styles from "../../style.module.css";
+import styles from "./style.module.css";
 import AccountIcon from "./AccountIcon";
+import { MSG_SUCCESS } from "../../../../utils/constants";
 type Props = {};
 
 const Top = (props: Props) => {

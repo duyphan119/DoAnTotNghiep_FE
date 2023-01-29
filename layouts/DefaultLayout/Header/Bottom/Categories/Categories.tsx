@@ -1,18 +1,21 @@
 import Link from "next/link";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { getAllGroupProducts } from "../../../../../apis/groupProduct";
 import {
-  GroupProductHeader,
-  useGroupProductContext,
-} from "../../../../../context/GroupProductContext";
+  groupProductActions,
+  groupProductSelector,
+} from "../../../../../redux/slice/groupProductSlice";
+import { useAppDispatch } from "../../../../../redux/store";
 import { MSG_SUCCESS } from "../../../../../utils/constants";
 import { publicRoutes } from "../../../../../utils/routes";
-import { GroupProduct } from "../../../../../utils/types";
+import { GroupProduct, GroupProductHeader } from "../../../../../utils/types";
 import styles from "../style.module.css";
 type Props = {};
 
 const Categories = (props: Props) => {
-  const { headerData, setHeaderData } = useGroupProductContext();
+  const appDispatch = useAppDispatch();
+  const { headerData } = useSelector(groupProductSelector);
 
   useEffect(() => {
     const fetchGroupProducts = async () => {
@@ -22,10 +25,10 @@ const Categories = (props: Props) => {
         });
         const { message, data } = res;
         if (message === MSG_SUCCESS) {
-          setHeaderData(data);
+          appDispatch(groupProductActions.setHeaderData(data));
         }
       } catch (error) {
-        console.log("FETCH GROUP PRODUCTS ERROR", error);
+        console.log("FETCH GROUP PRODUCTS HEADER DATA ERROR", error);
       }
     };
     fetchGroupProducts();
@@ -73,10 +76,6 @@ const Categories = (props: Props) => {
           </Link>
         </li>
       </ul>
-      {/* <ul className={styles["contact"]}>
-        <li className={styles["email"]}>Email: duychomap123@gmail.com</li>
-        <li className={styles["phone"]}>Hotline: 1900 585878</li>
-      </ul> */}
     </nav>
   );
 };

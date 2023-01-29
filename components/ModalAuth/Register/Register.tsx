@@ -1,32 +1,24 @@
 import React from "react";
 import { register as apiRegister, RegisterDTO } from "../../../apis/auth";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useAuthContext } from "../../../context/AuthContext";
 import { MSG_SUCCESS } from "../../../utils/constants";
-import InputControl from "../../InputControl";
 import styles from "../style.module.css";
+import InputControl from "../../InputControl";
+import { useAppDispatch } from "../../../redux/store";
+import { authActions } from "../../../redux/slice/authSlice";
 type Props = Partial<{
   onClose: any;
 }>;
 
 const Register = ({ onClose }: Props) => {
-  const { register: registerAccount } = useAuthContext();
+  const appDispatch = useAppDispatch();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<RegisterDTO>();
-  const onSubmit: SubmitHandler<RegisterDTO> = async (data) => {
-    try {
-      const res = await apiRegister(data);
-      const { message, data: _data } = res;
-      if (message === MSG_SUCCESS) {
-        registerAccount(_data.user, _data.accessToken);
-        onClose();
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  const onSubmit: SubmitHandler<RegisterDTO> = (data) => {
+    appDispatch(authActions.fetchRegister(data));
   };
   return (
     <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>

@@ -1,4 +1,4 @@
-.header-top {
+.headerBottom {
   background: #fff;
   display: flex;
   align-items: center;
@@ -225,7 +225,7 @@
   }
 }
 @media only screen and (max-width: 768px) {
-  .header-top {
+  .headerBottom {
     flex-direction: column;
   }
 

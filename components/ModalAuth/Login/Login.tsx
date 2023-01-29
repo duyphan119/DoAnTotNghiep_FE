@@ -1,7 +1,7 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import { login, LoginDTO } from "../../../apis/auth";
-import { useAuthContext } from "../../../context/AuthContext";
-import { MSG_SUCCESS } from "../../../utils/constants";
+import { LoginDTO } from "../../../apis/auth";
+import { authActions } from "../../../redux/slice/authSlice";
+import { useAppDispatch } from "../../../redux/store";
 import InputControl from "../../InputControl";
 import styles from "../style.module.css";
 type Props = Partial<{
@@ -9,23 +9,14 @@ type Props = Partial<{
 }>;
 
 const Login = ({ onClose }: Props) => {
-  const { login: _login } = useAuthContext();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<LoginDTO>();
-  const onSubmit: SubmitHandler<LoginDTO> = async (data) => {
-    try {
-      const res = await login(data);
-      const { message, data: _data } = res;
-      if (message === MSG_SUCCESS) {
-        _login(_data.user, _data.accessToken);
-        onClose();
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  const appDispatch = useAppDispatch();
+  const onSubmit: SubmitHandler<LoginDTO> = (data) => {
+    appDispatch(authActions.fetchLogin(data));
   };
 
   return (

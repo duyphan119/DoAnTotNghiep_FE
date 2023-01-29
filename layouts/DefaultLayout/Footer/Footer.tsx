@@ -1,12 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Container, Grid } from "@mui/material";
 import styles from "./style.module.css";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import EmailIcon from "@mui/icons-material/Email";
-import { useGroupProductContext } from "../../../context/GroupProductContext";
 import { GroupProduct } from "../../../utils/types";
 import Link from "next/link";
+import { useSelector } from "react-redux";
+import {
+  groupProductActions,
+  groupProductSelector,
+} from "../../../redux/slice/groupProductSlice";
+import { useAppDispatch } from "../../../redux/store";
+import { MSG_SUCCESS } from "../../../utils/constants";
+import { getAllGroupProducts } from "../../../apis/groupProduct";
 
 type Props = {};
 
@@ -39,7 +46,26 @@ const policies: Policy[] = [
 ];
 
 const Footer = (props: Props) => {
-  const { groupProducts } = useGroupProductContext();
+  const { groupProducts } = useSelector(groupProductSelector);
+  const appDispatch = useAppDispatch();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data, message } = await getAllGroupProducts({
+          sortType: "asc",
+          sortBy: "slug",
+        });
+
+        if (message === MSG_SUCCESS) {
+          appDispatch(groupProductActions.setGroupProducts(data.items));
+        }
+      } catch (error) {
+        console.log("GET ALL GROUP PRODUCTS ERROR", error);
+      }
+    };
+
+    fetchData();
+  }, []);
   return (
     <footer className={styles.footer}>
       <Container maxWidth="lg">

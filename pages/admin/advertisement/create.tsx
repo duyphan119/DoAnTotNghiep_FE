@@ -11,7 +11,6 @@ import { AdminLayout } from "../../../layouts";
 import { useRouter } from "next/router";
 import "react-quill/dist/quill.snow.css";
 import { uploadSingle } from "../../../apis/upload";
-import { useSnackbarContext } from "../../../context/SnackbarContext";
 import { MSG_SUCCESS } from "../../../utils/constants";
 import { AdminFormPaper, FooterForm, InputControl } from "../../../components";
 
@@ -19,7 +18,7 @@ type Props = {};
 
 const CreateAdvertisement = (props: Props) => {
   const router = useRouter();
-  const { show } = useSnackbarContext();
+  // const { show } = useSnackbarContext();
   const [files, setFiles] = useState<FileList | null>(null);
   const {
     register,
@@ -50,7 +49,7 @@ const CreateAdvertisement = (props: Props) => {
         ...(path ? { path } : {}),
       });
       if (message === MSG_SUCCESS) {
-        show("Tạo quảng cáo thành công", "success");
+        //show("Tạo quảng cáo thành công", "success");
       }
     } catch (error) {
       console.log("CREATE ADVERTISEMENT ERROR::", error);

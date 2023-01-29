@@ -2,7 +2,6 @@ import StarIcon from "@mui/icons-material/Star";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useCartContext } from "../../context/CartContext";
 import { formatProductVariants, rangePrice } from "../../utils/helpers";
 import {
   Product,
@@ -10,16 +9,13 @@ import {
   ProductVariantImage,
   VariantValue,
 } from "../../utils/types";
-import Downbar from "./Downbar";
 import styles from "./style.module.css";
-import WishlistIcon from "./WishlistIcon";
 
 type Props = {
-  product?: Product;
+  product: Product;
 };
 
 const ProductCard = ({ product }: Props) => {
-  const { addToCart } = useCartContext();
   const [selected, setSelected] = useState<VariantValue[]>([]);
   const [variants, setVariants] = useState<any>({
     keys: [],
@@ -50,19 +46,6 @@ const ProductCard = ({ product }: Props) => {
     }
   }, [selected]);
 
-  const clickVariantValue = (variantValue: VariantValue) => {
-    const newArr = [...selected];
-    const index = selected.findIndex(
-      (i: VariantValue) =>
-        i.variant &&
-        variantValue.variant &&
-        i.variant.name === variantValue.variant.name
-    );
-    if (index === -1) newArr.push(variantValue);
-    else newArr[index] = variantValue;
-    setSelected(newArr);
-  };
-
   return product ? (
     <div className={styles.card}>
       <div className={styles["thumbnail-wrapper"]}>
@@ -92,12 +75,6 @@ const ProductCard = ({ product }: Props) => {
             sizes="(max-width: 768px) 1vw"
           />
         </Link>
-        {/* <Downbar
-          variants={variants}
-          onAddToCart={handleAddToCart}
-          onClickVariant={clickVariantValue}
-          selected={selected}
-        /> */}
         {product.star ? (
           <div className={styles.star}>
             <StarIcon className={styles.starIcon} />

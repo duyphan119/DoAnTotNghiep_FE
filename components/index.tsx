@@ -15,3 +15,5 @@ export { default as FooterForm } from "./FooterForm";
 export { default as SelectControl } from "./SelectControl";
 export { default as RadioControl } from "./RadioControl";
 export { default as AdminFormPaper } from "./AdminFormPaper";
+export { default as Snackbar } from "./Snackbar";
+export { default as Auth } from "./Auth";

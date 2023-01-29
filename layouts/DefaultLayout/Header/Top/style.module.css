@@ -1,211 +1,31 @@
-.header-top {
-  background: #fff;
+.contact {
+  height: 32px;
+  background-color: #f5f5f5;
   display: flex;
   align-items: center;
 }
-.container {
-  color: gray;
-  display: flex;
-  /* justify-content: space-between; */
-  align-items: center;
-}
-.left {
+.contactWrapper {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #333;
-  padding: 16px 0;
-  font-size: 22px;
-  outline: none;
-}
-.menu-icon {
-  display: none;
-}
-.right {
-  display: flex;
-  align-items: center;
-}
-.center {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-}
-.center .search {
-  display: flex;
-  align-items: center;
-  margin-right: 24px;
-  min-width: 320px;
-  position: relative;
-  border-radius: 50px;
-  width: 50%;
-}
-.center .search button {
-  background: var(--blue);
-  border: 1px solid var(--blue);
-  color: #fff;
-  padding: 6px 16px;
-  box-shadow: 0 0 2px 0px var(--blue);
-  border-top-right-radius: 50px;
-  border-bottom-right-radius: 50px;
-}
-.center .search svg {
-  font-size: 24px;
-}
-.center .search input {
-  background-color: inherit;
-  border: none;
-  outline: none;
-  flex: 1;
-  color: inherit;
+  color: #2d2d2d;
   font-size: 14px;
-  border-top-left-radius: 50px;
-  border-bottom-left-radius: 50px;
-  border: 1px solid lightgray;
-  border-right: 1px solid transparent;
-  padding-left: 16px;
-  align-self: stretch;
 }
-.search-result-wrapper {
-  position: absolute;
-  top: 100%;
-  left: 16px;
-  right: 16px;
-  z-index: 9999;
-  background-color: #fff;
-  box-shadow: 0 0 1px 1px lightgray;
-}
-.search-result-wrapper ul {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 8px;
-}
-.search-result-wrapper ul .link {
-  display: flex;
-  gap: 8px;
-}
-.search-result-wrapper ul .link .product {
-  flex: 1;
-}
-.search-result-wrapper ul .link .product .price {
-  color: red;
-}
-.search-result-wrapper .view-all:hover,
-.search-result-wrapper ul .link:hover .name {
-  color: var(--blue);
-}
-.search-result-wrapper .view-all {
+.contactList {
   display: flex;
   align-items: center;
-  justify-content: center;
-  border-top: 1px solid lightgray;
-  padding: 8px;
+  gap: 32px;
 }
-.right .items {
+.contactLink {
   display: flex;
   align-items: center;
-}
-.right .items .item {
-  padding: 0 8px;
-}
-.right .items .item svg {
-  font-size: 24px;
-}
-.right .items .item span {
+  gap: 12px;
   cursor: pointer;
 }
-/* .right .items .item span,
-.right .items .item a {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-} */
-.pointLink {
-  display: flex;
-  align-items: center;
-  gap: 4px;
+.contactLink svg {
+  font-size: 18px;
+  transform: translateY(1px);
 }
-.drawer-body {
-  display: none;
-}
-@media only screen and (min-width: 768px) and (max-width: 1240px) {
-  .right .items .item {
-    padding: 16px;
-  }
-  .center .search {
-    margin-right: 16px;
-    min-width: 260px;
-  }
-}
-@media only screen and (max-width: 768px) {
-  .header-top {
-    flex-direction: column;
-  }
-  .left {
-    width: 100%;
-  }
-  .logo {
-    margin-left: 0;
-    padding-left: 12px;
-  }
-  .logo img {
-    width: 32px;
-    height: 32px;
-    font-size: 18px;
-  }
-  .menu-icon {
-    display: block;
-  }
-  .menu-icon button {
-    color: #fff;
-    padding: 12px;
-  }
-  .menu-icon button svg {
-    font-size: 24px;
-  }
-  .right {
-    width: 100%;
-    background-color: lightgray;
-  }
-  .center .search {
-    width: 100%;
-    margin: 12px;
-    gap: 12px;
-    background-color: #fff;
-    padding: 0 8px;
-  }
-  .center .search svg {
-    font-size: 18px;
-  }
-  .center .search input {
-    padding: 8px 0;
-  }
-  .right .items {
-    display: none;
-  }
-  .drawer-body {
-    display: block;
-  }
-  .drawer-body nav {
-    width: 50vw;
-  }
-  .drawer-body a {
-    font-size: 16px;
-  }
-  .drawer-body .nav-items {
-    padding: 8px 0;
-  }
-  .drawer-body .nav-items .nav-item {
-    padding: 8px 16px;
-  }
-  .drawer-body .nav-items .nav-item.active {
-    background-color: lightgray;
-  }
+.contactLink:hover {
+  color: var(--blue);
 }

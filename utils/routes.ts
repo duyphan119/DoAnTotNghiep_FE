@@ -15,9 +15,11 @@ export const publicRoutes = {
 };
 
 export const protectedRoutes = {
+  admin: "/admin",
   profile: "/profile",
   address: "/address",
-  accountManagement: "/admin/account",
+  userManagement: "/admin/user",
+  changePassword: "/admin/setting/change-password",
 
   advertisementManagement: "/admin/advertisement",
   createAdvertisement: "/admin/advertisement/create",

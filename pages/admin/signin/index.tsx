@@ -1,17 +1,15 @@
 import Head from "next/head";
-import React from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { login, LoginDTO } from "../../../apis/auth";
-import { useAuthContext } from "../../../context/AuthContext";
-import { DefaultLayout } from "../../../layouts";
-import { MSG_SUCCESS } from "../../../utils/constants";
-import styles from "../../../styles/AdminAuth.module.css";
 import { useRouter } from "next/router";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { LoginDTO } from "../../../apis/auth";
 import { InputControl } from "../../../components";
+import { authActions } from "../../../redux/slice/authSlice";
+import { useAppDispatch } from "../../../redux/store";
+import styles from "../../../styles/AdminAuth.module.css";
 type Props = {};
 
 const Login = (props: Props) => {
-  const { login: _login } = useAuthContext();
+  const appDispatch = useAppDispatch();
   const {
     register,
     handleSubmit,
@@ -19,15 +17,8 @@ const Login = (props: Props) => {
   } = useForm<LoginDTO>();
   const router = useRouter();
   const onSubmit: SubmitHandler<LoginDTO> = async (data) => {
-    try {
-      const { message, data: _data } = await login(data);
-      if (message === MSG_SUCCESS) {
-        _login(_data.user, _data.accessToken);
-        router.back();
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    appDispatch(authActions.fetchLogin(data));
+    router.back();
   };
   return (
     <div>

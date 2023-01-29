@@ -1,13 +1,13 @@
-import React from "react";
-import { useProductDetailContext } from "../../../../../pages/product/[slug]";
+import { useSelector } from "react-redux";
+import { productDetailSelector } from "../../../../../redux/slice/productDetailSlice";
 import { CommentProduct } from "../../../../../utils/types";
-import Comment from "./Comment";
 import styles from "../../../style.module.css";
+import Comment from "./Comment";
 
 type Props = {};
 
 const Comments = (props: Props) => {
-  const { commentProductData } = useProductDetailContext();
+  const { commentProductData } = useSelector(productDetailSelector);
   const { userComment } = commentProductData;
   return (
     <div className={styles.commentProducts}>

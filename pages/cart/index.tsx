@@ -4,9 +4,11 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useMemo } from "react";
-import { useCartContext } from "../../context/CartContext";
+import { useSelector } from "react-redux";
 import { DefaultLayout } from "../../layouts";
 import emptyCartPng from "../../public/empty-cart.png";
+import { cartActions, cartSelector } from "../../redux/slice/cartSlice";
+import { useAppDispatch } from "../../redux/store";
 import styles from "../../styles/Cart.module.css";
 import { getPriceCartItem, getThumbnailOrderItem } from "../../utils/helpers";
 import { publicRoutes } from "../../utils/routes";
@@ -19,14 +21,14 @@ type CartItemProps = {
 };
 
 const CartItem = React.memo(({ item }: CartItemProps) => {
-  const { updateCart, deleteItem } = useCartContext();
+  const appDispatch = useAppDispatch();
 
   const handleUpdateItem = (newQuantity: number) => {
-    updateCart({ ...item, quantity: newQuantity });
+    appDispatch(cartActions.fetchUpdateCartItem({ id: item.id, newQuantity }));
   };
 
   const handleDeleteItem = () => {
-    deleteItem(item.id);
+    appDispatch(cartActions.deleteCartItem(item.id));
   };
 
   const getPrice = useMemo(() => {
@@ -92,7 +94,7 @@ const CartItem = React.memo(({ item }: CartItemProps) => {
 });
 
 const TableCart = () => {
-  const { cart } = useCartContext();
+  const { cart } = useSelector(cartSelector);
 
   return cart ? (
     <table className={styles["table-cart"]}>
@@ -110,11 +112,13 @@ const TableCart = () => {
         })}
       </tbody>
     </table>
-  ) : null;
+  ) : (
+    <></>
+  );
 };
 
 const CartResult = () => {
-  const { total } = useCartContext();
+  const { total } = useSelector(cartSelector);
   return (
     <div className={styles["cart-result"]}>
       <div className={styles.row}>
@@ -151,7 +155,8 @@ const EmptyCart = () => {
 };
 
 const Cart = (props: Props) => {
-  const { count, loading } = useCartContext();
+  const { count, isSuccess } = useSelector(cartSelector);
+
   return (
     <DefaultLayout>
       <>
@@ -162,8 +167,8 @@ const Cart = (props: Props) => {
         </Head>
 
         <main className={styles.main}>
-          {!loading ? (
-            count ? (
+          {isSuccess ? (
+            count > 0 ? (
               <Container maxWidth="lg">
                 <h1>Giỏ hàng của bạn</h1>
                 <TableCart />

@@ -1,9 +1,10 @@
-import React, { ReactNode, useState } from "react";
 import { Button } from "@mui/material";
-import styles from "../style.module.css";
-import { VariantValue, ProductVariant, Product } from "../../../utils/types";
-import TrItem from "../TrItem";
+
+import { ReactNode } from "react";
+import { Product, ProductVariant } from "../../../utils/types";
 import { Input, useModalProductVariantContext } from "../ModalProductVariant";
+import styles from "../style.module.css";
+import TrItem from "../TrItem";
 
 type Props = {
   children?: ReactNode;

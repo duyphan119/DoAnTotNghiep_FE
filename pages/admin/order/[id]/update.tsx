@@ -11,7 +11,7 @@ import { Paper, Button, Box, Typography } from "@mui/material";
 import Image from "next/image";
 import { getThumbnailOrderItem } from "../../../../utils/helpers";
 import { useRouter } from "next/router";
-import { useSnackbarContext } from "../../../../context/SnackbarContext";
+//import { useSnackbarContext } from "../../../../context/SnackbarContext";
 import { FooterForm } from "../../../../components";
 type Props = {
   order: Order;
@@ -19,7 +19,7 @@ type Props = {
 
 const EditOrder = ({ order }: Props) => {
   const router = useRouter();
-  const { show } = useSnackbarContext();
+  // const { show } = useSnackbarContext();
 
   const total = useMemo(() => {
     const sumQuantity = order.items.reduce(
@@ -52,7 +52,7 @@ const EditOrder = ({ order }: Props) => {
       const { message } = await updateStatus(order.id, status);
 
       if (message === MSG_SUCCESS) {
-        show("Cập nhật trạng thái đơn hàng thành công", "success");
+        //show("Cập nhật trạng thái đơn hàng thành công", "success");
         router.back();
       }
     } catch (error) {

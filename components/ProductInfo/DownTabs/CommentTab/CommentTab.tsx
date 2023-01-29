@@ -1,12 +1,22 @@
 import { Grid, Pagination } from "@mui/material";
-import { useProductDetailContext } from "../../../../pages/product/[slug]";
+import { useSelector } from "react-redux";
+import {
+  productDetailActions,
+  productDetailSelector,
+} from "../../../../redux/slice/productDetailSlice";
+import { useAppDispatch } from "../../../../redux/store";
 import CommentInput from "./CommentInput";
 import Comments from "./Comments";
 
 type Props = {};
 
 const CommentTab = (props: Props) => {
-  const { page, setPage, totalPage } = useProductDetailContext();
+  const appDispatch = useAppDispatch();
+  const { product, page, totalPage } = useSelector(productDetailSelector);
+
+  const changePage = (newPage: number) => {
+    appDispatch(productDetailActions.setPage({ page: newPage, product }));
+  };
 
   return (
     <Grid container columnSpacing={2} rowSpacing={2}>
@@ -27,7 +37,7 @@ const CommentTab = (props: Props) => {
             showLastButton
             showFirstButton
             page={page}
-            onChange={(e, p) => setPage(p)}
+            onChange={(e, p) => changePage(p)}
           />
         ) : null}
       </Grid>

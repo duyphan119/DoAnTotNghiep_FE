@@ -17,11 +17,11 @@ import Image from "next/image";
 import styles from "./style.module.css";
 import CheckIcon from "@mui/icons-material/Check";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { uploadMultiple, uploadSingle } from "../../apis/upload";
+import { uploadSingle } from "../../apis/upload";
 import { updateThumbnailProduct } from "../../apis/product";
-import ConfirmDialog from "../ConfirmDialog";
-import { ConfirmDialogProps } from "../ConfirmDialog/ConfirmDialog";
+import { ConfirmDialog } from "../../components";
 import { getAllVariantValues } from "../../apis/variantvalue";
+import { ConfirmDialogProps } from "../ConfirmDialog/ConfirmDialog";
 
 type Props = Partial<{
   open: boolean;

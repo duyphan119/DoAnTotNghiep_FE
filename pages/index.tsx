@@ -1,5 +1,5 @@
 import { Box, Container, Grid } from "@mui/material";
-import { GetServerSidePropsContext } from "next";
+import { GetStaticPropsContext } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
@@ -33,7 +33,9 @@ const Products = ({ products }: ProductsProps) => {
               Xem tất cả sản phẩm
             </Link>
           </Grid>
-        ) : null}
+        ) : (
+          <></>
+        )}
       </Grid>
     </Container>
   );
@@ -68,7 +70,9 @@ const Banners = ({ banners }: BannersProps) => {
         );
       })}
     </Swiper>
-  ) : null;
+  ) : (
+    <></>
+  );
 };
 
 type BlogProps = {
@@ -112,7 +116,9 @@ const Blogs = ({ blogs }: BlogProps) => {
               Xem tất cả bài viết
             </Link>
           </Grid>
-        ) : null}
+        ) : (
+          <></>
+        )}
       </Grid>
     </Container>
   );
@@ -145,7 +151,7 @@ export default function Home({ productData, blogData, advertisements }: Props) {
     </DefaultLayout>
   );
 }
-export async function getServerSideProps(context: GetServerSidePropsContext) {
+export async function getStaticProps(context: GetStaticPropsContext) {
   let productData = { items: [], count: 0, totalPages: 0 };
   let blogData = { items: [], count: 0, totalPages: 0 };
   let advData = { items: [] };

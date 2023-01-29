@@ -1,30 +1,28 @@
 import Link from "next/link";
-import { useCartContext } from "../../../../../context/CartContext";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import {
+  cartActions,
+  cartSelector,
+} from "../../../../../redux/slice/cartSlice";
+import { useAppDispatch } from "../../../../../redux/store";
 import { publicRoutes } from "../../../../../utils/routes";
 import styles from "../style.module.css";
 type Props = {};
 
 const CartIcon = (props: Props) => {
-  const { count } = useCartContext();
+  const { count } = useSelector(cartSelector);
+
+  const appDispatch = useAppDispatch();
+
+  useEffect(() => {
+    appDispatch(cartActions.fetchCart());
+  }, []);
+
   return (
-    <>
-      {/* <Badge
-        badgeContent={count}
-        sx={{
-          "& .MuiBadge-badge": {
-            backgroundColor: "var(--blue)",
-            color: "white",
-          },
-        }}
-      >
-        <Link href="/cart">
-          <ShoppingBagOutlinedIcon />
-        </Link>
-      </Badge> */}
-      <Link href={publicRoutes.cart} className={styles.cartLink}>
-        Giỏ hàng ({count})
-      </Link>
-    </>
+    <Link href={publicRoutes.cart} className={styles.cartLink}>
+      Giỏ hàng ({count})
+    </Link>
   );
 };
 

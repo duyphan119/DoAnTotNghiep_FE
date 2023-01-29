@@ -1,9 +1,10 @@
 import { Container } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
-import { useAuthContext } from "../../../../context/AuthContext";
+import { useSelector } from "react-redux";
 import logoPng from "../../../../public/logo.png";
 import moneyPng from "../../../../public/money.png";
+import { authSelector } from "../../../../redux/slice/authSlice";
 import { publicRoutes } from "../../../../utils/routes";
 import CartIcon from "./CartIcon";
 import Categories from "./Categories";
@@ -14,7 +15,7 @@ import styles from "./style.module.css";
 type Props = {};
 
 const DPoint = () => {
-  const { profile } = useAuthContext();
+  const { profile } = useSelector(authSelector);
   return profile ? (
     <Link href="/d-point" className={styles.pointLink}>
       <Image
@@ -33,7 +34,7 @@ const DPoint = () => {
 
 const Bottom = (props: Props) => {
   return (
-    <div className={styles["header-top"]}>
+    <div className={styles.headerBottom}>
       <Container maxWidth="lg" className={styles.container}>
         <div className={styles.left}>
           <Link href={publicRoutes.home} className={styles.logo}>

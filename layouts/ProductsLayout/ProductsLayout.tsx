@@ -8,11 +8,11 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
-import DefaultLayout from "../DefaultLayout";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import Link from "next/link";
 import styles from "./style.module.css";
+import DefaultLayout from "../DefaultLayout";
 
 type BreadcrumbLink = {
   label: string;

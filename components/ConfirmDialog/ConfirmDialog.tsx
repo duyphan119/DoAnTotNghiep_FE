@@ -1,12 +1,12 @@
-import React, { memo } from "react";
 import {
+  Button,
   Dialog,
-  DialogTitle,
+  DialogActions,
   DialogContent,
   DialogContentText,
-  DialogActions,
-  Button,
+  DialogTitle,
 } from "@mui/material";
+import { memo } from "react";
 
 export type ConfirmDialogProps = Partial<{
   open: boolean;

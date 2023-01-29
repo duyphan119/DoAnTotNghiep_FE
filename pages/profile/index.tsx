@@ -1,40 +1,25 @@
 import Head from "next/head";
-import React from "react";
-import { useAuthContext } from "../../context/AuthContext";
-import { AccountLayout } from "../../layouts";
-import { useForm, SubmitHandler } from "react-hook-form";
-import {
-  ChangeProfile,
-  changeProfile as apiChangeProfile,
-} from "../../apis/auth";
-import styles from "../../styles/Profile.module.css";
-import { MSG_SUCCESS } from "../../utils/constants";
-import { useSnackbarContext } from "../../context/SnackbarContext";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
+import { ChangeProfile } from "../../apis/auth";
 import { InputControl } from "../../components";
+import { AccountLayout } from "../../layouts";
+import { authActions, authSelector } from "../../redux/slice/authSlice";
+import { useAppDispatch } from "../../redux/store";
+import styles from "../../styles/Profile.module.css";
 
 type Props = {};
 
 const Profile = (props: Props) => {
-  const { profile, changeProfile } = useAuthContext();
-  const { show } = useSnackbarContext();
+  const { profile } = useSelector(authSelector);
+  const appDispatch = useAppDispatch();
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<ChangeProfile>();
-  const onSubmit: SubmitHandler<ChangeProfile> = async (data) => {
-    try {
-      const res = await apiChangeProfile(data);
-      console.log(data, res);
-      const { message, data: _data } = res;
-      if (message === MSG_SUCCESS) {
-        changeProfile(_data);
-        show("Cập nhật thành công", "success");
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  const onSubmit: SubmitHandler<ChangeProfile> = (data) => {
+    appDispatch(authActions.fetchChangeProfile(data));
   };
   return profile ? (
     <AccountLayout titleHeading="Thông tin tài khoản">

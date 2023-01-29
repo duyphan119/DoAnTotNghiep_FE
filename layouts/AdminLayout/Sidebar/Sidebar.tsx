@@ -1,6 +1,5 @@
 import Link from "next/link";
 import React, { ReactElement } from "react";
-import styles from "./style.module.css";
 import HomeIcon from "@mui/icons-material/Home";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import TableRowsIcon from "@mui/icons-material/TableRows";
@@ -12,6 +11,8 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useRouter } from "next/router";
+import styles from "./style.module.css";
+import { protectedRoutes } from "../../../utils/routes";
 
 type Props = {};
 
@@ -25,17 +26,17 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   {
-    href: "/admin",
+    href: protectedRoutes.admin,
     label: "Trang chủ",
     icon: <HomeIcon />,
   },
   {
-    href: "/admin/account",
+    href: protectedRoutes.userManagement,
     label: "Tài khoản",
     icon: <AccountBoxIcon />,
   },
   {
-    href: "/admin/order",
+    href: protectedRoutes.orderManagement,
     label: "Đơn hàng",
     icon: <LocalShippingIcon />,
   },
@@ -46,22 +47,22 @@ const navItems: NavItem[] = [
     href: "",
     children: [
       {
-        href: "/admin/group-product",
+        href: protectedRoutes.groupProductManagement,
         label: "Nhóm sản phẩm",
       },
       {
-        href: "/admin/product",
+        href: protectedRoutes.productManagement,
         label: "Sản phẩm",
       },
     ],
   },
   {
-    href: "/admin/blog",
+    href: protectedRoutes.blogManagement,
     label: "Bài viết",
     icon: <FeedIcon />,
   },
   {
-    href: "/admin/advertisement",
+    href: protectedRoutes.advertisementManagement,
     label: "Quảng cáo",
     icon: <CampaignIcon />,
   },
@@ -72,15 +73,15 @@ const navItems: NavItem[] = [
     id: "setting",
     children: [
       {
-        href: "/admin/setting/profile",
+        href: protectedRoutes.settingProfile,
         label: "Tài khoản",
       },
       {
-        href: "/admin/setting/website",
+        href: protectedRoutes.settingWebsite,
         label: "Website",
       },
       {
-        href: "/admin/setting/change-password",
+        href: protectedRoutes.changePassword,
         label: "Đổi mật khẩu",
       },
     ],
@@ -119,14 +120,15 @@ const Sidebar = (props: Props) => {
                   </label>
                   <ul className={styles.navMenu}>
                     {navItem.children.map((navItem2: NavItem) => {
+                      let className =
+                        styles.navLink +
+                        (router.pathname === navItem2.href
+                          ? " " + styles.active
+                          : "");
+
                       return (
                         <Link
-                          className={
-                            styles.navLink +
-                            (router.pathname === navItem2.href
-                              ? " " + styles.active
-                              : "")
-                          }
+                          className={className}
                           href={navItem2.href}
                           key={navItem2.label}
                         >

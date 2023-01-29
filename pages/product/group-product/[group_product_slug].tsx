@@ -2,10 +2,11 @@ import { Grid, Pagination, Box } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { getAllProducts } from "../../../apis/product";
 import { ProductCard } from "../../../components";
-import { useGroupProductContext } from "../../../context/GroupProductContext";
 import { ProductsLayout } from "../../../layouts";
+import { groupProductSelector } from "../../../redux/slice/groupProductSlice";
 import { CODE_OK, MSG_SUCCESS } from "../../../utils/constants";
 import { fullNameGroupProduct } from "../../../utils/helpers";
 import {
@@ -20,7 +21,7 @@ type Props = {
 };
 const LIMIT = 24;
 const Products = ({ productData }: Props) => {
-  const { groupProducts } = useGroupProductContext();
+  const { groupProducts } = useSelector(groupProductSelector);
   const router = useRouter();
   const { p } = router.query;
   const [filter, setFilter] = useState<Filter>({

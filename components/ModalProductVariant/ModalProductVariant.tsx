@@ -1,28 +1,22 @@
-import React, {
-  useState,
-  useEffect,
-  useMemo,
-  useContext,
-  createContext,
-} from "react";
+import { Box, Button, Grid, Modal } from "@mui/material";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createProductVariants,
+  getAllProductVariants,
+  updateProductVariants,
+} from "../../apis/productvariant";
+import { getAllVariants } from "../../apis/variant";
+import { snackbarActions } from "../../redux/slice/snackbarSlice";
+import { useAppDispatch } from "../../redux/store";
+import { MSG_SUCCESS } from "../../utils/constants";
 import {
   Product,
   ProductVariant,
   Variant,
   VariantValue,
 } from "../../utils/types";
-import { Modal, Typography, Box, Button, Grid, Tooltip } from "@mui/material";
-import { getAllVariants } from "../../apis/variant";
-import { MSG_SUCCESS } from "../../utils/constants";
 import styles from "./style.module.css";
-import {
-  CreateProductVariant,
-  createProductVariants,
-  getAllProductVariants,
-  updateProductVariants,
-} from "../../apis/productvariant";
 import { Wrapper } from "./Wrapper";
-import { useSnackbarContext } from "../../context/SnackbarContext";
 type Props = {
   open?: boolean;
   onClose?: any;
@@ -38,7 +32,7 @@ export type Input = {
 const ModalProductVariantContext = createContext<any>({});
 
 const ModalProductVariant = ({ open, onClose, product }: Props) => {
-  const { show } = useSnackbarContext();
+  const appDispatch = useAppDispatch();
   const [variants, setVariants] = useState<Variant[]>([]);
   const [selected, setSelected] = useState<Variant[]>([]);
   const [generatedSelected, setGeneratedSelected] = useState<VariantValue[][]>(
@@ -181,7 +175,7 @@ const ModalProductVariant = ({ open, onClose, product }: Props) => {
         }))
       );
       if (message === MSG_SUCCESS) {
-        show("Đã lưu", "success");
+        appDispatch(snackbarActions.show({ msg: "Đã lưu", type: "success" }));
       }
     } catch (error) {
       console.log("Update product variant error", error);

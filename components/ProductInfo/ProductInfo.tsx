@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useProductDetailContext } from "../../pages/product/[slug]";
+import { useSelector } from "react-redux";
+import { productDetailSelector } from "../../redux/slice/productDetailSlice";
 import { ProductVariantImage, VariantValue } from "../../utils/types";
 import DownTabs from "./DownTabs";
 import Left from "./Left";
@@ -8,23 +8,9 @@ import styles from "./style.module.css";
 type Props = {};
 
 const ProductInfo = (props: Props) => {
-  const { product } = useProductDetailContext();
-  const [selectedVariantValues, setSelectedVariantValues] = useState<
-    VariantValue[]
-  >([]);
+  const { product, selectedVariantValues } = useSelector(productDetailSelector);
 
-  const clickVariantValue = (variantValue: VariantValue) => {
-    const newArr = [...selectedVariantValues];
-    const index = selectedVariantValues.findIndex(
-      (i: VariantValue) =>
-        i.variant &&
-        variantValue.variant &&
-        i.variant.name === variantValue.variant.name
-    );
-    if (index === -1) newArr.push(variantValue);
-    else newArr[index] = variantValue;
-    setSelectedVariantValues(newArr);
-  };
+  if (!product) return <></>;
 
   const getImages = () => {
     if (!product.images) return [];
@@ -42,10 +28,7 @@ const ProductInfo = (props: Props) => {
     <>
       <div className={styles.body}>
         <Left thumbnail={product.thumbnail} images={getImages()} />
-        <Right
-          selectedVariantValues={selectedVariantValues}
-          onClickVariantValue={clickVariantValue}
-        />
+        <Right />
       </div>
       <DownTabs />
     </>

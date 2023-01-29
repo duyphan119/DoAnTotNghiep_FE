@@ -1,26 +1,17 @@
-import React, { useState } from "react";
-import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import {
-  Drawer as MuiDrawer,
-  IconButton,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-} from "@mui/material";
-import styles from "../style.module.css";
+import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import { Drawer as MuiDrawer, IconButton } from "@mui/material";
 import Link from "next/link";
-import {
-  GroupProductHeader,
-  useGroupProductContext,
-} from "../../../../../context/GroupProductContext";
-import { GroupProduct } from "../../../../../utils/types";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import { groupProductSelector } from "../../../../../redux/slice/groupProductSlice";
 import { publicRoutes } from "../../../../../utils/routes";
+import { GroupProduct, GroupProductHeader } from "../../../../../utils/types";
+import styles from "../style.module.css";
 type Props = {};
 
 const Drawer = (props: Props) => {
-  const { headerData } = useGroupProductContext();
+  const { headerData } = useSelector(groupProductSelector);
   const [state, setState] = useState<boolean>(false);
   const toggleDrawer = (newState: boolean) => {
     setState(newState);

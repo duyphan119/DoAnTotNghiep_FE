@@ -1,21 +1,19 @@
-import { Badge, Grid, Pagination } from "@mui/material";
+import { Grid, Pagination } from "@mui/material";
 import Head from "next/head";
+import Image from "next/image";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { myOrders } from "../../apis/order";
 import { AccountLayout } from "../../layouts";
+import styles from "../../styles/FollowOrder.module.css";
 import { MSG_SUCCESS } from "../../utils/constants";
+import { formatDateTime, getThumbnailOrderItem } from "../../utils/helpers";
 import {
   Order,
   OrderItem,
   ResponseItems,
-  Variant,
   VariantValue,
 } from "../../utils/types";
-import styles from "../../styles/FollowOrder.module.css";
-import Image from "next/image";
-import { formatDateTime, getThumbnailOrderItem } from "../../utils/helpers";
-import { useAuthContext } from "../../context/AuthContext";
 
 const LIMIT = 10;
 
@@ -121,7 +119,6 @@ const MyOrder = ({ order }: OrderProps) => {
 
 const FollowOrder = (props: Props) => {
   const router = useRouter();
-  const { profile, loading } = useAuthContext();
   const [orderData, setOrderData] = useState<ResponseItems<Order>>({
     items: [],
     count: 0,
@@ -153,14 +150,8 @@ const FollowOrder = (props: Props) => {
         console.log(error);
       }
     };
-    if (!loading) {
-      if (profile) {
-        fetchData();
-      } else {
-        router.push("/");
-      }
-    }
-  }, [profile, loading, router.query]);
+    fetchData();
+  }, [router.query]);
 
   return (
     <AccountLayout titleHeading="Đơn hàng của tôi">

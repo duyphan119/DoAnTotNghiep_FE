@@ -1,9 +1,5 @@
 import { privateAxios, publicAxios } from "../config/configAxios";
-import {
-  PaginationParams,
-  QueryParams,
-  SearchQueryParams,
-} from "../utils/types";
+import { PaginationParams, QueryParams } from "../utils/types";
 
 export type ProductQueryParams = QueryParams &
   Partial<{

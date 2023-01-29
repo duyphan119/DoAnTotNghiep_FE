@@ -77,10 +77,10 @@ const ModalAuth = ({ open, onClose }: Props) => {
             />
           </Box>
           <TabPanel value={value} index={0}>
-            <Login onClose={onClose} />
+            <Login />
           </TabPanel>
           <TabPanel value={value} index={1}>
-            <Register onClose={onClose} />
+            <Register />
           </TabPanel>
         </Box>
       </Box>

@@ -1,8 +1,8 @@
-import { useState, ReactNode } from "react";
-import { Product } from "../../../utils/types";
 import { Box, Tab, Tabs } from "@mui/material";
+import { ReactNode, useState } from "react";
+import { useSelector } from "react-redux";
+import { productDetailSelector } from "../../../redux/slice/productDetailSlice";
 import CommentTab from "./CommentTab";
-import { useProductDetailContext } from "../../../pages/product/[slug]";
 
 type Props = {};
 
@@ -17,7 +17,7 @@ const TabPanel = ({ value, index, children }: TabPanelProps) => {
 };
 
 const DownTabs = (props: Props) => {
-  const { product } = useProductDetailContext();
+  const { product } = useSelector(productDetailSelector);
   const [value, setValue] = useState<number>(0);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -32,7 +32,9 @@ const DownTabs = (props: Props) => {
       </Box>
       <TabPanel value={value} index={0}>
         <Box p={2}>
-          <div dangerouslySetInnerHTML={{ __html: product.detail }}></div>
+          {product ? (
+            <div dangerouslySetInnerHTML={{ __html: product.detail }}></div>
+          ) : null}
         </Box>
       </TabPanel>
       <TabPanel value={value} index={1}>

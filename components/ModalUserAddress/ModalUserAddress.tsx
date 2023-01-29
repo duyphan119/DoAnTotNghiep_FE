@@ -9,8 +9,9 @@ import {
 import { MSG_SUCCESS } from "../../utils/constants";
 import provinces from "../../province.json";
 import { District, Province, UserAddress, Ward } from "../../utils/types";
-import SelectControl from "../SelectControl";
-import InputControl from "../InputControl";
+import { InputControl, SelectControl } from "../../components";
+import { useAppDispatch } from "../../redux/store";
+import { userAddressActions } from "../../redux/slice/userAddressSlice";
 
 type Props = Partial<{
   open: boolean;
@@ -21,6 +22,7 @@ type Props = Partial<{
 }>;
 
 const ModalUserAddress = ({ open, onClose, onCreate, onEdit, row }: Props) => {
+  const appDispatch = useAppDispatch();
   const [districts, setDistricts] = useState<any>(() => {
     const province = provinces.find(
       (province: Province) =>
@@ -53,21 +55,13 @@ const ModalUserAddress = ({ open, onClose, onCreate, onEdit, row }: Props) => {
     },
   });
 
-  const onSubmit: SubmitHandler<CreateUserAddressDTO> = async (values) => {
-    try {
-      if (row) {
-        const { message, data } = await updateUserAddress(row.id, values);
-        if (message === MSG_SUCCESS) {
-          onEdit(row.id, data);
-        }
-      } else {
-        const { message, data } = await createUserAddress(values);
-        if (message === MSG_SUCCESS) {
-          onCreate(data);
-        }
-      }
-    } catch (error) {
-      console.log(error);
+  const onSubmit: SubmitHandler<CreateUserAddressDTO> = (values) => {
+    if (row) {
+      appDispatch(
+        userAddressActions.fetchUpdateUserAddress({ id: row.id, ...values })
+      );
+    } else {
+      appDispatch(userAddressActions.fetchCreateUserAddress(values));
     }
   };
 
@@ -100,8 +94,6 @@ const ModalUserAddress = ({ open, onClose, onCreate, onEdit, row }: Props) => {
     });
     return () => subscription.unsubscribe();
   }, [watch]);
-
-  console.log(errors);
 
   return (
     <Modal open={open || false} onClose={onClose}>

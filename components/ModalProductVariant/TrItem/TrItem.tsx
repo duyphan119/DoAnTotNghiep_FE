@@ -1,12 +1,9 @@
-import { IconButton } from "@mui/material";
-import React, { useState, ChangeEvent } from "react";
-import { ProductVariant, VariantValue } from "../../../utils/types";
 import DeleteIcon from "@mui/icons-material/Delete";
-import styles from "../style.module.css";
 import ConfirmDialog from "../../ConfirmDialog";
-import { deleteProductVariant } from "../../../apis/productvariant";
-import { MSG_SUCCESS } from "../../../utils/constants";
-import { Input, useModalProductVariantContext } from "../ModalProductVariant";
+
+import { ChangeEvent, useState } from "react";
+import styles from "../style.module.css";
+import { useModalProductVariantContext, Input } from "../ModalProductVariant";
 type Props = {
   hasDeleteBtn?: boolean;
   input: Input;

@@ -5,14 +5,19 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { ChangeEvent, useEffect, useReducer, useRef } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { CheckoutDTO, checkout as apiCheckout } from "../../apis/order";
+import { useSelector } from "react-redux";
+import { CheckoutDTO } from "../../apis/order";
 import { checkOrderDiscount } from "../../apis/orderdiscount";
-import { getMyUserAddresses } from "../../apis/useraddress";
 import { InputControl, RadioControl, SelectControl } from "../../components";
-import { useAuthContext } from "../../context/AuthContext";
-import { useCartContext } from "../../context/CartContext";
-import { useSnackbarContext } from "../../context/SnackbarContext";
 import provinces from "../../province.json";
+import { authSelector } from "../../redux/slice/authSlice";
+import { cartActions, cartSelector } from "../../redux/slice/cartSlice";
+import { snackbarActions } from "../../redux/slice/snackbarSlice";
+import {
+  userAddressActions,
+  userAddressSelector,
+} from "../../redux/slice/userAddressSlice";
+import { useAppDispatch } from "../../redux/store";
 import styles from "../../styles/Payment.module.css";
 import { MSG_SUCCESS } from "../../utils/constants";
 import { getPriceCartItem, getThumbnailOrderItem } from "../../utils/helpers";
@@ -33,8 +38,6 @@ type Action = {
   payload: any;
   type?: string;
 };
-
-enum ActionType {}
 
 type State = {
   districts: District[];
@@ -71,21 +74,15 @@ const initialState: State = {
 };
 
 const Payment = (props: Props) => {
+  const appDispatch = useAppDispatch();
   const router = useRouter();
-  const { cart, checkout, total } = useCartContext();
-  const { show } = useSnackbarContext();
-  const { profile } = useAuthContext();
+  const { cart, total, isSuccess } = useSelector(cartSelector);
+  const { userAddresses } = useSelector(userAddressSelector);
+  const { profile } = useSelector(authSelector);
 
   const [state, dispatch] = useReducer(reducers, initialState);
-  const {
-    districts,
-    orderDiscount,
-    userAddress,
-    userAddresses,
-    visible,
-    wards,
-    usePoint,
-  } = state as State;
+  const { districts, orderDiscount, userAddress, visible, wards, usePoint } =
+    state as State;
 
   const discountRef = useRef<HTMLInputElement>(null);
 
@@ -117,11 +114,7 @@ const Payment = (props: Props) => {
         ...(orderDiscount ? { discountId: orderDiscount.id } : {}),
         point: usePoint ? +data.point : 0,
       };
-      const { message } = await apiCheckout(reqData);
-      if (message === MSG_SUCCESS) {
-        checkout();
-        router.push("/payment/success");
-      }
+      appDispatch(cartActions.fetchCheckout(reqData));
     } catch (error) {
       console.log(error);
     }
@@ -145,7 +138,12 @@ const Payment = (props: Props) => {
           if (message === MSG_SUCCESS) {
             dispatch({ payload: { orderDiscount: data, code: "" } });
           } else {
-            show("Mã giảm giá không hợp lệ");
+            appDispatch(
+              snackbarActions.show({
+                msg: "Mã giảm giá không hợp lệ",
+                type: "error",
+              })
+            );
           }
         }
       }
@@ -159,23 +157,12 @@ const Payment = (props: Props) => {
   };
 
   useEffect(() => {
-    const fetchUserAddresses = async () => {
-      try {
-        const { message, data } = await getMyUserAddresses();
-        if (message === MSG_SUCCESS) {
-          const visible = data.count > 0;
-          const userAddress = visible ? data.items[0] : null;
-          dispatch({
-            payload: { userAddress, userAddresses: data.items, visible },
-          });
-        }
-      } catch (error) {
-        console.log("FETCH USER ADDRESS ERROR", error);
-      }
-    };
-
-    fetchUserAddresses();
+    appDispatch(userAddressActions.fetchGetUserAddresses());
   }, []);
+
+  useEffect(() => {
+    if (isSuccess) router.push("/payment/success");
+  }, [isSuccess]);
 
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {

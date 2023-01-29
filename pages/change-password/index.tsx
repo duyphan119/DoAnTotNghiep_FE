@@ -1,14 +1,14 @@
 import Head from "next/head";
 import { useRef } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
 import {
   changePassword as apiChangePassword,
   ChangePassword,
 } from "../../apis/auth";
 import { InputControl } from "../../components";
-import { useAuthContext } from "../../context/AuthContext";
-import { useSnackbarContext } from "../../context/SnackbarContext";
 import { AccountLayout } from "../../layouts";
+import { authSelector } from "../../redux/slice/authSlice";
 import styles from "../../styles/Profile.module.css";
 import { MSG_SUCCESS } from "../../utils/constants";
 
@@ -19,8 +19,8 @@ type ChangePasswordInputs = ChangePassword & {
 };
 
 const ChangePassword = (props: Props) => {
-  const { profile } = useAuthContext();
-  const { show } = useSnackbarContext();
+  const { profile } = useSelector(authSelector);
+  // const { show } = useSnackbarContext();
   const {
     register,
     handleSubmit,
@@ -37,7 +37,7 @@ const ChangePassword = (props: Props) => {
       });
       const { message, data: _data } = res;
       if (message === MSG_SUCCESS) {
-        show("Đổi mật khẩu thành công", "success");
+        //show("Đổi mật khẩu thành công", "success");
       }
     } catch (error) {
       console.log(error);
