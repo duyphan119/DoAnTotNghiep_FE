@@ -35,32 +35,34 @@ const DPoint = () => {
 const Bottom = (props: Props) => {
   return (
     <div className={styles.headerBottom}>
-      <Container maxWidth="lg" className={styles.container}>
-        <div className={styles.left}>
-          <Link href={publicRoutes.home} className={styles.logo}>
-            <Image
-              src={logoPng}
-              alt="Logo"
-              width={56}
-              height={56}
-              priority={true}
-            />
-            DUS
-          </Link>
-          <Categories />
-        </div>
+      <Container maxWidth="lg">
+        <div className={styles.container}>
+          <div className={styles.left}>
+            <Link href={publicRoutes.home} className={styles.logo}>
+              <Image
+                src={logoPng}
+                alt="Logo"
+                width={56}
+                height={56}
+                priority={true}
+              />
+              DUS
+            </Link>
+            <Categories />
+          </div>
 
-        <div className={styles.right}>
-          <SearchInput />
-          <ul className={styles.items}>
-            <li className={styles.item}>
-              <DPoint />
-            </li>
-            <li className={styles.item}>
-              <CartIcon />
-            </li>
-          </ul>
-          <Drawer />
+          <div className={styles.right}>
+            <SearchInput />
+            <ul className={styles.items}>
+              <li className={styles.item}>
+                <DPoint />
+              </li>
+              <li className={styles.item}>
+                <CartIcon />
+              </li>
+            </ul>
+            <Drawer />
+          </div>
         </div>
       </Container>
     </div>
