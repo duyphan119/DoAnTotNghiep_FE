@@ -43,4 +43,8 @@ export const protectedRoutes = {
   groupProductManagement: "/admin/group-product",
   createGroupProduct: "/admin/group-product/create",
   updateGroupProduct: (id: number) => `/admin/group-product/${id}/update`,
+
+  commentProductManagement: "/admin/comment-product",
+
+  statistics: "/admin/statistics",
 };

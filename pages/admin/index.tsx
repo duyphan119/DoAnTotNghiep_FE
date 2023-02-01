@@ -259,21 +259,21 @@ const Dashboard = (props: Props) => {
               value={countUser.currentMonth}
               oldValue={countUser.lastMonth}
               icon={<PersonAddAltIcon />}
-              hrefViewMore={"/admin/account"}
+              hrefViewMore={protectedRoutes.userManagement}
             />
             <Widget
               title="Đơn hàng"
               value={countOrder.currentMonth}
               oldValue={countOrder.lastMonth}
               icon={<ReceiptIcon />}
-              hrefViewMore={"/admin/order"}
+              hrefViewMore={protectedRoutes.orderManagement}
             />
             <Widget
               title="Doanh thu"
               value={revenue.currentMonth}
               oldValue={revenue.lastMonth}
               icon={<AttachMoneyIcon />}
-              hrefViewMore={"/admin/statistics"}
+              hrefViewMore={protectedRoutes.statistics}
             />
             <Widget
               title="Đánh giá"
@@ -281,7 +281,7 @@ const Dashboard = (props: Props) => {
               oldValue={countCommentProduct.lastMonth}
               icon={<StarRateIcon />}
               iconColor="yellow"
-              hrefViewMore={"/admin/comment-product"}
+              hrefViewMore={protectedRoutes.commentProductManagement}
             />
           </Box>
         </Grid>

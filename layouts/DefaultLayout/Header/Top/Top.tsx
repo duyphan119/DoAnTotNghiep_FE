@@ -65,15 +65,20 @@ const Top = (props: Props) => {
 
   return (
     <div className={styles.contact}>
-      <Container maxWidth="lg" className={styles.contactWrapper}>
-        <div>Miễn phí giao hàng</div>
-        <ul className={styles.contactList}>
-          <PhoneContact />
-          <EmailContact />
-          <li>
-            <AccountIcon />
-          </li>
-        </ul>
+      <Container maxWidth="lg">
+        <div className={styles.contactWrapper}>
+          <div>Miễn phí giao hàng</div>
+          <ul
+            className={styles.contactList}
+            style={{ display: "flex", alignItems: "center", gap: "32px" }}
+          >
+            <PhoneContact />
+            <EmailContact />
+            <li>
+              <AccountIcon />
+            </li>
+          </ul>
+        </div>
       </Container>
     </div>
   );
