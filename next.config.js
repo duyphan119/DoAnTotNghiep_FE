@@ -4,12 +4,12 @@ const nextConfig = {
   swcMinify: true,
   env: {
     API_URL:
-      process.env.NODE__ENV === "development"
+      !process.env.NODE__ENV || process.env.NODE__ENV === "development"
         ? process.env.API_URL_DEV
         : process.env.API_URL_PROD,
     API_VERSION:
-      process.env.NODE__ENV === "development"
-        ? process.env.API_VERSION_DEV
+      !process.env.NODE__ENV || process.env.NODE__ENV === "development"
+        ? process.env.API_VERSION_DEV || "v1"
         : process.env.API_VERSION_PROD,
   },
   images: {

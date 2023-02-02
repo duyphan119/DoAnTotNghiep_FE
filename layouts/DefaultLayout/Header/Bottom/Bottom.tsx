@@ -1,7 +1,8 @@
-import { Container } from "@mui/material";
+import { Container, IconButton } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 import { useSelector } from "react-redux";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import logoPng from "../../../../public/logo.png";
 import moneyPng from "../../../../public/money.png";
 import { authSelector } from "../../../../redux/slice/authSlice";
@@ -11,6 +12,7 @@ import Categories from "./Categories";
 import Drawer from "./Drawer";
 import SearchInput from "./SearchInput";
 import styles from "./style.module.css";
+import { useState } from "react";
 
 type Props = {};
 
@@ -33,6 +35,7 @@ const DPoint = () => {
 };
 
 const Bottom = (props: Props) => {
+  const [open, setOpen] = useState<boolean>(false);
   return (
     <div className={styles.headerBottom}>
       <Container maxWidth="lg">
@@ -50,9 +53,14 @@ const Bottom = (props: Props) => {
             </Link>
             <Categories />
           </div>
-
+          <IconButton
+            onClick={() => setOpen((o) => !o)}
+            className={styles.buttonSearch}
+          >
+            <SearchOutlinedIcon />
+          </IconButton>
+          <SearchInput open={open} />
           <div className={styles.right}>
-            <SearchInput />
             <ul className={styles.items}>
               <li className={styles.item}>
                 <DPoint />

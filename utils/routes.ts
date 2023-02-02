@@ -1,6 +1,6 @@
 export const publicRoutes = {
   home: "/",
-  search: "/search",
+  search: (q: string) => `/search?q=${q}`,
   payment: "/payment",
   productDetail: (slug: string) => `/product/${slug}`,
   products: (slug?: string) =>

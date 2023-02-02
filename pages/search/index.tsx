@@ -14,7 +14,7 @@ type Props = {
 const Page = ({ productData: propProductData }: Props) => {
   const router = useRouter();
   const { q } = router.query;
-
+  console.log({ q });
   return (
     <DefaultLayout>
       <>

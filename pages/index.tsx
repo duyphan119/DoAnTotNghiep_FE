@@ -183,5 +183,6 @@ export async function getStaticProps(context: GetStaticPropsContext) {
       blogData,
       advertisements: advData.items,
     },
+    revalidate: 30,
   };
 }

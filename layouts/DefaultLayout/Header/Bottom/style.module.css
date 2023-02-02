@@ -49,6 +49,7 @@
 .navItem .navItemLink {
   display: block;
   padding: 16px 0;
+  white-space: nowrap;
 }
 .navItem:hover .navItemLink {
   color: var(--blue);
@@ -111,12 +112,15 @@
   display: flex;
   align-items: center;
 }
+.cartLink {
+  white-space: nowrap;
+}
 .center {
   flex: 1;
   display: flex;
   justify-content: center;
 }
-.right .search {
+.search {
   display: flex;
   align-items: center;
   margin-right: 24px;
@@ -125,7 +129,7 @@
   border-radius: 50px;
   width: 50%;
 }
-.right .search button {
+.search button {
   background: var(--blue);
   border: 1px solid var(--blue);
   color: #fff;
@@ -134,10 +138,10 @@
   border-top-right-radius: 50px;
   border-bottom-right-radius: 50px;
 }
-.right .search svg {
+.search svg {
   font-size: 24px;
 }
-.right .search input {
+.search input {
   background-color: inherit;
   border: none;
   outline: none;
@@ -219,9 +223,9 @@
   .right .items .item {
     padding: 16px;
   }
-  .right .search {
+  .search {
     margin-right: 16px;
-    min-width: 260px;
+    min-width: unset;
   }
 }
 @media only screen and (max-width: 768px) {
@@ -254,16 +258,16 @@
     flex: 1;
     margin-left: 16px;
   }
-  .right .search {
+  .search {
     width: 100%;
     margin: 12px;
     background-color: #fff;
     padding: 0 8px;
   }
-  .right .search svg {
+  .search svg {
     font-size: 18px;
   }
-  .right .search input {
+  .search input {
     padding: 8px;
   }
   .right .items {
@@ -319,5 +323,32 @@
   .navItemLink:hover,
   .navMenuItemLink:hover {
     color: var(--blue);
+  }
+}
+.buttonSearch {
+  display: none;
+}
+@media only screen and (max-width: 600px) {
+  .search {
+    order: 4;
+    width: 100%;
+    margin: 0;
+  }
+  .left {
+    order: 2;
+    flex: 1;
+    justify-content: center;
+  }
+  .right {
+    order: 3;
+    justify-content: flex-end;
+    flex: none;
+  }
+  .container {
+    flex-wrap: wrap;
+  }
+  .buttonSearch {
+    display: initial;
+    order: 1;
   }
 }

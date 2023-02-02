@@ -9,10 +9,13 @@ import Image from "next/image";
 import { ClickAwayListener } from "@mui/material";
 import { useRouter } from "next/router";
 import { rangePrice } from "../../../../../utils/helpers";
+import { publicRoutes } from "../../../../../utils/routes";
 
-type Props = {};
+type Props = Partial<{
+  open: boolean;
+}>;
 
-const SearchInput = (props: Props) => {
+const SearchInput = ({ open }: Props) => {
   const [productData, setProductData] = useState<ResponseItems<Product>>({
     items: [],
     count: 0,
@@ -69,55 +72,60 @@ const SearchInput = (props: Props) => {
     return () => clearTimeout(timerId);
   }, [q]);
 
-  return (
+  return open ? (
     <ClickAwayListener onClickAway={handleBlur}>
-      <form className={styles.search} onSubmit={handleSubmit}>
-        <input
-          type="search"
-          placeholder="Nhập từ khóa cần tìm"
-          value={q}
-          onChange={handleChange}
-          onFocus={handleFocus}
-        />
-        <button type="submit">
-          <SearchOutlinedIcon />
-        </button>
-        {visible && productData.count > 0 && (
-          <div className={styles["search-result-wrapper"]}>
-            <ul>
-              {productData.items.map((product: Product) => {
-                return (
-                  <li key={product.id}>
-                    <Link
-                      href={`/product/${product.slug}`}
-                      className={styles.link}
-                    >
-                      <Image
-                        src={product.thumbnail}
-                        alt=""
-                        width={64}
-                        height={64}
-                        priority={true}
-                      />
-                      <div className={styles.product}>
-                        <div className={styles.name}>{product.name}</div>
-                        <div className={styles.price}>
-                          {rangePrice(product, "", "đ")}
+      <>
+        <form className={styles.search} onSubmit={handleSubmit}>
+          <input
+            type="search"
+            placeholder="Nhập từ khóa cần tìm"
+            value={q}
+            onChange={handleChange}
+            onFocus={handleFocus}
+          />
+          <button type="submit">
+            <SearchOutlinedIcon />
+          </button>
+          {visible && productData.count > 0 && (
+            <div className={styles["search-result-wrapper"]}>
+              <ul>
+                {productData.items.map((product: Product) => {
+                  return (
+                    <li key={product.id}>
+                      <Link
+                        href={`/product/${product.slug}`}
+                        className={styles.link}
+                      >
+                        <Image
+                          src={product.thumbnail}
+                          alt=""
+                          width={64}
+                          height={64}
+                          priority={true}
+                        />
+                        <div className={styles.product}>
+                          <div className={styles.name}>{product.name}</div>
+                          <div className={styles.price}>
+                            {rangePrice(product, "", "đ")}
+                          </div>
                         </div>
-                      </div>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-            <Link href={`/tim-kiem?q=${q}`} className={styles["view-all"]}>
-              Xem tất cả
-            </Link>
-          </div>
-        )}
-      </form>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+              <Link
+                href={publicRoutes.search(q)}
+                className={styles["view-all"]}
+              >
+                Xem tất cả
+              </Link>
+            </div>
+          )}
+        </form>
+      </>
     </ClickAwayListener>
-  );
+  ) : null;
 };
 
 export default SearchInput;

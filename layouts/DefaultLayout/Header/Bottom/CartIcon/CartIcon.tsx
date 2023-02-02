@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
+import { Badge } from "@mui/material";
+import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import {
   cartActions,
   cartSelector,
@@ -21,7 +23,9 @@ const CartIcon = (props: Props) => {
 
   return (
     <Link href={publicRoutes.cart} className={styles.cartLink}>
-      Giỏ hàng ({count})
+      <Badge badgeContent={count + 1} color="info">
+        <ShoppingBagOutlinedIcon />
+      </Badge>
     </Link>
   );
 };
