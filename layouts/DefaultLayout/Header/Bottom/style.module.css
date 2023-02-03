@@ -111,6 +111,7 @@
 .right {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
 }
 .cartLink {
   white-space: nowrap;
@@ -341,7 +342,7 @@
   }
   .right {
     order: 3;
-    justify-content: flex-end;
+
     flex: none;
   }
   .container {

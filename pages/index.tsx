@@ -3,18 +3,12 @@ import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import { useSelector } from "react-redux";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { getAllAdvertisements } from "../apis/advertisement";
 import { getAllBlogsPublic } from "../apis/blog";
 import { getAllProducts } from "../apis/product";
 import { ProductCard } from "../components";
 import { DefaultLayout } from "../layouts";
-import {
-  homePageActions,
-  homePageSelector,
-} from "../redux/slice/homePageSlice";
-import { wrapper } from "../redux/store";
 import styles from "../styles/Home.module.css";
 import { formatDateTime } from "../utils/helpers";
 import { protectedRoutes, publicRoutes } from "../utils/routes";
