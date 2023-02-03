@@ -26,13 +26,16 @@ const Left = ({ images, thumbnail }: Props) => {
           );
         })}
       </div>
-      <Image
-        src={index > -1 ? images[index].path : thumbnail}
-        alt=""
-        width={480}
-        height={580}
-        priority={true}
-      />
+      <div className={styles.singleImageWrapper}>
+        <div className={styles.singleImage}>
+          <Image
+            src={index > -1 ? images[index].path : thumbnail}
+            alt=""
+            fill={true}
+            sizes="(min-width: 0) 480px"
+          />
+        </div>
+      </div>
     </div>
   );
 };

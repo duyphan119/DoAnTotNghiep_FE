@@ -23,7 +23,7 @@ const CartIcon = (props: Props) => {
 
   return (
     <Link href={publicRoutes.cart} className={styles.cartLink}>
-      <Badge badgeContent={count + 1} color="info">
+      <Badge badgeContent={count} color="info">
         <ShoppingBagOutlinedIcon />
       </Badge>
     </Link>

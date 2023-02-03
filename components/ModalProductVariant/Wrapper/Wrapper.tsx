@@ -1,33 +1,42 @@
 import { Button } from "@mui/material";
-
-import { ReactNode } from "react";
+import { memo } from "react";
 import { useSelector } from "react-redux";
 import { productManagementSelector } from "../../../redux/slice/productManagementSlice";
-import { Product, ProductVariant } from "../../../utils/types";
-import { Input, useModalProductVariantContext } from "../ModalProductVariant";
+import {
+  productVariantActions,
+  ProductVariantInput,
+  productVariantSelector,
+} from "../../../redux/slice/productVariantSlice";
+import { useAppDispatch } from "../../../redux/store";
+import { ProductVariant } from "../../../utils/types";
 import styles from "../style.module.css";
 import TrItem from "../TrItem";
 
 type Props = {
-  children?: ReactNode;
   title?: string;
-  inputs?: Input[];
-  productVariants?: ProductVariant[];
-  product?: Product;
 };
 
-const Wrapper = ({ children, title, inputs, productVariants }: Props) => {
+const Wrapper = ({ title }: Props) => {
+  const appDispatch = useAppDispatch();
   const { current: product } = useSelector(productManagementSelector);
-  const { onUpdate, onCreate } = useModalProductVariantContext();
-  const handleClick = async () => {
-    try {
-      if (productVariants) {
-        onUpdate();
-      } else {
-        onCreate();
+  const { productVariants, inputs } = useSelector(productVariantSelector);
+  const handleClick = () => {
+    if (productVariants) {
+      if (product) {
+        const productId = product.id;
+        appDispatch(
+          productVariantActions.fetchCreateProductVariants(
+            inputs.map((input: ProductVariantInput) => ({
+              ...input,
+              productId,
+            }))
+          )
+        );
       }
-    } catch (error) {
-      console.log("Handle click error", error);
+    } else {
+      appDispatch(
+        productVariantActions.fetchUpdateProductVariants(productVariants)
+      );
     }
   };
 
@@ -44,8 +53,8 @@ const Wrapper = ({ children, title, inputs, productVariants }: Props) => {
           </tr>
         </thead>
         <tbody>
-          {inputs
-            ? inputs.map((input: Input, index: number) => (
+          {inputs && inputs.length > 0
+            ? inputs.map((input: ProductVariantInput, index: number) => (
                 <TrItem key={index} input={input} />
               ))
             : null}
@@ -73,4 +82,4 @@ const Wrapper = ({ children, title, inputs, productVariants }: Props) => {
   );
 };
 
-export default Wrapper;
+export default memo(Wrapper);

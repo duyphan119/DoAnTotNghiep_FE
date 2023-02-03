@@ -5,8 +5,10 @@ import groupProductManagementSlice from "./slice/groupProductManagementSlice";
 import groupProductSlice from "./slice/groupProductSlice";
 import productDetailSlice from "./slice/productDetailSlice";
 import productManagementSlice from "./slice/productManagementSlice";
+import productVariantSlice from "./slice/productVariantSlice";
 import snackbarSlice from "./slice/snackbarSlice";
 import userAddressSlice from "./slice/userAddressSlice";
+import variantSlice from "./slice/variantSlice";
 export const rootReducer = combineReducers({
   cart: cartSlice,
   groupProduct: groupProductSlice,
@@ -16,4 +18,6 @@ export const rootReducer = combineReducers({
   userAddress: userAddressSlice,
   productManagement: productManagementSlice,
   groupProductManagement: groupProductManagementSlice,
+  productVariant: productVariantSlice,
+  variant: variantSlice,
 });

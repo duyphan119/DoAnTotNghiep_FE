@@ -1,3 +1,4 @@
+import { Grid } from "@mui/material";
 import { useSelector } from "react-redux";
 import { productDetailSelector } from "../../redux/slice/productDetailSlice";
 import { ProductVariantImage, VariantValue } from "../../utils/types";
@@ -27,8 +28,14 @@ const ProductInfo = (props: Props) => {
   return (
     <>
       <div className={styles.body}>
-        <Left thumbnail={product.thumbnail} images={getImages()} />
-        <Right />
+        <Grid container columnSpacing={3} rowSpacing={3}>
+          <Grid item xs={12} lg={6}>
+            <Left thumbnail={product.thumbnail} images={getImages()} />
+          </Grid>
+          <Grid item xs={12} lg={6}>
+            <Right />
+          </Grid>
+        </Grid>
       </div>
       <DownTabs />
     </>

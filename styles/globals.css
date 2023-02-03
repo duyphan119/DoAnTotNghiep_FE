@@ -82,8 +82,11 @@ button {
   font-size: 12px;
   background: inherit;
   width: calc(100% - 8px);
-  background: #fff;
+  background: inherit;
   padding: 6px 7px;
+}
+textarea + .form-label {
+  background: #fff;
 }
 .three-dot {
   overflow: hidden;

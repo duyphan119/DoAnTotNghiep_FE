@@ -16,6 +16,18 @@
 .images img {
   cursor: pointer;
 }
+.singleImageWrapper {
+  overflow: hidden;
+  width: 100%;
+}
+.singleImage {
+  width: 100%;
+  overflow: hidden;
+  display: block;
+  position: relative;
+  height: 0;
+  padding-bottom: 133%;
+}
 .right {
   flex: 1;
   display: flex;

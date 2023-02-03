@@ -1,38 +1,28 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import ConfirmDialog from "../../ConfirmDialog";
-
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, memo, useState } from "react";
 import styles from "../style.module.css";
-import { useModalProductVariantContext, Input } from "../ModalProductVariant";
+import { useAppDispatch } from "../../../redux/store";
+import {
+  productVariantActions,
+  ProductVariantInput,
+} from "../../../redux/slice/productVariantSlice";
 type Props = {
   hasDeleteBtn?: boolean;
-  input: Input;
+  input: ProductVariantInput;
 };
 
 const TrItem = ({ input, hasDeleteBtn }: Props) => {
-  const { onDelete, onChange } = useModalProductVariantContext();
-  // const NAME = productVariant
-  //   ? productVariant.name
-  //   : variantValues
-  //       ?.map((variantValue: VariantValue) => variantValue.value)
-  //       .join(" / ");
-  // const [input, setInput] = useState<Input>(() =>
-  //   productVariant
-  //     ? {
-  //         name: NAME || "",
-  //         price: productVariant.price,
-  //         inventory: productVariant.inventory,
-  //       }
-  //     : {
-  //         name: NAME || "",
-  //         price: 0,
-  //         inventory: 0,
-  //       }
-  // );
+  const appDispatch = useAppDispatch();
   const [open, setOpen] = useState<boolean>(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    onChange({ ...input, [e.target.name]: +e.target.value });
+    appDispatch(
+      productVariantActions.changeInput({
+        ...input,
+        [e.target.name]: +e.target.value,
+      })
+    );
   };
 
   const handleClose = () => {
@@ -104,4 +94,4 @@ const TrItem = ({ input, hasDeleteBtn }: Props) => {
   );
 };
 
-export default TrItem;
+export default memo(TrItem);

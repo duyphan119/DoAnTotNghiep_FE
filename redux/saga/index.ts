@@ -4,7 +4,9 @@ import { cartSaga } from "./cartSaga";
 import { groupProductManamentSaga } from "./groupProductManamentSaga";
 import { productDetailSaga } from "./productDetailSaga";
 import { productManamentSaga } from "./productManamentSaga";
+import { productVariantSaga } from "./productVariantSaga";
 import { userAddressSaga } from "./userAddressSaga";
+import { variantSaga } from "./variantSaga";
 
 export default function* rootSaga() {
   yield all([
@@ -14,5 +16,7 @@ export default function* rootSaga() {
     userAddressSaga(),
     productManamentSaga(),
     groupProductManamentSaga(),
+    productVariantSaga(),
+    variantSaga(),
   ]);
 }
