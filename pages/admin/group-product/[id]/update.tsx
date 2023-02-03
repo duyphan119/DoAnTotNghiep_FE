@@ -1,69 +1,78 @@
-import { Grid, Paper } from "@mui/material";
+import { Grid } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import {
-  CreateGroupProductDTO,
-  getGroupProductById,
-  updateGroupProduct,
-} from "../../../../apis/groupProduct";
-import { uploadSingle } from "../../../../apis/upload";
+import { useSelector } from "react-redux";
+import { CreateGroupProductDTO } from "../../../../apis/groupProduct";
 import {
   AdminFormPaper,
   FooterForm,
   InputControl,
+  NotFound,
   SelectControl,
 } from "../../../../components";
 import { AdminLayout } from "../../../../layouts";
-import { MSG_SUCCESS } from "../../../../utils/constants";
-import { GroupProduct } from "../../../../utils/types";
+import {
+  groupProductManagementActions,
+  groupProductManagementSelector,
+} from "../../../../redux/slice/groupProductManagementSlice";
+import { useAppDispatch } from "../../../../redux/store";
 
-type Props = { groupProduct: GroupProduct };
+type Props = {};
 
-const UpdateGroupProduct = ({ groupProduct }: Props) => {
+const UpdateGroupProduct = (props: Props) => {
   const router = useRouter();
-
+  const appDispatch = useAppDispatch();
+  const {
+    isBack,
+    groupProductEditing: groupProduct,
+    isLoading,
+    isSuccess,
+  } = useSelector(groupProductManagementSelector);
   const [files, setFiles] = useState<FileList | null>(null);
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<CreateGroupProductDTO>({
-    defaultValues: {
-      name: groupProduct.name,
-      description: groupProduct.description,
-      sex: groupProduct.sex,
-      isAdult: groupProduct.isAdult,
-    },
-  });
+    setValue,
+  } = useForm<CreateGroupProductDTO>();
 
-  console.log({ groupProduct });
-
-  const onSubmit: SubmitHandler<CreateGroupProductDTO> = async (data) => {
-    try {
-      let url = "";
-      if (files) {
-        const formData = new FormData();
-        formData.append("image", files[0]);
-        const { message, data: dataImage } = await uploadSingle(formData);
-        if (message === MSG_SUCCESS) {
-          console.log("Uploaded file: ", dataImage);
-          url = dataImage.secure_url;
-        }
-      }
-      const { message: msg } = await updateGroupProduct(groupProduct.id, {
-        ...data,
-        isAdult: "" + data.isAdult === "true" ? true : false,
-        ...(url !== "" ? { thumbnail: url } : {}),
-      });
-      if (msg === MSG_SUCCESS) {
-        router.push("/admin/group-product");
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  const onSubmit: SubmitHandler<CreateGroupProductDTO> = (data) => {
+    if (groupProduct)
+      appDispatch(
+        groupProductManagementActions.fetchUpdateGroupProduct({
+          id: groupProduct.id,
+          dto: {
+            ...data,
+            isAdult: "" + data.isAdult === "true" ? true : false,
+          },
+          files,
+        })
+      );
   };
+
+  useEffect(() => {
+    const { id } = router.query;
+    appDispatch(
+      groupProductManagementActions.fetchGetGroupProductById(+`${id}`)
+    );
+  }, [router.query]);
+
+  useEffect(() => {
+    if (isBack) router.back();
+  }, [isBack]);
+
+  useEffect(() => {
+    if (groupProduct) {
+      setValue("name", groupProduct.name);
+      setValue("description", groupProduct.description);
+      setValue("isAdult", groupProduct.isAdult);
+      setValue("sex", groupProduct.sex);
+    }
+  }, [groupProduct]);
+
+  if (isSuccess && !groupProduct) return <NotFound />;
 
   return (
     <AdminLayout pageTitle="Sản phẩm">
@@ -100,11 +109,7 @@ const UpdateGroupProduct = ({ groupProduct }: Props) => {
                 <SelectControl
                   label="Giới tính"
                   register={register("sex")}
-                  options={[
-                    { value: "Nam" },
-                    { value: "Nữ" },
-                    { value: "Unisex" },
-                  ]}
+                  options={[{ value: "Nam" }, { value: "Nữ" }]}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -128,7 +133,10 @@ const UpdateGroupProduct = ({ groupProduct }: Props) => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <FooterForm onBack={() => router.back()} />
+                <FooterForm
+                  onBack={() => router.back()}
+                  isLoading={groupProduct && isLoading ? true : false}
+                />
               </Grid>
             </Grid>
           </form>
@@ -138,15 +146,4 @@ const UpdateGroupProduct = ({ groupProduct }: Props) => {
   );
 };
 
-export async function getServerSideProps(context: any) {
-  const { id } = context.query;
-  const { message, data } = await getGroupProductById(+id);
-  return message === MSG_SUCCESS
-    ? {
-        props: { groupProduct: data },
-      }
-    : {
-        notFound: true,
-      };
-}
 export default UpdateGroupProduct;

@@ -14,7 +14,16 @@ const FooterForm = ({ onBack, submitText, isLoading }: Props) => {
         Quay lại
       </Button>
       <Button variant="contained" type="submit" style={{ marginLeft: 8 }}>
-        {isLoading ? <CircularProgress /> : submitText || "Lưu"}
+        {isLoading ? (
+          <>
+            <CircularProgress
+              style={{ color: "#fff", width: "20px", height: "20px" }}
+            />
+            &nbsp;&nbsp; Đang xử lý
+          </>
+        ) : (
+          submitText || "Lưu"
+        )}
       </Button>
     </>
   );

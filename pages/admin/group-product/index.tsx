@@ -3,86 +3,63 @@ import ClearIcon from "@mui/icons-material/Clear";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import {
   deleteGroupProduct,
-  getAllGroupProducts,
   restoreGroupProduct,
   softDeleteGroupProduct,
 } from "../../../apis/groupProduct";
 import { ConfirmDialog, DataManagement } from "../../../components";
 import { AdminLayout } from "../../../layouts";
-import { MSG_SUCCESS } from "../../../utils/constants";
+import {
+  groupProductManagementActions,
+  groupProductManagementSelector,
+} from "../../../redux/slice/groupProductManagementSlice";
+import { useAppDispatch } from "../../../redux/store";
 import { formatDateTime } from "../../../utils/helpers";
-import { GroupProduct, ResponseItems } from "../../../utils/types";
+import { protectedRoutes } from "../../../utils/routes";
+import { GroupProduct } from "../../../utils/types";
 
-type Props = {
-  groupProductData: ResponseItems<GroupProduct>;
-};
+type Props = {};
 const LIMIT = 10;
-const GroupProducts = ({ groupProductData: propGroupProductData }: Props) => {
-  const [groupProductData, setGroupProductData] =
-    useState<ResponseItems<GroupProduct>>(propGroupProductData);
-  const [current, setCurrent] = useState<GroupProduct | null>(null);
+const GroupProducts = (props: Props) => {
+  const appDispatch = useAppDispatch();
+  const router = useRouter();
+  const { groupProductData, current, openDialog } = useSelector(
+    groupProductManagementSelector
+  );
 
-  const handleSoftDelete = async (id: number) => {
-    try {
-      const { message } = await softDeleteGroupProduct(id);
-      if (message === MSG_SUCCESS) {
-        const _groupProductData = { ...groupProductData };
-        const index = _groupProductData.items.findIndex(
-          (gp: GroupProduct) => gp.id === id
-        );
-        if (index !== -1) {
-          _groupProductData.items[index].deletedAt = "" + new Date().getTime();
-          setGroupProductData(_groupProductData);
-        }
-      }
-    } catch (error) {
-      console.log("Soft delete group product error", error);
-    }
+  console.log(groupProductData);
+
+  const handleSoftDelete = (id: number) => {
+    appDispatch(groupProductManagementActions.fetchSoftDeleteGroupProduct(id));
   };
 
-  const handleRestore = async (id: number) => {
-    try {
-      const { message } = await restoreGroupProduct(id);
-      if (message === MSG_SUCCESS) {
-        const _groupProductData = { ...groupProductData };
-        const index = _groupProductData.items.findIndex(
-          (gp: GroupProduct) => gp.id === id
-        );
-        if (index !== -1) {
-          _groupProductData.items[index].deletedAt = null;
-          setGroupProductData(_groupProductData);
-        }
-      }
-    } catch (error) {
-      console.log("Restore delete group product error", error);
-    }
+  const handleRestore = (id: number) => {
+    appDispatch(groupProductManagementActions.fetchRestoreGroupProduct(id));
   };
 
-  const handleDelete = async () => {
-    try {
-      if (current) {
-        let { id } = current;
-        const { message } = await deleteGroupProduct(id);
-        if (message === MSG_SUCCESS) {
-          const _groupProductData = { ...groupProductData };
-          _groupProductData.items = _groupProductData.items.filter(
-            (gp: GroupProduct) => gp.id !== id
-          );
-          _groupProductData.count -= 1;
-          setGroupProductData(_groupProductData);
-        }
-      }
-    } catch (error) {
-      console.log("Delete group product error", error);
-    }
+  const handleDelete = () => {
+    if (current)
+      appDispatch(
+        groupProductManagementActions.fetchDeleteGroupProduct(current.id)
+      );
   };
 
   useEffect(() => {
-    setGroupProductData(propGroupProductData);
-  }, [propGroupProductData]);
+    const { p, sortBy, sortType } = router.query;
+    appDispatch(
+      groupProductManagementActions.fetchGroupProductData({
+        p: +`${p}` || 1,
+        limit: LIMIT,
+        withDeleted: true,
+        ...(sortBy ? { sortBy: `${sortBy}` } : {}),
+        ...(sortType ? { sortType: `${sortType}` } : {}),
+      })
+    );
+  }, [router.query]);
 
   return (
     <AdminLayout pageTitle="Nhóm sản phẩm">
@@ -107,7 +84,7 @@ const GroupProducts = ({ groupProductData: propGroupProductData }: Props) => {
           rows={groupProductData.items}
           count={groupProductData.count}
           limit={LIMIT}
-          hasCheck={true}
+          // hasCheck={true}
           columns={[
             {
               style: { width: 70, textAlign: "center" },
@@ -187,21 +164,27 @@ const GroupProducts = ({ groupProductData: propGroupProductData }: Props) => {
               render: (row: GroupProduct) => (
                 <>
                   <div style={{ display: "flex", alignItems: "center" }}>
-                    <Link href={`/admin/group-product/${row.id}/update`}>
+                    <Link href={protectedRoutes.updateGroupProduct(row.id)}>
                       <button className="btnEdit">Sửa</button>
                     </Link>
                     <button
                       className="btnDelete"
                       style={{ marginLeft: "8px" }}
-                      onClick={() => setCurrent(row)}
+                      onClick={() =>
+                        appDispatch(
+                          groupProductManagementActions.showDialog(row)
+                        )
+                      }
                     >
                       Xóa
                     </button>
                   </div>
-                  {current ? (
+                  {openDialog && current ? (
                     <ConfirmDialog
                       open={current.id === row.id ? true : false}
-                      onClose={() => setCurrent(null)}
+                      onClose={() =>
+                        appDispatch(groupProductManagementActions.hideDialog())
+                      }
                       onConfirm={handleDelete}
                       title="Xác nhận"
                       text="Bạn có chắc chắn muốn xóa không?"
@@ -218,23 +201,3 @@ const GroupProducts = ({ groupProductData: propGroupProductData }: Props) => {
 };
 
 export default GroupProducts;
-
-export async function getServerSideProps(context: any) {
-  console.log(context.query);
-  const { p, sortBy, sortType } = context.query;
-  const res = await getAllGroupProducts({
-    p: p || 1,
-    limit: LIMIT,
-    sortBy,
-    sortType,
-    withDeleted: true,
-  });
-  const { message, data } = res;
-  return message === MSG_SUCCESS
-    ? {
-        props: { groupProductData: data },
-      }
-    : {
-        notFound: true,
-      };
-}

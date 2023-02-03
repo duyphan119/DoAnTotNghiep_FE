@@ -1,15 +1,11 @@
-import { Button, Grid, Paper } from "@mui/material";
+import { Grid } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { ChangeEvent, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import "react-quill/dist/quill.snow.css";
-import {
-  createGroupProduct,
-  CreateGroupProductDTO,
-  getAllGroupProducts,
-} from "../../../apis/groupProduct";
-import { uploadSingle } from "../../../apis/upload";
+import { useSelector } from "react-redux";
+import { CreateGroupProductDTO } from "../../../apis/groupProduct";
 import {
   AdminFormPaper,
   FooterForm,
@@ -17,46 +13,39 @@ import {
   SelectControl,
 } from "../../../components";
 import { AdminLayout } from "../../../layouts";
-import { MSG_SUCCESS } from "../../../utils/constants";
+import {
+  groupProductManagementActions,
+  groupProductManagementSelector,
+} from "../../../redux/slice/groupProductManagementSlice";
+import { useAppDispatch } from "../../../redux/store";
 
 type Props = {};
 
 const AddGRoupProduct = (props: Props) => {
   const router = useRouter();
+  const appDispatch = useAppDispatch();
+  const { isBack, isLoading } = useSelector(groupProductManagementSelector);
   const [files, setFiles] = useState<FileList | null>(null);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<CreateGroupProductDTO>();
-  const onSubmit: SubmitHandler<CreateGroupProductDTO> = async (data) => {
-    try {
-      console.log("CREATE DATA::::", {
-        ...data,
-        isAdult: "" + data.isAdult === "true" ? true : false,
-      });
-      let url = "";
-      if (files) {
-        const formData = new FormData();
-        formData.append("image", files[0]);
-        const { message, data: dataImage } = await uploadSingle(formData);
-        if (message === MSG_SUCCESS) {
-          console.log("Uploaded file: ", dataImage);
-          url = dataImage.secure_url;
-        }
-      }
-      const { message: msg } = await createGroupProduct({
-        ...data,
-        isAdult: "" + data.isAdult === "true" ? true : false,
-        ...(url !== "" ? { thumbnail: url } : {}),
-      });
-      if (msg === MSG_SUCCESS) {
-        router.push("/admin/group-product");
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  const onSubmit: SubmitHandler<CreateGroupProductDTO> = (data) => {
+    appDispatch(
+      groupProductManagementActions.fetchCreateGroupProduct({
+        files,
+        dto: {
+          ...data,
+          isAdult: "" + data.isAdult === "true" ? true : false,
+        },
+      })
+    );
   };
+
+  useEffect(() => {
+    if (isBack) router.back();
+  }, [isBack]);
 
   return (
     <AdminLayout pageTitle="Nhóm sản phẩm">
@@ -93,11 +82,7 @@ const AddGRoupProduct = (props: Props) => {
                 <SelectControl
                   label="Giới tính"
                   register={register("sex")}
-                  options={[
-                    { value: "Nam" },
-                    { value: "Nữ" },
-                    { value: "Unisex" },
-                  ]}
+                  options={[{ value: "Nam" }, { value: "Nữ" }]}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -121,7 +106,10 @@ const AddGRoupProduct = (props: Props) => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <FooterForm onBack={() => router.back()} />
+                <FooterForm
+                  onBack={() => router.back()}
+                  isLoading={isLoading}
+                />
               </Grid>
             </Grid>
           </form>

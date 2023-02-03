@@ -1,5 +1,13 @@
 import { call, put, takeEvery } from "redux-saga/effects";
-import { getAllGroupProducts } from "../../apis/groupProduct";
+import {
+  createGroupProduct,
+  deleteGroupProduct,
+  getAllGroupProducts,
+  getGroupProductById,
+  restoreGroupProduct,
+  softDeleteGroupProduct,
+  updateGroupProduct,
+} from "../../apis/groupProduct";
 import {
   createProduct,
   getAllProducts,
@@ -10,6 +18,8 @@ import { MSG_SUCCESS } from "../../utils/constants";
 import {
   groupProductManagementReducers,
   groupProductManagementActions,
+  CreateGroupProductPayload,
+  UpdateGroupProductPayload,
 } from "../slice/groupProductManagementSlice";
 import { ActionPayload } from "../store";
 
@@ -89,6 +99,143 @@ function* fetchHeaderData() {
   }
 }
 
+function* fetchCreateGroupProduct({
+  payload,
+}: ActionPayload<CreateGroupProductPayload>) {
+  let isError = true;
+  try {
+    const { files, dto } = payload;
+    let url = "";
+    if (files) {
+      const formData = new FormData();
+      formData.append("image", files[0]);
+      const { message, data: dataImage } = yield call(() =>
+        uploadSingle(formData)
+      );
+      if (message === MSG_SUCCESS) {
+        url = dataImage.secure_url;
+      }
+    }
+    const { message: msg } = yield call(() =>
+      createGroupProduct({
+        ...dto,
+        ...(url !== "" ? { thumbnail: url } : {}),
+      })
+    );
+    if (msg === MSG_SUCCESS) {
+      isError = false;
+      yield put(groupProductManagementActions.fetchSuccess());
+      yield put(groupProductManagementActions.back());
+    }
+  } catch (error) {
+    console.log("groupProductManagementActions.fetchCreateGroupProduct", error);
+  }
+  if (isError) yield put(groupProductManagementActions.fetchError());
+}
+
+function* fetchUpdateGroupProduct({
+  payload,
+}: ActionPayload<UpdateGroupProductPayload>) {
+  let isError = true;
+  try {
+    const { files, dto, id } = payload;
+    let url = "";
+    if (files) {
+      const formData = new FormData();
+      formData.append("image", files[0]);
+      const { message, data: dataImage } = yield call(() =>
+        uploadSingle(formData)
+      );
+      if (message === MSG_SUCCESS) {
+        url = dataImage.secure_url;
+      }
+    }
+    const { message: msg } = yield call(() =>
+      updateGroupProduct(id, {
+        ...dto,
+        ...(url !== "" ? { thumbnail: url } : {}),
+      })
+    );
+    if (msg === MSG_SUCCESS) {
+      isError = false;
+      yield put(groupProductManagementActions.fetchSuccess());
+      yield put(groupProductManagementActions.back());
+    }
+  } catch (error) {
+    console.log("groupProductManagementActions.fetchUpdateGroupProduct", error);
+  }
+  if (isError) yield put(groupProductManagementActions.fetchError());
+}
+
+function* fetchGetGroupProductById({ payload }: ActionPayload<number>) {
+  let isError = true;
+  try {
+    const { message, data } = yield call(() => getGroupProductById(payload));
+    if (message === MSG_SUCCESS) {
+      isError = false;
+      yield put(groupProductManagementActions.fetchSuccess());
+      yield put(groupProductManagementActions.setGroupProductEditing(data));
+    }
+  } catch (error) {
+    console.log(
+      "groupProductManagementActions.fetchGetGroupProductById",
+      error
+    );
+  }
+  if (isError) yield put(groupProductManagementActions.fetchError());
+}
+
+function* fetchDeleteGroupProduct({ payload }: ActionPayload<number>) {
+  let isError = true;
+  try {
+    const { message } = yield call(() => deleteGroupProduct(payload));
+    if (message === MSG_SUCCESS) {
+      isError = false;
+      yield put(groupProductManagementActions.fetchSuccess());
+      yield put(groupProductManagementActions.deleted());
+    }
+  } catch (error) {
+    console.log("groupProductManagementActions.fetchDeleteGroupProduct", error);
+  }
+  if (isError) yield put(groupProductManagementActions.fetchError());
+}
+
+function* fetchRestoreGroupProduct({ payload }: ActionPayload<number>) {
+  let isError = true;
+  try {
+    const { message } = yield call(() => restoreGroupProduct(payload));
+    if (message === MSG_SUCCESS) {
+      isError = false;
+      yield put(groupProductManagementActions.fetchSuccess());
+      yield put(groupProductManagementActions.restore(payload));
+    }
+  } catch (error) {
+    console.log(
+      "groupProductManagementActions.fetchRestoreGroupProduct",
+      error
+    );
+  }
+  if (isError) yield put(groupProductManagementActions.fetchError());
+}
+
+function* fetchSoftDeleteGroupProduct({ payload }: ActionPayload<number>) {
+  let isError = true;
+  try {
+    const { message } = yield call(() => softDeleteGroupProduct(payload));
+    if (message === MSG_SUCCESS) {
+      isError = false;
+      yield put(groupProductManagementActions.fetchSuccess());
+      yield put(groupProductManagementActions.softDelete(payload));
+    }
+  } catch (error) {
+    console.log(
+      "groupProductManagementActions.fetchSoftDeleteGroupProduct",
+      error
+    );
+  }
+  if (isError) yield put(groupProductManagementActions.fetchError());
+}
+
 export function* groupProductManamentSaga() {
   yield takeEvery(
     groupProductManagementReducers.fetchGroupProductData,
@@ -97,5 +244,29 @@ export function* groupProductManamentSaga() {
   yield takeEvery(
     groupProductManagementReducers.fetchHeaderData,
     fetchHeaderData
+  );
+  yield takeEvery(
+    groupProductManagementReducers.fetchCreateGroupProduct,
+    fetchCreateGroupProduct
+  );
+  yield takeEvery(
+    groupProductManagementReducers.fetchUpdateGroupProduct,
+    fetchUpdateGroupProduct
+  );
+  yield takeEvery(
+    groupProductManagementReducers.fetchGetGroupProductById,
+    fetchGetGroupProductById
+  );
+  yield takeEvery(
+    groupProductManagementReducers.fetchDeleteGroupProduct,
+    fetchDeleteGroupProduct
+  );
+  yield takeEvery(
+    groupProductManagementReducers.fetchRestoreGroupProduct,
+    fetchRestoreGroupProduct
+  );
+  yield takeEvery(
+    groupProductManagementReducers.fetchSoftDeleteGroupProduct,
+    fetchSoftDeleteGroupProduct
   );
 }
