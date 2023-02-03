@@ -11,6 +11,7 @@ type State = {
   } & Partial<Order>;
   count: number;
   total: number;
+  isPaymentSuccess: boolean;
 } & FetchState;
 
 export type FetchAddToCartPayload = {
@@ -30,6 +31,7 @@ const INITIAL_STATE: State = {
   count: 0,
   total: 0,
   isSuccess: false,
+  isPaymentSuccess: false,
 };
 
 export const cartSlice = createSlice({
@@ -150,6 +152,12 @@ export const cartSlice = createSlice({
       state.isLoading = true;
       state.isSuccess = false;
       state.isError = false;
+    },
+    paymentSuccess: (state) => {
+      state.isSuccess = true;
+      state.isLoading = false;
+      state.isPaymentSuccess = true;
+      state.cart = { items: [] };
     },
   },
 });

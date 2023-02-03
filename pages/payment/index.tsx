@@ -76,7 +76,7 @@ const initialState: State = {
 const Payment = (props: Props) => {
   const appDispatch = useAppDispatch();
   const router = useRouter();
-  const { cart, total, isSuccess } = useSelector(cartSelector);
+  const { cart, total, isPaymentSuccess } = useSelector(cartSelector);
   const { userAddresses } = useSelector(userAddressSelector);
   const { profile } = useSelector(authSelector);
 
@@ -161,8 +161,8 @@ const Payment = (props: Props) => {
   }, []);
 
   useEffect(() => {
-    if (isSuccess) router.push("/payment/success");
-  }, [isSuccess]);
+    if (isPaymentSuccess) router.push(publicRoutes.paymentSuccess);
+  }, [isPaymentSuccess]);
 
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {
