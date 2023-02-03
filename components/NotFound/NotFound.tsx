@@ -1,14 +1,33 @@
 import React, { useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { publicRoutes } from "../../utils/routes";
+import notfoundSvg from "../../public/404.svg";
+import styles from "./style.module.css";
 
-type Props = Partial<{
-  title: string;
-}>;
+type Props = {};
 
-const NotFound = ({ title }: Props) => {
-  useEffect(() => {
-    if (title) document.title = title;
-  }, [title]);
-  return <div>NotFound</div>;
+const NotFound = (props: Props) => {
+  return (
+    <div className={styles.wrapper}>
+      <Image
+        src={notfoundSvg}
+        alt="404"
+        priority={true}
+        width={320}
+        height={240}
+      />
+      <h1 className={styles.text}>
+        Rất tiếc, trang bạn truy cập không tồn tại
+      </h1>
+      <Link
+        href={publicRoutes.home}
+        className={"btnAdd " + styles.backHomeLink}
+      >
+        Quay về trang chủ
+      </Link>
+    </div>
+  );
 };
 
 export default NotFound;

@@ -3,8 +3,11 @@ import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { myOrders } from "../../apis/order";
 import { AccountLayout } from "../../layouts";
+import { authActions, authSelector } from "../../redux/slice/authSlice";
+import { useAppDispatch } from "../../redux/store";
 import styles from "../../styles/FollowOrder.module.css";
 import { MSG_SUCCESS } from "../../utils/constants";
 import { formatDateTime, getThumbnailOrderItem } from "../../utils/helpers";
@@ -119,10 +122,8 @@ const MyOrder = ({ order }: OrderProps) => {
 
 const FollowOrder = (props: Props) => {
   const router = useRouter();
-  const [orderData, setOrderData] = useState<ResponseItems<Order>>({
-    items: [],
-    count: 0,
-  });
+  const appDispatch = useAppDispatch();
+  const { orderData } = useSelector(authSelector);
 
   const handleChange = (p: number) => {
     const paramsObj: any = { ...router.query };
@@ -136,21 +137,13 @@ const FollowOrder = (props: Props) => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { message, data } = await myOrders({
-          ...router.query,
-          limit: LIMIT,
-          items: true,
-        });
-        if (message === MSG_SUCCESS) {
-          setOrderData(data);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
+    appDispatch(
+      authActions.fetchMyOrderData({
+        ...router.query,
+        limit: LIMIT,
+        items: true,
+      })
+    );
   }, [router.query]);
 
   return (

@@ -1,14 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { deleteCookie, setCookie } from "cookies-next";
-import { ChangeProfile, LoginDTO, RegisterDTO } from "../../apis/auth";
+import {
+  ChangePassword,
+  ChangeProfile,
+  LoginDTO,
+  RegisterDTO,
+} from "../../apis/auth";
+import { OrderQueryParams } from "../../apis/order";
 import { COOKIE_ACCESSTOKEN_NAME } from "../../utils/constants";
-import { FetchState, User } from "../../utils/types";
+import { FetchState, Order, ResponseItems, User } from "../../utils/types";
 import { ActionPayload, RootState } from "../store";
 
 type State = {
   profile: User | null;
   accessToken: string;
   openModalAuth: boolean;
+  orderData: ResponseItems<Order>;
 } & FetchState;
 
 type LoginResponse = {
@@ -25,6 +32,7 @@ const INITIAL_STATE: State = {
   isLoading: false,
   openModalAuth: false,
   isSuccess: false,
+  orderData: { items: [], count: 0 },
 };
 
 const authSlice = createSlice({
@@ -92,6 +100,25 @@ const authSlice = createSlice({
       state.accessToken = "";
       deleteCookie(COOKIE_ACCESSTOKEN_NAME);
     },
+    fetchChangePassword: (state, action: ActionPayload<ChangePassword>) => {
+      state.isError = false;
+      state.isLoading = true;
+      state.isSuccess = false;
+    },
+    fetchSuccess: (state) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+    },
+    fetchMyOrderData: (state, action: ActionPayload<OrderQueryParams>) => {
+      state.isError = false;
+      state.isLoading = true;
+      state.isSuccess = false;
+    },
+    setMyOrderData: (state, action: ActionPayload<ResponseItems<Order>>) => {
+      state.orderData = action.payload;
+      state.isLoading = false;
+      state.isSuccess = true;
+    },
   },
 });
 export const authReducers = {
@@ -100,6 +127,8 @@ export const authReducers = {
   fetchRegister: `${NAME_SLICE}/fetchRegister`,
   fetchChangeProfile: `${NAME_SLICE}/fetchChangeProfile`,
   fetchLogout: `${NAME_SLICE}/fetchLogout`,
+  fetchChangePassword: `${NAME_SLICE}/fetchChangePassword`,
+  fetchMyOrderData: `${NAME_SLICE}/fetchMyOrderData`,
 };
 export const authSelector = (state: RootState): State => state.auth;
 export const authActions = authSlice.actions;

@@ -110,6 +110,33 @@ const Products = ({ productData }: Props) => {
     return groupProduct ? groupProduct.name : "";
   };
 
+  useEffect(() => {
+    const {
+      group_product_slug,
+      p,
+      sortBy,
+      sortType,
+      v_ids,
+      min_price,
+      max_price,
+    } = router.query;
+    getAllProducts({
+      group_product_slug: `${group_product_slug}`,
+      limit: LIMIT,
+      product_variants: true,
+      ...(p ? { p } : {}),
+      ...(sortBy ? { sortBy } : {}),
+      ...(sortType ? { sortType } : {}),
+      ...(v_ids ? { v_ids } : {}),
+      ...(min_price ? { min_price } : {}),
+      ...(max_price ? { max_price } : {}),
+    } as any)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => console.log(err));
+  }, [router.query]);
+
   return (
     <ProductsLayout
       totalProducts={productData.count}
@@ -179,7 +206,7 @@ export async function getServerSideProps(context: any) {
     min_price,
     max_price,
   } = context.query;
-  const { code, message, data } = await getAllProducts({
+  const { message, data } = await getAllProducts({
     group_product_slug,
     limit: LIMIT,
     product_variants: true,
@@ -190,7 +217,7 @@ export async function getServerSideProps(context: any) {
     ...(min_price ? { min_price } : {}),
     ...(max_price ? { max_price } : {}),
   });
-  return code === CODE_OK || message === MSG_SUCCESS
+  return message === MSG_SUCCESS
     ? {
         props: { productData: data },
       }

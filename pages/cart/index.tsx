@@ -53,10 +53,9 @@ const CartItem = React.memo(({ item }: CartItemProps) => {
           </div>
           <div>
             <Link
-              href={{
-                pathname: "/product/[slug]",
-                query: { slug: item.productVariant?.product?.slug },
-              }}
+              href={publicRoutes.productDetail(
+                `${item.productVariant?.product?.slug}`
+              )}
             >
               {item.productVariant?.product?.name}
             </Link>

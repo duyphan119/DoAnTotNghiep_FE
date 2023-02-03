@@ -59,7 +59,7 @@ const SearchInput = (props: Props) => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     handleBlur();
-    router.push(`/tim-kiem?q=${q}`);
+    router.push(publicRoutes.search(q));
   };
 
   useEffect(() => {
@@ -91,7 +91,7 @@ const SearchInput = (props: Props) => {
                   return (
                     <li key={product.id}>
                       <Link
-                        href={`/product/${product.slug}`}
+                        href={publicRoutes.productDetail(product.slug)}
                         className={styles.link}
                       >
                         <Image

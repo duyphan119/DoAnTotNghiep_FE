@@ -21,6 +21,11 @@ export type CreateProductDTO = {
   detail?: string;
 };
 
+export type SearchProductParams = PaginationParams &
+  Partial<{
+    q: string;
+  }>;
+
 export const getAllProducts = (params?: ProductQueryParams): Promise<any> =>
   publicAxios().get("product", { params });
 
@@ -34,6 +39,9 @@ export const updateProduct = (
   id: number,
   body: Partial<CreateProductDTO>
 ): Promise<any> => privateAxios().patch(`product/${id}`, body);
+
+export const searchProducts = (params?: SearchProductParams): Promise<any> =>
+  publicAxios().get("product/search", { params });
 
 export const getFavoriteProducts = (params?: PaginationParams): Promise<any> =>
   privateAxios().get("product/favorite/user", { params });
