@@ -8,6 +8,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
 }
 .left {
   display: flex;
@@ -128,7 +129,7 @@
   min-width: 320px;
   position: relative;
   border-radius: 50px;
-  width: 50%;
+  flex: 1;
 }
 .search button {
   background: var(--blue);
@@ -205,35 +206,103 @@
 .right .items .item span {
   cursor: pointer;
 }
-/* .right .items .item span,
-.right .items .item a {
+.drawerBody {
+  display: block;
+}
+.drawerBody nav {
+  width: 50vw;
+}
+.drawerBody a {
+  font-size: 16px;
+}
+.drawerBody .navItems {
+  padding: 8px 0;
+}
+.drawerBody .navItems .navItem {
+  padding: 0 16px;
+}
+.drawerBody .navItems .navItem.active {
+  background-color: lightgray;
+}
+
+.navItemLink {
+  padding: 8px 0;
   display: flex;
-  flex-direction: column;
+  flex: 1;
+}
+.navItemWrapper {
+  display: flex;
   align-items: center;
-  gap: 4px;
-} */
+}
+
+.navItemLabel {
+  cursor: pointer;
+}
+
+.navItemCheckbox:checked + .navMenuItems {
+  display: block;
+}
+
+.navMenuItems {
+  display: none;
+  margin-top: 4px;
+}
+
+.navMenuItemLink {
+  display: block;
+  padding: 4px 0;
+  margin-left: 12px;
+}
+.navItemWrapper:hover .navMenuItemLink,
+.navItemLink:hover,
+.navMenuItemLink:hover {
+  color: var(--blue);
+}
 .pointLink {
   display: flex;
   align-items: center;
   gap: 4px;
 }
-.drawerBody {
-  display: none;
+.menuIcon button {
+  color: #000;
+  padding: 12px;
+}
+.menuIcon button svg {
+  font-size: 24px;
 }
 @media only screen and (min-width: 768px) and (max-width: 1240px) {
   .right .items .item {
     padding: 16px;
   }
+  .container {
+    gap: 24px;
+  }
+  .categories {
+    display: none;
+  }
+  .right .items {
+    display: none;
+  }
+  .container {
+    justify-content: flex-end;
+  }
+  .left {
+    justify-content: flex-start;
+  }
+  .menuIcon {
+    display: block;
+  }
   .search {
-    margin-right: 16px;
-    min-width: unset;
+    margin-right: 0;
   }
 }
 @media only screen and (max-width: 768px) {
   .headerBottom {
     flex-direction: column;
   }
-
+  .container {
+    justify-content: flex-start;
+  }
   .logo {
     margin-left: 0;
     padding-left: 12px;
@@ -246,16 +315,7 @@
   .menuIcon {
     display: block;
   }
-  .menuIcon button {
-    color: #000;
-    padding: 12px;
-  }
-  .menuIcon button svg {
-    font-size: 24px;
-  }
   .right {
-    /* width: 100%; */
-    /* background-color: lightgray; */
     flex: 1;
     margin-left: 16px;
   }
@@ -264,6 +324,7 @@
     margin: 12px;
     background-color: #fff;
     padding: 0 8px;
+    flex: unset;
   }
   .search svg {
     font-size: 18px;
@@ -274,82 +335,19 @@
   .right .items {
     display: none;
   }
-  .drawerBody {
-    display: block;
-  }
-  .drawerBody nav {
-    width: 50vw;
-  }
-  .drawerBody a {
-    font-size: 16px;
-  }
-  .drawerBody .navItems {
-    padding: 8px 0;
-  }
-  .drawerBody .navItems .navItem {
-    padding: 0 16px;
-  }
-  .drawerBody .navItems .navItem.active {
-    background-color: lightgray;
-  }
-  .navItemLink {
-    padding: 8px 0;
-    display: flex;
-    flex: 1;
-  }
-  .navItemWrapper {
-    display: flex;
-    align-items: center;
-  }
-
-  .navItemLabel {
-    cursor: pointer;
-  }
-
-  .navItemCheckbox:checked + .navMenuItems {
-    display: block;
-  }
-
-  .navMenuItems {
-    display: none;
-    margin-top: 4px;
-  }
-
-  .navMenuItemLink {
-    display: block;
-    padding: 4px 0;
-    margin-left: 12px;
-  }
-  .navItemWrapper:hover .navMenuItemLink,
-  .navItemLink:hover,
-  .navMenuItemLink:hover {
-    color: var(--blue);
-  }
-}
-.buttonSearch {
-  display: none;
-}
-@media only screen and (max-width: 600px) {
   .search {
     order: 4;
     width: 100%;
     margin: 0;
   }
   .left {
-    order: 2;
     flex: 1;
-    justify-content: center;
+    justify-content: flex-start;
   }
   .right {
-    order: 3;
-
     flex: none;
   }
   .container {
     flex-wrap: wrap;
-  }
-  .buttonSearch {
-    display: initial;
-    order: 1;
   }
 }

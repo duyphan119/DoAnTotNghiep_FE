@@ -1,38 +1,13 @@
 import Link from "next/link";
-import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { getAllGroupProducts } from "../../../../../apis/groupProduct";
-import {
-  groupProductActions,
-  groupProductSelector,
-} from "../../../../../redux/slice/groupProductSlice";
-import { useAppDispatch } from "../../../../../redux/store";
-import { MSG_SUCCESS } from "../../../../../utils/constants";
+import { groupProductManagementSelector } from "../../../../../redux/slice/groupProductManagementSlice";
 import { publicRoutes } from "../../../../../utils/routes";
 import { GroupProduct, GroupProductHeader } from "../../../../../utils/types";
 import styles from "../style.module.css";
 type Props = {};
 
 const Categories = (props: Props) => {
-  const appDispatch = useAppDispatch();
-  const { headerData } = useSelector(groupProductSelector);
-
-  useEffect(() => {
-    const fetchGroupProducts = async () => {
-      try {
-        const res = await getAllGroupProducts({
-          forHeader: true,
-        });
-        const { message, data } = res;
-        if (message === MSG_SUCCESS) {
-          appDispatch(groupProductActions.setHeaderData(data));
-        }
-      } catch (error) {
-        console.log("FETCH GROUP PRODUCTS HEADER DATA ERROR", error);
-      }
-    };
-    fetchGroupProducts();
-  }, []);
+  const { headerData } = useSelector(groupProductManagementSelector);
 
   return (
     <nav className={styles.categories}>
@@ -41,7 +16,7 @@ const Categories = (props: Props) => {
           return (
             <li className={styles.navItem} key={headerItem.slug}>
               <Link
-                href={`/product/group-product/${headerItem.slug}`}
+                href={publicRoutes.products(headerItem.slug)}
                 className={styles.navItemLink}
               >
                 {headerItem.name}
@@ -52,7 +27,7 @@ const Categories = (props: Props) => {
                     return (
                       <li className={styles["menu-item"]} key={item.id}>
                         <Link
-                          href={`/product/group-product/${item.slug}`}
+                          href={publicRoutes.products(item.slug)}
                           className={styles["menu-item-link"]}
                         >
                           {item.name}

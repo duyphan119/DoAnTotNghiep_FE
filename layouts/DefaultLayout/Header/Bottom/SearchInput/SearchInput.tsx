@@ -11,11 +11,9 @@ import { useRouter } from "next/router";
 import { rangePrice } from "../../../../../utils/helpers";
 import { publicRoutes } from "../../../../../utils/routes";
 
-type Props = Partial<{
-  open: boolean;
-}>;
+type Props = {};
 
-const SearchInput = ({ open }: Props) => {
+const SearchInput = (props: Props) => {
   const [productData, setProductData] = useState<ResponseItems<Product>>({
     items: [],
     count: 0,
@@ -72,7 +70,7 @@ const SearchInput = ({ open }: Props) => {
     return () => clearTimeout(timerId);
   }, [q]);
 
-  return open ? (
+  return (
     <ClickAwayListener onClickAway={handleBlur}>
       <>
         <form className={styles.search} onSubmit={handleSubmit}>
@@ -125,7 +123,7 @@ const SearchInput = ({ open }: Props) => {
         </form>
       </>
     </ClickAwayListener>
-  ) : null;
+  );
 };
 
 export default SearchInput;

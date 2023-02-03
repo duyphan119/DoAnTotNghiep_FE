@@ -3,6 +3,7 @@ import { GroupProductQueryParams } from "../../apis/groupProduct";
 import {
   FetchState,
   GroupProduct,
+  GroupProductHeader,
   Product,
   ResponseItems,
 } from "../../utils/types";
@@ -19,6 +20,7 @@ type GroupProductManagementState = {
   openModalPreview: boolean;
   current: Product | null;
   openDialog: boolean;
+  headerData: GroupProductHeader[];
 };
 
 type State = GroupProductManagementState & FetchState;
@@ -33,6 +35,7 @@ const INITIAL_STATE: State = {
   isLoading: false,
   isError: false,
   isSuccess: false,
+  headerData: [],
 };
 
 export const groupProductManagementSlice = createSlice({
@@ -76,12 +79,21 @@ export const groupProductManagementSlice = createSlice({
       state.isSuccess = true;
       state.isLoading = false;
     },
+    fetchHeaderData: (state) => {
+      state.isError = false;
+      state.isLoading = true;
+      state.isSuccess = false;
+    },
+    setHeaderData: (state, action: ActionPayload<GroupProductHeader[]>) => {
+      state.headerData = action.payload;
+    },
   },
 });
 
 export const groupProductManagementReducers = {
   fetchGroupProductData: `${NAME_SLICE}/fetchGroupProductData`,
   fetchCreateGroupProduct: `${NAME_SLICE}/fetchCreateGroupProduct`,
+  fetchHeaderData: `${NAME_SLICE}/fetchHeaderData`,
 };
 export const groupProductManagementSelector = (state: RootState): State =>
   state.groupProductManagement;

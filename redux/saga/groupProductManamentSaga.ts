@@ -72,10 +72,30 @@ function* fetchGroupProductData({
 //   }
 //   if (isError) yield put(productManagementActions.fetchError());
 // }
+function* fetchHeaderData() {
+  try {
+    const { message, data } = yield call(() =>
+      getAllGroupProducts({ forHeader: true })
+    );
+
+    yield put(
+      groupProductManagementActions.setHeaderData(
+        message === MSG_SUCCESS ? data : []
+      )
+    );
+  } catch (error) {
+    console.log("groupProductManagementActions.fetchHeaderData", error);
+    yield put(groupProductManagementActions.fetchError());
+  }
+}
 
 export function* groupProductManamentSaga() {
   yield takeEvery(
     groupProductManagementReducers.fetchGroupProductData,
     fetchGroupProductData
+  );
+  yield takeEvery(
+    groupProductManagementReducers.fetchHeaderData,
+    fetchHeaderData
   );
 }

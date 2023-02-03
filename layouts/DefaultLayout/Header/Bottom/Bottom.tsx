@@ -1,41 +1,48 @@
-import { Container, IconButton } from "@mui/material";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import { Container } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import logoPng from "../../../../public/logo.png";
 import moneyPng from "../../../../public/money.png";
 import { authSelector } from "../../../../redux/slice/authSlice";
+import { groupProductManagementActions } from "../../../../redux/slice/groupProductManagementSlice";
+import { useAppDispatch } from "../../../../redux/store";
 import { publicRoutes } from "../../../../utils/routes";
 import CartIcon from "./CartIcon";
 import Categories from "./Categories";
 import Drawer from "./Drawer";
 import SearchInput from "./SearchInput";
 import styles from "./style.module.css";
-import { useState } from "react";
 
 type Props = {};
 
 const DPoint = () => {
   const { profile } = useSelector(authSelector);
   return profile ? (
-    <Link href="/d-point" className={styles.pointLink}>
-      <Image
-        src={moneyPng}
-        alt="D-Point"
-        width={24}
-        height={24}
-        priority={true}
-      />
-      {profile.point}
-    </Link>
+    <li className={styles.item}>
+      <Link href="/d-point" className={styles.pointLink}>
+        <Image
+          src={moneyPng}
+          alt="D-Point"
+          width={24}
+          height={24}
+          priority={true}
+        />
+        {profile.point}
+      </Link>
+    </li>
   ) : (
     <></>
   );
 };
 
 const Bottom = (props: Props) => {
-  const [open, setOpen] = useState<boolean>(false);
+  const appDispatch = useAppDispatch();
+  useEffect(() => {
+    appDispatch(groupProductManagementActions.fetchHeaderData());
+  }, []);
   return (
     <div className={styles.headerBottom}>
       <Container maxWidth="lg">
@@ -53,18 +60,10 @@ const Bottom = (props: Props) => {
             </Link>
             <Categories />
           </div>
-          <IconButton
-            onClick={() => setOpen((o) => !o)}
-            className={styles.buttonSearch}
-          >
-            <SearchOutlinedIcon />
-          </IconButton>
-          <SearchInput open={open} />
+          <SearchInput />
           <div className={styles.right}>
             <ul className={styles.items}>
-              <li className={styles.item}>
-                <DPoint />
-              </li>
+              <DPoint />
               <li className={styles.item}>
                 <CartIcon />
               </li>
