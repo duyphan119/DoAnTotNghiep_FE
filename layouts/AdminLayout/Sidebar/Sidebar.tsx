@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import React, { ReactElement } from "react";
 import HomeIcon from "@mui/icons-material/Home";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
@@ -13,6 +14,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { useRouter } from "next/router";
 import styles from "./style.module.css";
 import { protectedRoutes } from "../../../utils/routes";
+import logoPng from "../../../public/logo.png";
 
 type Props = {};
 
@@ -92,8 +94,15 @@ const Sidebar = (props: Props) => {
   const router = useRouter();
   return (
     <aside className={styles.sidebar}>
-      <Link className={styles.logo} href="/admin">
-        LOGO
+      <Link className={styles.logo} href={protectedRoutes.admin}>
+        <Image
+          src={logoPng}
+          alt="Logo"
+          width={56}
+          height={56}
+          priority={true}
+        />
+        SHOP
       </Link>
       <nav className={styles.nav}>
         <ul className={styles.navItems}>

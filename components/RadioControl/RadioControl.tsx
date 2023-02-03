@@ -1,4 +1,4 @@
-import React, { useId } from "react";
+import React, { useId, memo } from "react";
 import styles from "./style.module.css";
 
 type Props = Partial<{
@@ -37,4 +37,4 @@ const RadioControl = ({
   );
 };
 
-export default RadioControl;
+export default memo(RadioControl);

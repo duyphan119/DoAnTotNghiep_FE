@@ -62,7 +62,6 @@ const authSlice = createSlice({
       state.profile = user;
       state.isLoading = false;
       state.openModalAuth = false;
-      localStorage.setItem("user", JSON.stringify(user));
       setCookie(COOKIE_ACCESSTOKEN_NAME, accessToken);
       state.isSuccess = true;
     },
@@ -91,7 +90,6 @@ const authSlice = createSlice({
     logout: (state) => {
       state.profile = null;
       state.accessToken = "";
-      localStorage.removeItem("user");
       deleteCookie(COOKIE_ACCESSTOKEN_NAME);
     },
   },

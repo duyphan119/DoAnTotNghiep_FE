@@ -1,23 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 import Image from "next/image";
 import { Modal, Box, Rating } from "@mui/material";
 import {
-  Product,
   ProductVariant,
   ProductVariantImage,
   VariantValue,
 } from "../../utils/types";
 import styles from "./style.module.css";
 import { formatProductVariants, rangePrice } from "../../utils/helpers";
+import { useAppDispatch } from "../../redux/store";
+import { useSelector } from "react-redux";
+import {
+  productManagementActions,
+  productManagementSelector,
+} from "../../redux/slice/productManagementSlice";
 
-type Props = Partial<{
-  open: boolean;
-  onClose: any;
-  product: Product;
-}>;
+type Props = Partial<{}>;
 
-const ModalPreviewProduct = ({ open, onClose, product }: Props) => {
-  if (!product) return null;
+const ModalPreviewProduct = (props: Props) => {
+  const appDispatch = useAppDispatch();
+  const { openModalPreview, current: product } = useSelector(
+    productManagementSelector
+  );
+  if (!product || !openModalPreview) return null;
   const [index, setIndex] = useState<number>(-1);
   const [selectedVariantValues, setSelectedVariantValues] = useState<
     VariantValue[]
@@ -74,7 +79,10 @@ const ModalPreviewProduct = ({ open, onClose, product }: Props) => {
     images.length > 0 && index > -1 ? images[index].path : product.thumbnail;
 
   return (
-    <Modal open={open || false} onClose={onClose}>
+    <Modal
+      open={openModalPreview}
+      onClose={() => appDispatch(productManagementActions.hideModalPreview())}
+    >
       <Box
         bgcolor="#fff"
         position="absolute"
@@ -165,4 +173,4 @@ const ModalPreviewProduct = ({ open, onClose, product }: Props) => {
   );
 };
 
-export default ModalPreviewProduct;
+export default memo(ModalPreviewProduct);

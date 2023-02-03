@@ -1,5 +1,9 @@
 import { Container, Grid } from "@mui/material";
+import { useRouter } from "next/router";
 import { ReactNode } from "react";
+import { useSelector } from "react-redux";
+import { NotFound } from "../../components";
+import { authSelector } from "../../redux/slice/authSlice";
 import DefaultLayout from "../DefaultLayout";
 import Sidebar from "./Sidebar";
 type Props = Partial<{
@@ -8,7 +12,13 @@ type Props = Partial<{
 }>;
 
 const AccountLayout = ({ children, titleHeading }: Props) => {
-  return (
+  const { profile, isSuccess } = useSelector(authSelector);
+
+  if (isSuccess && !profile) {
+    return <NotFound />;
+  }
+
+  return isSuccess ? (
     <DefaultLayout>
       <main>
         <Container maxWidth="lg">
@@ -31,7 +41,7 @@ const AccountLayout = ({ children, titleHeading }: Props) => {
         </Container>
       </main>
     </DefaultLayout>
-  );
+  ) : null;
 };
 
 export default AccountLayout;

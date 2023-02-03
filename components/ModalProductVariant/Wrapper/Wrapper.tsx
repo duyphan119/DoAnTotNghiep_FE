@@ -1,6 +1,8 @@
 import { Button } from "@mui/material";
 
 import { ReactNode } from "react";
+import { useSelector } from "react-redux";
+import { productManagementSelector } from "../../../redux/slice/productManagementSlice";
 import { Product, ProductVariant } from "../../../utils/types";
 import { Input, useModalProductVariantContext } from "../ModalProductVariant";
 import styles from "../style.module.css";
@@ -14,13 +16,8 @@ type Props = {
   product?: Product;
 };
 
-const Wrapper = ({
-  children,
-  title,
-  inputs,
-  productVariants,
-  product,
-}: Props) => {
+const Wrapper = ({ children, title, inputs, productVariants }: Props) => {
+  const { current: product } = useSelector(productManagementSelector);
   const { onUpdate, onCreate } = useModalProductVariantContext();
   const handleClick = async () => {
     try {

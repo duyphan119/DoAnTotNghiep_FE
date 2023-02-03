@@ -40,7 +40,7 @@ const Sidebar = (props: Props) => {
 
   const handleLogout = () => {
     appDispatch(authActions.fetchLogout());
-    router.push(publicRoutes.home);
+    router.prefetch(publicRoutes.home);
   };
 
   return (

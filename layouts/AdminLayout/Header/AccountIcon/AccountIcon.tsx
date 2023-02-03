@@ -8,7 +8,6 @@ type Props = {};
 
 const AccountIcon = (props: Props) => {
   const { profile } = useSelector(authSelector);
-  console.log("profile:::::", profile);
   return profile ? (
     <Link href={protectedRoutes.profile}>
       Xin chào, <strong>Duy Phan</strong>

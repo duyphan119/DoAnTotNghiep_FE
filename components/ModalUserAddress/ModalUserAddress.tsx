@@ -21,7 +21,7 @@ type Props = Partial<{
   row: UserAddress | null;
 }>;
 
-const ModalUserAddress = ({ open, onClose, onCreate, onEdit, row }: Props) => {
+const ModalUserAddress = ({ open, onClose, row }: Props) => {
   const appDispatch = useAppDispatch();
   const [districts, setDistricts] = useState<any>(() => {
     const province = provinces.find(

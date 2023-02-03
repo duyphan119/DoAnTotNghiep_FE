@@ -1,5 +1,6 @@
 import EmailIcon from "@mui/icons-material/Email";
 import PhoneIcon from "@mui/icons-material/Phone";
+import Link from "next/link";
 import { Container } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getSettingWebsiteByKeys } from "../../../../apis/settingwebsite";
@@ -7,9 +8,13 @@ import { SettingWebsite } from "../../../../utils/types";
 import styles from "./style.module.css";
 import AccountIcon from "./AccountIcon";
 import { MSG_SUCCESS } from "../../../../utils/constants";
+import { protectedRoutes } from "../../../../utils/routes";
+import { useSelector } from "react-redux";
+import { authSelector } from "../../../../redux/slice/authSlice";
 type Props = {};
 
 const Top = (props: Props) => {
+  const { profile } = useSelector(authSelector);
   const [settings, setSettings] = useState<SettingWebsite[]>([]);
 
   const PhoneContact = () => {
@@ -77,6 +82,13 @@ const Top = (props: Props) => {
             <li>
               <AccountIcon />
             </li>
+            {profile && profile.isAdmin ? (
+              <li>
+                <Link href={protectedRoutes.admin} className={styles.adminLink}>
+                  Trang Admin
+                </Link>
+              </li>
+            ) : null}
           </ul>
         </div>
       </Container>

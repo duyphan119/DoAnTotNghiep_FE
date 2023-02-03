@@ -1,5 +1,5 @@
 import { Paper } from "@mui/material";
-import { ReactNode } from "react";
+import { ReactNode, memo } from "react";
 
 type Props = Partial<{
   children: ReactNode;
@@ -17,4 +17,4 @@ const AdminFormPaper = ({ children, title }: Props) => {
   );
 };
 
-export default AdminFormPaper;
+export default memo(AdminFormPaper);

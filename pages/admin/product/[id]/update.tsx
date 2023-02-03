@@ -6,6 +6,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import "react-quill/dist/quill.snow.css";
+import { useSelector } from "react-redux";
 import { getAllGroupProducts } from "../../../../apis/groupProduct";
 import { getProductById, updateProduct } from "../../../../apis/product";
 import { uploadSingle } from "../../../../apis/upload";
@@ -14,16 +15,24 @@ import {
   FooterForm,
   InputControl,
   SelectControl,
+  TextAreaControl,
 } from "../../../../components";
 import { AdminLayout } from "../../../../layouts";
+import {
+  groupProductManagementActions,
+  groupProductManagementSelector,
+} from "../../../../redux/slice/groupProductManagementSlice";
+import {
+  productManagementActions,
+  productManagementSelector,
+} from "../../../../redux/slice/productManagementSlice";
+import { useAppDispatch } from "../../../../redux/store";
 import { MSG_SUCCESS } from "../../../../utils/constants";
 import { GroupProduct, Product } from "../../../../utils/types";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
-type Props = {
-  product: Product;
-};
+type Props = {};
 
 type ProductInputs = {
   name: string;
@@ -35,59 +44,65 @@ type ProductInputs = {
   inventory: number;
 };
 
-const UpdateProduct = ({ product }: Props) => {
+const Page = (props: Props) => {
   const router = useRouter();
-
+  const appDispatch = useAppDispatch();
+  const {
+    isLoading,
+    isBack,
+    productEditing: product,
+  } = useSelector(productManagementSelector);
+  const { groupProductData } = useSelector(groupProductManagementSelector);
   const [detail, setDetail] = useState<string>("");
   const [files, setFiles] = useState<FileList | null>(null);
-  const [groupProducts, setGroupProducts] = useState<GroupProduct[]>([]);
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ProductInputs>({
-    defaultValues: {
-      name: product.name,
-      groupProductId: product.groupProductId,
-      slug: product.slug,
-      detail: product.detail,
-      inventory: product.inventory,
-      description: product.description,
-      price: product.price,
-    },
-  });
+    setValue,
+  } = useForm<ProductInputs>();
   const onSubmit: SubmitHandler<ProductInputs> = async (data) => {
-    try {
-      if (files) {
-        const formData = new FormData();
-        formData.append("image", files[0]);
-        const { message, data: dataImage } = await uploadSingle(formData);
-        if (message === MSG_SUCCESS) {
-          console.log("Uploaded file: ", dataImage);
-          const url = dataImage.secure_url;
-          const { message: msg } = await updateProduct(product.id, {
-            ...data,
-            detail,
-            groupProductId: +data.groupProductId,
-            thumbnail: url,
-          });
-          if (msg === MSG_SUCCESS) {
-            router.push("/admin/product");
-          }
-        }
-      }
-    } catch (error) {
-      console.log(error);
+    if (product) {
+      appDispatch(
+        productManagementActions.fetchUpdateProduct({
+          files,
+          inputs: { ...data, detail },
+          id: product.id,
+        })
+      );
     }
   };
 
   useEffect(() => {
-    (async () => {
-      const { message, data } = await getAllGroupProducts();
-      if (message === MSG_SUCCESS) {
-        setGroupProducts(data.items);
-      }
-    })();
+    isBack && router.back();
+  }, [isBack]);
+
+  useEffect(() => {
+    if (router.query.id)
+      appDispatch(
+        productManagementActions.fetchGetProductById(+router.query.id)
+      );
+  }, [router.query.id]);
+
+  useEffect(() => {
+    if (product) {
+      setValue("name", product.name);
+      setValue("groupProductId", product.groupProductId);
+      setValue("slug", product.slug);
+      setValue("detail", product.detail);
+      setValue("inventory", product.inventory);
+      setValue("description", product.description);
+      setValue("price", product.price);
+    }
+  }, [product]);
+
+  useEffect(() => {
+    appDispatch(
+      groupProductManagementActions.fetchGroupProductData({
+        sortType: "asc",
+        sortBy: "id",
+      })
+    );
   }, []);
 
   return (
@@ -112,7 +127,7 @@ const UpdateProduct = ({ product }: Props) => {
                   })}
                   error={errors.groupProductId}
                   required={true}
-                  options={groupProducts.map((item: GroupProduct) => ({
+                  options={groupProductData.items.map((item: GroupProduct) => ({
                     value: item.id,
                     display: item.name,
                   }))}
@@ -146,18 +161,11 @@ const UpdateProduct = ({ product }: Props) => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <div className="form-group">
-                  <textarea
-                    id="description"
-                    className="form-control"
-                    autoComplete="off"
-                    rows={4}
-                    {...register("description")}
-                  ></textarea>
-                  <label htmlFor="description" className="form-label">
-                    Mô tả
-                  </label>
-                </div>
+                <TextAreaControl
+                  register={register("description")}
+                  label="Mô tả"
+                  error={errors.description}
+                />
               </Grid>
               <Grid item xs={12}>
                 <InputControl
@@ -172,7 +180,10 @@ const UpdateProduct = ({ product }: Props) => {
                 <ReactQuill theme="snow" value={detail} onChange={setDetail} />
               </Grid>
               <Grid item xs={12}>
-                <FooterForm onBack={() => router.back()} />
+                <FooterForm
+                  onBack={() => router.back()}
+                  isLoading={isLoading}
+                />
               </Grid>
             </Grid>
           </form>
@@ -182,15 +193,4 @@ const UpdateProduct = ({ product }: Props) => {
   );
 };
 
-export async function getServerSideProps(context: any) {
-  const { id } = context.query;
-  const { message, data } = await getProductById(+id);
-  return message === MSG_SUCCESS
-    ? {
-        props: { product: data },
-      }
-    : {
-        notFound: true,
-      };
-}
-export default UpdateProduct;
+export default Page;

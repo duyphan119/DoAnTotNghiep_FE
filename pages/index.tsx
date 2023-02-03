@@ -1,14 +1,20 @@
 import { Box, Container, Grid } from "@mui/material";
-import { GetStaticPropsContext } from "next";
+import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import { useSelector } from "react-redux";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { getAllAdvertisements } from "../apis/advertisement";
 import { getAllBlogsPublic } from "../apis/blog";
 import { getAllProducts } from "../apis/product";
 import { ProductCard } from "../components";
 import { DefaultLayout } from "../layouts";
+import {
+  homePageActions,
+  homePageSelector,
+} from "../redux/slice/homePageSlice";
+import { wrapper } from "../redux/store";
 import styles from "../styles/Home.module.css";
 import { formatDateTime } from "../utils/helpers";
 import { protectedRoutes, publicRoutes } from "../utils/routes";
@@ -151,7 +157,9 @@ export default function Home({ productData, blogData, advertisements }: Props) {
     </DefaultLayout>
   );
 }
-export async function getStaticProps(context: GetStaticPropsContext) {
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
   let productData = { items: [], count: 0, totalPages: 0 };
   let blogData = { items: [], count: 0, totalPages: 0 };
   let advData = { items: [] };
@@ -167,6 +175,7 @@ export async function getStaticProps(context: GetStaticPropsContext) {
       }),
       getAllAdvertisements({ page: "Trang chủ", sortType: "asc" }),
     ]);
+
     if (res1.status === "fulfilled") {
       productData = res1.value.data;
     }
@@ -176,13 +185,15 @@ export async function getStaticProps(context: GetStaticPropsContext) {
     if (res3.status === "fulfilled") {
       advData = res3.value.data;
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
+
   return {
     props: {
       productData,
       blogData,
       advertisements: advData.items,
     },
-    revalidate: 30,
   };
-}
+};

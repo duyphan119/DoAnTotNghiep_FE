@@ -91,8 +91,8 @@ const Footer = (props: Props) => {
           <Grid item xs={12} sm={6} lg={3}>
             <div className={styles.title}>Giới thiệu</div>
             <p>
-              DUS chuyên cung cấp các loại mặt hàng thời trang với giá cả ưu đãi
-              nhất thị trường
+              SHOP chuyên cung cấp các loại mặt hàng thời trang với giá cả ưu
+              đãi nhất thị trường
             </p>
             <ul>
               <li>

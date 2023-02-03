@@ -6,19 +6,26 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import "react-quill/dist/quill.snow.css";
-import { getAllGroupProducts } from "../../../apis/groupProduct";
-import { createProduct } from "../../../apis/product";
-import { uploadSingle } from "../../../apis/upload";
+import { useSelector } from "react-redux";
 import { FooterForm, InputControl, SelectControl } from "../../../components";
 import { AdminLayout } from "../../../layouts";
-import { MSG_SUCCESS } from "../../../utils/constants";
+import {
+  groupProductManagementActions,
+  groupProductManagementSelector,
+} from "../../../redux/slice/groupProductManagementSlice";
+import {
+  productManagementActions,
+  productManagementSelector,
+} from "../../../redux/slice/productManagementSlice";
+import { useAppDispatch } from "../../../redux/store";
+import { fullNameGroupProduct } from "../../../utils/helpers";
 import { GroupProduct } from "../../../utils/types";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 type Props = {};
 
-type ProductInputs = {
+export type ProductInputs = {
   name: string;
   groupProductId: number;
   slug: string;
@@ -30,47 +37,37 @@ type ProductInputs = {
 
 const AddProduct = (props: Props) => {
   const router = useRouter();
+  const appDispatch = useAppDispatch();
+  const { groupProductData } = useSelector(groupProductManagementSelector);
+  const { isLoading, isSuccess } = useSelector(productManagementSelector);
   const [detail, setDetail] = useState<string>("");
   const [files, setFiles] = useState<FileList | null>(null);
-  const [groupProducts, setGroupProducts] = useState<GroupProduct[]>([]);
+
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<ProductInputs>();
-  const onSubmit: SubmitHandler<ProductInputs> = async (data) => {
-    try {
-      if (files) {
-        const formData = new FormData();
-        formData.append("image", files[0]);
-        const { message, data: dataImage } = await uploadSingle(formData);
-        if (message === MSG_SUCCESS) {
-          console.log("Uploaded file: ", dataImage);
-          const url = dataImage.secure_url;
-          const { message: msg } = await createProduct({
-            ...data,
-            detail,
-            groupProductId: +data.groupProductId,
-            thumbnail: url,
-          });
-          if (msg === MSG_SUCCESS) {
-            router.push("/admin/product");
-          }
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  const onSubmit: SubmitHandler<ProductInputs> = (data) => {
+    appDispatch(
+      productManagementActions.fetchCreateProduct({
+        files,
+        inputs: { ...data, detail },
+      })
+    );
   };
 
   useEffect(() => {
-    (async () => {
-      const { message, data } = await getAllGroupProducts();
-      if (message === MSG_SUCCESS) {
-        setGroupProducts(data.items);
-      }
-    })();
+    isSuccess && router.back();
+  }, [isSuccess]);
+
+  useEffect(() => {
+    appDispatch(
+      groupProductManagementActions.fetchGroupProductData({
+        sortType: "asc",
+        sortBy: "id",
+      })
+    );
   }, []);
 
   return (
@@ -100,9 +97,9 @@ const AddProduct = (props: Props) => {
                   })}
                   error={errors.groupProductId}
                   required={true}
-                  options={groupProducts.map((item: GroupProduct) => ({
+                  options={groupProductData.items.map((item: GroupProduct) => ({
                     value: item.id,
-                    display: item.name,
+                    display: fullNameGroupProduct(item),
                   }))}
                 />
               </Grid>
@@ -160,7 +157,10 @@ const AddProduct = (props: Props) => {
                 <ReactQuill theme="snow" value={detail} onChange={setDetail} />
               </Grid>
               <Grid item xs={12}>
-                <FooterForm onBack={() => router.back()} />
+                <FooterForm
+                  onBack={() => router.back()}
+                  isLoading={isLoading}
+                />
               </Grid>
             </Grid>
           </form>

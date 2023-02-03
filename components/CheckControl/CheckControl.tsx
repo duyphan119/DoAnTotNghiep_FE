@@ -1,4 +1,4 @@
-import React, { useId } from "react";
+import React, { useId, memo } from "react";
 import { FieldError } from "react-hook-form";
 
 type Props = Partial<{
@@ -31,4 +31,4 @@ const CheckControl = ({ error, type, required, label, register }: Props) => {
   );
 };
 
-export default CheckControl;
+export default memo(CheckControl);

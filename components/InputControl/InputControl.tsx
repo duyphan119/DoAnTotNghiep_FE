@@ -1,4 +1,4 @@
-import React, { useId, ChangeEvent } from "react";
+import React, { useId, ChangeEvent, memo } from "react";
 import { FieldError } from "react-hook-form";
 
 type Props = Partial<{
@@ -46,4 +46,4 @@ const InputControl = ({
   );
 };
 
-export default InputControl;
+export default memo(InputControl);

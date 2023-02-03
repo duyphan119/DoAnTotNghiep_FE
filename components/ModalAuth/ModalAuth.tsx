@@ -1,6 +1,6 @@
 import ClearIcon from "@mui/icons-material/Clear";
 import { Box, Modal } from "@mui/material";
-import { useState } from "react";
+import { useState, memo } from "react";
 
 import Login from "./Login";
 import Register from "./Register";
@@ -88,4 +88,4 @@ const ModalAuth = ({ open, onClose }: Props) => {
   );
 };
 
-export default ModalAuth;
+export default memo(ModalAuth);

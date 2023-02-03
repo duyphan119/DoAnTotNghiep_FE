@@ -71,8 +71,8 @@ function* fetchChangeProfile({ payload }: ActionPayload<ChangeProfile>) {
 
 function* fetchLogout() {
   try {
-    const { message } = yield call(() => logout());
-    if (message === MSG_SUCCESS) {
+    const { message, data } = yield call(() => logout());
+    if (message === MSG_SUCCESS || data) {
       yield put(authActions.logout());
     } else yield put(authActions.fetchError());
   } catch (error) {

@@ -45,7 +45,6 @@ export type ActionPayload<T> = {
   payload: T;
 };
 
-// export an assembled wrapper
 export const wrapper = createWrapper<Store<RootState>>(makeStore, {
-  debug: true,
+  debug: false,
 });

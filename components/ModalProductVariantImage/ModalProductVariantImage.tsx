@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent, ReactNode } from "react";
+import { useState, useEffect, ChangeEvent, ReactNode, memo } from "react";
 import { Modal, Typography, Box, Button, Grid, Tooltip } from "@mui/material";
 import {
   Product,
@@ -22,6 +22,12 @@ import { updateThumbnailProduct } from "../../apis/product";
 import { ConfirmDialog } from "../../components";
 import { getAllVariantValues } from "../../apis/variantvalue";
 import { ConfirmDialogProps } from "../ConfirmDialog/ConfirmDialog";
+import { useSelector } from "react-redux";
+import {
+  productManagementActions,
+  productManagementSelector,
+} from "../../redux/slice/productManagementSlice";
+import { useAppDispatch } from "../../redux/store";
 
 type Props = Partial<{
   open: boolean;
@@ -126,12 +132,12 @@ const ImageItem = ({
   );
 };
 
-const ModalProductVariantImage = ({
-  onClose,
-  onUpdateThumbnail,
-  product,
-  open,
-}: Props) => {
+const ModalProductVariantImage = ({ onUpdateThumbnail }: Props) => {
+  const appDispatch = useAppDispatch();
+  const { openModalPVI, current: product } = useSelector(
+    productManagementSelector
+  );
+
   const [images, setImages] = useState<ProductVariantImage[]>([]);
   const [variantValues, setVariantValues] = useState<VariantValue[]>([]);
   const [thumbnail, setThumbnail] = useState<string>(
@@ -221,8 +227,11 @@ const ModalProductVariantImage = ({
     };
     fetchData();
   }, [product]);
-  return product ? (
-    <Modal open={open || false} onClose={onClose}>
+  return openModalPVI && product ? (
+    <Modal
+      open={openModalPVI}
+      onClose={() => appDispatch(productManagementActions.hideModalPVI())}
+    >
       <Box
         sx={{
           position: "absolute",
@@ -268,4 +277,4 @@ const ModalProductVariantImage = ({
   ) : null;
 };
 
-export default ModalProductVariantImage;
+export default memo(ModalProductVariantImage);

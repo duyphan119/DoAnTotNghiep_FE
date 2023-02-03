@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { formatProductVariants, rangePrice } from "../../utils/helpers";
+import { publicRoutes } from "../../utils/routes";
 import {
   Product,
   ProductVariant,
@@ -51,12 +52,7 @@ const ProductCard = ({ product }: Props) => {
       <div className={styles["thumbnail-wrapper"]}>
         <Link
           className={styles.thumbnail}
-          href={{
-            pathname: "/product/[slug]",
-            query: {
-              slug: product.slug,
-            },
-          }}
+          href={publicRoutes.productDetail(product.slug)}
         >
           <Image
             src={
@@ -84,12 +80,7 @@ const ProductCard = ({ product }: Props) => {
       </div>
       <div className={styles["name-wrapper"]}>
         <Link
-          href={{
-            pathname: "/product/[slug]",
-            query: {
-              slug: product.slug,
-            },
-          }}
+          href={publicRoutes.productDetail(product.slug)}
           className={styles.name + " three-dot three-dot-2"}
         >
           {product.name}

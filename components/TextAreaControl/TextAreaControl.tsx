@@ -1,45 +1,41 @@
 import React, { useId, ChangeEvent, memo } from "react";
 import { FieldError } from "react-hook-form";
-import { SelectOption } from "../../utils/types";
 
 type Props = Partial<{
   error: FieldError;
   required: boolean;
   label: string;
   register: any;
-  onChange: (e: ChangeEvent<HTMLSelectElement>) => void;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   value: any;
-  options: SelectOption[];
+  defaultValue: any;
+  rows: number;
 }>;
 
-const SelectControl = ({
+const TextAreaControl = ({
   error,
   required,
   label,
   register,
   onChange,
   value,
-  options,
+  defaultValue,
+  rows,
 }: Props) => {
   const id = useId();
   return (
     <div className="form-group">
       {error ? <div className="form-error">{error.message}</div> : null}
-      <select
+      <textarea
         id={id}
-        className="form-control"
+        className="form-control custom-scrollbar"
+        autoComplete="off"
+        rows={rows || 4}
+        defaultValue={defaultValue}
         value={value}
         onChange={onChange}
         {...register}
-      >
-        {options?.map((item: SelectOption, index: number) => {
-          return (
-            <option value={item.value} key={index}>
-              {item.display || item.value}
-            </option>
-          );
-        })}
-      </select>
+      ></textarea>
       <label
         htmlFor={id}
         className={`form-label ${required ? "required" : ""}`}
@@ -50,4 +46,4 @@ const SelectControl = ({
   );
 };
 
-export default memo(SelectControl);
+export default memo(TextAreaControl);

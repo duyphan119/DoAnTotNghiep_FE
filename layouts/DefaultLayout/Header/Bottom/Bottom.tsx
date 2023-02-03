@@ -49,7 +49,7 @@ const Bottom = (props: Props) => {
                 height={56}
                 priority={true}
               />
-              DUS
+              SHOP
             </Link>
             <Categories />
           </div>

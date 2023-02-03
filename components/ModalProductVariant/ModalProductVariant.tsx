@@ -1,11 +1,16 @@
 import { Box, Button, Grid, Modal } from "@mui/material";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
 import {
   createProductVariants,
   getAllProductVariants,
   updateProductVariants,
 } from "../../apis/productvariant";
 import { getAllVariants } from "../../apis/variant";
+import productManagementSlice, {
+  productManagementActions,
+  productManagementSelector,
+} from "../../redux/slice/productManagementSlice";
 import { snackbarActions } from "../../redux/slice/snackbarSlice";
 import { useAppDispatch } from "../../redux/store";
 import { MSG_SUCCESS } from "../../utils/constants";
@@ -17,11 +22,7 @@ import {
 } from "../../utils/types";
 import styles from "./style.module.css";
 import { Wrapper } from "./Wrapper";
-type Props = {
-  open?: boolean;
-  onClose?: any;
-  product?: Product;
-};
+type Props = {};
 
 export type Input = {
   price: number;
@@ -31,13 +32,14 @@ export type Input = {
 
 const ModalProductVariantContext = createContext<any>({});
 
-const ModalProductVariant = ({ open, onClose, product }: Props) => {
+const ModalProductVariant = (props: Props) => {
   const appDispatch = useAppDispatch();
+  const { openModalPV, current: product } = useSelector(
+    productManagementSelector
+  );
   const [variants, setVariants] = useState<Variant[]>([]);
   const [selected, setSelected] = useState<Variant[]>([]);
-  const [generatedSelected, setGeneratedSelected] = useState<VariantValue[][]>(
-    []
-  );
+
   const [productVariants, setProductVariants] = useState<ProductVariant[]>([]);
   const [inputs, setInputs] = useState<Input[]>([]);
 
@@ -49,6 +51,7 @@ const ModalProductVariant = ({ open, onClose, product }: Props) => {
         )
       : 0;
   }, [selected]);
+  if (!openModalPV || !product) return null;
 
   const handleClickVariantValue = (
     variantValue: VariantValue,
@@ -222,7 +225,10 @@ const ModalProductVariant = ({ open, onClose, product }: Props) => {
         onChange: handleChange,
       }}
     >
-      <Modal open={open || false} onClose={onClose}>
+      <Modal
+        open={openModalPV}
+        onClose={() => appDispatch(productManagementActions.hideModalPV())}
+      >
         <Box
           sx={{
             position: "absolute",
@@ -299,7 +305,6 @@ const ModalProductVariant = ({ open, onClose, product }: Props) => {
                         <Wrapper
                           title="Các biến thể sản phẩm"
                           productVariants={productVariants}
-                          product={product}
                         />
                       </Grid>
                     ) : null}
@@ -308,7 +313,6 @@ const ModalProductVariant = ({ open, onClose, product }: Props) => {
                         <Wrapper
                           title="Các biến thể sản phẩm vừa tạo"
                           inputs={inputs}
-                          product={product}
                         />
                       </Grid>
                     ) : null}

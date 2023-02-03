@@ -25,115 +25,135 @@ import { AdminLayout } from "../../../layouts";
 import { MSG_SUCCESS } from "../../../utils/constants";
 import { formatDateTime } from "../../../utils/helpers";
 import { Product, ResponseItems } from "../../../utils/types";
+import { useAppDispatch } from "../../../redux/store";
+import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
+import {
+  productManagementActions,
+  productManagementSelector,
+} from "../../../redux/slice/productManagementSlice";
+import { protectedRoutes } from "../../../utils/routes";
 
-type Props = {
-  productData: ResponseItems<Product>;
-};
+type Props = {};
 const LIMIT = 10;
-const Products = ({ productData: propProductData }: Props) => {
-  const [openModalPVI, setOpenModalPVI] = useState<boolean>(false);
-  const [openModalPV, setOpenModalPV] = useState<boolean>(false);
-  const [openModalPreview, setOpenModalPreview] = useState<boolean>(false);
-  const [product, setProduct] = useState<Product>();
-  const [productData, setProductData] =
-    useState<ResponseItems<Product>>(propProductData);
-  const [current, setCurrent] = useState<Product | null>(null);
+const Products = () => {
+  const router = useRouter();
+  const appDispatch = useAppDispatch();
+  const {
+    current,
+    openModalPV,
+    openModalPVI,
+    productData,
+    openModalPreview,
+    openDialog,
+  } = useSelector(productManagementSelector);
   const handleCloseModalPV = () => {
-    setOpenModalPV(false);
+    // setOpenModalPV(false);
   };
   const handleCloseModalPVI = () => {
-    setOpenModalPVI(false);
+    // setOpenModalPVI(false);
   };
   const handleOpenModalPVI = (row: Product) => {
-    setProduct(row);
-    setOpenModalPVI(true);
+    // setProduct(row);
+    // setOpenModalPVI(true);
   };
   const handleOpenModalPV = (row: Product) => {
-    setProduct(row);
-    setOpenModalPV(true);
+    // setProduct(row);
+    // setOpenModalPV(true);
   };
   const handlePreview = async (row: Product) => {
-    try {
-      const { message, data } = await getAllProducts({
-        slug: row.slug,
-        group_product: true,
-        product_variants: true,
-        images: true,
-      });
-      if (message === MSG_SUCCESS) {
-        setProduct(data.items[0]);
-        setOpenModalPreview(true);
-      }
-    } catch (error) {
-      console.log("PREVIEW PRODUCT ERROR");
-    }
+    // try {
+    //   const { message, data } = await getAllProducts({
+    //     slug: row.slug,
+    //     group_product: true,
+    //     product_variants: true,
+    //     images: true,
+    //   });
+    //   if (message === MSG_SUCCESS) {
+    //     setProduct(data.items[0]);
+    //     setOpenModalPreview(true);
+    //   }
+    // } catch (error) {
+    //   console.log("PREVIEW PRODUCT ERROR");
+    // }
   };
   const handleCloseModalPreview = () => {
-    setOpenModalPreview(false);
+    // setOpenModalPreview(false);
   };
   const handleUploadThumbnail = (id: number, thumbnail: string) => {
-    setProductData({
-      ...productData,
-      items: productData.items.map((p: Product) =>
-        p.id === id ? { ...p, thumbnail } : p
-      ),
-    });
+    // setProductData({
+    //   ...productData,
+    //   items: productData.items.map((p: Product) =>
+    //     p.id === id ? { ...p, thumbnail } : p
+    //   ),
+    // });
   };
 
   const handleSoftDelete = async (id: number) => {
-    try {
-      const { message } = await softDeleteProduct(id);
-      if (message === MSG_SUCCESS) {
-        const _productData = { ...productData };
-        const index = _productData.items.findIndex((p: Product) => p.id === id);
-        if (index !== -1) {
-          _productData.items[index].deletedAt = "" + new Date().getTime();
-          setProductData(_productData);
-        }
-      }
-    } catch (error) {
-      console.log("Soft delete group product error", error);
-    }
+    // try {
+    //   const { message } = await softDeleteProduct(id);
+    //   if (message === MSG_SUCCESS) {
+    //     const _productData = { ...productData };
+    //     const index = _productData.items.findIndex((p: Product) => p.id === id);
+    //     if (index !== -1) {
+    //       _productData.items[index].deletedAt = "" + new Date().getTime();
+    //       setProductData(_productData);
+    //     }
+    //   }
+    // } catch (error) {
+    //   console.log("Soft delete group product error", error);
+    // }
   };
 
   const handleRestore = async (id: number) => {
-    try {
-      const { message } = await restoreProduct(id);
-      if (message === MSG_SUCCESS) {
-        const _productData = { ...productData };
-        const index = _productData.items.findIndex((p: Product) => p.id === id);
-        if (index !== -1) {
-          _productData.items[index].deletedAt = null;
-          setProductData(_productData);
-        }
-      }
-    } catch (error) {
-      console.log("Restore delete group product error", error);
-    }
+    // try {
+    //   const { message } = await restoreProduct(id);
+    //   if (message === MSG_SUCCESS) {
+    //     const _productData = { ...productData };
+    //     const index = _productData.items.findIndex((p: Product) => p.id === id);
+    //     if (index !== -1) {
+    //       _productData.items[index].deletedAt = null;
+    //       setProductData(_productData);
+    //     }
+    //   }
+    // } catch (error) {
+    //   console.log("Restore delete group product error", error);
+    // }
   };
 
   const handleDelete = async () => {
-    try {
-      if (current) {
-        let { id } = current;
-        const { message } = await deleteProduct(id);
-        if (message === MSG_SUCCESS) {
-          const _productData = { ...productData };
-          _productData.items = _productData.items.filter(
-            (gp: Product) => gp.id !== id
-          );
-          _productData.count -= 1;
-          setProductData(_productData);
-        }
-      }
-    } catch (error) {
-      console.log("Delete group product error", error);
-    }
+    // try {
+    //   if (current) {
+    //     let { id } = current;
+    //     const { message } = await deleteProduct(id);
+    //     if (message === MSG_SUCCESS) {
+    //       const _productData = { ...productData };
+    //       _productData.items = _productData.items.filter(
+    //         (gp: Product) => gp.id !== id
+    //       );
+    //       _productData.count -= 1;
+    //       setProductData(_productData);
+    //     }
+    //   }
+    // } catch (error) {
+    //   console.log("Delete group product error", error);
+    // }
   };
 
   useEffect(() => {
-    setProductData(propProductData);
-  }, [propProductData]);
+    const { p, sortBy, sortType } = router.query;
+
+    appDispatch(
+      productManagementActions.fetchProductData({
+        p: +`${p}` || 1,
+        ...(sortBy ? { sortBy: `${sortBy}` } : {}),
+        ...(sortType ? { sortType: `${sortType}` } : {}),
+        limit: LIMIT,
+        withDeleted: true,
+        group_product: true,
+      })
+    );
+  }, [router.query]);
 
   return (
     <AdminLayout pageTitle="Sản phẩm">
@@ -202,7 +222,11 @@ const Products = ({ productData: propProductData }: Props) => {
               key: "productVariantImages",
               display: "Hình ảnh",
               render: (row: Product) => (
-                <Button onClick={() => handleOpenModalPVI(row)}>
+                <Button
+                  onClick={() =>
+                    appDispatch(productManagementActions.showModalPVI(row))
+                  }
+                >
                   Thiết lập
                 </Button>
               ),
@@ -212,7 +236,11 @@ const Products = ({ productData: propProductData }: Props) => {
               key: "productVariants",
               display: "Biến thể",
               render: (row: Product) => (
-                <Button onClick={() => handleOpenModalPV(row)}>
+                <Button
+                  onClick={() =>
+                    appDispatch(productManagementActions.showModalPV(row))
+                  }
+                >
                   Thiết lập
                 </Button>
               ),
@@ -254,21 +282,28 @@ const Products = ({ productData: propProductData }: Props) => {
                     </IconButton>
                   </Tooltip>
                   <Tooltip title="Sửa sản phẩm">
-                    <Link href={`/admin/product/${row.id}/update`}>
+                    <Link href={protectedRoutes.updateProduct(row.id)}>
                       <IconButton color="warning">
                         <ModeEditIcon />
                       </IconButton>
                     </Link>
                   </Tooltip>
                   <Tooltip title="Xóa sản phẩm">
-                    <IconButton color="error" onClick={() => setCurrent(row)}>
+                    <IconButton
+                      color="error"
+                      onClick={() =>
+                        appDispatch(productManagementActions.showDialog(row))
+                      }
+                    >
                       <DeleteIcon />
                     </IconButton>
                   </Tooltip>
-                  {current ? (
+                  {openDialog && current ? (
                     <ConfirmDialog
-                      open={current.id === row.id ? true : false}
-                      onClose={() => setCurrent(null)}
+                      open={openDialog && current.id === row.id ? true : false}
+                      onClose={() =>
+                        appDispatch(productManagementActions.hideDialog())
+                      }
                       onConfirm={handleDelete}
                       title="Xác nhận"
                       text="Bạn có chắc chắn muốn xóa không?"
@@ -279,28 +314,9 @@ const Products = ({ productData: propProductData }: Props) => {
             },
           ]}
         />
-        {openModalPVI ? (
-          <ModalProductVariantImage
-            open={openModalPVI}
-            onClose={handleCloseModalPVI}
-            product={product}
-            onUpdateThumbnail={handleUploadThumbnail}
-          />
-        ) : null}
-        {openModalPV ? (
-          <ModalProductVariant
-            open={openModalPV}
-            onClose={handleCloseModalPV}
-            product={product}
-          />
-        ) : null}
-        {openModalPreview ? (
-          <ModalPreviewProduct
-            open={openModalPreview}
-            onClose={handleCloseModalPreview}
-            product={product}
-          />
-        ) : null}
+        <ModalProductVariantImage onUpdateThumbnail={handleUploadThumbnail} />
+        <ModalProductVariant />
+        <ModalPreviewProduct />
       </>
     </AdminLayout>
   );
@@ -308,17 +324,17 @@ const Products = ({ productData: propProductData }: Props) => {
 
 export default Products;
 
-export async function getServerSideProps(context: any) {
-  const { p, sortBy, sortType } = context.query;
-  const res = await getAllProducts({
-    p: p || 1,
-    limit: LIMIT,
-    sortBy,
-    sortType,
-    withDeleted: true,
-    group_product: true,
-  });
-  const { message, data } = res;
-  if (message === MSG_SUCCESS) return { props: { productData: data } };
-  return { notFound: true };
-}
+// export async function getServerSideProps(context: any) {
+//   const { p, sortBy, sortType } = context.query;
+//   const res = await getAllProducts({
+//     p: p || 1,
+//     limit: LIMIT,
+//     sortBy,
+//     sortType,
+//     withDeleted: true,
+//     group_product: true,
+//   });
+//   const { message, data } = res;
+//   if (message === MSG_SUCCESS) return { props: { productData: data } };
+//   return { notFound: true };
+// }
