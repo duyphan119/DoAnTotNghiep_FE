@@ -98,6 +98,7 @@ function* fetchUpdateProduct({
   let isError = true;
   try {
     const { files, inputs: dto, id } = payload;
+    let url = "";
     if (files) {
       const formData = new FormData();
       formData.append("image", files[0]);
@@ -106,20 +107,20 @@ function* fetchUpdateProduct({
       );
       if (message === MSG_SUCCESS) {
         console.log("Uploaded file: ", dataImage);
-        const url = dataImage.secure_url;
-        const { message: msg } = yield call(() =>
-          updateProduct(id, {
-            ...dto,
-            thumbnail: url,
-            groupProductId: +dto.groupProductId,
-          })
-        );
-        if (msg === MSG_SUCCESS) {
-          isError = false;
-          yield put(productManagementActions.fetchSuccess());
-          yield put(productManagementActions.back());
-        }
+        url = dataImage.secure_url;
       }
+    }
+    const { message: msg } = yield call(() =>
+      updateProduct(id, {
+        ...dto,
+        thumbnail: url,
+        groupProductId: +dto.groupProductId,
+      })
+    );
+    if (msg === MSG_SUCCESS) {
+      isError = false;
+      yield put(productManagementActions.fetchSuccess());
+      yield put(productManagementActions.back());
     }
   } catch (error) {
     console.log("productManamentSaga.fetchCreateProduct", error);

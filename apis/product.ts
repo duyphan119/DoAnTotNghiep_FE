@@ -16,7 +16,7 @@ export type CreateProductDTO = {
   name: string;
   slug?: string;
   groupProductId: number;
-  thumbnail?: number;
+  thumbnail?: string;
   description?: string;
   detail?: string;
 };

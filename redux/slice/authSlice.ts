@@ -16,6 +16,7 @@ type State = {
   accessToken: string;
   openModalAuth: boolean;
   orderData: ResponseItems<Order>;
+  isLogged: boolean;
 } & FetchState;
 
 type LoginResponse = {
@@ -33,6 +34,7 @@ const INITIAL_STATE: State = {
   openModalAuth: false,
   isSuccess: false,
   orderData: { items: [], count: 0 },
+  isLogged: false,
 };
 
 const authSlice = createSlice({
@@ -72,6 +74,7 @@ const authSlice = createSlice({
       state.openModalAuth = false;
       setCookie(COOKIE_ACCESSTOKEN_NAME, accessToken);
       state.isSuccess = true;
+      state.isLogged = true;
     },
     fetchRegister: (state, action: ActionPayload<RegisterDTO>) => {
       state.isError = false;
@@ -101,6 +104,7 @@ const authSlice = createSlice({
       deleteCookie(COOKIE_ACCESSTOKEN_NAME);
       state.isSuccess = true;
       state.isLoading = false;
+      state.isLogged = false;
     },
     fetchChangePassword: (state, action: ActionPayload<ChangePassword>) => {
       state.isError = false;
@@ -120,6 +124,9 @@ const authSlice = createSlice({
       state.orderData = action.payload;
       state.isLoading = false;
       state.isSuccess = true;
+    },
+    setIsLogged: (state, action: ActionPayload<boolean>) => {
+      state.isLogged = action.payload;
     },
   },
 });

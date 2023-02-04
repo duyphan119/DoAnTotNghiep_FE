@@ -1,5 +1,4 @@
 import { Container, Grid } from "@mui/material";
-import { useRouter } from "next/router";
 import { ReactNode } from "react";
 import { useSelector } from "react-redux";
 import { NotFound } from "../../components";
