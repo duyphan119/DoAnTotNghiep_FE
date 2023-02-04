@@ -3,7 +3,6 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { ChangeEvent, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import "react-quill/dist/quill.snow.css";
 import { useSelector } from "react-redux";
 import { CreateGroupProductDTO } from "../../../apis/groupProduct";
 import {
@@ -21,7 +20,7 @@ import { useAppDispatch } from "../../../redux/store";
 
 type Props = {};
 
-const AddGRoupProduct = (props: Props) => {
+const Page = (props: Props) => {
   const router = useRouter();
   const appDispatch = useAppDispatch();
   const { isBack, isLoading } = useSelector(groupProductManagementSelector);
@@ -119,4 +118,4 @@ const AddGRoupProduct = (props: Props) => {
   );
 };
 
-export default AddGRoupProduct;
+export default Page;

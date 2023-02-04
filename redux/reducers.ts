@@ -9,6 +9,7 @@ import productVariantSlice from "./slice/productVariantSlice";
 import snackbarSlice from "./slice/snackbarSlice";
 import userAddressSlice from "./slice/userAddressSlice";
 import variantSlice from "./slice/variantSlice";
+import blogManagementSlice from "./slice/blogManagementSlice";
 export const rootReducer = combineReducers({
   cart: cartSlice,
   groupProduct: groupProductSlice,
@@ -20,4 +21,5 @@ export const rootReducer = combineReducers({
   groupProductManagement: groupProductManagementSlice,
   productVariant: productVariantSlice,
   variant: variantSlice,
+  blogManagement: blogManagementSlice,
 });

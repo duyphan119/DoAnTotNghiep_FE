@@ -49,39 +49,6 @@ function* fetchGroupProductData({
   }
 }
 
-// function* fetchCreateProduct({
-//   payload,
-// }: ActionPayload<CreateProductPayload>): any {
-//   let isError = true;
-//   try {
-//     const { files, inputs: dto } = payload;
-//     if (files) {
-//       const formData = new FormData();
-//       formData.append("image", files[0]);
-//       const { message, data: dataImage } = yield call(() =>
-//         uploadSingle(formData)
-//       );
-//       if (message === MSG_SUCCESS) {
-//         console.log("Uploaded file: ", dataImage);
-//         const url = dataImage.secure_url;
-//         const { message: msg } = yield call(() =>
-//           createProduct({
-//             ...dto,
-//             thumbnail: url,
-//             groupProductId: +dto.groupProductId,
-//           })
-//         );
-//         if (msg === MSG_SUCCESS) {
-//           isError = false;
-//           yield put(productManagementActions.fetchSuccess());
-//         }
-//       }
-//     }
-//   } catch (error) {
-//     console.log("productManamentSaga.fetchCreateProduct", error);
-//   }
-//   if (isError) yield put(productManagementActions.fetchError());
-// }
 function* fetchHeaderData() {
   try {
     const { message, data } = yield call(() =>

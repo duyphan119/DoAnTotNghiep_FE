@@ -9,7 +9,6 @@ import {
 import { AdminLayout } from "../../../layouts";
 
 import { useRouter } from "next/router";
-import "react-quill/dist/quill.snow.css";
 import { uploadSingle } from "../../../apis/upload";
 import { MSG_SUCCESS } from "../../../utils/constants";
 import { AdminFormPaper, FooterForm, InputControl } from "../../../components";

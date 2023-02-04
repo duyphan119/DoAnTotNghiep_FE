@@ -2,14 +2,11 @@ import { Grid } from "@mui/material";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import "react-quill/dist/quill.snow.css";
 import { useSelector } from "react-redux";
-import { getAllGroupProducts } from "../../../../apis/groupProduct";
-import { getProductById, updateProduct } from "../../../../apis/product";
-import { uploadSingle } from "../../../../apis/upload";
 import {
   AdminFormPaper,
   FooterForm,
@@ -27,10 +24,7 @@ import {
   productManagementSelector,
 } from "../../../../redux/slice/productManagementSlice";
 import { useAppDispatch } from "../../../../redux/store";
-import { MSG_SUCCESS } from "../../../../utils/constants";
-import { GroupProduct, Product } from "../../../../utils/types";
-
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+import { GroupProduct } from "../../../../utils/types";
 
 type Props = {};
 
@@ -45,6 +39,10 @@ type ProductInputs = {
 };
 
 const Page = (props: Props) => {
+  const ReactQuill = useMemo(
+    () => dynamic(() => import("react-quill"), { ssr: false }),
+    []
+  );
   const router = useRouter();
   const appDispatch = useAppDispatch();
   const {

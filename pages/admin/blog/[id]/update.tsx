@@ -1,69 +1,74 @@
-import { Button, Grid, Paper } from "@mui/material";
+import { Grid } from "@mui/material";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import { ChangeEvent, useState } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { CreateBlogDTO, getBlogById, updateBlog } from "../../../../apis/blog";
-import { AdminLayout } from "../../../../layouts";
-import { MSG_SUCCESS } from "../../../../utils/constants";
-import { Blog } from "../../../../utils/types";
 import { useRouter } from "next/router";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import "react-quill/dist/quill.snow.css";
-import { uploadSingle } from "../../../../apis/upload";
-import { RenderContentProps } from "../create";
+import { useSelector } from "react-redux";
+import { CreateBlogDTO, getBlogById } from "../../../../apis/blog";
 import {
   AdminFormPaper,
   FooterForm,
   InputControl,
 } from "../../../../components";
-const ReactQuill = dynamic(import("react-quill"), { ssr: false });
+import { AdminLayout } from "../../../../layouts";
+import {
+  blogManagementActions,
+  blogManagementSelector,
+} from "../../../../redux/slice/blogManagementSlice";
+import { useAppDispatch } from "../../../../redux/store";
+import { MSG_SUCCESS } from "../../../../utils/constants";
+import { RenderContentProps } from "../create";
 
-type Props = {
-  blog: Blog;
-};
+type Props = {};
 
-const UpdateBlog = ({ blog }: Props) => {
+const UpdateBlog = (props: Props) => {
+  const ReactQuill = useMemo(
+    () => dynamic(() => import("react-quill"), { ssr: false }),
+    []
+  );
   const router = useRouter();
+  const appDispatch = useAppDispatch();
   const [files, setFiles] = useState<FileList | null>(null);
+  const { blogEditing, isLoading, isBack } = useSelector(
+    blogManagementSelector
+  );
   const {
     register,
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<CreateBlogDTO>({
-    defaultValues: {
-      content: blog.content,
-      title: blog.title,
-    },
-  });
+    setValue,
+  } = useForm<CreateBlogDTO>();
 
-  const onSubmit: SubmitHandler<CreateBlogDTO> = async (data) => {
-    try {
-      let thumbnail;
-      if (files) {
-        const formData = new FormData();
-        formData.append("image", files[0]);
-        const { message, data: dataImage } = await uploadSingle(formData);
-        if (message === MSG_SUCCESS) {
-          thumbnail = dataImage.secure_url;
-        }
-      }
-
-      const { message } = await updateBlog(blog.id, {
-        ...data,
-        ...(thumbnail ? { thumbnail } : {}),
-      });
-      if (message === MSG_SUCCESS) {
-        //show("Chỉnh sửa bài viết thành công", "success");
-      }
-    } catch (error) {
-      console.log("UPDATE BLOG ERROR::", error);
+  const onSubmit: SubmitHandler<CreateBlogDTO> = (data) => {
+    if (blogEditing) {
+      appDispatch(
+        blogManagementActions.fetchUpdateBlog({
+          id: blogEditing.id,
+          files,
+          dto: data,
+        })
+      );
     }
   };
 
-  const handleBack = () => {
-    router.back();
-  };
+  useEffect(() => {
+    const { id } = router.query;
+    appDispatch(blogManagementActions.fetchGetBlogById(+`${id}`));
+  }, [router.query]);
+
+  useEffect(() => {
+    if (blogEditing) {
+      setValue("title", blogEditing.title);
+      setValue("content", blogEditing.content);
+    }
+  }, [blogEditing]);
+
+  useEffect(() => {
+    if (isBack) router.back();
+  }, [isBack]);
 
   return (
     <AdminLayout pageTitle="Chỉnh sửa bài viết">
@@ -124,11 +129,13 @@ const UpdateBlog = ({ blog }: Props) => {
                       );
                     }}
                   />
-                  <label htmlFor="slug" className="form-label"></label>
                 </div>
               </Grid>
               <Grid item xs={12}>
-                <FooterForm onBack={() => router.back()} />
+                <FooterForm
+                  onBack={() => router.back()}
+                  isLoading={isLoading}
+                />
               </Grid>
             </Grid>
           </form>

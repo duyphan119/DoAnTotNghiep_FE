@@ -27,11 +27,9 @@ const LIMIT = 10;
 const GroupProducts = (props: Props) => {
   const appDispatch = useAppDispatch();
   const router = useRouter();
-  const { groupProductData, current, openDialog } = useSelector(
+  const { groupProductData, current, openDialog, isDeleted } = useSelector(
     groupProductManagementSelector
   );
-
-  console.log(groupProductData);
 
   const handleSoftDelete = (id: number) => {
     appDispatch(groupProductManagementActions.fetchSoftDeleteGroupProduct(id));
@@ -59,7 +57,7 @@ const GroupProducts = (props: Props) => {
         ...(sortType ? { sortType: `${sortType}` } : {}),
       })
     );
-  }, [router.query]);
+  }, [router.query, isDeleted]);
 
   return (
     <AdminLayout pageTitle="Nhóm sản phẩm">

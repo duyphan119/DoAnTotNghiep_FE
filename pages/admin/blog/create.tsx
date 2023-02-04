@@ -1,23 +1,27 @@
-import { Paper, Grid, Button } from "@mui/material";
-import React, { ChangeEvent, useState } from "react";
+import { Grid } from "@mui/material";
+import dynamic from "next/dynamic";
 import Head from "next/head";
-import { AdminLayout } from "../../../layouts";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { createBlog, CreateBlogDTO } from "../../../apis/blog";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import {
   Controller,
-  ControllerRenderProps,
   ControllerFieldState,
+  ControllerRenderProps,
+  SubmitHandler,
+  useForm,
   UseFormStateReturn,
 } from "react-hook-form";
-import dynamic from "next/dynamic";
+import { CreateBlogDTO } from "../../../apis/blog";
+import { AdminLayout } from "../../../layouts";
 
-import "react-quill/dist/quill.snow.css";
 import { useRouter } from "next/router";
-import { MSG_SUCCESS } from "../../../utils/constants";
-import { uploadSingle } from "../../../apis/upload";
+import "react-quill/dist/quill.snow.css";
+import { useSelector } from "react-redux";
 import { AdminFormPaper, FooterForm, InputControl } from "../../../components";
-const ReactQuill = dynamic(import("react-quill"), { ssr: false });
+import {
+  blogManagementActions,
+  blogManagementSelector,
+} from "../../../redux/slice/blogManagementSlice";
+import { useAppDispatch } from "../../../redux/store";
 
 type Props = {};
 
@@ -28,7 +32,13 @@ export type RenderContentProps = {
 };
 
 const CreateBlog = (props: Props) => {
+  const ReactQuill = useMemo(
+    () => dynamic(() => import("react-quill"), { ssr: false }),
+    []
+  );
   const router = useRouter();
+  const appDispatch = useAppDispatch();
+  const { isLoading, isBack } = useSelector(blogManagementSelector);
   const [files, setFiles] = useState<FileList | null>(null);
   const {
     register,
@@ -42,29 +52,18 @@ const CreateBlog = (props: Props) => {
     },
   });
 
-  const onSubmit: SubmitHandler<CreateBlogDTO> = async (data) => {
-    try {
-      let thumbnail;
-      if (files) {
-        const formData = new FormData();
-        formData.append("image", files[0]);
-        const { message, data: dataImage } = await uploadSingle(formData);
-        if (message === MSG_SUCCESS) {
-          thumbnail = dataImage.secure_url;
-        }
-      }
-
-      const { message } = await createBlog({
-        ...data,
-        ...(thumbnail ? { thumbnail } : {}),
-      });
-      if (message === MSG_SUCCESS) {
-        //show("Tạo bài viết thành công", "success");
-      }
-    } catch (error) {
-      console.log("CREATE BLOG ERROR::", error);
-    }
+  const onSubmit: SubmitHandler<CreateBlogDTO> = (data) => {
+    appDispatch(
+      blogManagementActions.fetchCreateBlog({
+        files,
+        dto: data,
+      })
+    );
   };
+
+  useEffect(() => {
+    if (isBack) router.back();
+  }, [isBack]);
 
   return (
     <AdminLayout pageTitle="Thêm mới bài viết">
@@ -150,11 +149,13 @@ const CreateBlog = (props: Props) => {
                       );
                     }}
                   />
-                  <label htmlFor="slug" className="form-label"></label>
                 </div>
               </Grid>
               <Grid item xs={12}>
-                <FooterForm onBack={() => router.back()} />
+                <FooterForm
+                  onBack={() => router.back()}
+                  isLoading={isLoading}
+                />
               </Grid>
             </Grid>
           </form>

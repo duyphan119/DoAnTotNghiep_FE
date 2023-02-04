@@ -26,6 +26,9 @@ export const getAllBlogs = (
 export const getAllBlogsPublic = (params?: BlogQueryParams): Promise<any> =>
   publicAxios().get("blog", { params });
 
+export const getAllBlogsClient = (params?: BlogQueryParams): Promise<any> =>
+  privateAxios().get("blog", { params });
+
 export const getBlogById = (id: number): Promise<any> =>
   publicAxios().get("blog/" + id);
 

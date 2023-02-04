@@ -4,75 +4,51 @@ import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { getAllBlogs } from "../../../apis/blog";
-import { deleteBlog, restoreBlog, softDeleteBlog } from "../../../apis/blog";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { ConfirmDialog, DataManagement } from "../../../components";
 import { AdminLayout } from "../../../layouts";
-import { COOKIE_ACCESSTOKEN_NAME, MSG_SUCCESS } from "../../../utils/constants";
+import {
+  blogManagementActions,
+  blogManagementSelector,
+} from "../../../redux/slice/blogManagementSlice";
+import { useAppDispatch } from "../../../redux/store";
 import { formatDateTime } from "../../../utils/helpers";
-import { Blog, Order, ResponseItems } from "../../../utils/types";
+import { protectedRoutes } from "../../../utils/routes";
+import { Blog } from "../../../utils/types";
 
-type Props = {
-  blogData: ResponseItems<Blog>;
-};
+type Props = {};
 const LIMIT = 10;
-const Orders = ({ blogData: propBlogData }: Props) => {
-  const [blogData, setBlogData] = useState<ResponseItems<Blog>>(propBlogData);
-  const [current, setCurrent] = useState<Blog | null>(null);
+const Page = (props: Props) => {
+  const appDispatch = useAppDispatch();
+  const { current, blogData, isDeleted } = useSelector(blogManagementSelector);
+  const router = useRouter();
 
-  const handleSoftDelete = async (id: number) => {
-    try {
-      const { message } = await softDeleteBlog(id);
-      if (message === MSG_SUCCESS) {
-        const _blogData = { ...blogData };
-        const index = _blogData.items.findIndex((gp: any) => gp.id === id);
-        if (index !== -1) {
-          _blogData.items[index].deletedAt = "" + new Date().getTime();
-          setBlogData(_blogData);
-        }
-      }
-    } catch (error) {
-      console.log("Soft delete group product error", error);
-    }
+  const handleSoftDelete = (id: number) => {
+    appDispatch(blogManagementActions.fetchSoftDeleteBlog(id));
   };
 
-  const handleRestore = async (id: number) => {
-    try {
-      const { message } = await restoreBlog(id);
-      if (message === MSG_SUCCESS) {
-        const _blogData = { ...blogData };
-        const index = _blogData.items.findIndex((gp: any) => gp.id === id);
-        if (index !== -1) {
-          _blogData.items[index].deletedAt = null;
-          setBlogData(_blogData);
-        }
-      }
-    } catch (error) {
-      console.log("Restore delete group product error", error);
-    }
+  const handleRestore = (id: number) => {
+    appDispatch(blogManagementActions.fetchRestoreBlog(id));
   };
 
-  const handleDelete = async () => {
-    try {
-      if (current) {
-        let { id } = current;
-        const { message } = await deleteBlog(id);
-        if (message === MSG_SUCCESS) {
-          const _blogData = { ...blogData };
-          _blogData.items = _blogData.items.filter((gp: any) => gp.id !== id);
-          _blogData.count -= 1;
-          setBlogData(_blogData);
-        }
-      }
-    } catch (error) {
-      console.log("Delete group product error", error);
-    }
+  const handleDelete = () => {
+    if (current) appDispatch(blogManagementActions.fetchDeleteBlog(current.id));
   };
 
   useEffect(() => {
-    setBlogData(propBlogData);
-  }, [propBlogData]);
+    const { p, sortBy, sortType } = router.query;
+    appDispatch(
+      blogManagementActions.fetchBlogData({
+        p: +`${p}` || 1,
+        limit: LIMIT,
+        withDeleted: true,
+        ...(sortBy ? { sortBy: `${sortBy}` } : {}),
+        ...(sortType ? { sortType: `${sortType}` } : {}),
+      })
+    );
+  }, [router.query, isDeleted]);
 
   return (
     <AdminLayout pageTitle="Bài viết">
@@ -157,13 +133,15 @@ const Orders = ({ blogData: propBlogData }: Props) => {
               render: (row: any) => (
                 <>
                   <div style={{ display: "flex", alignItems: "center" }}>
-                    <Link href={`/admin/blog/${row.id}/update`}>
+                    <Link href={protectedRoutes.updateBlog(row.id)}>
                       <button className="btnEdit">Sửa</button>
                     </Link>
                     <button
                       className="btnDelete"
                       style={{ marginLeft: "8px" }}
-                      onClick={() => setCurrent(row)}
+                      onClick={() =>
+                        appDispatch(blogManagementActions.showDialog(row))
+                      }
                     >
                       Xóa
                     </button>
@@ -171,7 +149,9 @@ const Orders = ({ blogData: propBlogData }: Props) => {
                   {current ? (
                     <ConfirmDialog
                       open={current.id === row.id ? true : false}
-                      onClose={() => setCurrent(null)}
+                      onClose={() =>
+                        appDispatch(blogManagementActions.hideDialog())
+                      }
                       onConfirm={handleDelete}
                       title="Xác nhận"
                       text="Bạn có chắc chắn muốn xóa không?"
@@ -187,29 +167,4 @@ const Orders = ({ blogData: propBlogData }: Props) => {
   );
 };
 
-export default Orders;
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  try {
-    const { p, sortBy, sortType, q } = context.query as any;
-    const params = {
-      p: p || 1,
-      limit: LIMIT,
-      sortBy,
-      sortType,
-      withDeleted: true,
-      q,
-    };
-    let { message, data } = await getAllBlogs(
-      params,
-      context.req.cookies[COOKIE_ACCESSTOKEN_NAME]
-    );
-    if (message === MSG_SUCCESS)
-      return {
-        props: { blogData: data },
-      };
-  } catch (error) {
-    console.log("GET ALL BLOGS ERROR::", error);
-  }
-  return { notFound: true };
-}
+export default Page;

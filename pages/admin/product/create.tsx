@@ -2,7 +2,7 @@ import { Grid, Paper } from "@mui/material";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import "react-quill/dist/quill.snow.css";
@@ -21,8 +21,6 @@ import { useAppDispatch } from "../../../redux/store";
 import { fullNameGroupProduct } from "../../../utils/helpers";
 import { GroupProduct } from "../../../utils/types";
 
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
-
 type Props = {};
 
 export type ProductInputs = {
@@ -35,7 +33,11 @@ export type ProductInputs = {
   inventory: number;
 };
 
-const AddProduct = (props: Props) => {
+const Page = (props: Props) => {
+  const ReactQuill = useMemo(
+    () => dynamic(() => import("react-quill"), { ssr: false }),
+    []
+  );
   const router = useRouter();
   const appDispatch = useAppDispatch();
   const { groupProductData } = useSelector(groupProductManagementSelector);
@@ -170,4 +172,4 @@ const AddProduct = (props: Props) => {
   );
 };
 
-export default AddProduct;
+export default Page;
