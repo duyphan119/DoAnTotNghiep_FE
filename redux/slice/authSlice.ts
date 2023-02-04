@@ -99,6 +99,8 @@ const authSlice = createSlice({
       state.profile = null;
       state.accessToken = "";
       deleteCookie(COOKIE_ACCESSTOKEN_NAME);
+      state.isSuccess = true;
+      state.isLoading = false;
     },
     fetchChangePassword: (state, action: ActionPayload<ChangePassword>) => {
       state.isError = false;

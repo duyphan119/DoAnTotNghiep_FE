@@ -5,7 +5,9 @@ import PasswordOutlinedIcon from "@mui/icons-material/PasswordOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { authActions } from "../../../redux/slice/authSlice";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { authActions, authSelector } from "../../../redux/slice/authSlice";
 import { useAppDispatch } from "../../../redux/store";
 import { publicRoutes } from "../../../utils/routes";
 import styles from "./style.module.css";
@@ -39,8 +41,8 @@ const Sidebar = (props: Props) => {
   const appDispatch = useAppDispatch();
 
   const handleLogout = () => {
+    router.push(publicRoutes.home);
     appDispatch(authActions.fetchLogout());
-    router.prefetch(publicRoutes.home);
   };
 
   return (
