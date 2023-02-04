@@ -2,7 +2,9 @@ import { call, put, takeEvery } from "redux-saga/effects";
 import {
   CreateProductVariant,
   createProductVariants,
+  deleteProductVariant,
   getAllProductVariants,
+  ProductVariantQueryParams,
   updateProductVariants,
 } from "../../apis/productvariant";
 import { MSG_SUCCESS } from "../../utils/constants";
@@ -69,6 +71,36 @@ function* fetchUpdateProductVariants({
   if (isError) yield put(productVariantActions.fetchError);
 }
 
+function* fetchGetAllProductVariants({
+  payload,
+}: ActionPayload<ProductVariantQueryParams>) {
+  let isError = true;
+  try {
+    const { message, data } = yield call(() => getAllProductVariants(payload));
+    if (message === MSG_SUCCESS) {
+      isError = false;
+      yield put(productVariantActions.setProductVariants(data.items));
+    }
+  } catch (error) {
+    console.log("productVariantSaga.fetchGetAllProductVariants error", error);
+  }
+  if (isError) yield put(productVariantActions.fetchError);
+}
+
+function* fetchDeleteProductVariant({ payload: id }: ActionPayload<number>) {
+  let isError = true;
+  try {
+    const { message } = yield call(() => deleteProductVariant(id));
+    if (message === MSG_SUCCESS) {
+      isError = false;
+      yield put(productVariantActions.deleteProductVariant(id));
+    }
+  } catch (error) {
+    console.log("productVariantSaga.fetchDeleteProductVariant error", error);
+  }
+  if (isError) yield put(productVariantActions.fetchError);
+}
+
 export function* productVariantSaga() {
   yield takeEvery(
     productVariantReducers.fetchCreateProductVariants,
@@ -77,5 +109,13 @@ export function* productVariantSaga() {
   yield takeEvery(
     productVariantReducers.fetchUpdateProductVariants,
     fetchUpdateProductVariants
+  );
+  yield takeEvery(
+    productVariantReducers.fetchGetAllProductVariants,
+    fetchGetAllProductVariants
+  );
+  yield takeEvery(
+    productVariantReducers.fetchDeleteProductVariant,
+    fetchDeleteProductVariant
   );
 }

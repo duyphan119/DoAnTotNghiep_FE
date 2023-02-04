@@ -21,6 +21,7 @@ export type ProductVariantInput = {
 type State = {
   productVariants: ProductVariant[];
   inputs: ProductVariantInput[];
+  openDialog: boolean;
 } & FetchState;
 
 const NAME_SLICE = "productVariant";
@@ -31,6 +32,7 @@ const INITIAL_STATE: State = {
   isError: false,
   isLoading: false,
   isSuccess: false,
+  openDialog: false,
 };
 
 const productVariantSlice = createSlice({
@@ -138,12 +140,26 @@ const productVariantSlice = createSlice({
         };
       }
     },
+    fetchDeleteProductVariant: (state, action: ActionPayload<number>) => {
+      state.isError = false;
+      state.isSuccess = false;
+      state.isLoading = true;
+    },
+    deleteProductVariant: (state, action: ActionPayload<number>) => {
+      state.productVariants = state.productVariants.filter(
+        (item) => item.id !== action.payload
+      );
+      state.isSuccess = true;
+      state.isLoading = false;
+    },
   },
 });
 
 export const productVariantReducers = {
   fetchCreateProductVariants: `${NAME_SLICE}/fetchCreateProductVariants`,
   fetchUpdateProductVariants: `${NAME_SLICE}/fetchUpdateProductVariants`,
+  fetchGetAllProductVariants: `${NAME_SLICE}/fetchGetAllProductVariants`,
+  fetchDeleteProductVariant: `${NAME_SLICE}/fetchDeleteProductVariant`,
 };
 export const productVariantSelector = (state: RootState): State =>
   state.productVariant;

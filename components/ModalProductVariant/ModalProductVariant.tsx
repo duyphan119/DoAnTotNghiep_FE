@@ -39,6 +39,7 @@ const ModalProductVariant = (props: Props) => {
 
   useEffect(() => {
     if (product) {
+      console.log("FETCH");
       appDispatch(variantActions.fetchGetAllVariants({ variant_values: true }));
       appDispatch(
         productVariantActions.fetchGetAllProductVariants({

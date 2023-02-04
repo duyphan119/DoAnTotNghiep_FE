@@ -7,12 +7,14 @@ import {
   productVariantActions,
   ProductVariantInput,
 } from "../../../redux/slice/productVariantSlice";
+import { ProductVariant } from "../../../utils/types";
 type Props = {
   hasDeleteBtn?: boolean;
   input: ProductVariantInput;
+  id?: number;
 };
 
-const TrItem = ({ input, hasDeleteBtn }: Props) => {
+const TrItem = ({ input, hasDeleteBtn, id }: Props) => {
   const appDispatch = useAppDispatch();
   const [open, setOpen] = useState<boolean>(false);
 
@@ -33,18 +35,8 @@ const TrItem = ({ input, hasDeleteBtn }: Props) => {
     setOpen(true);
   };
 
-  const handleConfirm = async () => {
-    // if (productVariant) {
-    //   const { id } = productVariant;
-    //   try {
-    //     const { message } = await deleteProductVariant(id);
-    //     if (message === MSG_SUCCESS) {
-    //       onDelete(id);
-    //     }
-    //   } catch (error) {
-    //     console.log("Delete product variant error", error);
-    //   }
-    // }
+  const handleConfirm = () => {
+    if (id) appDispatch(productVariantActions.fetchDeleteProductVariant(id));
   };
 
   return (

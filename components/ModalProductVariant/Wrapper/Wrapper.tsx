@@ -68,6 +68,7 @@ const Wrapper = ({ title }: Props) => {
                   inventory: productVariant.inventory,
                 }}
                 hasDeleteBtn={true}
+                id={productVariant.id}
               />
             );
           })}
