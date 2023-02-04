@@ -33,7 +33,7 @@ export type ProductInputs = {
   inventory: number;
 };
 
-const Page = (props: Props) => {
+const AddProduct = (props: Props) => {
   const ReactQuill = useMemo(
     () => dynamic(() => import("react-quill"), { ssr: false }),
     []
@@ -41,7 +41,7 @@ const Page = (props: Props) => {
   const router = useRouter();
   const appDispatch = useAppDispatch();
   const { groupProductData } = useSelector(groupProductManagementSelector);
-  const { isLoading, isSuccess } = useSelector(productManagementSelector);
+  const { isLoading, isBack } = useSelector(productManagementSelector);
   const [detail, setDetail] = useState<string>("");
   const [files, setFiles] = useState<FileList | null>(null);
 
@@ -60,8 +60,8 @@ const Page = (props: Props) => {
   };
 
   useEffect(() => {
-    isSuccess && router.back();
-  }, [isSuccess]);
+    isBack && router.back();
+  }, [isBack]);
 
   useEffect(() => {
     appDispatch(
@@ -172,4 +172,4 @@ const Page = (props: Props) => {
   );
 };
 
-export default Page;
+export default AddProduct;

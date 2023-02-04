@@ -60,7 +60,6 @@ const CreateBlog = (props: Props) => {
       })
     );
   };
-
   useEffect(() => {
     if (isBack) router.back();
   }, [isBack]);
