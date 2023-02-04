@@ -102,7 +102,7 @@ function* fetchDeleteCartItem({ payload }: ActionPayload<number>) {
 function* fetchCheckout({ payload }: ActionPayload<CheckoutDTO>) {
   try {
     let { message } = yield call(() => checkout(payload));
-    if (message === 0) yield put(cartActions.paymentSuccess());
+    if (message === MSG_SUCCESS) yield put(cartActions.paymentSuccess());
     else yield put(cartActions.fetchError());
   } catch (error) {
     console.log("cartReducers.fetchCheckout error", error);
