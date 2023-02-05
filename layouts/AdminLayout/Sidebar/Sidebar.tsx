@@ -161,12 +161,8 @@ const Sidebar = ({ open }: Props) => {
             },
           },
           ".navMenu": {
-            display: {
-              xl: "none !important",
-              xs: open ? "block" : "none !important",
-            },
             padding: {
-              xl: open ? "16px 0" : 0,
+              xl: open ? "0 16px" : 0,
               xs: "0",
             },
           },
