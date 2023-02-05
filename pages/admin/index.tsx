@@ -91,9 +91,12 @@ const Widget = ({
   return (
     <Paper
       className={styles.widgetWrapper}
-      style={{
+      sx={{
         backgroundColor: wrapperColor || "#fff",
-        width: "calc(50% - 8px)",
+        width: {
+          xs: "calc(100% - 8px)",
+          sm: "calc(50% - 8px)",
+        },
         height: 192,
       }}
     >
@@ -252,7 +255,7 @@ const Dashboard = (props: Props) => {
         </Head>
       </>
       <Grid container columnSpacing={2} rowSpacing={2}>
-        <Grid item xs={4}>
+        <Grid item xs={12} lg={4}>
           <Box display="flex" flexWrap="wrap" gap="16px">
             <Widget
               title="Người dùng"
@@ -285,7 +288,7 @@ const Dashboard = (props: Props) => {
             />
           </Box>
         </Grid>
-        <Grid item xs={8}>
+        <Grid item xs={12} lg={8}>
           <Chart
             tabs={(() => {
               const date = new Date();

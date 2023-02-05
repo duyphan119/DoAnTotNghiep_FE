@@ -1,6 +1,6 @@
 .sidebar {
   min-height: 100vh;
-  width: 320px;
+
   border-right: 1px solid lightgray;
 }
 .logo {
@@ -64,7 +64,6 @@
 }
 .navMenu {
   display: none;
-  padding-inline: 16px;
 }
 .checkbox:checked + .hasMenu + .navMenu {
   display: block;

@@ -1,8 +1,10 @@
 import Link from "next/link";
 import React from "react";
 import { useSelector } from "react-redux";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { authSelector } from "../../../../redux/slice/authSlice";
 import { protectedRoutes } from "../../../../utils/routes";
+import styles from "../style.module.css";
 
 type Props = {};
 
@@ -10,10 +12,14 @@ const AccountIcon = (props: Props) => {
   const { profile } = useSelector(authSelector);
   return profile ? (
     <Link href={protectedRoutes.profile}>
-      Xin chào, <strong>Duy Phan</strong>
+      <span className={styles.iconSpan}>
+        <AccountCircleIcon className={styles.icon} />
+      </span>
     </Link>
   ) : (
-    <div>Đăng nhập</div>
+    <span className={styles.iconSpan}>
+      <AccountCircleIcon className={styles.icon} />
+    </span>
   );
 };
 

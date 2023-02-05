@@ -11,7 +11,6 @@
   align-items: center;
   padding: 8px;
   box-shadow: 0 0 1px 1px #345;
-  min-width: 240px;
   gap: 8px;
 }
 .left,

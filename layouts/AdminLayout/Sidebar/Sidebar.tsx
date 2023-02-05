@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import React, { ReactElement } from "react";
+import { Box, Tooltip } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import TableRowsIcon from "@mui/icons-material/TableRows";
@@ -11,12 +12,20 @@ import CampaignIcon from "@mui/icons-material/Campaign";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import LogoutIcon from "@mui/icons-material/Logout";
+import Inventory2Icon from "@mui/icons-material/Inventory2";
+import CategoryIcon from "@mui/icons-material/Category";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import WebIcon from "@mui/icons-material/Web";
+import LockResetIcon from "@mui/icons-material/LockReset";
 import { useRouter } from "next/router";
+
 import styles from "./style.module.css";
 import { protectedRoutes } from "../../../utils/routes";
 import logoPng from "../../../public/logo.png";
 
-type Props = {};
+type Props = Partial<{
+  open: boolean;
+}>;
 
 type NavItem = {
   id?: string;
@@ -24,6 +33,7 @@ type NavItem = {
   label: string;
   icon?: ReactElement;
   children?: NavItem[];
+  tooltip?: string;
 };
 
 const navItems: NavItem[] = [
@@ -31,16 +41,19 @@ const navItems: NavItem[] = [
     href: protectedRoutes.admin,
     label: "Trang chủ",
     icon: <HomeIcon />,
+    tooltip: "Trang chủ",
   },
   {
     href: protectedRoutes.userManagement,
     label: "Tài khoản",
     icon: <AccountBoxIcon />,
+    tooltip: "Quản lý tài khoản",
   },
   {
     href: protectedRoutes.orderManagement,
     label: "Đơn hàng",
     icon: <LocalShippingIcon />,
+    tooltip: "Quản lý đơn hàng",
   },
   {
     label: "Quản lý sản phẩm",
@@ -51,10 +64,14 @@ const navItems: NavItem[] = [
       {
         href: protectedRoutes.groupProductManagement,
         label: "Nhóm sản phẩm",
+        icon: <CategoryIcon />,
+        tooltip: "Quản lý nhóm sản phẩm",
       },
       {
         href: protectedRoutes.productManagement,
         label: "Sản phẩm",
+        icon: <Inventory2Icon />,
+        tooltip: "Quản lý sản phẩm",
       },
     ],
   },
@@ -62,11 +79,13 @@ const navItems: NavItem[] = [
     href: protectedRoutes.blogManagement,
     label: "Bài viết",
     icon: <FeedIcon />,
+    tooltip: "Quản lý bài viết",
   },
   {
     href: protectedRoutes.advertisementManagement,
     label: "Quảng cáo",
     icon: <CampaignIcon />,
+    tooltip: "Quản lý quảng cáo",
   },
   {
     href: "",
@@ -77,23 +96,44 @@ const navItems: NavItem[] = [
       {
         href: protectedRoutes.settingProfile,
         label: "Tài khoản",
+        icon: <ManageAccountsIcon />,
+        tooltip: "Cài đặt tài khoản",
       },
       {
         href: protectedRoutes.settingWebsite,
         label: "Website",
+        icon: <WebIcon />,
+        tooltip: "Cài đặt website",
       },
       {
         href: protectedRoutes.changePassword,
         label: "Đổi mật khẩu",
+        icon: <LockResetIcon />,
+        tooltip: "Đổi mật khẩu",
       },
     ],
   },
 ];
 
-const Sidebar = (props: Props) => {
+const Sidebar = ({ open }: Props) => {
   const router = useRouter();
   return (
-    <aside className={styles.sidebar}>
+    <Box
+      component="aside"
+      className={styles.sidebar}
+      sx={{
+        width: {
+          xs: "60px",
+          xl: open ? "320px" : "60px",
+        },
+        ".logoText": {
+          display: {
+            xs: "none",
+            xl: open ? "initial" : "none",
+          },
+        },
+      }}
+    >
       <Link className={styles.logo} href={protectedRoutes.admin}>
         <Image
           src={logoPng}
@@ -102,9 +142,36 @@ const Sidebar = (props: Props) => {
           height={56}
           priority={true}
         />
-        SHOP
+        <span className="logoText">SHOP</span>
       </Link>
-      <nav className={styles.nav}>
+      <Box
+        component="nav"
+        className={styles.nav}
+        sx={{
+          ".navItemLinkLabel": {
+            display: {
+              xs: "none",
+              xl: open ? "initial" : "none",
+            },
+          },
+          ".navItemHasMenu": {
+            display: {
+              xs: "none",
+              xl: open ? "flex" : "none",
+            },
+          },
+          ".navMenu": {
+            display: {
+              xl: "none !important",
+              xs: open ? "block" : "none !important",
+            },
+            padding: {
+              xl: open ? "16px 0" : 0,
+              xs: "0",
+            },
+          },
+        }}
+      >
         <ul className={styles.navItems}>
           {navItems.map((navItem: NavItem) => (
             <li className={styles.navItem} key={navItem.label}>
@@ -121,13 +188,16 @@ const Sidebar = (props: Props) => {
                       ) !== -1
                     }
                   />
-                  <label htmlFor={navItem.id} className={styles.hasMenu}>
+                  <label
+                    htmlFor={navItem.id}
+                    className={"navItemHasMenu " + styles.hasMenu}
+                  >
                     {navItem.icon}
-                    {navItem.label}
+                    <span className="navItemLinkLabel"> {navItem.label}</span>
                     <KeyboardArrowDownIcon className={styles.closeMenuIcon} />
                     <KeyboardArrowLeftIcon className={styles.openMenuIcon} />
                   </label>
-                  <ul className={styles.navMenu}>
+                  <ul className={"navMenu " + styles.navMenu}>
                     {navItem.children.map((navItem2: NavItem) => {
                       let className =
                         styles.navLink +
@@ -136,38 +206,50 @@ const Sidebar = (props: Props) => {
                           : "");
 
                       return (
-                        <Link
-                          className={className}
-                          href={navItem2.href}
-                          key={navItem2.label}
-                        >
-                          {navItem2.icon} {navItem2.label}
-                        </Link>
+                        <li key={navItem2.label}>
+                          <Tooltip placement="right" title={navItem2.tooltip}>
+                            <Link className={className} href={navItem2.href}>
+                              {navItem2.icon}
+                              <span className="navItemLinkLabel">
+                                {" "}
+                                {navItem2.label}
+                              </span>
+                            </Link>
+                          </Tooltip>
+                        </li>
                       );
                     })}
                   </ul>
                 </>
               ) : (
-                <Link
-                  className={
-                    styles.navLink +
-                    (router.pathname === navItem.href
-                      ? " " + styles.active
-                      : "")
-                  }
-                  href={navItem.href}
-                >
-                  {navItem.icon} {navItem.label}
-                </Link>
+                <Tooltip placement="right" title={navItem.tooltip}>
+                  <Link
+                    className={
+                      styles.navLink +
+                      (router.pathname === navItem.href
+                        ? " " + styles.active
+                        : "")
+                    }
+                    href={navItem.href}
+                  >
+                    {navItem.icon}
+                    <span className="navItemLinkLabel"> {navItem.label}</span>
+                  </Link>
+                </Tooltip>
               )}
             </li>
           ))}
           <li className={styles.logout}>
-            <LogoutIcon /> Đăng xuất
+            <Tooltip placement="right" title="Đăng xuất">
+              <>
+                <LogoutIcon />
+                <span className="navItemLinkLabel"> Đăng xuất</span>
+              </>
+            </Tooltip>
           </li>
         </ul>
-      </nav>
-    </aside>
+      </Box>
+    </Box>
   );
 };
 

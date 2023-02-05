@@ -9,28 +9,28 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { authActions, authSelector } from "../../../redux/slice/authSlice";
 import { useAppDispatch } from "../../../redux/store";
-import { publicRoutes } from "../../../utils/routes";
+import { protectedRoutes, publicRoutes } from "../../../utils/routes";
 import styles from "./style.module.css";
 type Props = {};
 
 const items: any[] = [
   {
-    href: "/profile",
+    href: protectedRoutes.profile,
     label: "Tài khoản",
     icon: <PersonOutlineOutlinedIcon />,
   },
   {
-    href: "/address",
+    href: protectedRoutes.address,
     label: "Sổ địa chỉ",
     icon: <HomeOutlinedIcon />,
   },
   {
-    href: "/order",
+    href: protectedRoutes.myOrders,
     label: "Theo dõi đơn hàng",
     icon: <LocalShippingOutlinedIcon />,
   },
   {
-    href: "/change-password",
+    href: protectedRoutes.changePassword,
     label: "Đổi mật khẩu",
     icon: <PasswordOutlinedIcon />,
   },

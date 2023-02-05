@@ -18,6 +18,7 @@ export const protectedRoutes = {
   admin: "/admin",
   profile: "/profile",
   address: "/address",
+  myOrders: "/order",
   userManagement: "/admin/account",
   changePassword: "/admin/setting/change-password",
 
