@@ -96,9 +96,10 @@ const Right = (props: Props) => {
         <button onClick={handleAddToCart}>Thêm vào giỏ hàng</button>
       </div>
       <ul className={styles.description}>
-        {product.description.split("\n").map((text: string, index: number) => (
-          <li key={index}>{text}</li>
-        ))}
+        {product.description !== "" &&
+          product.description
+            .split("\n")
+            .map((text: string, index: number) => <li key={index}>{text}</li>)}
       </ul>
     </div>
   ) : null;

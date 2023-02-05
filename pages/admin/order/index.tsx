@@ -110,7 +110,7 @@ const Orders = ({ orderData: propOrderData }: Props) => {
           rows={orderData.items}
           count={orderData.count}
           limit={LIMIT}
-          hasCheck={true}
+          hasCheck={false}
           columns={[
             {
               style: { width: 70, textAlign: "center" },

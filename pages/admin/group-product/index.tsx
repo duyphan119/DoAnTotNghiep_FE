@@ -82,7 +82,7 @@ const GroupProducts = (props: Props) => {
           rows={groupProductData.items}
           count={groupProductData.count}
           limit={LIMIT}
-          // hasCheck={true}
+          // hasCheck={false}
           columns={[
             {
               style: { width: 70, textAlign: "center" },

@@ -274,9 +274,6 @@
   .right .items .item {
     padding: 16px;
   }
-  .container {
-    gap: 24px;
-  }
   .categories {
     display: none;
   }

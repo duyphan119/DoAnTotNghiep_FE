@@ -51,7 +51,7 @@ const Page = ({ accountData: propAccountData }: Props) => {
           rows={accountData.items}
           count={accountData.count}
           limit={LIMIT}
-          hasCheck={true}
+          hasCheck={false}
           columns={[
             {
               style: { width: 70, textAlign: "center" },

@@ -21,7 +21,7 @@ const AccountLayout = ({ children, titleHeading }: Props) => {
     <DefaultLayout>
       <main>
         <Container maxWidth="lg">
-          <Grid container columnSpacing={3}>
+          <Grid container columnSpacing={3} rowSpacing={3}>
             {titleHeading ? (
               <>
                 <Grid item md={3} xs={12}></Grid>

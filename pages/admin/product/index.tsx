@@ -168,7 +168,7 @@ const Products = () => {
           rows={productData.items}
           count={productData.count}
           limit={LIMIT}
-          hasCheck={true}
+          hasCheck={false}
           sortBys={[
             {
               display: "Tên",

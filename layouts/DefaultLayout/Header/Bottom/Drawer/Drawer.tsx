@@ -85,6 +85,17 @@ const Drawer = (props: Props) => {
                 </li>
               );
             })}
+            <li className={styles.navItem}>
+              <Link href={publicRoutes.blogs} className={styles.navItemLink}>
+                Bài viết
+              </Link>
+            </li>
+
+            <li className={styles.navItem}>
+              <Link href="/contact" className={styles.navItemLink}>
+                Liên hệ
+              </Link>
+            </li>
           </ul>
         </nav>
       </MuiDrawer>

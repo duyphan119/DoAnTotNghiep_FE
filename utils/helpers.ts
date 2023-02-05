@@ -30,7 +30,7 @@ export const formatProductVariants = (
   product: Product
 ): RenderVariantValues => {
   let _variants: any = {};
-  if (product.productVariants) {
+  if (product.productVariants && product.productVariants.length > 0) {
     product.productVariants[0].variantValues.forEach((vv: VariantValue) => {
       if (vv.variant) {
         _variants = Object.assign(_variants, { [vv.variant.name]: [vv] });
