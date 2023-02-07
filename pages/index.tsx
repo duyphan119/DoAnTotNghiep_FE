@@ -109,10 +109,7 @@ const Blogs = ({ blogs }: BlogProps) => {
         })}
         {blogs.length > 0 ? (
           <Grid item xs={12} className={styles.viewAllWrapper}>
-            <Link
-              href={protectedRoutes.blogManagement}
-              className={styles.viewAll}
-            >
+            <Link href={publicRoutes.blogs} className={styles.viewAll}>
               Xem tất cả bài viết
             </Link>
           </Grid>
