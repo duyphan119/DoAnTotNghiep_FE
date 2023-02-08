@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Container, Grid } from "@mui/material";
-import styles from "./style.module.css";
+import styles from "./_style.module.scss";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import EmailIcon from "@mui/icons-material/Email";

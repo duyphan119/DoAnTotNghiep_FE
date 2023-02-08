@@ -14,7 +14,7 @@ import CartIcon from "./CartIcon";
 import Categories from "./Categories";
 import Drawer from "./Drawer";
 import SearchInput from "./SearchInput";
-import styles from "./style.module.css";
+import styles from "./_style.module.scss";
 
 type Props = {};
 

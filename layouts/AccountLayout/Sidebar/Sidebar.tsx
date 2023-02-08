@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 import { authActions, authSelector } from "../../../redux/slice/authSlice";
 import { useAppDispatch } from "../../../redux/store";
 import { protectedRoutes, publicRoutes } from "../../../utils/routes";
-import styles from "./style.module.css";
+import styles from "./_style.module.scss";
 type Props = {};
 
 const items: any[] = [

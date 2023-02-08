@@ -1,21 +1,26 @@
 import React from "react";
-import styles from "./style.module.css";
+import styles from "./_style.module.scss";
 import SearchIcon from "@mui/icons-material/Search";
 import { Badge, IconButton, Box } from "@mui/material";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import MenuIcon from "@mui/icons-material/Menu";
 import NotifyIcon from "./NotifyIcon";
 import AccountIcon from "./AccountIcon";
+import { DarkLightButton } from "../../../components";
+import { useThemeContext } from "../../../context/ThemeContext";
 type Props = Partial<{
   pageTitle: string;
   onToggle: any;
 }>;
 
 const Header = ({ pageTitle, onToggle }: Props) => {
+  const { theme } = useThemeContext();
   return (
     <Box
       component="header"
-      className={styles.header}
+      className={`${styles.header} ${
+        theme === "dark" ? styles.headerDark : ""
+      }`}
       sx={{
         ".headerLeft": {
           display: {
@@ -25,7 +30,7 @@ const Header = ({ pageTitle, onToggle }: Props) => {
         },
       }}
     >
-      <div className={"headerLeft " + styles.left}>
+      <div className={`headerLeft ${styles.left}`}>
         <IconButton onClick={() => onToggle()}>
           <MenuIcon />
         </IconButton>
@@ -38,6 +43,7 @@ const Header = ({ pageTitle, onToggle }: Props) => {
         </form>
       </Box>
       <div className={styles.right}>
+        <DarkLightButton />
         <NotifyIcon />
         <span className={styles.iconSpan}>
           <Badge badgeContent={3} color="error">

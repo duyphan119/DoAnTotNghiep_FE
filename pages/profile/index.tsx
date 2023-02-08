@@ -6,7 +6,7 @@ import { InputControl } from "../../components";
 import { AccountLayout } from "../../layouts";
 import { authActions, authSelector } from "../../redux/slice/authSlice";
 import { useAppDispatch } from "../../redux/store";
-import styles from "../../styles/Profile.module.css";
+import styles from "../../styles/_Profile.module.scss";
 
 type Props = {};
 

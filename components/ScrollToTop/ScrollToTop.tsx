@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import styles from "./style.module.css";
+import styles from "./_style.module.scss";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 type Props = {};
 

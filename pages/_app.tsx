@@ -7,8 +7,9 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { Auth, ScrollToTop, Snackbar } from "../components";
 import SocketWrapper from "../context/SocketContext";
+import ThemeWrapper from "../context/ThemeContext";
 import { wrapper } from "../redux/store";
-import "../styles/globals.css";
+import "../styles/_globals.scss";
 // EAAFZBavrYXXUBADQdpRUPXa4ZATs4x9KO7etoWCrgLUHwiCgFaiXqzneIj3shrEphnRljqJL9jGZAoyBA3rCu3PWYqtumJ39fvZALw4pSu013HCMXcmtJ54DYFvyYrRMbG5r7iR1SAseYRQN0ZBqXUiWCag5VgZC4nCniQFO6EG2VOg0qu3V39
 
 const roboto = Roboto({
@@ -24,19 +25,21 @@ function App({ Component, ...rest }: AppProps) {
     <Provider store={store}>
       <SocketWrapper>
         <Auth>
-          <ScrollToTop />
-          <NextNProgress
-            color="var(--blue)"
-            startPosition={0.3}
-            stopDelayMs={200}
-            height={3}
-            showOnShallow={true}
-          />
-          {/* <Facebook /> */}
-          <div className={roboto.className}>
-            <Component {...props.pageProps} />
-          </div>
-          <Snackbar />
+          <ThemeWrapper>
+            <ScrollToTop />
+            <NextNProgress
+              color="var(--blue)"
+              startPosition={0.3}
+              stopDelayMs={200}
+              height={3}
+              showOnShallow={true}
+            />
+            {/* <Facebook /> */}
+            <div className={roboto.className}>
+              <Component {...props.pageProps} />
+            </div>
+            <Snackbar />
+          </ThemeWrapper>
         </Auth>
       </SocketWrapper>
     </Provider>

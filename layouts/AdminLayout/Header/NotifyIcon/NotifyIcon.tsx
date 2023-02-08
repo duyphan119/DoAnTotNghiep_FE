@@ -8,7 +8,7 @@ import "moment/locale/vi";
 
 import { useSocketContext } from "../../../../context/SocketContext";
 import { Notification, ResponseItems } from "../../../../utils/types";
-import styles from "../style.module.css";
+import styles from "../_style.module.scss";
 import { getAllNotifications } from "../../../../apis/notitfy";
 import { MSG_SUCCESS } from "../../../../utils/constants";
 

@@ -9,7 +9,7 @@ import { DefaultLayout } from "../../layouts";
 import { authSelector } from "../../redux/slice/authSlice";
 import { productDetailActions } from "../../redux/slice/productDetailSlice";
 import { useAppDispatch } from "../../redux/store";
-import styles from "../../styles/ProductDetail.module.css";
+import styles from "../../styles/_ProductDetail.module.scss";
 import { MSG_SUCCESS } from "../../utils/constants";
 import { CommentProduct, Product, ResponseItems } from "../../utils/types";
 

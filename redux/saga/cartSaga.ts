@@ -25,9 +25,7 @@ function* fetchCart() {
 
       yield put(
         cartActions.setCart(
-          message === MSG_SUCCESS && data && data.items && data.items[0]
-            ? data.items[0]
-            : { items: [] }
+          message === MSG_SUCCESS && data ? data : { items: [] }
         )
       );
     } else {

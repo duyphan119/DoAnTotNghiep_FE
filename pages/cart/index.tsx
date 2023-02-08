@@ -9,7 +9,7 @@ import { DefaultLayout } from "../../layouts";
 import emptyCartPng from "../../public/empty-cart.png";
 import { cartActions, cartSelector } from "../../redux/slice/cartSlice";
 import { useAppDispatch } from "../../redux/store";
-import styles from "../../styles/Cart.module.css";
+import styles from "../../styles/_Cart.module.scss";
 import { getPriceCartItem, getThumbnailOrderItem } from "../../utils/helpers";
 import { publicRoutes } from "../../utils/routes";
 import { OrderItem } from "../../utils/types";

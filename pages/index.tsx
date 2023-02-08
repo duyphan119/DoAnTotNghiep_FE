@@ -9,7 +9,7 @@ import { getAllBlogsPublic } from "../apis/blog";
 import { getAllProducts } from "../apis/product";
 import { ProductCard } from "../components";
 import { DefaultLayout } from "../layouts";
-import styles from "../styles/Home.module.css";
+import styles from "../styles/_Home.module.scss";
 import { formatDateTime } from "../utils/helpers";
 import { protectedRoutes, publicRoutes } from "../utils/routes";
 import { Advertisement, Blog, Product, ResponseItems } from "../utils/types";

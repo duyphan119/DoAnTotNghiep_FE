@@ -5,7 +5,7 @@ import { ProductVariantImage, VariantValue } from "../../utils/types";
 import DownTabs from "./DownTabs";
 import Left from "./Left";
 import Right from "./Right";
-import styles from "./style.module.css";
+import styles from "./_style.module.scss";
 type Props = {};
 
 const ProductInfo = (props: Props) => {

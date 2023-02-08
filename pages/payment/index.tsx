@@ -18,7 +18,7 @@ import {
   userAddressSelector,
 } from "../../redux/slice/userAddressSlice";
 import { useAppDispatch } from "../../redux/store";
-import styles from "../../styles/Payment.module.css";
+import styles from "../../styles/_Payment.module.scss";
 import { MSG_SUCCESS } from "../../utils/constants";
 import { getPriceCartItem, getThumbnailOrderItem } from "../../utils/helpers";
 import { publicRoutes } from "../../utils/routes";

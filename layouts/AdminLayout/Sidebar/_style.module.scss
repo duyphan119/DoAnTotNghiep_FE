@@ -21,6 +21,12 @@
 .navLink:hover {
   background-color: #f2f2f2;
 }
+.navItemsDark .logout:hover,
+.navItemsDark .hasMenu:hover,
+.navItemsDark .navLink:hover {
+  background-color: #fff;
+  color: #000;
+}
 .hasMenu,
 .logout,
 .navLink {

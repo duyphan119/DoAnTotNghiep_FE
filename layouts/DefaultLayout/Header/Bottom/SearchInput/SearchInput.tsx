@@ -1,6 +1,6 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import styles from "../style.module.css";
+import styles from "../_style.module.scss";
 import { Product, ResponseItems } from "../../../../../utils/types";
 import { getAllProducts as apiSearch } from "../../../../../apis/product";
 import { MSG_SUCCESS } from "../../../../../utils/constants";

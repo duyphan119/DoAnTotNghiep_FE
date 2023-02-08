@@ -5,7 +5,7 @@ import { Container } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getSettingWebsiteByKeys } from "../../../../apis/settingwebsite";
 import { SettingWebsite } from "../../../../utils/types";
-import styles from "./style.module.css";
+import styles from "./_style.module.scss";
 import AccountIcon from "./AccountIcon";
 import { MSG_SUCCESS } from "../../../../utils/constants";
 import { protectedRoutes } from "../../../../utils/routes";

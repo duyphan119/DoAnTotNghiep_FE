@@ -1,7 +1,7 @@
 import React from "react";
 import { CommentProduct } from "../../../../../../utils/types";
 import { Rating } from "@mui/material";
-import styles from "../../../../style.module.css";
+import styles from "../../../../_style.module.scss";
 import moment from "moment";
 import "moment/locale/vi";
 type Props = {

@@ -8,7 +8,7 @@ import { myOrders } from "../../apis/order";
 import { AccountLayout } from "../../layouts";
 import { authActions, authSelector } from "../../redux/slice/authSlice";
 import { useAppDispatch } from "../../redux/store";
-import styles from "../../styles/FollowOrder.module.css";
+import styles from "../../styles/_FollowOrder.module.scss";
 import { MSG_SUCCESS } from "../../utils/constants";
 import { formatDateTime, getThumbnailOrderItem } from "../../utils/helpers";
 import {

@@ -19,9 +19,10 @@ import WebIcon from "@mui/icons-material/Web";
 import LockResetIcon from "@mui/icons-material/LockReset";
 import { useRouter } from "next/router";
 
-import styles from "./style.module.css";
-import { protectedRoutes } from "../../../utils/routes";
+import styles from "./_style.module.scss";
+import { protectedRoutes, publicRoutes } from "../../../utils/routes";
 import logoPng from "../../../public/logo.png";
+import { useThemeContext } from "../../../context/ThemeContext";
 
 type Props = Partial<{
   open: boolean;
@@ -42,6 +43,12 @@ const navItems: NavItem[] = [
     label: "Trang chủ",
     icon: <HomeIcon />,
     tooltip: "Trang chủ",
+  },
+  {
+    href: publicRoutes.home,
+    label: "Trang bán hàng",
+    icon: <HomeIcon />,
+    tooltip: "Trang bán hàng",
   },
   {
     href: protectedRoutes.userManagement,
@@ -117,10 +124,12 @@ const navItems: NavItem[] = [
 
 const Sidebar = ({ open }: Props) => {
   const router = useRouter();
+  const { theme } = useThemeContext();
   return (
     <Box
       component="aside"
       className={styles.sidebar}
+      id={theme}
       sx={{
         width: {
           xs: "60px",
@@ -168,7 +177,11 @@ const Sidebar = ({ open }: Props) => {
           },
         }}
       >
-        <ul className={styles.navItems}>
+        <ul
+          className={`${styles.navItems} ${
+            theme === "dark" ? styles.navItemsDark : ""
+          }`}
+        >
           {navItems.map((navItem: NavItem) => (
             <li className={styles.navItem} key={navItem.label}>
               {navItem.children ? (

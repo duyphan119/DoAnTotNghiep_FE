@@ -9,7 +9,7 @@ import {
 } from "../../../../../redux/slice/cartSlice";
 import { useAppDispatch } from "../../../../../redux/store";
 import { publicRoutes } from "../../../../../utils/routes";
-import styles from "../style.module.css";
+import styles from "../_style.module.scss";
 type Props = {};
 
 const CartIcon = (props: Props) => {

@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { publicRoutes } from "../../utils/routes";
 import notfoundSvg from "../../public/404.svg";
-import styles from "./style.module.css";
+import styles from "./_style.module.scss";
 
 type Props = {};
 

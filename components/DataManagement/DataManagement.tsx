@@ -2,7 +2,7 @@ import { Box, Pagination, Paper } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { CSSProperties, FormEvent, memo, useState, ChangeEvent } from "react";
-import styles from "./style.module.css";
+import styles from "./_style.module.scss";
 
 type SortBy = {
   display: string;

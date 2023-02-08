@@ -11,7 +11,7 @@ import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import Link from "next/link";
-import styles from "./style.module.css";
+import styles from "./_style.module.scss";
 import DefaultLayout from "../DefaultLayout";
 
 type BreadcrumbLink = {

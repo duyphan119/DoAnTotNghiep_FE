@@ -9,7 +9,7 @@ import {
 } from "../../../redux/slice/productVariantSlice";
 import { useAppDispatch } from "../../../redux/store";
 import { ProductVariant } from "../../../utils/types";
-import styles from "../style.module.css";
+import styles from "../_style.module.scss";
 import TrItem from "../TrItem";
 
 type Props = {

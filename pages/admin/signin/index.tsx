@@ -5,7 +5,7 @@ import { LoginDTO } from "../../../apis/auth";
 import { InputControl } from "../../../components";
 import { authActions } from "../../../redux/slice/authSlice";
 import { useAppDispatch } from "../../../redux/store";
-import styles from "../../../styles/AdminAuth.module.css";
+import styles from "../../../styles/_AdminAuth.module.scss";
 type Props = {};
 
 const Login = (props: Props) => {

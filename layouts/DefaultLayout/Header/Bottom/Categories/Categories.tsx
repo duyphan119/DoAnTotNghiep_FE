@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { groupProductManagementSelector } from "../../../../../redux/slice/groupProductManagementSlice";
 import { publicRoutes } from "../../../../../utils/routes";
 import { GroupProduct, GroupProductHeader } from "../../../../../utils/types";
-import styles from "../style.module.css";
+import styles from "../_style.module.scss";
 type Props = {};
 
 const Categories = (props: Props) => {

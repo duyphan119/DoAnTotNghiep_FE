@@ -19,7 +19,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { formatDateTime, formatYAxisPrice } from "../../utils/helpers";
-import styles from "../../styles/Dashboard.module.css";
+import styles from "../../styles/_Dashboard.module.scss";
 import { getStatistics } from "../../apis/statistics";
 import { MSG_SUCCESS } from "../../utils/constants";
 import { BarChartData, Order } from "../../utils/types";

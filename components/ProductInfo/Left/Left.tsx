@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React from "react";
 import { ProductVariantImage } from "../../../utils/types";
-import styles from "../style.module.css";
+import styles from "../_style.module.scss";
 type Props = {
   images: ProductVariantImage[];
   thumbnail: string;

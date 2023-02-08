@@ -1,7 +1,7 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import ConfirmDialog from "../../ConfirmDialog";
 import { ChangeEvent, memo, useState } from "react";
-import styles from "../style.module.css";
+import styles from "../_style.module.scss";
 import { useAppDispatch } from "../../../redux/store";
 import {
   productVariantActions,

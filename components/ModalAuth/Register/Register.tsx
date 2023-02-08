@@ -1,11 +1,9 @@
-import React from "react";
-import { register as apiRegister, RegisterDTO } from "../../../apis/auth";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { MSG_SUCCESS } from "../../../utils/constants";
-import styles from "../style.module.css";
-import InputControl from "../../InputControl";
-import { useAppDispatch } from "../../../redux/store";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { RegisterDTO } from "../../../apis/auth";
 import { authActions } from "../../../redux/slice/authSlice";
+import { useAppDispatch } from "../../../redux/store";
+import InputControl from "../../InputControl";
+import styles from "../_style.module.scss";
 type Props = Partial<{
   onClose: any;
 }>;

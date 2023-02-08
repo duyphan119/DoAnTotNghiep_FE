@@ -6,7 +6,6 @@ import {
   ProductVariantImage,
   VariantValue,
 } from "../../utils/types";
-import styles from "./style.module.css";
 import { formatProductVariants, rangePrice } from "../../utils/helpers";
 import { useAppDispatch } from "../../redux/store";
 import { useSelector } from "react-redux";
@@ -14,6 +13,7 @@ import {
   productManagementActions,
   productManagementSelector,
 } from "../../redux/slice/productManagementSlice";
+import styles from "./_style.module.scss";
 
 type Props = Partial<{}>;
 

@@ -8,7 +8,7 @@ import {
   authSelector,
 } from "../../../../../redux/slice/authSlice";
 import { protectedRoutes } from "../../../../../utils/routes";
-import styles from "../style.module.css";
+import styles from "../_style.module.scss";
 type Props = {};
 
 const AccountIcon = (props: Props) => {

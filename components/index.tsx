@@ -19,3 +19,4 @@ export { default as Snackbar } from "./Snackbar";
 export { default as Auth } from "./Auth";
 export { default as NotFound } from "./NotFound";
 export { default as TextAreaControl } from "./TextAreaControl";
+export { default as DarkLightButton } from "./DarkLightButton";

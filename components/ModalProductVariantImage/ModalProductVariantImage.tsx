@@ -14,7 +14,7 @@ import {
 } from "../../apis/productvariantimage";
 import { MSG_SUCCESS } from "../../utils/constants";
 import Image from "next/image";
-import styles from "./style.module.css";
+import styles from "./_style.module.scss";
 import CheckIcon from "@mui/icons-material/Check";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { uploadSingle } from "../../apis/upload";

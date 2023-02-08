@@ -16,15 +16,13 @@ type Props = Partial<{
 const AdminLayout = ({ children, pageTitle }: Props) => {
   const router = useRouter();
   const { profile, isSuccess } = useSelector(authSelector);
-  const theme = useTheme();
-  const macthXL = useMediaQuery(theme.breakpoints.up("xl"));
+  const muiTheme = useTheme();
+  const macthXL = useMediaQuery(muiTheme.breakpoints.up("xl"));
   const [openSidebar, setOpenSidebar] = useState<boolean>(macthXL);
 
   const handleToggle = () => {
     setOpenSidebar((o) => !o);
   };
-
-  console.log(macthXL, openSidebar);
 
   useEffect(() => {
     if (router.pathname.includes("/admin") && isSuccess && !profile)
@@ -46,10 +44,17 @@ const AdminLayout = ({ children, pageTitle }: Props) => {
             xs: "calc(100vw - 60px)",
             xl: "calc(100vw - 320px)",
           },
+          flex: 1,
         }}
       >
         <Header pageTitle={pageTitle} onToggle={handleToggle} />
-        <Box flex={1} padding="16px">
+        <Box
+          flex={1}
+          padding="16px"
+          sx={{
+            background: "#f4f3f5",
+          }}
+        >
           {children}
         </Box>
       </Box>

@@ -19,7 +19,7 @@ import {
 import { snackbarActions } from "../../../../../redux/slice/snackbarSlice";
 import { useAppDispatch } from "../../../../../redux/store";
 import { MSG_SUCCESS } from "../../../../../utils/constants";
-import styles from "../../../style.module.css";
+import styles from "../../../_style.module.scss";
 
 type Props = {};
 

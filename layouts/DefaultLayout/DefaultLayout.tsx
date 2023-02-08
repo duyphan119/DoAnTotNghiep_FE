@@ -2,7 +2,7 @@ import React, { ReactNode } from "react";
 import Footer from "./Footer";
 import Header from "./Header";
 
-import styles from "./style.module.css";
+import styles from "./_style.module.scss";
 
 type Props = Partial<{
   children: ReactNode;

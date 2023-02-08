@@ -4,7 +4,7 @@ import { useState, memo } from "react";
 
 import Login from "./Login";
 import Register from "./Register";
-import styles from "./style.module.css";
+import styles from "./_style.module.scss";
 
 type Props = {
   open: boolean;

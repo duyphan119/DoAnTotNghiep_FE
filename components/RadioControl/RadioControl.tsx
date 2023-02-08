@@ -1,5 +1,5 @@
 import React, { useId, memo } from "react";
-import styles from "./style.module.css";
+import styles from "./_style.module.scss";
 
 type Props = Partial<{
   type: "radio" | "checkbox";

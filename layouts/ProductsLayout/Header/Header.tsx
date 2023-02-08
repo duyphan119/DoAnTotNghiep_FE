@@ -1,6 +1,6 @@
 import { ClickAwayListener } from "@mui/material";
 import React, { useState } from "react";
-import styles from "../style.module.css";
+import styles from "../_style.module.scss";
 type Props = Partial<{
   onFilter: any;
   totalProducts: number;

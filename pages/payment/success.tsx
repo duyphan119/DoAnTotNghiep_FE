@@ -1,6 +1,6 @@
 import Head from "next/head";
 import React from "react";
-import styles from "../../styles/CheckoutSuccess.module.css";
+import styles from "../../styles/_CheckoutSuccess.module.scss";
 import checkoutSuccessSvg from "../../public/checkout_success.svg";
 import Image from "next/image";
 import Link from "next/link";

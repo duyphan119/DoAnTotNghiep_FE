@@ -15,7 +15,7 @@ import {
 } from "../../redux/slice/variantSlice";
 import { useAppDispatch } from "../../redux/store";
 import { Variant, VariantValue } from "../../utils/types";
-import styles from "./style.module.css";
+import styles from "./_style.module.scss";
 import { Wrapper } from "./Wrapper";
 type Props = {};
 

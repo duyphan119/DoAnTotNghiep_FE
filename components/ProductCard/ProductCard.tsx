@@ -10,7 +10,7 @@ import {
   ProductVariantImage,
   VariantValue,
 } from "../../utils/types";
-import styles from "./style.module.css";
+import styles from "./_style.module.scss";
 
 type Props = {
   product: Product;

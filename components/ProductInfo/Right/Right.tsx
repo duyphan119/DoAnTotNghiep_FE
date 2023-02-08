@@ -9,7 +9,7 @@ import {
 import { useAppDispatch } from "../../../redux/store";
 import { rangePrice } from "../../../utils/helpers";
 import { VariantValue } from "../../../utils/types";
-import styles from "../style.module.css";
+import styles from "../_style.module.scss";
 
 type Props = {};
 
