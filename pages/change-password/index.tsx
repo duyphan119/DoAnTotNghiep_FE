@@ -5,7 +5,7 @@ import { AccountLayout } from "../../layouts";
 
 type Props = {};
 
-const ChangePassword = (props: Props) => {
+const Page = (props: Props) => {
   return (
     <AccountLayout titleHeading="Đổi mật khẩu">
       <>
@@ -18,4 +18,4 @@ const ChangePassword = (props: Props) => {
   );
 };
 
-export default ChangePassword;
+export default Page;
