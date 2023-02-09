@@ -1,23 +1,25 @@
-import { Button, Grid, Paper } from "@mui/material";
+import { Grid } from "@mui/material";
 import Head from "next/head";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import {
-  createAdvertisement,
-  CreateAdvertisementDTO,
-} from "../../../apis/advertisement";
+import { CreateAdvertisementDTO } from "../../../apis/advertisement";
 import { AdminLayout } from "../../../layouts";
 
 import { useRouter } from "next/router";
-import { uploadSingle } from "../../../apis/upload";
-import { MSG_SUCCESS } from "../../../utils/constants";
+import { useSelector } from "react-redux";
 import { AdminFormPaper, FooterForm, InputControl } from "../../../components";
+import {
+  advertisementActions,
+  advertisementSelector,
+} from "../../../redux/slice/advertisementSlice";
+import { useAppDispatch } from "../../../redux/store";
 
 type Props = {};
 
 const CreateAdvertisement = (props: Props) => {
   const router = useRouter();
-  // const { show } = useSnackbarContext();
+  const appDispatch = useAppDispatch();
+  const { isLoading, isBack } = useSelector(advertisementSelector);
   const [files, setFiles] = useState<FileList | null>(null);
   const {
     register,
@@ -31,29 +33,18 @@ const CreateAdvertisement = (props: Props) => {
     },
   });
 
-  const onSubmit: SubmitHandler<CreateAdvertisementDTO> = async (data) => {
-    try {
-      let path;
-      if (files) {
-        const formData = new FormData();
-        formData.append("image", files[0]);
-        const { message, data: dataImage } = await uploadSingle(formData);
-        if (message === MSG_SUCCESS) {
-          path = dataImage.secure_url;
-        }
-      }
-
-      const { message } = await createAdvertisement({
-        ...data,
-        ...(path ? { path } : {}),
-      });
-      if (message === MSG_SUCCESS) {
-        //show("Tạo quảng cáo thành công", "success");
-      }
-    } catch (error) {
-      console.log("CREATE ADVERTISEMENT ERROR::", error);
-    }
+  const onSubmit: SubmitHandler<CreateAdvertisementDTO> = (data) => {
+    appDispatch(
+      advertisementActions.fetchCreateAdvertisement({
+        files,
+        dto: data,
+      })
+    );
   };
+
+  useEffect(() => {
+    if (isBack) router.back();
+  }, [isBack]);
 
   return (
     <AdminLayout pageTitle="Thêm mới quảng cáo">
@@ -95,7 +86,10 @@ const CreateAdvertisement = (props: Props) => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <FooterForm onBack={() => router.back()} />
+                <FooterForm
+                  onBack={() => router.back()}
+                  isLoading={isLoading}
+                />
               </Grid>
             </Grid>
           </form>

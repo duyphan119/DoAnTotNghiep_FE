@@ -2,46 +2,50 @@ import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import {
   deleteAdvertisement,
   getAllAdvertisements,
 } from "../../../apis/advertisement";
 import { ConfirmDialog, DataManagement } from "../../../components";
 import { AdminLayout } from "../../../layouts";
+import {
+  advertisementActions,
+  advertisementSelector,
+} from "../../../redux/slice/advertisementSlice";
+import { useAppDispatch } from "../../../redux/store";
 import { MSG_SUCCESS } from "../../../utils/constants";
 import { formatDateTime } from "../../../utils/helpers";
 import { Advertisement, ResponseItems } from "../../../utils/types";
 
-type Props = {
-  advData: ResponseItems<Advertisement>;
-};
+type Props = {};
 const LIMIT = 10;
-const Orders = ({ advData: propsAdvData }: Props) => {
-  const [advData, setAdvData] =
-    useState<ResponseItems<Advertisement>>(propsAdvData);
-  const [current, setCurrent] = useState<Advertisement | null>(null);
+const Orders = (props: Props) => {
+  const router = useRouter();
+  const appDispatch = useAppDispatch();
+  const { advertisementData, current, isDeleted, openDialog } = useSelector(
+    advertisementSelector
+  );
 
-  const handleDelete = async () => {
-    try {
-      if (current) {
-        let { id } = current;
-        const { message } = await deleteAdvertisement(id);
-        if (message === MSG_SUCCESS) {
-          const _advData = { ...advData };
-          _advData.items = _advData.items.filter((gp: any) => gp.id !== id);
-          _advData.count -= 1;
-          setAdvData(_advData);
-        }
-      }
-    } catch (error) {
-      console.log("Delete advertisement error", error);
+  const handleDelete = () => {
+    if (current) {
+      appDispatch(advertisementActions.fetchDeleteAdvertisement(current.id));
     }
   };
 
   useEffect(() => {
-    setAdvData(propsAdvData);
-  }, [propsAdvData]);
+    const { p, sortBy, sortType, limit } = router.query;
+    appDispatch(
+      advertisementActions.fetchGetAllAdvertisement({
+        p: +`${p}` || 1,
+        limit: limit ? `${limit}` : LIMIT,
+        ...(sortBy ? { sortBy: `${sortBy}` } : {}),
+        ...(sortType ? { sortType: `${sortType}` } : {}),
+      })
+    );
+  }, [router.query, isDeleted]);
 
   return (
     <AdminLayout pageTitle="Quảng cáo">
@@ -63,8 +67,8 @@ const Orders = ({ advData: propsAdvData }: Props) => {
               value: "createdAt",
             },
           ]}
-          rows={advData.items}
-          count={advData.count}
+          rows={advertisementData.items}
+          count={advertisementData.count}
           limit={LIMIT}
           hasCheck={false}
           columns={[
@@ -120,15 +124,19 @@ const Orders = ({ advData: propsAdvData }: Props) => {
                     <button
                       className="btnDelete"
                       style={{ marginLeft: "8px" }}
-                      onClick={() => setCurrent(row)}
+                      onClick={() =>
+                        appDispatch(advertisementActions.showDialog(row))
+                      }
                     >
                       Xóa
                     </button>
                   </div>
-                  {current ? (
+                  {openDialog && current ? (
                     <ConfirmDialog
                       open={current.id === row.id ? true : false}
-                      onClose={() => setCurrent(null)}
+                      onClose={() =>
+                        appDispatch(advertisementActions.hideDialog())
+                      }
                       onConfirm={handleDelete}
                       title="Xác nhận"
                       text="Bạn có chắc chắn muốn xóa không?"

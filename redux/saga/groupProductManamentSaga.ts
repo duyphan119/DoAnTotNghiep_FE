@@ -8,17 +8,13 @@ import {
   softDeleteGroupProduct,
   updateGroupProduct,
 } from "../../apis/groupProduct";
-import {
-  createProduct,
-  getAllProducts,
-  ProductQueryParams,
-} from "../../apis/product";
+import { ProductQueryParams } from "../../apis/product";
 import { uploadSingle } from "../../apis/upload";
 import { MSG_SUCCESS } from "../../utils/constants";
 import {
-  groupProductManagementReducers,
-  groupProductManagementActions,
   CreateGroupProductPayload,
+  groupProductManagementActions,
+  groupProductManagementReducers,
   UpdateGroupProductPayload,
 } from "../slice/groupProductManagementSlice";
 import { ActionPayload } from "../store";

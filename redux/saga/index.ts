@@ -1,4 +1,5 @@
 import { all } from "redux-saga/effects";
+import { advertisementSaga } from "./advertisementSaga";
 import { authSaga } from "./authSaga";
 import { blogManamentSaga } from "./blogManamentSaga";
 import { cartSaga } from "./cartSaga";
@@ -20,5 +21,6 @@ export default function* rootSaga() {
     productVariantSaga(),
     variantSaga(),
     blogManamentSaga(),
+    advertisementSaga(),
   ]);
 }
