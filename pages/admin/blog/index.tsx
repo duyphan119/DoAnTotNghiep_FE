@@ -60,16 +60,7 @@ const Page = (props: Props) => {
         </Head>
         <DataManagement
           paperTitle="Danh sách bài viết"
-          sortBys={[
-            {
-              display: "Tiêu đề",
-              value: "title",
-            },
-            {
-              display: "Ngày tạo",
-              value: "createdAt",
-            },
-          ]}
+          sortable={["title", "createdAt", "slug"]}
           rows={blogData.items}
           count={blogData.count}
           limit={LIMIT}

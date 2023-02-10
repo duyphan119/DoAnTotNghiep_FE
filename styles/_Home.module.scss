@@ -1,41 +1,57 @@
-.h1 {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.viewAllWrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.viewAll {
-  padding: 12px 24px;
-  background-color: var(--blue);
-  color: #fff;
-  border-radius: 5px;
-}
-.viewAll:hover {
-  box-shadow: 0 0 1px 1px var(--blue);
-}
-.blogThumbnail {
-  position: relative;
-  min-height: 280px;
-  overflow: hidden;
-  display: block;
-}
-.blogTitle {
-  font-weight: 600;
-  padding: 8px 0;
-  font-size: 20px;
-  display: block;
-}
-.blogCreatedAt {
-  color: gray;
-}
-.blogThumbnail:hover + .blogTitle,
-.blogTitle:hover {
-  color: var(--blue);
-}
-.blogThumbnail:hover img {
-  transform: scale(1.01);
+.main {
+  .h1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .groupProductLink {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 1px 0 #333;
+    padding: 16px 0;
+    &:hover {
+      color: var(--blue);
+    }
+  }
+  .viewAllWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .viewAll {
+      padding: 12px 24px;
+      background-color: var(--blue);
+      color: #fff;
+      border-radius: 5px;
+    }
+    .viewAll:hover {
+      box-shadow: 0 0 1px 1px var(--blue);
+    }
+  }
+  .blogThumbnail {
+    position: relative;
+    min-height: 280px;
+    overflow: hidden;
+    display: block;
+    &:hover + .blogTitle {
+      color: var(--blue);
+    }
+    &:hover {
+      img {
+        transform: scale(1.01);
+      }
+    }
+  }
+  .blogTitle {
+    font-weight: 600;
+    padding: 8px 0;
+    font-size: 20px;
+    display: block;
+    &:hover {
+      color: var(--blue);
+    }
+  }
+  .blogCreatedAt {
+    color: gray;
+  }
 }

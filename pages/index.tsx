@@ -6,13 +6,47 @@ import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { getAllAdvertisements } from "../apis/advertisement";
 import { getAllBlogsPublic } from "../apis/blog";
+import { getAllGroupProducts } from "../apis/groupProduct";
 import { getAllProducts } from "../apis/product";
 import { ProductCard } from "../components";
 import { DefaultLayout } from "../layouts";
 import styles from "../styles/_Home.module.scss";
-import { formatDateTime } from "../utils/helpers";
-import { protectedRoutes, publicRoutes } from "../utils/routes";
-import { Advertisement, Blog, Product, ResponseItems } from "../utils/types";
+import { EMPTY_ITEMS } from "../utils/constants";
+import { formatDateTime, fullNameGroupProduct } from "../utils/helpers";
+import { publicRoutes } from "../utils/routes";
+import {
+  Advertisement,
+  Blog,
+  GroupProduct,
+  Product,
+  ResponseItems,
+} from "../utils/types";
+
+type GroupProductsProps = {
+  items: GroupProduct[];
+};
+
+const GroupProducts = ({ items }: GroupProductsProps) => {
+  return (
+    <Container maxWidth="lg">
+      <Grid container>
+        {items.map((gp: GroupProduct) => {
+          return (
+            <Grid item xs={6} md={4} lg={3} xl={2} key={gp.id}>
+              <Link
+                href={publicRoutes.products(gp.slug)}
+                className={styles.groupProductLink}
+              >
+                {fullNameGroupProduct(gp)}
+              </Link>
+            </Grid>
+          );
+        })}
+      </Grid>
+    </Container>
+  );
+};
+
 type ProductsProps = {
   products: Product[];
 };
@@ -59,8 +93,6 @@ const Banners = ({ banners }: BannersProps) => {
                   src={adv.path}
                   alt="banner"
                   priority={true}
-                  // height={560}
-                  // width={1952}
                   fill={true}
                   sizes="(min-width: 0) 100vw"
                 />
@@ -125,8 +157,14 @@ type Props = {
   productData: ResponseItems<Product>;
   blogData: ResponseItems<Blog>;
   advertisements: Advertisement[];
+  groupProducts: GroupProduct[];
 };
-export default function Home({ productData, blogData, advertisements }: Props) {
+export default function Home({
+  productData,
+  blogData,
+  advertisements,
+  groupProducts,
+}: Props) {
   return (
     <DefaultLayout>
       <>
@@ -138,7 +176,8 @@ export default function Home({ productData, blogData, advertisements }: Props) {
 
         <main className={styles.main}>
           <Banners banners={advertisements} />
-
+          <h1 className={styles.h1}>Danh mục nổi bật</h1>
+          <GroupProducts items={groupProducts} />
           <h1 className={styles.h1}>Sản phẩm mới</h1>
           <Products products={productData.items} />
           <h1 className={styles.h1}>Bài viết</h1>
@@ -151,11 +190,12 @@ export default function Home({ productData, blogData, advertisements }: Props) {
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
-  let productData = { items: [], count: 0, totalPages: 0 };
-  let blogData = { items: [], count: 0, totalPages: 0 };
-  let advData = { items: [] };
+  let productData = EMPTY_ITEMS;
+  let blogData = EMPTY_ITEMS;
+  let advData = EMPTY_ITEMS;
+  let groupProductData = EMPTY_ITEMS;
   try {
-    const [res1, res2, res3] = await Promise.allSettled([
+    const [res1, res2, res3, res4] = await Promise.allSettled([
       getAllProducts({
         limit: 24,
         product_variants: true,
@@ -165,6 +205,7 @@ export const getServerSideProps = async (
         limit: 3,
       }),
       getAllAdvertisements({ page: "Trang chủ", sortType: "asc" }),
+      getAllGroupProducts({ limit: 12 }),
     ]);
 
     if (res1.status === "fulfilled") {
@@ -176,6 +217,9 @@ export const getServerSideProps = async (
     if (res3.status === "fulfilled") {
       advData = res3.value.data;
     }
+    if (res4.status === "fulfilled") {
+      groupProductData = res4.value.data;
+    }
   } catch (error) {
     console.log(error);
   }
@@ -185,6 +229,7 @@ export const getServerSideProps = async (
       productData,
       blogData,
       advertisements: advData.items,
+      groupProducts: groupProductData.items,
     },
   };
 };

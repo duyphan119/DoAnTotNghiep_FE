@@ -5,6 +5,7 @@ import {
   AdvertisementQueryParams,
   CreateAdvertisementDTO,
 } from "../../apis/advertisement";
+import { EMPTY_ITEMS } from "../../utils/constants";
 
 type State = {
   advertisementData: ResponseItems<Advertisement>;
@@ -32,7 +33,7 @@ const INITIAL_STATE: State = {
   isSuccess: false,
   isBack: false,
   current: null,
-  advertisementData: { items: [], count: 0 },
+  advertisementData: EMPTY_ITEMS,
   advertisementEditting: null,
   openDialog: false,
   isDeleted: false,

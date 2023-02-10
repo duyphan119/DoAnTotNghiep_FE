@@ -7,3 +7,4 @@ export const COOKIE_ACCESSTOKEN_NAME = "accessToken";
 export const COOKIE_REFRESHTOKEN_NAME = "RT";
 export const COOKIE_ORDER_DISCOUNT_CODE_NAME = "coupon";
 export const COOKIE_USER_ID = "userId";
+export const EMPTY_ITEMS = { items: [], count: 0 };

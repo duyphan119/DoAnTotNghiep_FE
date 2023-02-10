@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { getAllBlogsPublic } from "../../apis/blog";
 import { DefaultLayout } from "../../layouts";
-import { MSG_SUCCESS } from "../../utils/constants";
+import { EMPTY_ITEMS, MSG_SUCCESS } from "../../utils/constants";
 import { formatDateTime } from "../../utils/helpers";
 import { publicRoutes } from "../../utils/routes";
 import { Blog, ResponseItems } from "../../utils/types";
@@ -89,7 +89,7 @@ const Page = ({ blogData }: Props) => {
 };
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  let blogData = { items: [], count: 0 };
+  let blogData = EMPTY_ITEMS;
   try {
     const { p } = context.query;
     const { message, data } = await getAllBlogsPublic({

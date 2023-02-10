@@ -30,24 +30,7 @@ const Page = ({ accountData: propAccountData }: Props) => {
         </Head>
         <DataManagement
           paperTitle="Danh sách tài khoản"
-          sortBys={[
-            {
-              display: "Họ tên",
-              value: "fullName",
-            },
-            {
-              display: "Email",
-              value: "email",
-            },
-            {
-              display: "Số điện thoại",
-              value: "phone",
-            },
-            {
-              display: "Ngày tạo",
-              value: "createdAt",
-            },
-          ]}
+          sortable={["fullName", "email", "phone", "createdAt"]}
           rows={accountData.items}
           count={accountData.count}
           limit={LIMIT}

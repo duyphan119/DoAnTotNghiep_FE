@@ -57,16 +57,7 @@ const Orders = (props: Props) => {
         </Head>
         <DataManagement
           paperTitle="Danh sách quảng cáo"
-          sortBys={[
-            {
-              display: "Tiêu đề",
-              value: "title",
-            },
-            {
-              display: "Ngày tạo",
-              value: "createdAt",
-            },
-          ]}
+          sortable={["title", "createdAt", "page", "href"]}
           rows={advertisementData.items}
           count={advertisementData.count}
           limit={LIMIT}

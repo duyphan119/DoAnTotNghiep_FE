@@ -13,7 +13,11 @@ import {
 import { getAllOrders } from "../../../apis/order";
 import { ConfirmDialog, DataManagement } from "../../../components";
 import { AdminLayout } from "../../../layouts";
-import { COOKIE_ACCESSTOKEN_NAME, MSG_SUCCESS } from "../../../utils/constants";
+import {
+  COOKIE_ACCESSTOKEN_NAME,
+  EMPTY_ITEMS,
+  MSG_SUCCESS,
+} from "../../../utils/constants";
 import { formatDateTime } from "../../../utils/helpers";
 import { GroupProduct, Order, ResponseItems } from "../../../utils/types";
 
@@ -89,24 +93,7 @@ const Orders = ({ orderData: propOrderData }: Props) => {
         </Head>
         <DataManagement
           paperTitle="Danh sách đơn hàng"
-          sortBys={[
-            {
-              display: "Họ Tên",
-              value: "fullName",
-            },
-            {
-              display: "Số điện thoại",
-              value: "phone",
-            },
-            {
-              display: "Ngày tạo",
-              value: "createdAt",
-            },
-            {
-              display: "Trạng thái",
-              value: "status",
-            },
-          ]}
+          sortable={["fullName", "phone", "createdAt", "status", "createdAt"]}
           rows={orderData.items}
           count={orderData.count}
           limit={LIMIT}
@@ -208,7 +195,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     );
     if (message === MSG_SUCCESS)
       return {
-        props: { productData: { items: [], count: 0 }, orderData: data },
+        props: { productData: EMPTY_ITEMS, orderData: data },
       };
   } catch (error) {
     console.log("GET ALL ORDERS ERROR::");

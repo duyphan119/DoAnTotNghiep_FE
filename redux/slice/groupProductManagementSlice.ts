@@ -3,6 +3,7 @@ import {
   CreateGroupProductDTO,
   GroupProductQueryParams,
 } from "../../apis/groupProduct";
+import { EMPTY_ITEMS } from "../../utils/constants";
 import { formatDateTime } from "../../utils/helpers";
 import {
   FetchState,
@@ -37,7 +38,7 @@ type GroupProductManagementState = {
 type State = GroupProductManagementState & FetchState;
 
 const INITIAL_STATE: State = {
-  groupProductData: { items: [], count: 0 },
+  groupProductData: EMPTY_ITEMS,
   openModalPVI: false,
   openModalPreview: false,
   openModalPV: false,

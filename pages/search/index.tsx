@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { getAllProducts, searchProducts } from "../../apis/product";
 import { ProductCard } from "../../components";
 import { DefaultLayout } from "../../layouts";
-import { MSG_SUCCESS } from "../../utils/constants";
+import { EMPTY_ITEMS, MSG_SUCCESS } from "../../utils/constants";
 import { Product, ResponseItems } from "../../utils/types";
 
 type Props = {
@@ -61,7 +61,7 @@ export async function getServerSideProps(context: any) {
 
   return {
     props: {
-      productData: message === MSG_SUCCESS ? data : { items: [], count: 0 },
+      productData: message === MSG_SUCCESS ? data : EMPTY_ITEMS,
     },
   };
 }

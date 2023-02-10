@@ -24,6 +24,7 @@ import {
   productManagementSelector,
 } from "../../../../redux/slice/productManagementSlice";
 import { useAppDispatch } from "../../../../redux/store";
+import { fullNameGroupProduct } from "../../../../utils/helpers";
 import { GroupProduct } from "../../../../utils/types";
 
 type Props = {};
@@ -127,7 +128,7 @@ const Page = (props: Props) => {
                   required={true}
                   options={groupProductData.items.map((item: GroupProduct) => ({
                     value: item.id,
-                    display: item.name,
+                    display: fullNameGroupProduct(item),
                   }))}
                 />
               </Grid>

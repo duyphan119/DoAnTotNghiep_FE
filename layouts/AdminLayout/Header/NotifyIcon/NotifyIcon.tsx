@@ -10,7 +10,7 @@ import { useSocketContext } from "../../../../context/SocketContext";
 import { Notification, ResponseItems } from "../../../../utils/types";
 import styles from "../_style.module.scss";
 import { getAllNotifications } from "../../../../apis/notitfy";
-import { MSG_SUCCESS } from "../../../../utils/constants";
+import { EMPTY_ITEMS, MSG_SUCCESS } from "../../../../utils/constants";
 
 type Props = {};
 
@@ -45,9 +45,8 @@ const NotifyIcon = (props: Props) => {
   const { socket } = useSocketContext();
 
   const [open, setOpen] = useState<boolean>(false);
-  const [notificationData, setNotificationData] = useState<
-    ResponseItems<Notification>
-  >({ items: [], count: 0 });
+  const [notificationData, setNotificationData] =
+    useState<ResponseItems<Notification>>(EMPTY_ITEMS);
   const [countUnRead, setCountUnRead] = useState<number>(0);
 
   const handleOpen = () => {

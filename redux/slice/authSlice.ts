@@ -7,7 +7,7 @@ import {
   RegisterDTO,
 } from "../../apis/auth";
 import { OrderQueryParams } from "../../apis/order";
-import { COOKIE_ACCESSTOKEN_NAME } from "../../utils/constants";
+import { COOKIE_ACCESSTOKEN_NAME, EMPTY_ITEMS } from "../../utils/constants";
 import { FetchState, Order, ResponseItems, User } from "../../utils/types";
 import { ActionPayload, RootState } from "../store";
 
@@ -32,7 +32,7 @@ const INITIAL_STATE: State = {
   isLoading: false,
   openModalAuth: false,
   isSuccess: false,
-  orderData: { items: [], count: 0 },
+  orderData: EMPTY_ITEMS,
 };
 
 const authSlice = createSlice({

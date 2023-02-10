@@ -22,7 +22,6 @@ const ModalPreviewProduct = (props: Props) => {
   const { openModalPreview, current: product } = useSelector(
     productManagementSelector
   );
-  if (!product || !openModalPreview) return null;
   const [index, setIndex] = useState<number>(-1);
   const [selectedVariantValues, setSelectedVariantValues] = useState<
     VariantValue[]
@@ -53,8 +52,6 @@ const ModalPreviewProduct = (props: Props) => {
     }
   }, [product]);
 
-  console.log(variants);
-
   useEffect(() => {
     if (
       selectedVariantValues &&
@@ -73,6 +70,7 @@ const ModalPreviewProduct = (props: Props) => {
       );
     }
   }, [selectedVariantValues]);
+  if (!product || !openModalPreview) return null;
 
   let images: ProductVariantImage[] = product.images || [];
   let imgSrc =

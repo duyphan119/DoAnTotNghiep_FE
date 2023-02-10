@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { CreateBlogDTO, BlogQueryParams } from "../../apis/blog";
+import { EMPTY_ITEMS } from "../../utils/constants";
 import { FetchState, Blog, ResponseItems } from "../../utils/types";
 import { ActionPayload, RootState } from "../store";
 
@@ -27,7 +28,7 @@ type BlogManagementState = {
 type State = BlogManagementState & FetchState;
 
 const INITIAL_STATE: State = {
-  blogData: { items: [], count: 0 },
+  blogData: EMPTY_ITEMS,
   openModalPVI: false,
   openModalPreview: false,
   openModalPV: false,

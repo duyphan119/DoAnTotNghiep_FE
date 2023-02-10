@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { CreateProductDTO, ProductQueryParams } from "../../apis/product";
 import { ProductInputs } from "../../pages/admin/product/create";
+import { EMPTY_ITEMS } from "../../utils/constants";
 import { FetchState, Product, ResponseItems } from "../../utils/types";
 import { ActionPayload, RootState } from "../store";
 
@@ -27,7 +28,7 @@ type ProductManagementState = {
 type State = ProductManagementState & FetchState;
 
 const INITIAL_STATE: State = {
-  productData: { items: [], count: 0 },
+  productData: EMPTY_ITEMS,
   openModalPVI: false,
   openModalPreview: false,
   openModalPV: false,

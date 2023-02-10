@@ -18,51 +18,59 @@ type Column = { key: string } & Partial<{
 
 type Props = Partial<{
   paperTitle: string;
-  sortBys: SortBy[];
   columns: Column[];
   hasCheck: boolean;
   rows: any[];
   count: number;
   limit: number;
+  sortable: string[];
 }>;
 
 const DataManagement = ({
   paperTitle,
-  sortBys,
   columns,
   hasCheck,
   rows,
   count,
   limit,
+  sortable,
 }: Props) => {
   const router = useRouter();
   const { p } = router.query;
   const PAGE = p ? +p : 1;
   const [q, setQ] = useState<string>("");
-  const [sortBy, setSortBy] = useState<string>("");
-  const [sortType, setSortType] = useState<string>("desc");
+
+  const SORT_BY = `${router.query.sortBy}`;
+  const SORT_TYPE =
+    router.query.sortType && router.query.sortType === "asc" ? "asc" : "desc";
 
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     let obj: any = {
       ...(PAGE && PAGE > 1 ? { p: PAGE } : {}),
-      ...(sortBy ? { sortBy } : {}),
-      ...(sortType && sortType !== "desc" ? { sortType } : {}),
       ...(q && q !== "" ? { q } : {}),
     };
     let url = new URLSearchParams(obj).toString();
     router.push(`${router.pathname}${url ? "?" : ""}${url}`);
   };
 
-  const handleSort = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    let obj: any = {
-      ...(PAGE && PAGE > 1 ? { p: PAGE } : {}),
-      ...(sortBy ? { sortBy } : {}),
-      ...(sortType && sortType !== "desc" ? { sortType } : {}),
-    };
-    let url = new URLSearchParams(obj).toString();
-    router.push(`${router.pathname}${url ? "?" : ""}${url}`);
+  const handleColumnClick = (column: Column) => {
+    if (sortable) {
+      const { key } = column;
+
+      const findSort = sortable.find((item) => item === key);
+
+      if (findSort) {
+        let obj: any = {
+          ...(PAGE && PAGE > 1 ? { p: PAGE } : {}),
+          sortBy: key,
+          ...(SORT_TYPE === "desc" ? { sortType: "asc" } : {}),
+          ...(q && q !== "" ? { q } : {}),
+        };
+        let url = new URLSearchParams(obj).toString();
+        router.push(`${router.pathname}${url ? "?" : ""}${url}`);
+      }
+    }
   };
 
   const showRow = (column: Column, row: any, index: number) => {
@@ -80,7 +88,8 @@ const DataManagement = ({
   const handleChangePage = (p: number) => {
     let obj: any = {
       ...(p && p > 1 ? { p } : {}),
-      ...(sortBy !== "" ? { sortBy: sortBy, sortType: sortType } : {}),
+      ...(SORT_BY ? { sortBy: SORT_BY } : {}),
+      ...(SORT_TYPE === "asc" ? { sortType: "asc" } : {}),
     };
     let url = new URLSearchParams(obj).toString();
     router.push(`${router.pathname}${url ? "?" : ""}${url}`);
@@ -99,26 +108,6 @@ const DataManagement = ({
             />
             <button type="submit" className="btnSearch">
               Tìm
-            </button>
-          </form>
-          <form className={styles.sortForm} onSubmit={handleSort}>
-            <select onChange={(e) => setSortBy(e.target.value)} value={sortBy}>
-              <option value="">Sắp xếp theo</option>
-              {sortBys?.map((sb: SortBy) => (
-                <option key={sb.value + ""} value={sb.value}>
-                  {sb.display}
-                </option>
-              ))}
-            </select>
-            <select
-              onChange={(e) => setSortType(e.target.value)}
-              value={sortType}
-            >
-              <option value="asc">Tăng dần</option>
-              <option value="desc">Giảm dần</option>
-            </select>
-            <button className="btnSort" type="submit" disabled={sortBy === ""}>
-              Sắp xếp
             </button>
           </form>
         </Box>
@@ -146,6 +135,7 @@ const DataManagement = ({
                   ...column.style,
                 }}
                 className={column.className}
+                onClick={() => handleColumnClick(column)}
               >
                 {column.display}
               </th>

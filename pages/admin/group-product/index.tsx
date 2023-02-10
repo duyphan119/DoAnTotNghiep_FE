@@ -69,16 +69,7 @@ const GroupProducts = (props: Props) => {
         </Head>
         <DataManagement
           paperTitle="Danh sách nhóm sản phẩm"
-          sortBys={[
-            {
-              display: "Tên",
-              value: "name",
-            },
-            {
-              display: "Bí danh",
-              value: "slug",
-            },
-          ]}
+          sortable={["name", "slug", "sex", "isAdult", "createdAt"]}
           rows={groupProductData.items}
           count={groupProductData.count}
           limit={LIMIT}

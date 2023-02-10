@@ -62,20 +62,20 @@ const Products = () => {
     // setOpenModalPV(true);
   };
   const handlePreview = async (row: Product) => {
-    // try {
-    //   const { message, data } = await getAllProducts({
-    //     slug: row.slug,
-    //     group_product: true,
-    //     product_variants: true,
-    //     images: true,
-    //   });
-    //   if (message === MSG_SUCCESS) {
-    //     setProduct(data.items[0]);
-    //     setOpenModalPreview(true);
-    //   }
-    // } catch (error) {
-    //   console.log("PREVIEW PRODUCT ERROR");
-    // }
+    appDispatch(productManagementActions.showModalPreview(row));
+    try {
+      const { message, data } = await getAllProducts({
+        slug: row.slug,
+        group_product: true,
+        product_variants: true,
+        images: true,
+      });
+      if (message === MSG_SUCCESS) {
+        appDispatch(productManagementActions.showModalPreview(data.items[0]));
+      }
+    } catch (error) {
+      console.log("PREVIEW PRODUCT ERROR");
+    }
   };
   const handleCloseModalPreview = () => {
     // setOpenModalPreview(false);
@@ -169,16 +169,6 @@ const Products = () => {
           count={productData.count}
           limit={LIMIT}
           hasCheck={false}
-          sortBys={[
-            {
-              display: "Tên",
-              value: "name",
-            },
-            {
-              display: "Bí danh",
-              value: "slug",
-            },
-          ]}
           columns={[
             {
               style: { width: 70, textAlign: "center" },
@@ -313,10 +303,13 @@ const Products = () => {
               ),
             },
           ]}
+          sortable={["name", "slug", "groupProduct", "createdAt"]}
         />
-        <ModalProductVariantImage onUpdateThumbnail={handleUploadThumbnail} />
-        <ModalProductVariant />
-        <ModalPreviewProduct />
+        {openModalPVI ? (
+          <ModalProductVariantImage onUpdateThumbnail={handleUploadThumbnail} />
+        ) : null}
+        {openModalPV ? <ModalProductVariant /> : null}
+        {openModalPreview ? <ModalPreviewProduct /> : null}
       </>
     </AdminLayout>
   );
