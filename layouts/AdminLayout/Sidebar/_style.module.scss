@@ -1,7 +1,9 @@
 .sidebar {
-  min-height: 100vh;
-
+  width: 280px;
   border-right: 1px solid lightgray;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .logo {
   height: 80px;
@@ -32,9 +34,10 @@
 .navLink {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 16px;
+  gap: 12px;
+  padding: 12px;
   position: relative;
+  font-size: 14px;
 }
 .navLink.active {
   background-color: var(--blue);
@@ -43,7 +46,7 @@
 .logout svg,
 .hasMenu svg,
 .navLink svg {
-  font-size: 28px;
+  font-size: 22px;
 }
 .hasMenu {
   cursor: pointer;
@@ -70,6 +73,7 @@
 }
 .navMenu {
   display: none;
+  padding-left: 16px;
 }
 .checkbox:checked + .hasMenu + .navMenu {
   display: block;

@@ -18,7 +18,7 @@ const AccountIcon = (props: Props) => {
     e.preventDefault();
     appDispatch(authActions.showModalAuth());
   };
-  return profile ? (
+  return !profile || profile.id > 0 ? (
     <Link href={protectedRoutes.profile} className={styles.contactLink}>
       <PersonIcon />
       Tài khoản

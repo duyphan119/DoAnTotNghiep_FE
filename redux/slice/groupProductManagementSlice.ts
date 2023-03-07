@@ -46,7 +46,7 @@ const INITIAL_STATE: State = {
   current: null,
   isLoading: false,
   isError: false,
-  isSuccess: false,
+  isSuccess: true,
   headerData: [],
   isBack: false,
   groupProductEditing: null,

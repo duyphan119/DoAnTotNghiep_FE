@@ -1,0 +1,75 @@
+@import "../../../../../styles/mixin";
+
+.menuIcon {
+  display: none;
+  @include xs {
+    display: block;
+  }
+  @include sm {
+    display: block;
+  }
+  button {
+    color: #000;
+    padding: 12px;
+    svg {
+      font-size: 24px;
+    }
+  }
+  .drawerBody {
+    display: block;
+    a {
+      font-size: 16px;
+    }
+    nav {
+      width: 50vw;
+      .navItems {
+        padding: 8px 0;
+        .navItem {
+          padding: 0 16px;
+          &.active {
+            background-color: lightgray;
+          }
+          .navItemLink {
+            padding: 8px 0;
+            display: flex;
+            flex: 1;
+            &:hover {
+              color: var(--blue);
+            }
+          }
+          .navItemWrapper {
+            display: flex;
+            align-items: center;
+            .navItemLabel {
+              cursor: pointer;
+            }
+            &:hover {
+              .navMenuItemLink {
+                color: var(--blue);
+              }
+            }
+          }
+          .navItemCheckbox {
+            &:checked {
+              .navMenuItems {
+                display: block;
+              }
+            }
+            .navMenuItems {
+              display: none;
+              margin-top: 4px;
+              .navMenuItemLink {
+                display: block;
+                padding: 4px 0;
+                margin-left: 12px;
+                &:hover {
+                  color: var(--blue);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

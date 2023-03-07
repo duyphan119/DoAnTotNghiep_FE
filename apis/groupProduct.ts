@@ -18,7 +18,7 @@ export type CreateGroupProductDTO = {
 
 export const getAllGroupProducts = (
   params?: GroupProductQueryParams
-): Promise<any> => privateAxios().get("group-product", { params });
+): Promise<any> => publicAxios().get("group-product", { params });
 
 export const getGroupProductById = (id: number): Promise<any> =>
   publicAxios().get("group-product/" + id);

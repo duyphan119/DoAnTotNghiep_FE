@@ -2,7 +2,11 @@ import { Button } from "@mui/material";
 import Head from "next/head";
 import React, { useState, useEffect } from "react";
 import { deleteUserAddress } from "../../apis/useraddress";
-import { ConfirmDialog, ModalUserAddress } from "../../components";
+import {
+  ButtonControl,
+  ConfirmDialog,
+  ModalUserAddress,
+} from "../../components";
 import { AccountLayout } from "../../layouts";
 import { MSG_SUCCESS } from "../../utils/constants";
 import { UserAddress } from "../../utils/types";
@@ -13,21 +17,29 @@ import {
   userAddressSelector,
 } from "../../redux/slice/userAddressSlice";
 import { useSelector } from "react-redux";
+import { UserAddressModel } from "../../models";
+import { confirmDialogActions } from "../../redux/slice/confirmDialogSlice";
 
 type Props = {};
 
-const AddressList = (props: Props) => {
+const LIMIT = 10;
+const Page = (props: Props) => {
   const appDispatch = useAppDispatch();
-  const { userAddresses, current, openDialog, openModal } =
+  const { userAddressData, current, openModal } =
     useSelector(userAddressSelector);
 
-  const handleDelete = () => {
-    if (current)
-      appDispatch(userAddressActions.fetchDeleteUserAddress(current.id));
+  const handleDelete = (id: number) => {
+    appDispatch(
+      confirmDialogActions.show({
+        onConfirm: () => {
+          appDispatch(userAddressActions.fetchDelete(id));
+        },
+      })
+    );
   };
 
   useEffect(() => {
-    appDispatch(userAddressActions.fetchGetUserAddresses());
+    appDispatch(userAddressActions.fetchGetAll({ limit: LIMIT }));
   }, []);
 
   return (
@@ -40,15 +52,16 @@ const AddressList = (props: Props) => {
         </Head>
       </>
       <main>
-        <Button
-          variant="contained"
-          onClick={() => appDispatch(userAddressActions.showModal(null))}
+        <ButtonControl
+          onClick={() =>
+            appDispatch(userAddressActions.showModal(new UserAddressModel()))
+          }
           sx={{ mb: 2 }}
           startIcon={<AddIcon />}
         >
           Thêm địa chỉ mới
-        </Button>
-        {userAddresses.length > 0 ? (
+        </ButtonControl>
+        {userAddressData.count > 0 ? (
           <table className="table">
             <thead>
               <tr>
@@ -58,18 +71,15 @@ const AddressList = (props: Props) => {
               </tr>
             </thead>
             <tbody>
-              {userAddresses.map((userAddress: UserAddress, index: number) => {
+              {userAddressData.items.map((userAddress, index) => {
                 return (
                   <tr key={userAddress.id}>
                     <td style={{ textAlign: "center" }}>{index + 1}</td>
-                    <td>
-                      {userAddress.address},&nbsp;{userAddress.ward},&nbsp;
-                      {userAddress.district},&nbsp;{userAddress.province}
-                    </td>
+                    <td>{userAddress.getFullAddress()}</td>
                     <td>
                       <div style={{ display: "flex", alignItems: "center" }}>
-                        <button
-                          className="btnEdit"
+                        <ButtonControl
+                          color="secondary"
                           onClick={() =>
                             appDispatch(
                               userAddressActions.showModal(userAddress)
@@ -77,18 +87,14 @@ const AddressList = (props: Props) => {
                           }
                         >
                           Sửa
-                        </button>
-                        <button
-                          className="btnDelete"
-                          style={{ marginLeft: "8px" }}
-                          onClick={() =>
-                            appDispatch(
-                              userAddressActions.showDialog(userAddress)
-                            )
-                          }
+                        </ButtonControl>
+                        <ButtonControl
+                          color="error"
+                          sx={{ ml: 1 }}
+                          onClick={() => handleDelete(userAddress.id)}
                         >
                           Xóa
-                        </button>
+                        </ButtonControl>
                       </div>
                     </td>
                   </tr>
@@ -96,15 +102,6 @@ const AddressList = (props: Props) => {
               })}
             </tbody>
           </table>
-        ) : null}
-        {openDialog ? (
-          <ConfirmDialog
-            open={openDialog}
-            onClose={() => appDispatch(userAddressActions.closeDialog())}
-            title="Xác nhận"
-            text="Bạn có chắc chắn xóa địa chỉ này?"
-            onConfirm={handleDelete}
-          />
         ) : null}
         {openModal ? (
           <ModalUserAddress
@@ -118,4 +115,4 @@ const AddressList = (props: Props) => {
   );
 };
 
-export default AddressList;
+export default Page;

@@ -2,20 +2,33 @@ import { Grid, Pagination } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { ProductApi } from "../../api";
 import { getAllProducts } from "../../apis/product";
 import { ProductCard } from "../../components";
 import { ProductsLayout } from "../../layouts";
+import { ProductModel, ResponseGetAllModel } from "../../models";
+import {
+  groupProductActions,
+  groupProductSelector,
+} from "../../redux/slice/groupProductSlice";
+import { useAppDispatch } from "../../redux/store";
 import { MSG_SUCCESS } from "../../utils/constants";
-import { Filter, Product, ResponseItems } from "../../utils/types";
+import { Filter, Product } from "../../utils/types";
 
 type Props = {
-  productData: ResponseItems<Product>;
+  productData: ResponseGetAllModel<ProductModel>;
   onFilter?: any;
 };
 const LIMIT = 24;
-const AllProducts = ({ productData: propProductData }: Props) => {
+const pApi = new ProductApi();
+const AllProducts = ({ productData: { items, count } }: Props) => {
+  const productData: ResponseGetAllModel<ProductModel> =
+    new ResponseGetAllModel(pApi.getListFromJson(items), count);
+  const appDispatch = useAppDispatch();
   const router = useRouter();
   const { p } = router.query;
+  const { groupProductData } = useSelector(groupProductSelector);
   const [filter, setFilter] = useState<Filter>({
     ...router.query,
     p: p ? +p : 1,
@@ -32,6 +45,14 @@ const AllProducts = ({ productData: propProductData }: Props) => {
       p: f.p && f.p > 1 ? 1 : f.p || 1,
     }));
   };
+  useEffect(() => {
+    appDispatch(
+      groupProductActions.fetchGetAll({
+        sortBy: "slug",
+        sortType: "asc",
+      })
+    );
+  }, []);
 
   useEffect(() => {
     const paramsObj: any = {};
@@ -71,7 +92,7 @@ const AllProducts = ({ productData: propProductData }: Props) => {
     <>
       <ProductsLayout
         onFilter={handleFilter}
-        totalProducts={propProductData.count}
+        totalProducts={productData.count}
         query={router.query}
         breadcrumbs={{
           links: [
@@ -82,6 +103,7 @@ const AllProducts = ({ productData: propProductData }: Props) => {
           ],
           current: "Tất cả sản phẩm",
         }}
+        groupProductData={groupProductData}
       >
         <>
           <Head>
@@ -91,7 +113,7 @@ const AllProducts = ({ productData: propProductData }: Props) => {
           </Head>
 
           <Grid container columnSpacing={2} rowSpacing={2}>
-            {propProductData.items.map((product: Product) => {
+            {productData.items.map((product) => {
               return (
                 <Grid item xs={12} sm={6} md={3} lg={4} key={product.id}>
                   <ProductCard product={product} />
@@ -100,7 +122,7 @@ const AllProducts = ({ productData: propProductData }: Props) => {
             })}
             <Grid item xs={12}>
               <Pagination
-                count={Math.ceil(propProductData.count / LIMIT)}
+                count={Math.ceil(productData.count / LIMIT)}
                 sx={{ ul: { justifyContent: "center" } }}
                 variant="outlined"
                 shape="rounded"
@@ -117,32 +139,32 @@ const AllProducts = ({ productData: propProductData }: Props) => {
   );
 };
 export async function getServerSideProps(context: any) {
-  const {
-    group_product_slug,
-    p,
-    sortBy,
-    sortType,
-    v_ids,
-    min_price,
-    max_price,
-  } = context.query;
-  const { message, data } = await getAllProducts({
-    limit: LIMIT,
-    product_variants: true,
-    ...(p ? { p } : {}),
-    ...(group_product_slug ? { group_product_slug } : {}),
-    ...(sortBy ? { sortBy } : {}),
-    ...(sortType ? { sortType } : {}),
-    ...(v_ids ? { v_ids } : {}),
-    ...(min_price ? { min_price } : {}),
-    ...(max_price ? { max_price } : {}),
-  });
-  return message === MSG_SUCCESS
-    ? {
-        props: { productData: data },
-      }
-    : {
-        notFound: true,
-      };
+  try {
+    const {
+      group_product_slug,
+      p,
+      sortBy,
+      sortType,
+      v_ids,
+      min_price,
+      max_price,
+    } = context.query;
+    const data: ResponseGetAllModel<ProductModel> = await pApi.getAll({
+      limit: LIMIT,
+      product_variants: true,
+      ...(p ? { p } : {}),
+      ...(group_product_slug ? { group_product_slug } : {}),
+      ...(sortBy ? { sortBy } : {}),
+      ...(sortType ? { sortType } : {}),
+      ...(v_ids ? { v_ids } : {}),
+      ...(min_price ? { min_price } : {}),
+      ...(max_price ? { max_price } : {}),
+    });
+    return {
+      props: { productData: JSON.parse(JSON.stringify(data)) },
+    };
+  } catch (error) {
+    return { notFound: true };
+  }
 }
 export default AllProducts;

@@ -1,0 +1,12 @@
+.blogTime {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: gray;
+  svg {
+    font-size: 18px;
+  }
+}
+.blogHeading {
+  text-align: justify;
+}

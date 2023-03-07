@@ -1,23 +1,29 @@
 import { call, put, takeEvery } from "redux-saga/effects";
-import { getAllVariants, VariantQueryParams } from "../../apis/variant";
-import { MSG_SUCCESS } from "../../utils/constants";
-import { variantActions, variantReducers } from "../slice/variantSlice";
+import { VariantApi } from "../../api";
+import { VariantModel, ResponseGetAllModel } from "../../models";
+import { VariantParams } from "../../types/params";
+import { fetchActions } from "../slice/fetchSlice";
+import { variantActions, variantReducer } from "../slice/variantSlice";
 import { ActionPayload } from "../store";
 
-function* fetchGetAllVariants({ payload }: ActionPayload<VariantQueryParams>) {
+const vApi = new VariantApi();
+
+function* fetchGetAll({ payload }: ActionPayload<VariantParams>) {
   let isError = true;
   try {
-    const { message, data } = yield call(() => getAllVariants(payload));
-    if (message === MSG_SUCCESS) {
-      isError = false;
-      yield put(variantActions.setVariants(data.items));
-    }
+    yield put(fetchActions.start(variantReducer.fetchGetAll));
+    const data: ResponseGetAllModel<VariantModel> = yield call(() =>
+      vApi.getAll(payload)
+    );
+    isError = false;
+    yield put(variantActions.setVariantData(data));
+    yield put(fetchActions.endAndSuccess());
   } catch (error) {
-    console.log("variantSaga.fetchGetAllVariants error", error);
+    console.log("variantSaga.fetchGetAll error", error);
   }
-  if (isError) yield put(variantActions.fetchError);
+  if (isError) yield put(fetchActions.endAndError());
 }
 
 export function* variantSaga() {
-  yield takeEvery(variantReducers.fetchGetAllVariants, fetchGetAllVariants);
+  yield takeEvery(variantReducer.fetchGetAll, fetchGetAll);
 }

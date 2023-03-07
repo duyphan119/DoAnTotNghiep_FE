@@ -1,59 +1,50 @@
-import { Grid, Pagination } from "@mui/material";
 import Head from "next/head";
 import Image from "next/image";
+import { Grid, Pagination } from "@mui/material";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { myOrders } from "../../apis/order";
 import { AccountLayout } from "../../layouts";
+import { OrderItemModel, OrderModel } from "../../models";
 import { authActions, authSelector } from "../../redux/slice/authSlice";
 import { useAppDispatch } from "../../redux/store";
+import helper from "../../utils/helpers";
 import styles from "../../styles/_FollowOrder.module.scss";
-import { MSG_SUCCESS } from "../../utils/constants";
-import { formatDateTime, getThumbnailOrderItem } from "../../utils/helpers";
-import {
-  Order,
-  OrderItem,
-  ResponseItems,
-  VariantValue,
-} from "../../utils/types";
 
 const LIMIT = 10;
 
 type Props = {};
 
-type OrderProps = Partial<{
-  order: Order;
-}>;
+type OrderProps = {
+  order: OrderModel;
+};
 
-type OrderItemProps = Partial<{
-  item: OrderItem;
-}>;
+type OrderItemProps = {
+  item: OrderItemModel;
+};
 
 const Item = ({ item }: OrderItemProps) => {
-  return item ? (
+  return item.id > 0 ? (
     <>
       <Image
         width={100}
         height={120}
-        src={getThumbnailOrderItem(item)}
+        src={item.getThumbnail()}
         alt="thumbnail"
         priority={true}
       />
       <div className={styles.product}>
         <div className={styles.name}>{item.productVariant?.product?.name}</div>
-        {item.productVariant?.variantValues?.map(
-          (variantValue: VariantValue) => {
-            return (
-              <div
-                className={styles.variantValue}
-                key={`${item?.productVariantId} - ${variantValue.id}`}
-              >
-                {variantValue.variant?.name}: {variantValue.value}
-              </div>
-            );
-          }
-        )}
+        {item.productVariant?.variantValues?.map((variantValue) => {
+          return (
+            <div
+              className={styles.variantValue}
+              key={`${item?.productVariantId} - ${variantValue.id}`}
+            >
+              {variantValue.variant?.name}: {variantValue.value}
+            </div>
+          );
+        })}
         <div className={styles.quantity}>Số lượng: {item.quantity}</div>
         <div className={styles.price}>{item.price}</div>
       </div>
@@ -62,29 +53,22 @@ const Item = ({ item }: OrderItemProps) => {
 };
 
 const MyOrder = ({ order }: OrderProps) => {
-  const total = order?.items.reduce(
-    (p: number, c: OrderItem) => p + c.quantity * c.price,
-    0
-  );
-  return order ? (
+  return order.id > 0 ? (
     <div className={styles.order}>
       <div className={styles.title}>
         <div className={styles.left}>
           <div>
             Đơn hàng {order.id} - {order.status}
           </div>
-          <div>Ngày: {formatDateTime(order.createdAt)}</div>
+          <div>Ngày: {helper.formatDateTime(order.createdAt)}</div>
           <div>Họ tên: {order.fullName}</div>
           <div>Điện thoại: {order.phone}</div>
-          <div>
-            Địa chỉ: {order.address}, {order.ward}, {order.district},{" "}
-            {order.province}
-          </div>
+          <div>Địa chỉ: {order.getFullAddress()}</div>
         </div>
         <div className={styles.right}>
           <div className={styles.row}>
             <span>Giá gốc: </span>
-            <span>{total}</span>
+            <span>{order.getTotalPrice()}</span>
           </div>
           <div className={styles.row}>
             <span>Giảm giá: </span>
@@ -92,7 +76,7 @@ const MyOrder = ({ order }: OrderProps) => {
           </div>
           <div className={styles.row}>
             <span>Tổng cộng: </span>
-            <span>{total}</span>
+            <span>{order.getTotalPrice()}</span>
           </div>
           <div>
             <button
@@ -105,7 +89,7 @@ const MyOrder = ({ order }: OrderProps) => {
         </div>
       </div>
       <ul className={styles.items}>
-        {order.items.map((item: OrderItem) => {
+        {order.items.map((item) => {
           return (
             <li
               className={styles.item}
@@ -138,7 +122,7 @@ const FollowOrder = (props: Props) => {
 
   useEffect(() => {
     appDispatch(
-      authActions.fetchMyOrderData({
+      authActions.fetchUserOrderData({
         ...router.query,
         limit: LIMIT,
         items: true,
@@ -156,7 +140,7 @@ const FollowOrder = (props: Props) => {
         </Head>
       </>
       <Grid container columnSpacing={2} rowSpacing={2}>
-        {orderData.items.map((order: Order) => {
+        {orderData.items.map((order) => {
           return (
             <Grid item xs={12} key={order.id}>
               <MyOrder order={order} />

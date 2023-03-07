@@ -1,17 +1,14 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { getAllVariantValues } from "../../../apis/variantvalue";
-import { groupProductSelector } from "../../../redux/slice/groupProductSlice";
+import { GroupProductModel, VariantValueModel } from "../../../models";
+import ResponseGetAllModel from "../../../models/ResponseGetAllModel";
+import { useAppDispatch } from "../../../redux/store";
 import { MSG_SUCCESS } from "../../../utils/constants";
-import { formatVariants, fullNameGroupProduct } from "../../../utils/helpers";
-import {
-  GroupProduct,
-  RenderVariantValues,
-  VariantValue,
-} from "../../../utils/types";
+import helper from "../../../utils/helpers";
 import styles from "../_style.module.scss";
 
 type Props = {
+  groupProductData: ResponseGetAllModel<GroupProductModel>;
   onFilter?: any;
   query?: any;
   onClose?: any;
@@ -46,14 +43,19 @@ const prices: any[] = [
 ];
 
 type Selected = {
-  groupProduct?: GroupProduct;
-  variantValues: VariantValue[];
+  groupProduct?: GroupProductModel;
+  variantValues: VariantValueModel[];
   price?: Price;
 };
 
-const Sidebar = ({ onClose, onFilter, query }: Props) => {
-  const { groupProducts } = useSelector(groupProductSelector);
-  const [variantValues, setVariantValues] = useState<RenderVariantValues>({
+const Sidebar = ({ onClose, onFilter, query, groupProductData }: Props) => {
+  const appDispatch = useAppDispatch();
+  const [variantValues, setVariantValues] = useState<{
+    keys: string[];
+    values: {
+      [key: string]: VariantValueModel[];
+    };
+  }>({
     keys: [],
     values: {},
   });
@@ -61,7 +63,7 @@ const Sidebar = ({ onClose, onFilter, query }: Props) => {
     variantValues: [],
   });
 
-  const clickGroupProduct = (groupProduct: GroupProduct) => {
+  const clickGroupProduct = (groupProduct: GroupProductModel) => {
     setSelected((prev) => {
       if (prev?.groupProduct?.id === groupProduct.id) {
         return {
@@ -76,19 +78,17 @@ const Sidebar = ({ onClose, onFilter, query }: Props) => {
     });
   };
 
-  const clickVariantValue = (variantValue: VariantValue) => {
+  const clickVariantValue = (variantValue: VariantValueModel) => {
     setSelected((prev) => {
       const index = prev.variantValues.findIndex(
-        (vv: VariantValue) => vv.id === variantValue.id
+        (vv) => vv.id === variantValue.id
       );
 
       if (index === -1) {
         return {
           ...prev,
           variantValues: [
-            ...prev.variantValues.filter(
-              (vv: VariantValue) => vv.id !== variantValue.id
-            ),
+            ...prev.variantValues.filter((vv) => vv.id !== variantValue.id),
             variantValue,
           ],
         };
@@ -96,7 +96,7 @@ const Sidebar = ({ onClose, onFilter, query }: Props) => {
       return {
         ...prev,
         variantValues: prev.variantValues.filter(
-          (v: VariantValue) => v.id !== variantValue.id
+          (v) => v.id !== variantValue.id
         ),
       };
     });
@@ -131,7 +131,7 @@ const Sidebar = ({ onClose, onFilter, query }: Props) => {
         }
       }
       if (variantValues.length > 0) {
-        obj.v_ids = variantValues.map((vv: VariantValue) => vv.id).join("-");
+        obj.v_ids = variantValues.map((vv) => vv.id).join("-");
       }
       onFilter(obj);
       onClose && onClose();
@@ -146,7 +146,7 @@ const Sidebar = ({ onClose, onFilter, query }: Props) => {
       });
 
       if (message === MSG_SUCCESS) {
-        setVariantValues(formatVariants(data.items));
+        setVariantValues(helper.formatVariants(data.items));
       }
     })();
   }, []);
@@ -155,9 +155,8 @@ const Sidebar = ({ onClose, onFilter, query }: Props) => {
     if (variantValues.keys.length > 0) {
       const { group_product_slug, min_price, max_price, v_ids } = query;
 
-      const groupProduct = groupProducts.find(
-        (gp: GroupProduct) =>
-          group_product_slug && gp.slug === group_product_slug
+      const groupProduct = groupProductData.items.find(
+        (gp) => group_product_slug && gp.slug === group_product_slug
       );
 
       const _p = prices.find(
@@ -170,7 +169,7 @@ const Sidebar = ({ onClose, onFilter, query }: Props) => {
 
             for (let i = 0; i < variantValues.keys.length; i++) {
               const _result = variantValues.values[variantValues.keys[i]].find(
-                (vv: VariantValue) => vv.id === +id
+                (vv) => vv.id === +id
               );
 
               if (_result) {
@@ -188,7 +187,7 @@ const Sidebar = ({ onClose, onFilter, query }: Props) => {
       };
       setSelected(s);
     }
-  }, [groupProducts, query, variantValues]);
+  }, [groupProductData, query, variantValues]);
 
   return (
     <div className={styles.sidebar}>
@@ -200,13 +199,15 @@ const Sidebar = ({ onClose, onFilter, query }: Props) => {
               {selected.groupProduct ? (
                 <li
                   onClick={() =>
-                    clickGroupProduct(selected.groupProduct as GroupProduct)
+                    clickGroupProduct(
+                      selected.groupProduct as GroupProductModel
+                    )
                   }
                 >
-                  {fullNameGroupProduct(selected.groupProduct)}
+                  {selected.groupProduct.getFullName()}
                 </li>
               ) : null}
-              {selected.variantValues.map((variantValue: VariantValue) => {
+              {selected.variantValues.map((variantValue) => {
                 return (
                   <li
                     key={variantValue.id}
@@ -229,7 +230,7 @@ const Sidebar = ({ onClose, onFilter, query }: Props) => {
       <div className={styles.panel}>
         <div className={styles.title}>Nhóm sản phẩm</div>
         <ul className={styles["checkboxs"]}>
-          {groupProducts.map((groupProduct: GroupProduct) => {
+          {groupProductData.items.map((groupProduct) => {
             return (
               <li key={groupProduct.id} className={styles["checkbox"]}>
                 <input
@@ -245,7 +246,7 @@ const Sidebar = ({ onClose, onFilter, query }: Props) => {
                   onClick={() => clickGroupProduct(groupProduct)}
                 ></div>
                 <label htmlFor={`checkbox${groupProduct.id}`}>
-                  {fullNameGroupProduct(groupProduct)}
+                  {groupProduct.getFullName()}
                 </label>
               </li>
             );
@@ -257,13 +258,13 @@ const Sidebar = ({ onClose, onFilter, query }: Props) => {
           <div className={styles.panel} key={key}>
             <div className={styles.title}>{key}</div>
             <ul className={styles.variants}>
-              {variantValues.values[key].map((variantValue: VariantValue) => {
+              {variantValues.values[key].map((variantValue) => {
                 return (
                   <li
                     key={variantValue.id}
                     className={`${styles.variant} ${
                       selected.variantValues.findIndex(
-                        (vv: VariantValue) => vv.id === variantValue.id
+                        (vv) => vv.id === variantValue.id
                       ) !== -1
                         ? styles.active
                         : ""

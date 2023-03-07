@@ -9,21 +9,29 @@ import {
 } from "../../../../../redux/slice/cartSlice";
 import { useAppDispatch } from "../../../../../redux/store";
 import { publicRoutes } from "../../../../../utils/routes";
-import styles from "../_style.module.scss";
+import styles from "./_style.module.scss";
+import { authSelector } from "../../../../../redux/slice/authSlice";
 type Props = {};
 
 const CartIcon = (props: Props) => {
-  const { count } = useSelector(cartSelector);
+  const { cart } = useSelector(cartSelector);
+  const { profile } = useSelector(authSelector);
 
   const appDispatch = useAppDispatch();
 
+  console.log("Giỏ hàng::::", cart);
+
   useEffect(() => {
-    appDispatch(cartActions.fetchCart());
-  }, []);
+    if (profile.id > 0) {
+      appDispatch(cartActions.fetchCart());
+    } else {
+      appDispatch(cartActions.getCart());
+    }
+  }, [profile]);
 
   return (
     <Link href={publicRoutes.cart} className={styles.cartLink}>
-      <Badge badgeContent={count} color="info">
+      <Badge badgeContent={cart.getCount()} color="info">
         <ShoppingBagOutlinedIcon />
       </Badge>
     </Link>

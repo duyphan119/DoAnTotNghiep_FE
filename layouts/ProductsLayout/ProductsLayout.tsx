@@ -13,6 +13,7 @@ import Sidebar from "./Sidebar";
 import Link from "next/link";
 import styles from "./_style.module.scss";
 import DefaultLayout from "../DefaultLayout";
+import { GroupProductModel, ResponseGetAllModel } from "../../models";
 
 type BreadcrumbLink = {
   label: string;
@@ -29,7 +30,7 @@ type Props = Partial<{
   onFilter: any;
   query: any;
   breadcrumbs: Breadcrumb;
-}>;
+}> & { groupProductData: ResponseGetAllModel<GroupProductModel> };
 
 const ProductsLayout = ({
   children,
@@ -37,6 +38,7 @@ const ProductsLayout = ({
   onFilter,
   query,
   breadcrumbs,
+  groupProductData,
 }: Props) => {
   const [open, setOpen] = useState<boolean>(false);
   return (
@@ -62,12 +64,11 @@ const ProductsLayout = ({
         ) : null}
 
         <Grid container columnSpacing={3} rowSpacing={3}>
-          <Grid item xs={4} xl={3}></Grid>
+          <Grid item xs={3}></Grid>
           <Grid
             item
             xs={12}
-            lg={8}
-            xl={9}
+            lg={9}
             sx={{ display: "flex", alignItems: "center" }}
           >
             <Box
@@ -87,6 +88,7 @@ const ProductsLayout = ({
                     onFilter={onFilter}
                     query={query}
                     onClose={() => setOpen(false)}
+                    groupProductData={groupProductData}
                   />
                 </Box>
               </Drawer>
@@ -99,8 +101,7 @@ const ProductsLayout = ({
           </Grid>
           <Grid
             item
-            xs={4}
-            xl={3}
+            xs={3}
             sx={{
               display: {
                 xs: "none",
@@ -108,9 +109,13 @@ const ProductsLayout = ({
               },
             }}
           >
-            <Sidebar onFilter={onFilter} query={query} />
+            <Sidebar
+              groupProductData={groupProductData}
+              onFilter={onFilter}
+              query={query}
+            />
           </Grid>
-          <Grid item xs={12} lg={8} xl={9}>
+          <Grid item xs={12} lg={9}>
             {children}
           </Grid>
         </Grid>

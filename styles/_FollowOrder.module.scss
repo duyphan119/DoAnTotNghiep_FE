@@ -1,6 +1,6 @@
 .order {
   box-shadow: 0 0 1px 1px lightgray;
-  padding: 8px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -46,6 +46,11 @@
 }
 .title .btn:hover {
   box-shadow: 0 0 1px 1px rgb(234, 182, 182);
+}
+.items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 .item {
   display: flex;

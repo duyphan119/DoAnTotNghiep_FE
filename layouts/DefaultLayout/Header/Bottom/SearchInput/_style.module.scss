@@ -1,0 +1,79 @@
+@import "../../../../../styles/mixin";
+
+.search {
+  display: flex;
+  align-items: center;
+  position: relative;
+  border-radius: 50px;
+  flex: 1;
+  @include lg {
+    min-width: 320px;
+  }
+
+  button {
+    background: var(--blue);
+    border: 1px solid var(--blue);
+    color: #fff;
+    padding: 6px 16px;
+    box-shadow: 0 0 2px 0px var(--blue);
+    border-top-right-radius: 50px;
+    border-bottom-right-radius: 50px;
+  }
+  svg {
+    font-size: 24px;
+  }
+  input {
+    background-color: inherit;
+    border: none;
+    outline: none;
+    flex: 1;
+    color: inherit;
+    font-size: 14px;
+    border-top-left-radius: 50px;
+    border-bottom-left-radius: 50px;
+    border: 1px solid lightgray;
+    border-right: 1px solid transparent;
+    padding-left: 16px;
+    align-self: stretch;
+  }
+  .search-result-wrapper {
+    position: absolute;
+    top: 100%;
+    left: 16px;
+    right: 16px;
+    z-index: 9999;
+    background-color: #fff;
+    box-shadow: 0 0 1px 1px lightgray;
+    ul {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 8px;
+      .link {
+        display: flex;
+        gap: 8px;
+        &:hover {
+          .name {
+            color: var(--blue);
+          }
+        }
+        .product {
+          flex: 1;
+          .price {
+            color: red;
+          }
+        }
+      }
+    }
+    .view-all {
+      &:hover {
+        color: var(--blue);
+      }
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-top: 1px solid lightgray;
+      padding: 8px;
+    }
+  }
+}

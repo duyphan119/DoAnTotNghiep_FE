@@ -1,89 +1,100 @@
 import { call, put, takeEvery } from "redux-saga/effects";
+import UserAddressApi from "../../api/UserAddressApi";
+import { CreateUserAddressDTO } from "../../apis/useraddress";
+import { ResponseGetAllModel, UserAddressModel } from "../../models";
+import { PaginationParams } from "../../types/params";
+import { fetchActions } from "../slice/fetchSlice";
+import { snackbarActions } from "../slice/snackbarSlice";
 import {
-  createUserAddress,
-  CreateUserAddressDTO,
-  deleteUserAddress,
-  getMyUserAddresses,
-  updateUserAddress,
-} from "../../apis/useraddress";
-import { MSG_SUCCESS } from "../../utils/constants";
-import {
-  FetchUpdateUserAddressPayload,
   userAddressActions,
-  userAddressReducers,
+  userAddressReducer,
 } from "../slice/userAddressSlice";
 import { ActionPayload } from "../store";
 
-function* fetchGetUserAddresses() {
+const udApi = new UserAddressApi();
+
+function* fetchGetAll({ payload: params }: ActionPayload<PaginationParams>) {
+  let isError = true;
   try {
-    const { message, data } = yield call(() => getMyUserAddresses());
-    yield put(
-      userAddressActions.setUserAddresses(
-        message === MSG_SUCCESS ? data.items : []
-      )
+    yield put(fetchActions.start(userAddressReducer.fetchGetAll));
+    const data: ResponseGetAllModel<UserAddressModel> = yield call(() =>
+      udApi.getAll(params)
     );
+    isError = false;
+    yield put(userAddressActions.setUserAddressData(data));
+    yield put(fetchActions.endAndSuccess());
   } catch (error) {
-    console.log("userAddressReducers.fetchGetUserAddresses error", error);
-    yield put(userAddressActions.fetchError());
+    console.log("userAddressReducer.fetchGetAll error", error);
   }
+  if (isError) yield put(fetchActions.endAndError());
 }
 
-function* fetchCreateUserAddress({
-  payload,
-}: ActionPayload<CreateUserAddressDTO>) {
+function* fetchCreate({ payload: dto }: ActionPayload<CreateUserAddressDTO>) {
+  let isError = true;
   try {
-    const { message, data } = yield call(() => createUserAddress(payload));
-    if (message === MSG_SUCCESS) {
+    yield put(fetchActions.start(userAddressReducer.fetchCreate));
+    const data: UserAddressModel = yield call(() => udApi.create(dto));
+    if (data.id > 0) {
+      isError = false;
       yield put(userAddressActions.createUserAddress(data));
-    } else yield put(userAddressActions.fetchError());
+      yield put(userAddressActions.closeModal());
+      yield put(fetchActions.endAndSuccess());
+      yield put(
+        snackbarActions.show({
+          msg: "Thêm thành công",
+          type: "success",
+        })
+      );
+    }
   } catch (error) {
-    console.log("userAddressReducers.fetchCreateUserAddress error", error);
-    yield put(userAddressActions.fetchError());
+    console.log("userAddressReducer.fetchCreate error", error);
   }
+  if (isError) yield put(fetchActions.endAndError());
 }
 
-function* fetchUpdateUserAddress({
-  payload,
-}: ActionPayload<FetchUpdateUserAddressPayload>) {
+function* fetchUpdate({
+  payload: { id, dto },
+}: ActionPayload<{ id: number; dto: CreateUserAddressDTO }>) {
+  let isError = true;
   try {
-    const { id, ...others } = payload;
-    const { message, data } = yield call(() => updateUserAddress(id, others));
-    if (message === MSG_SUCCESS) {
-      yield put(userAddressActions.updateUserAddress(payload));
-    } else yield put(userAddressActions.fetchError());
+    yield put(fetchActions.start(userAddressReducer.fetchUpdate));
+    const data: UserAddressModel = yield call(() => udApi.update({ id, dto }));
+    if (data.id > 0) {
+      isError = false;
+      yield put(userAddressActions.updateUserAddress(data));
+      yield put(userAddressActions.closeModal());
+      yield put(fetchActions.endAndSuccess());
+      yield put(
+        snackbarActions.show({
+          msg: "Sửa thành công",
+          type: "success",
+        })
+      );
+    }
   } catch (error) {
-    console.log("userAddressReducers.fetchUpdateUserAddress error", error);
-    yield put(userAddressActions.fetchError());
+    console.log("userAddressReducer.fetchUpdate error", error);
   }
+  if (isError) yield put(fetchActions.endAndError());
 }
 
-function* fetchDeleteUserAddress({ payload }: ActionPayload<number>) {
+function* fetchDelete({ payload: id }: ActionPayload<number>) {
+  let isError = true;
   try {
-    const { message, data } = yield call(() => deleteUserAddress(payload));
-    if (message === MSG_SUCCESS) {
-      yield put(userAddressActions.deleteUserAddress(payload));
-    } else yield put(userAddressActions.fetchError());
+    const result: boolean = yield call(() => udApi.delete(id));
+    if (result) {
+      isError = false;
+      yield put(userAddressActions.deleteUserAddress(id));
+      yield put(fetchActions.endAndSuccess());
+    }
   } catch (error) {
-    console.log("userAddressReducers.fetchDeleteUserAddress error", error);
-    yield put(userAddressActions.fetchError());
+    console.log("userAddressReducer.fetchDelete error", error);
   }
+  if (isError) yield put(fetchActions.endAndError());
 }
 
 export function* userAddressSaga() {
-  yield takeEvery(
-    userAddressReducers.fetchGetUserAddresses,
-    fetchGetUserAddresses
-  );
-  yield takeEvery(
-    userAddressReducers.fetchCreateUserAddress,
-    fetchCreateUserAddress
-  );
-  yield takeEvery(
-    userAddressReducers.fetchUpdateUserAddress,
-    fetchUpdateUserAddress
-  );
-  yield takeEvery(
-    userAddressReducers.fetchDeleteUserAddress,
-    fetchDeleteUserAddress
-  );
+  yield takeEvery(userAddressReducer.fetchGetAll, fetchGetAll);
+  yield takeEvery(userAddressReducer.fetchCreate, fetchCreate);
+  yield takeEvery(userAddressReducer.fetchUpdate, fetchUpdate);
+  yield takeEvery(userAddressReducer.fetchDelete, fetchDelete);
 }

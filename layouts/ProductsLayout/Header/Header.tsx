@@ -73,7 +73,11 @@ const Header = ({ query, onFilter, totalProducts }: Props) => {
               <ul className={styles["header-menu-items"]}>
                 {items.map((item: Item) => {
                   return (
-                    <li key={item.label} onClick={() => handleClick(item)}>
+                    <li
+                      key={item.label}
+                      className="text-hover"
+                      onClick={() => handleClick(item)}
+                    >
                       {item.label}
                     </li>
                   );

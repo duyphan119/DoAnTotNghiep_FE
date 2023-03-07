@@ -1,28 +1,25 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { CreateUserAddressDTO } from "../../apis/useraddress";
+import { ResponseGetAllModel, UserAddressModel } from "../../models";
+import { CreateUserAddressDTO } from "../../types/dtos";
+import { PaginationParams } from "../../types/params";
 import { FetchState, UserAddress } from "../../utils/types";
 import { ActionPayload, RootState } from "../store";
 
 type State = {
-  userAddresses: UserAddress[];
-  current: UserAddress | null;
-  openDialog: boolean;
+  userAddressData: ResponseGetAllModel<UserAddressModel>;
+  current: UserAddressModel;
   openModal: boolean;
-} & FetchState;
+};
 
-export type FetchUpdateUserAddressPayload = {
+export type fetchUpdatePayload = {
   id: number;
 } & Partial<CreateUserAddressDTO>;
 
 const NAME_SLICE = "userAddress";
 
 const INITIAL_STATE: State = {
-  isError: false,
-  isLoading: false,
-  isSuccess: false,
-  userAddresses: [],
-  current: null,
-  openDialog: false,
+  userAddressData: new ResponseGetAllModel(),
+  current: new UserAddressModel(),
   openModal: false,
 };
 
@@ -30,91 +27,60 @@ const userAddressSlice = createSlice({
   name: NAME_SLICE,
   initialState: INITIAL_STATE,
   reducers: {
-    fetchGetUserAddresses: (state) => {
-      state.isError = false;
-      state.isLoading = true;
-      state.isSuccess = false;
-    },
-    setUserAddresses: (state, action: ActionPayload<UserAddress[]>) => {
-      state.userAddresses = action.payload;
-      state.isLoading = false;
-      state.isSuccess = true;
-    },
-    fetchError: (state) => {
-      state.isError = true;
-      state.isLoading = false;
-    },
-    fetchCreateUserAddress: (
+    fetchGetAll: (state, action: ActionPayload<PaginationParams>) => {},
+    setUserAddressData: (
       state,
-      action: ActionPayload<CreateUserAddressDTO>
+      action: ActionPayload<ResponseGetAllModel<UserAddressModel>>
     ) => {
-      state.isError = false;
-      state.isLoading = true;
-      state.isSuccess = false;
+      state.userAddressData = action.payload;
     },
-    createUserAddress: (state, action: ActionPayload<UserAddress>) => {
-      state.userAddresses.unshift(action.payload);
-      state.isLoading = false;
-      state.isSuccess = true;
+    fetchCreate: (state, action: ActionPayload<CreateUserAddressDTO>) => {},
+    createUserAddress: (state, action: ActionPayload<UserAddressModel>) => {
+      state.userAddressData.items.unshift(action.payload);
+      state.userAddressData = new ResponseGetAllModel(
+        state.userAddressData.items,
+        state.userAddressData.count + 1
+      );
     },
-    fetchUpdateUserAddress: (
+    fetchUpdate: (
       state,
-      action: ActionPayload<FetchUpdateUserAddressPayload>
-    ) => {
-      state.isError = false;
-      state.isLoading = true;
-      state.isSuccess = false;
-    },
-    updateUserAddress: (
-      state,
-      action: ActionPayload<FetchUpdateUserAddressPayload>
-    ) => {
+      action: ActionPayload<{ id: number; dto: CreateUserAddressDTO }>
+    ) => {},
+    updateUserAddress: (state, action: ActionPayload<UserAddressModel>) => {
       const data = action.payload;
-      const index = state.userAddresses.findIndex(
+      const index = state.userAddressData.items.findIndex(
         (item) => item.id === data.id
       );
-      if (index !== -1)
-        state.userAddresses[index] = { ...state.userAddresses[index], ...data };
-      state.isLoading = false;
-      state.isSuccess = true;
+      if (index !== -1) state.userAddressData.items[index] = data;
+      state.userAddressData = new ResponseGetAllModel(
+        state.userAddressData.items,
+        state.userAddressData.count
+      );
     },
-    fetchDeleteUserAddress: (state, action: ActionPayload<number>) => {
-      state.isError = false;
-      state.isLoading = true;
-      state.isSuccess = false;
-    },
+    fetchDelete: (state, action: ActionPayload<number>) => {},
     deleteUserAddress: (state, action: ActionPayload<number>) => {
       const id = action.payload;
-      state.userAddresses = state.userAddresses.filter(
-        (item) => item.id !== id
+      state.userAddressData = new ResponseGetAllModel(
+        state.userAddressData.items.filter((item) => item.id !== id),
+        state.userAddressData.count - 1
       );
+    },
 
-      state.isLoading = false;
-      state.isSuccess = true;
-    },
-    showDialog: (state, action: ActionPayload<UserAddress>) => {
-      state.current = action.payload;
-      state.openDialog = true;
-    },
-    closeDialog: (state) => {
-      state.current = null;
-      state.openDialog = false;
-    },
-    showModal: (state, action: ActionPayload<UserAddress | null>) => {
+    showModal: (state, action: ActionPayload<UserAddressModel>) => {
       state.current = action.payload;
       state.openModal = true;
     },
     closeModal: (state) => {
-      state.current = null;
+      state.current = new UserAddressModel();
       state.openModal = false;
     },
   },
 });
-export const userAddressReducers = {
-  fetchGetUserAddresses: `${NAME_SLICE}/fetchGetUserAddresses`,
-  fetchCreateUserAddress: `${NAME_SLICE}/fetchCreateUserAddress`,
-  fetchUpdateUserAddress: `${NAME_SLICE}/fetchUpdateUserAddress`,
-  fetchDeleteUserAddress: `${NAME_SLICE}/fetchDeleteUserAddress`,
+export const userAddressReducer = {
+  fetchGetAll: `${NAME_SLICE}/fetchGetAll`,
+  fetchCreate: `${NAME_SLICE}/fetchCreate`,
+  fetchUpdate: `${NAME_SLICE}/fetchUpdate`,
+  fetchDelete: `${NAME_SLICE}/fetchDelete`,
 };
 export const userAddressSelector = (state: RootState): State =>
   state.userAddress;

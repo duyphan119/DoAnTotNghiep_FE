@@ -1,0 +1,49 @@
+.blogCategoryCard {
+  position: relative;
+  background-color: #fff;
+  .bgColorTag {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    color: #fff;
+    border-radius: 2px;
+    text-transform: uppercase;
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+  .thumbnailLink {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    padding-bottom: 66.7%;
+    display: block;
+  }
+  .blogTitle {
+    text-transform: uppercase;
+  }
+  .blogHeading {
+    margin: 8px 0;
+    color: gray;
+    font-size: 14px;
+    text-align: justify;
+  }
+  .blogTime {
+    color: gray;
+    font-size: 12px;
+    text-align: right;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    svg {
+      font-size: 14px;
+    }
+  }
+  .viewAllLink {
+    padding: 8px 0;
+    gap: 4px;
+    svg {
+      font-size: 20px;
+    }
+  }
+}

@@ -1,173 +1,80 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { CheckoutDTO } from "../../apis/order";
-import { CartItem, FetchState, Order, OrderItem } from "../../utils/types";
+import { OrderItemModel, OrderModel } from "../../models";
+import { CreateCartItemDTO } from "../../types/dtos";
 import { ActionPayload, RootState } from "../store";
+
+type State = {
+  cart: OrderModel;
+  isCheckoutSuccess: boolean;
+};
 
 const NAME_SLICE = "cart";
 
-type State = {
-  cart: {
-    items: OrderItem[] | CartItem[];
-  } & Partial<Order>;
-  count: number;
-  total: number;
-  isPaymentSuccess: boolean;
-} & FetchState;
-
-export type FetchAddToCartPayload = {
-  item: CartItem;
-  price: number;
-};
-
-export type FetchUpdateCartItemPayload = {
-  id: number;
-  newQuantity: number;
-};
-
 const INITIAL_STATE: State = {
-  cart: { items: [] },
-  isLoading: false,
-  isError: false,
-  count: 0,
-  total: 0,
-  isSuccess: false,
-  isPaymentSuccess: false,
+  cart: new OrderModel(),
+  isCheckoutSuccess: false,
 };
 
-export const cartSlice = createSlice({
+const cartSlice = createSlice({
   name: NAME_SLICE,
   initialState: INITIAL_STATE,
   reducers: {
-    fetchCart: (state) => {
-      state.isError = false;
-      state.isLoading = true;
-      state.isSuccess = false;
-    },
-    setCart: (state, action) => {
-      let cart = action.payload;
-      state.cart = cart;
-      state.count = cart
-        ? cart.items.reduce(
-            (p: number, c: CartItem | OrderItem) => p + c.quantity,
-            0
-          )
-        : 0;
-      let total = 0;
-      state.cart.items.forEach((item: OrderItem | CartItem) => {
-        total +=
-          (item.productVariant ? item.productVariant.price : 0) * item.quantity;
-      });
-      state.total = total;
-      state.isLoading = false;
-      state.isSuccess = true;
-    },
-    fetchAddToCart: (state, action: ActionPayload<FetchAddToCartPayload>) => {
-      state.isError = false;
-      state.isLoading = true;
-      state.isSuccess = false;
-    },
-    fetchError: (state) => {
-      state.isError = true;
-      state.isLoading = false;
-    },
-    addToCart: (state, action: ActionPayload<OrderItem>) => {
-      let item = action.payload;
-      let index = state.cart.items.findIndex(
-        (i: OrderItem) => i.productVariantId === item.productVariantId
-      );
-
-      let { order, ...orderItem } = item;
-
-      if (index !== -1) {
-        state.cart.items[index].quantity += orderItem.quantity;
-      } else {
-        state.cart.items.push(orderItem);
-      }
-      state.count += orderItem.quantity;
-      let total = 0;
-      state.cart.items.forEach((item: OrderItem | CartItem) => {
-        total +=
-          (item.productVariant ? item.productVariant.price : 0) * item.quantity;
-      });
-      state.total = total;
-      state.isLoading = false;
-      state.isSuccess = true;
-    },
+    fetchCart: (state) => {},
+    fetchAddToCart: (state, action: ActionPayload<CreateCartItemDTO>) => {},
     fetchUpdateCartItem: (
       state,
-      action: ActionPayload<FetchUpdateCartItemPayload>
-    ) => {
-      state.isError = false;
-      state.isLoading = true;
-      state.isSuccess = false;
+      action: ActionPayload<{ id: number; newQuantity: number }>
+    ) => {},
+    fetchDeleteCartItem: (state, action: ActionPayload<number>) => {},
+    setCart: (state, action: ActionPayload<OrderModel>) => {
+      state.cart = action.payload;
+    },
+    addToCart: (state, action: ActionPayload<OrderItemModel>) => {
+      const orderItem = action.payload;
+      const index = state.cart.items.findIndex(
+        (item) => item.id === orderItem.id
+      );
+      if (state.cart.id === 0) state.cart.id = orderItem.orderId;
+      if (index !== -1) {
+        state.cart.items[index] = orderItem;
+      } else {
+        state.cart.items.unshift(orderItem);
+      }
+      state.cart = new OrderModel(state.cart);
+      localStorage.setItem("cart", JSON.stringify(state.cart));
     },
     updateCartItem: (
       state,
-      action: ActionPayload<FetchUpdateCartItemPayload>
+      action: ActionPayload<{ id: number; newQuantity: number }>
     ) => {
-      let { id, newQuantity } = action.payload;
-      let index = state.cart.items.findIndex((i: OrderItem) => i.id === id);
-
+      const { id, newQuantity } = action.payload;
+      const index = state.cart.items.findIndex((item) => item.id === id);
       if (index !== -1) {
-        if (newQuantity <= 0) {
-          state.count -= state.cart.items[index].quantity;
-          state.cart.items.splice(index, 1);
-        } else {
-          state.count -= state.cart.items[index].quantity;
-          state.count += newQuantity;
-          state.cart.items[index].quantity = newQuantity;
-        }
+        state.cart.items[index].quantity = newQuantity;
+        state.cart = new OrderModel(state.cart);
       }
-      let total = 0;
-      state.cart.items.forEach((item: OrderItem | CartItem) => {
-        total +=
-          (item.productVariant ? item.productVariant.price : 0) * item.quantity;
-      });
-      state.total = total;
-      state.isLoading = false;
-      state.isSuccess = true;
-    },
-    fetchDeleteCartItem: (state, action: ActionPayload<number>) => {
-      state.isError = false;
-      state.isLoading = true;
-      state.isSuccess = false;
     },
     deleteCartItem: (state, action: ActionPayload<number>) => {
-      let id = action.payload;
-      let index = state.cart.items.findIndex((i: OrderItem) => i.id === id);
-      if (index !== -1) {
-        state.count -= state.cart.items[index].quantity;
-        state.cart.items.splice(index, 1);
-      }
-      let total = 0;
-      state.cart.items.forEach((item: OrderItem | CartItem) => {
-        total +=
-          (item.productVariant ? item.productVariant.price : 0) * item.quantity;
-      });
-      state.total = total;
-      state.isLoading = false;
-      state.isSuccess = true;
+      state.cart.items = state.cart.items.filter(
+        (item) => item.id !== action.payload
+      );
+      state.cart = new OrderModel(state.cart);
     },
-    fetchCheckout: (state, action: ActionPayload<CheckoutDTO>) => {
-      state.isLoading = true;
-      state.isSuccess = false;
-      state.isError = false;
-    },
-    paymentSuccess: (state) => {
-      state.isSuccess = true;
-      state.isLoading = false;
-      state.isPaymentSuccess = true;
-      state.cart = { items: [] };
+    getCart: (state) => {
+      state.cart = new OrderModel(
+        JSON.parse("" + localStorage.getItem("cart"))
+      );
     },
   },
 });
-export const cartReducers = {
+
+export const cartReducer = {
   fetchCart: `${NAME_SLICE}/fetchCart`,
   fetchAddToCart: `${NAME_SLICE}/fetchAddToCart`,
   fetchUpdateCartItem: `${NAME_SLICE}/fetchUpdateCartItem`,
   fetchDeleteCartItem: `${NAME_SLICE}/fetchDeleteCartItem`,
   fetchCheckout: `${NAME_SLICE}/fetchCheckout`,
 };
-export const cartSelector = (state: RootState) => state.cart;
+export const cartSelector = (state: RootState): State => state.cart;
 export const cartActions = cartSlice.actions;
 export default cartSlice.reducer;

@@ -1,46 +1,44 @@
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
-import { GetServerSidePropsContext } from "next";
+import { Button } from "@mui/material";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { ConfirmDialog, DataManagement } from "../../../components";
+import { ButtonControl, DataManagement, DataTable } from "../../../components";
 import { AdminLayout } from "../../../layouts";
-import {
-  blogManagementActions,
-  blogManagementSelector,
-} from "../../../redux/slice/blogManagementSlice";
+import { BlogModel } from "../../../models";
+import { blogActions, blogSelector } from "../../../redux/slice/blogSlice";
 import { useAppDispatch } from "../../../redux/store";
-import { formatDateTime } from "../../../utils/helpers";
+import helper from "../../../utils/helpers";
 import { protectedRoutes } from "../../../utils/routes";
-import { Blog } from "../../../utils/types";
 
 type Props = {};
 const LIMIT = 10;
 const Page = (props: Props) => {
   const appDispatch = useAppDispatch();
-  const { current, blogData, isDeleted } = useSelector(blogManagementSelector);
+  const { current, blogData, isDeleted, openDialog } =
+    useSelector(blogSelector);
   const router = useRouter();
 
   const handleSoftDelete = (id: number) => {
-    appDispatch(blogManagementActions.fetchSoftDeleteBlog(id));
+    appDispatch(blogActions.fetchSoftDeleteBlog(id));
   };
 
   const handleRestore = (id: number) => {
-    appDispatch(blogManagementActions.fetchRestoreBlog(id));
+    appDispatch(blogActions.fetchRestoreBlog(id));
   };
 
   const handleDelete = () => {
-    if (current) appDispatch(blogManagementActions.fetchDeleteBlog(current.id));
+    if (current) appDispatch(blogActions.fetchDeleteBlog(current.id));
   };
 
   useEffect(() => {
     const { p, sortBy, sortType } = router.query;
     appDispatch(
-      blogManagementActions.fetchBlogData({
+      blogActions.fetchBlogData({
         p: +`${p}` || 1,
         limit: LIMIT,
         withDeleted: true,
@@ -60,99 +58,86 @@ const Page = (props: Props) => {
         </Head>
         <DataManagement
           paperTitle="Danh sách bài viết"
-          sortable={["title", "createdAt", "slug"]}
-          rows={blogData.items}
           count={blogData.count}
           limit={LIMIT}
-          hasCheck={false}
-          columns={[
-            {
-              style: { width: 70, textAlign: "center" },
-              display: "#",
-              key: "index",
-            },
-            {
-              style: { textAlign: "center", width: 220 },
-              key: "thumbnail",
-              display: "Ảnh đại diện",
-              render: (row: Blog) => (
-                <Image
-                  width={220}
-                  height={140}
-                  src={row.thumbnail}
-                  alt=""
-                  priority={true}
-                />
-              ),
-            },
-            {
-              style: { textAlign: "left" },
-              key: "title",
-              display: "Tiêu đề",
-            },
-            {
-              style: { textAlign: "left" },
-              key: "slug",
-              display: "Bí danh",
-            },
-            {
-              style: { width: 120, textAlign: "center" },
-              key: "createdAt",
-              display: "Ngày tạo",
-              render: (row: any) => formatDateTime(row.createdAt),
-            },
-            {
-              style: { width: 90, textAlign: "center" },
-              key: "deletedAt",
-              display: "Hiển thị",
-              render: (row: any) =>
-                row.deletedAt ? (
-                  <ClearIcon
-                    style={{ color: "#d32f2f" }}
-                    onClick={() => handleRestore(row.id)}
-                  />
-                ) : (
-                  <CheckIcon
-                    style={{ color: "#33eb91" }}
-                    onClick={() => handleSoftDelete(row.id)}
+        >
+          <DataTable
+            sortable={["id", "title", "createdAt", "slug"]}
+            columns={[
+              {
+                style: { width: 70, textAlign: "center" },
+                display: "ID",
+                key: "id",
+              },
+              {
+                style: { textAlign: "center", width: 220 },
+                key: "thumbnail",
+                display: "Ảnh đại diện",
+                render: (row: BlogModel) => (
+                  <Image
+                    width={220}
+                    height={140}
+                    src={row.thumbnail}
+                    alt=""
+                    priority={true}
                   />
                 ),
-            },
-            {
-              style: { width: 100 },
-              key: "actions",
-              render: (row: any) => (
-                <>
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <Link href={protectedRoutes.updateBlog(row.id)}>
-                      <button className="btnEdit">Sửa</button>
-                    </Link>
-                    <button
-                      className="btnDelete"
-                      style={{ marginLeft: "8px" }}
-                      onClick={() =>
-                        appDispatch(blogManagementActions.showDialog(row))
-                      }
+              },
+              {
+                style: { textAlign: "left" },
+                key: "title",
+                display: "Tiêu đề",
+              },
+              {
+                style: { textAlign: "left" },
+                key: "slug",
+                display: "Bí danh",
+              },
+              {
+                style: { width: 120, textAlign: "center" },
+                key: "createdAt",
+                display: "Ngày tạo",
+                render: (row: BlogModel) =>
+                  helper.formatDateTime(row.createdAt),
+              },
+              {
+                style: { width: 152 },
+                key: "actions",
+                render: (row: BlogModel) => (
+                  <>
+                    <div
+                      className="flex-center"
+                      style={{
+                        flexWrap: "wrap",
+                        gap: "8px",
+                      }}
                     >
-                      Xóa
-                    </button>
-                  </div>
-                  {current ? (
-                    <ConfirmDialog
-                      open={current.id === row.id ? true : false}
-                      onClose={() =>
-                        appDispatch(blogManagementActions.hideDialog())
-                      }
-                      onConfirm={handleDelete}
-                      title="Xác nhận"
-                      text="Bạn có chắc chắn muốn xóa không?"
-                    />
-                  ) : null}
-                </>
-              ),
-            },
-          ]}
-        />
+                      <Link href={protectedRoutes.previewBlog(row.id)}>
+                        <ButtonControl color="info" size="small">
+                          Xem trước
+                        </ButtonControl>
+                      </Link>
+                      <Link href={protectedRoutes.updateBlog(row.id)}>
+                        <ButtonControl color="secondary" size="small">
+                          Sửa
+                        </ButtonControl>
+                      </Link>
+                      <ButtonControl
+                        color="error"
+                        onClick={() => appDispatch(blogActions.showDialog(row))}
+                        size="small"
+                      >
+                        Xóa
+                      </ButtonControl>
+                    </div>
+                  </>
+                ),
+              },
+            ]}
+            rows={blogData.items}
+            hasCheck={true}
+          />
+        </DataManagement>
       </>
     </AdminLayout>
   );

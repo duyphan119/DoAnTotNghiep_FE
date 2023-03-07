@@ -1,18 +1,18 @@
 import Link from "next/link";
 import { useSelector } from "react-redux";
-import { groupProductManagementSelector } from "../../../../../redux/slice/groupProductManagementSlice";
+import { groupProductSelector } from "../../../../../redux/slice/groupProductSlice";
 import { publicRoutes } from "../../../../../utils/routes";
 import { GroupProduct, GroupProductHeader } from "../../../../../utils/types";
-import styles from "../_style.module.scss";
+import styles from "./_style.module.scss";
 type Props = {};
 
 const Categories = (props: Props) => {
-  const { headerData } = useSelector(groupProductManagementSelector);
+  const { groupProductHeaders } = useSelector(groupProductSelector);
 
   return (
     <nav className={styles.categories}>
       <ul className={styles.navItems}>
-        {headerData.map((headerItem: GroupProductHeader) => {
+        {groupProductHeaders.map((headerItem: GroupProductHeader) => {
           return (
             <li className={styles.navItem} key={headerItem.slug}>
               <Link

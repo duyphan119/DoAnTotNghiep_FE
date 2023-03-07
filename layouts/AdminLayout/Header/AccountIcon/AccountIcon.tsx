@@ -10,8 +10,8 @@ type Props = {};
 
 const AccountIcon = (props: Props) => {
   const { profile } = useSelector(authSelector);
-  return profile ? (
-    <Link href={protectedRoutes.profile}>
+  return !profile || profile.id > 0 ? (
+    <Link href={protectedRoutes.settingProfile}>
       <span className={styles.iconSpan}>
         <AccountCircleIcon className={styles.icon} />
       </span>

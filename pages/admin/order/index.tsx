@@ -1,87 +1,50 @@
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import { GetServerSidePropsContext } from "next";
+import { useRouter } from "next/router";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import {
-  deleteGroupProduct,
-  restoreGroupProduct,
-  softDeleteGroupProduct,
-} from "../../../apis/groupProduct";
 import { getAllOrders } from "../../../apis/order";
-import { ConfirmDialog, DataManagement } from "../../../components";
+import {
+  ButtonControl,
+  ConfirmDialog,
+  DataManagement,
+  DataTable,
+} from "../../../components";
 import { AdminLayout } from "../../../layouts";
+import { OrderModel, ResponseGetAllModel } from "../../../models";
+import { orderActions, orderSelector } from "../../../redux/slice/orderSlice";
+import { useAppDispatch } from "../../../redux/store";
 import {
   COOKIE_ACCESSTOKEN_NAME,
   EMPTY_ITEMS,
   MSG_SUCCESS,
 } from "../../../utils/constants";
-import { formatDateTime } from "../../../utils/helpers";
-import { GroupProduct, Order, ResponseItems } from "../../../utils/types";
+import helper from "../../../utils/helpers";
+import { useSelector } from "react-redux";
+import { protectedRoutes } from "../../../utils/routes";
+import { confirmDialogActions } from "../../../redux/slice/confirmDialogSlice";
 
-type Props = {
-  orderData: ResponseItems<Order>;
-};
+type Props = {};
 const LIMIT = 10;
-const Orders = ({ orderData: propOrderData }: Props) => {
-  const [orderData, setOrderData] =
-    useState<ResponseItems<Order>>(propOrderData);
-  const [current, setCurrent] = useState<GroupProduct | null>(null);
-
-  const handleSoftDelete = async (id: number) => {
-    try {
-      const { message } = await softDeleteGroupProduct(id);
-      if (message === MSG_SUCCESS) {
-        const _orderData = { ...orderData };
-        const index = _orderData.items.findIndex((gp: any) => gp.id === id);
-        if (index !== -1) {
-          _orderData.items[index].deletedAt = "" + new Date().getTime();
-          setOrderData(_orderData);
-        }
-      }
-    } catch (error) {
-      console.log("Soft delete group product error", error);
-    }
-  };
-
-  const handleRestore = async (id: number) => {
-    try {
-      const { message } = await restoreGroupProduct(id);
-      if (message === MSG_SUCCESS) {
-        const _orderData = { ...orderData };
-        const index = _orderData.items.findIndex((gp: any) => gp.id === id);
-        if (index !== -1) {
-          _orderData.items[index].deletedAt = null;
-          setOrderData(_orderData);
-        }
-      }
-    } catch (error) {
-      console.log("Restore delete group product error", error);
-    }
-  };
-
-  const handleDelete = async () => {
-    try {
-      if (current) {
-        let { id } = current;
-        const { message } = await deleteGroupProduct(id);
-        if (message === MSG_SUCCESS) {
-          const _orderData = { ...orderData };
-          _orderData.items = _orderData.items.filter((gp: any) => gp.id !== id);
-          _orderData.count -= 1;
-          setOrderData(_orderData);
-        }
-      }
-    } catch (error) {
-      console.log("Delete group product error", error);
-    }
-  };
+const Orders = (props: Props) => {
+  const appDispatch = useAppDispatch();
+  const router = useRouter();
+  const { orderData } = useSelector(orderSelector);
 
   useEffect(() => {
-    setOrderData(propOrderData);
-  }, [propOrderData]);
+    const { p, sortBy, sortType } = router.query;
+    appDispatch(
+      orderActions.fetchGetAll({
+        p: +`${p}` || 1,
+        limit: LIMIT,
+        sortBy: `${sortBy || "id"}`,
+        sortType: `${sortType}` === "asc" ? "asc" : "desc",
+      })
+    );
+  }, [router.query]);
 
   return (
     <AdminLayout pageTitle="Đơn hàng">
@@ -93,112 +56,87 @@ const Orders = ({ orderData: propOrderData }: Props) => {
         </Head>
         <DataManagement
           paperTitle="Danh sách đơn hàng"
-          sortable={["fullName", "phone", "createdAt", "status", "createdAt"]}
-          rows={orderData.items}
           count={orderData.count}
           limit={LIMIT}
-          hasCheck={false}
-          columns={[
-            {
-              style: { width: 70, textAlign: "center" },
-              display: "#",
-              key: "index",
-            },
-            {
-              style: { textAlign: "left" },
-              key: "fullName",
-              display: "Họ tên",
-            },
-            {
-              style: { textAlign: "left" },
-              key: "phone",
-              display: "Số điện thoại",
-            },
-            {
-              style: { width: 180, textAlign: "center" },
-              key: "createdAt",
-              display: "Ngày tạo",
-              render: (row: any) => formatDateTime(row.createdAt),
-            },
-            {
-              style: { width: 180, textAlign: "center" },
-              key: "status",
-              display: "Trạng thái",
-            },
-            {
-              style: { width: 90, textAlign: "center" },
-              key: "deletedAt",
-              display: "Hiển thị",
-              render: (row: any) =>
-                row.deletedAt ? (
-                  <ClearIcon
-                    style={{ color: "#d32f2f" }}
-                    onClick={() => handleRestore(row.id)}
-                  />
-                ) : (
-                  <CheckIcon
-                    style={{ color: "#33eb91" }}
-                    onClick={() => handleSoftDelete(row.id)}
-                  />
+          hideCreateBtn={true}
+        >
+          <DataTable
+            hasCheck={true}
+            columns={[
+              {
+                style: { width: 70, textAlign: "center" },
+                display: "ID",
+                key: "id",
+              },
+              {
+                style: { textAlign: "left" },
+                key: "fullName",
+                display: "Họ tên",
+              },
+              {
+                style: { textAlign: "center" },
+                key: "phone",
+                display: "Số điện thoại",
+              },
+              {
+                style: { width: 180, textAlign: "center" },
+                key: "createdAt",
+                display: "Ngày tạo",
+                render: (row: any) => helper.formatDateTime(row.createdAt),
+              },
+              {
+                style: { width: 180, textAlign: "center" },
+                key: "status",
+                display: "Trạng thái",
+              },
+              {
+                style: { width: 100 },
+                key: "actions",
+                render: (row: OrderModel) => (
+                  <>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <Link href={protectedRoutes.updateOrder(row.id)}>
+                        <ButtonControl color="secondary" size="small">
+                          Sửa
+                        </ButtonControl>
+                      </Link>
+                      <ButtonControl
+                        color="error"
+                        onClick={() =>
+                          appDispatch(
+                            confirmDialogActions.show({
+                              onConfirm: () => {
+                                appDispatch(
+                                  orderActions.fetchSoftDeleteSingle(row.id)
+                                );
+                              },
+                            })
+                          )
+                        }
+                        sx={{ ml: 1 }}
+                        size="small"
+                      >
+                        Xóa
+                      </ButtonControl>
+                    </div>
+                  </>
                 ),
-            },
-            {
-              style: { width: 100 },
-              key: "actions",
-              render: (row: any) => (
-                <>
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <Link href={`/admin/order/${row.id}/update`}>
-                      <button className="btnEdit">Sửa</button>
-                    </Link>
-                    <button
-                      className="btnDelete"
-                      style={{ marginLeft: "8px" }}
-                      onClick={() => setCurrent(row)}
-                    >
-                      Xóa
-                    </button>
-                  </div>
-                  {current ? (
-                    <ConfirmDialog
-                      open={current.id === row.id ? true : false}
-                      onClose={() => setCurrent(null)}
-                      onConfirm={handleDelete}
-                      title="Xác nhận"
-                      text="Bạn có chắc chắn muốn xóa không?"
-                    />
-                  ) : null}
-                </>
-              ),
-            },
-          ]}
-        />
+              },
+            ]}
+            rows={orderData.items}
+            sortable={[
+              "id",
+              "fullName",
+              "phone",
+              "createdAt",
+              "status",
+              "createdAt",
+            ]}
+          />
+        </DataManagement>
       </>
     </AdminLayout>
   );
 };
 
 export default Orders;
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  try {
-    const { p, sortBy, sortType } = context.query as any;
-    let { message, data } = await getAllOrders(
-      {
-        p: p || 1,
-        limit: LIMIT,
-        sortBy,
-        sortType,
-        withDeleted: true,
-      },
-      context.req.cookies[COOKIE_ACCESSTOKEN_NAME]
-    );
-    if (message === MSG_SUCCESS)
-      return {
-        props: { productData: EMPTY_ITEMS, orderData: data },
-      };
-  } catch (error) {
-    console.log("GET ALL ORDERS ERROR::");
-  }
-  return { notFound: true };
-}

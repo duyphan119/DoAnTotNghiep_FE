@@ -25,14 +25,24 @@ export type SettingWebsite = {
   key: string;
   value: string;
 };
+export type BlogCategory = {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+} & Timestamp &
+  Partial<{ blogs: Blog[] }>;
 export type Blog = {
   id: number;
+  heading: string;
   title: string;
   content: string;
   slug: string;
   thumbnail: string;
   userId: number;
-} & Timestamp;
+  blogCategoryId: number;
+} & Timestamp &
+  Partial<{ blogCategory: BlogCategory }>;
 export type Product = {
   id: number;
   name: string;

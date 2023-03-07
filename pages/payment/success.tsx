@@ -1,14 +1,20 @@
 import Head from "next/head";
-import React from "react";
-import styles from "../../styles/_CheckoutSuccess.module.scss";
-import checkoutSuccessSvg from "../../public/checkout_success.svg";
 import Image from "next/image";
 import Link from "next/link";
+import { useSelector } from "react-redux";
+import { NotFound } from "../../components";
+import checkoutSuccessSvg from "../../public/checkout_success.svg";
+import { orderSelector } from "../../redux/slice/orderSlice";
 import { publicRoutes } from "../../utils/routes";
+import styles from "../../styles/_CheckoutSuccess.module.scss";
 
 type Props = {};
 
 const CheckoutSuccess = (props: Props) => {
+  const { isCheckoutSuccess } = useSelector(orderSelector);
+
+  if (!isCheckoutSuccess) return <NotFound />;
+
   return (
     <>
       <Head>

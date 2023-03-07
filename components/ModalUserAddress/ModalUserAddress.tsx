@@ -9,17 +9,17 @@ import {
 import { MSG_SUCCESS } from "../../utils/constants";
 import provinces from "../../province.json";
 import { District, Province, UserAddress, Ward } from "../../utils/types";
-import { InputControl, SelectControl } from "../../components";
+import { ButtonControl, InputControl, SelectControl } from "../../components";
 import { useAppDispatch } from "../../redux/store";
 import { userAddressActions } from "../../redux/slice/userAddressSlice";
+import { UserAddressModel } from "../../models";
 
 type Props = Partial<{
   open: boolean;
   onClose: any;
   onCreate: any;
   onEdit: any;
-  row: UserAddress | null;
-}>;
+}> & { row: UserAddressModel };
 
 const ModalUserAddress = ({ open, onClose, row }: Props) => {
   const appDispatch = useAppDispatch();
@@ -48,20 +48,18 @@ const ModalUserAddress = ({ open, onClose, row }: Props) => {
     formState: { errors },
   } = useForm<CreateUserAddressDTO>({
     defaultValues: {
-      address: row ? row.address : "",
-      ward: row ? row.ward : "",
-      district: row ? row.district : "",
-      province: row ? row.province : "",
+      address: row.address,
+      ward: row.ward,
+      district: row.district,
+      province: row.province,
     },
   });
 
   const onSubmit: SubmitHandler<CreateUserAddressDTO> = (values) => {
-    if (row) {
-      appDispatch(
-        userAddressActions.fetchUpdateUserAddress({ id: row.id, ...values })
-      );
+    if (row.id > 0) {
+      appDispatch(userAddressActions.fetchUpdate({ id: row.id, dto: values }));
     } else {
-      appDispatch(userAddressActions.fetchCreateUserAddress(values));
+      appDispatch(userAddressActions.fetchCreate(values));
     }
   };
 
@@ -116,7 +114,7 @@ const ModalUserAddress = ({ open, onClose, row }: Props) => {
         <Grid container columnSpacing={2} rowSpacing={2}>
           <Grid item xs={12}>
             <Typography component="h4" variant="h4">
-              {row ? "Sửa địa chỉ" : "Thêm địa chỉ"}
+              {row.id > 0 ? "Sửa địa chỉ" : "Thêm địa chỉ"}
             </Typography>
           </Grid>
           <Grid item xs={12}>
@@ -179,12 +177,10 @@ const ModalUserAddress = ({ open, onClose, row }: Props) => {
               justifyContent="flex-end"
               style={{ gap: "8px" }}
             >
-              <Button type="button" variant="outlined" onClick={onClose}>
+              <ButtonControl variant="outlined" onClick={onClose}>
                 Đóng
-              </Button>
-              <Button type="submit" variant="contained">
-                Lưu
-              </Button>
+              </ButtonControl>
+              <ButtonControl type="submit">Lưu</ButtonControl>
             </Box>
           </Grid>
         </Grid>

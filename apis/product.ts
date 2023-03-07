@@ -35,10 +35,8 @@ export const getProductById = (id: number): Promise<any> =>
 export const createProduct = (body: CreateProductDTO): Promise<any> =>
   privateAxios().post("product", body);
 
-export const updateProduct = (
-  id: number,
-  body: Partial<CreateProductDTO>
-): Promise<any> => privateAxios().patch(`product/${id}`, body);
+export const updateProduct = (id: number, body: Partial<any>): Promise<any> =>
+  privateAxios().patch(`product/${id}`, body);
 
 export const searchProducts = (params?: SearchProductParams): Promise<any> =>
   publicAxios().get("product/search", { params });

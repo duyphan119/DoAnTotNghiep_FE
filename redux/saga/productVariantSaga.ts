@@ -1,121 +1,100 @@
 import { call, put, takeEvery } from "redux-saga/effects";
-import {
-  CreateProductVariant,
-  createProductVariants,
-  deleteProductVariant,
-  getAllProductVariants,
-  ProductVariantQueryParams,
-  updateProductVariants,
-} from "../../apis/productvariant";
+import { ProductVariantApi } from "../../api";
+import { ProductVariantModel, ResponseGetAllModel } from "../../models";
+import { CreateProductVariantDTO } from "../../types/dtos";
+import { ProductVariantParams } from "../../types/params";
 import { MSG_SUCCESS } from "../../utils/constants";
-import { ProductVariant } from "../../utils/types";
+import { fetchActions } from "../slice/fetchSlice";
 import {
   productVariantActions,
-  productVariantReducers,
+  productVariantReducer,
 } from "../slice/productVariantSlice";
 import { snackbarActions } from "../slice/snackbarSlice";
 import { ActionPayload } from "../store";
 
-function* fetchCreateProductVariants({
-  payload,
-}: ActionPayload<CreateProductVariant[]>) {
+const pvApi = new ProductVariantApi();
+
+function* fetchCreateMany({
+  payload: dtos,
+}: ActionPayload<CreateProductVariantDTO[]>) {
   let isError = true;
   try {
-    const { message } = yield call(() => createProductVariants(payload));
-
-    if (message === MSG_SUCCESS && payload[0]) {
-      const { message: msg, data } = yield call(() =>
-        getAllProductVariants({
-          variant_values: true,
-          productId: payload[0].productId,
-        })
-      );
-      if (msg === MSG_SUCCESS) {
-        isError = false;
-        yield put(productVariantActions.setProductVariants(data.items));
-        yield put(productVariantActions.setInputs([]));
-        yield put(
-          snackbarActions.show({ msg: "Đã tạo thành công", type: "success" })
-        );
-      }
-    }
-  } catch (error) {
-    console.log("productVariantSaga.fetchCreateProductVariants error", error);
-  }
-  if (isError) yield put(productVariantActions.fetchError);
-}
-
-function* fetchUpdateProductVariants({
-  payload,
-}: ActionPayload<ProductVariant[]>) {
-  let isError = true;
-  try {
-    const { message } = yield call(() =>
-      updateProductVariants(
-        payload.map((productVariant: ProductVariant) => ({
-          id: productVariant.id,
-          inventory: productVariant.inventory,
-          price: productVariant.price,
-        }))
-      )
+    yield put(fetchActions.start(productVariantReducer.fetchCreateMany));
+    const data: ProductVariantModel[] = yield call(() =>
+      pvApi.createMany(dtos)
     );
+    isError = false;
+    yield put(productVariantActions.setProductVariants(data));
+    yield put(productVariantActions.setInputs([]));
+    yield put(
+      snackbarActions.show({ msg: "Đã tạo thành công", type: "success" })
+    );
+    yield put(fetchActions.endAndSuccess());
+  } catch (error) {
+    console.log("productVariantSaga.fetchCreateMany error", error);
+  }
+  if (isError) yield put(fetchActions.endAndError());
+}
+
+function* fetchUpdateMany({
+  payload: inputs,
+}: ActionPayload<ProductVariantModel[]>) {
+  let isError = true;
+  try {
+    yield put(fetchActions.start(productVariantReducer.fetchUpdateMany));
+    const { message } = yield call(() => pvApi.updateMany(inputs));
 
     if (message === MSG_SUCCESS) {
       isError = false;
-      yield put(productVariantActions.fetchSuccess());
       yield put(snackbarActions.show({ msg: "Đã lưu", type: "success" }));
+      yield put(fetchActions.endAndSuccess());
     }
   } catch (error) {
-    console.log("productVariantSaga.fetchUpdateProductVariants error", error);
+    console.log("productVariantSaga.fetchUpdateMany error", error);
   }
-  if (isError) yield put(productVariantActions.fetchError);
+  if (isError) yield put(fetchActions.endAndError());
 }
 
-function* fetchGetAllProductVariants({
-  payload,
-}: ActionPayload<ProductVariantQueryParams>) {
+function* fetchGetAll({
+  payload: params,
+}: ActionPayload<ProductVariantParams>) {
   let isError = true;
   try {
-    const { message, data } = yield call(() => getAllProductVariants(payload));
-    if (message === MSG_SUCCESS) {
-      isError = false;
-      yield put(productVariantActions.setProductVariants(data.items));
-    }
+    yield put(fetchActions.start(productVariantReducer.fetchUpdateMany));
+    const data: ResponseGetAllModel<ProductVariantModel> = yield call(() =>
+      pvApi.getAll(params)
+    );
+    isError = false;
+    yield put(productVariantActions.setProductVariants(data.items));
+    yield put(fetchActions.endAndSuccess());
   } catch (error) {
-    console.log("productVariantSaga.fetchGetAllProductVariants error", error);
+    console.log("productVariantSaga.fetchGetAll error", error);
   }
-  if (isError) yield put(productVariantActions.fetchError);
+  if (isError) yield put(fetchActions.endAndError());
 }
 
-function* fetchDeleteProductVariant({ payload: id }: ActionPayload<number>) {
+function* fetchSoftDeleteSingle({ payload: id }: ActionPayload<number>) {
   let isError = true;
   try {
-    const { message } = yield call(() => deleteProductVariant(id));
-    if (message === MSG_SUCCESS) {
+    yield put(fetchActions.start(productVariantReducer.fetchSoftDeleteSingle));
+    const result: boolean = yield call(() => pvApi.softDeleteSingle(id));
+    if (result) {
       isError = false;
       yield put(productVariantActions.deleteProductVariant(id));
+      yield put(fetchActions.endAndSuccess());
     }
   } catch (error) {
-    console.log("productVariantSaga.fetchDeleteProductVariant error", error);
+    console.log("productVariantSaga.fetchSoftDeleteSingle error", error);
   }
-  if (isError) yield put(productVariantActions.fetchError);
+  if (isError) yield put(fetchActions.endAndError());
 }
 
 export function* productVariantSaga() {
+  yield takeEvery(productVariantReducer.fetchUpdateMany, fetchUpdateMany);
+  yield takeEvery(productVariantReducer.fetchCreateMany, fetchCreateMany);
+  yield takeEvery(productVariantReducer.fetchGetAll, fetchGetAll);
   yield takeEvery(
-    productVariantReducers.fetchCreateProductVariants,
-    fetchCreateProductVariants
-  );
-  yield takeEvery(
-    productVariantReducers.fetchUpdateProductVariants,
-    fetchUpdateProductVariants
-  );
-  yield takeEvery(
-    productVariantReducers.fetchGetAllProductVariants,
-    fetchGetAllProductVariants
-  );
-  yield takeEvery(
-    productVariantReducers.fetchDeleteProductVariant,
-    fetchDeleteProductVariant
+    productVariantReducer.fetchSoftDeleteSingle,
+    fetchSoftDeleteSingle
   );
 }

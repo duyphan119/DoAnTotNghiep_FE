@@ -1,57 +1,41 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { deleteCookie, setCookie } from "cookies-next";
+
+import { OrderQueryParams } from "../../apis/order";
+import { OrderModel, ResponseGetAllModel, UserModel } from "../../models";
 import {
-  ChangePassword,
-  ChangeProfile,
+  ChangePasswordDTO,
+  ChangeProfileDTO,
   LoginDTO,
   RegisterDTO,
-} from "../../apis/auth";
-import { OrderQueryParams } from "../../apis/order";
+} from "../../types/dtos";
 import { COOKIE_ACCESSTOKEN_NAME, EMPTY_ITEMS } from "../../utils/constants";
 import { FetchState, Order, ResponseItems, User } from "../../utils/types";
 import { ActionPayload, RootState } from "../store";
 
 type State = {
-  profile: User | null;
+  profile: UserModel;
   accessToken: string;
   openModalAuth: boolean;
-  orderData: ResponseItems<Order>;
-} & FetchState;
-
-type LoginResponse = {
-  user: User;
-  accessToken: string;
+  orderData: ResponseGetAllModel<OrderModel>;
 };
 
 const NAME_SLICE = "auth";
 
 const INITIAL_STATE: State = {
-  profile: null,
+  profile: new UserModel(),
   accessToken: "",
-  isError: false,
-  isLoading: false,
   openModalAuth: false,
-  isSuccess: false,
-  orderData: EMPTY_ITEMS,
+  orderData: new ResponseGetAllModel(),
 };
 
 const authSlice = createSlice({
   name: NAME_SLICE,
   initialState: INITIAL_STATE,
   reducers: {
-    fetchProfile: (state) => {
-      state.isError = false;
-      state.isLoading = true;
-      state.isSuccess = false;
-    },
-    setProfile: (state, action: ActionPayload<User | null>) => {
+    fetchGetProfile: (state) => {},
+    setProfile: (state, action: ActionPayload<UserModel>) => {
       state.profile = action.payload;
-      state.isLoading = false;
-      state.isSuccess = true;
-    },
-    fetchError: (state) => {
-      state.isError = true;
-      state.isLoading = false;
     },
     showModalAuth: (state) => {
       state.openModalAuth = true;
@@ -59,78 +43,48 @@ const authSlice = createSlice({
     hideModalAuth: (state) => {
       state.openModalAuth = false;
     },
-    fetchLogin: (state, action: ActionPayload<LoginDTO>) => {
-      state.isError = false;
-      state.isLoading = true;
-      state.isSuccess = false;
-    },
-    login: (state, action: ActionPayload<LoginResponse>) => {
+    fetchLogin: (state, action: ActionPayload<LoginDTO>) => {},
+    login: (
+      state,
+      action: ActionPayload<{ user: UserModel; accessToken: string }>
+    ) => {
       const { accessToken, user } = action.payload;
       state.accessToken = accessToken;
       state.profile = user;
-      state.isLoading = false;
       state.openModalAuth = false;
-      setCookie(COOKIE_ACCESSTOKEN_NAME, accessToken);
-      state.isSuccess = true;
+      setCookie(COOKIE_ACCESSTOKEN_NAME, accessToken, {
+        maxAge: 6000,
+      });
     },
-    fetchRegister: (state, action: ActionPayload<RegisterDTO>) => {
-      state.isError = false;
-      state.isLoading = true;
-      state.isSuccess = false;
-    },
-    fetchChangeProfile: (state, action: ActionPayload<ChangeProfile>) => {
-      state.isError = false;
-      state.isLoading = true;
-      state.isSuccess = false;
-    },
-    changeProfile: (state, action: ActionPayload<ChangeProfile>) => {
-      if (state.profile) {
-        state.profile = { ...state.profile, ...action.payload };
-        state.isLoading = false;
-        state.isSuccess = true;
-      }
-    },
-    fetchLogout: (state) => {
-      state.isError = false;
-      state.isLoading = true;
-      state.isSuccess = false;
-    },
+    fetchRegister: (state, action: ActionPayload<RegisterDTO>) => {},
+    fetchChangeProfile: (state, action: ActionPayload<ChangeProfileDTO>) => {},
+    fetchLogout: (state) => {},
     logout: (state) => {
-      state.profile = null;
+      state.profile = new UserModel();
       state.accessToken = "";
       deleteCookie(COOKIE_ACCESSTOKEN_NAME);
-      state.isSuccess = true;
-      state.isLoading = false;
     },
-    fetchChangePassword: (state, action: ActionPayload<ChangePassword>) => {
-      state.isError = false;
-      state.isLoading = true;
-      state.isSuccess = false;
-    },
-    fetchSuccess: (state) => {
-      state.isLoading = false;
-      state.isSuccess = true;
-    },
-    fetchMyOrderData: (state, action: ActionPayload<OrderQueryParams>) => {
-      state.isError = false;
-      state.isLoading = true;
-      state.isSuccess = false;
-    },
-    setMyOrderData: (state, action: ActionPayload<ResponseItems<Order>>) => {
+    fetchChangePassword: (
+      state,
+      action: ActionPayload<ChangePasswordDTO>
+    ) => {},
+    fetchUserOrderData: (state, action: ActionPayload<OrderQueryParams>) => {},
+    setUserOrderData: (
+      state,
+      action: ActionPayload<ResponseGetAllModel<OrderModel>>
+    ) => {
       state.orderData = action.payload;
-      state.isLoading = false;
-      state.isSuccess = true;
     },
   },
 });
-export const authReducers = {
-  fetchProfile: `${NAME_SLICE}/fetchProfile`,
+export const authReducer = {
+  fetchGetProfile: `${NAME_SLICE}/fetchGetProfile`,
   fetchLogin: `${NAME_SLICE}/fetchLogin`,
   fetchRegister: `${NAME_SLICE}/fetchRegister`,
   fetchChangeProfile: `${NAME_SLICE}/fetchChangeProfile`,
   fetchLogout: `${NAME_SLICE}/fetchLogout`,
   fetchChangePassword: `${NAME_SLICE}/fetchChangePassword`,
-  fetchMyOrderData: `${NAME_SLICE}/fetchMyOrderData`,
+  fetchUserOrderData: `${NAME_SLICE}/fetchUserOrderData`,
 };
 export const authSelector = (state: RootState): State => state.auth;
 export const authActions = authSlice.actions;

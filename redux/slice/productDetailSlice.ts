@@ -1,24 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { CommentProductDTO } from "../../apis/commentproduct";
-import { formatProductVariants } from "../../utils/helpers";
 import {
-  CommentProduct,
-  FetchState,
-  Product,
-  ProductVariant,
-  RenderVariantValues,
-  ResponseItems,
-  VariantValue,
-} from "../../utils/types";
+  ProductModel,
+  ProductVariantModel,
+  ResponseGetAllModel,
+  VariantValueModel,
+} from "../../models";
+import CommentProductModel from "../../models/CommentProductModel";
 import { ActionPayload, RootState } from "../store";
-
-type CommentProductData = ResponseItems<CommentProduct> & {
-  userComment: CommentProduct | null;
-};
 
 export type SetPagePayload = {
   page: number;
-  product: Product | null;
+  product: ProductModel;
 };
 
 export type FetchUpdateCommentProductPayload = {
@@ -26,50 +19,48 @@ export type FetchUpdateCommentProductPayload = {
 } & Partial<CommentProductDTO>;
 
 type State = {
-  product: Product | null;
-  selectedVariantValues: VariantValue[];
-  selectedProductVariant: ProductVariant | null;
-  renderVariantValues: RenderVariantValues;
-  commentProductData: CommentProductData;
+  product: ProductModel;
+  selectedVariantValues: VariantValueModel[];
+  selectedProductVariant: ProductVariantModel;
+  renderVariantValues: {
+    keys: string[];
+    values: {
+      [key: string]: VariantValueModel[];
+    };
+  };
+  commentProductData: ResponseGetAllModel<CommentProductModel>;
   page: number;
   totalPage: number;
-} & FetchState;
+};
 
 const NAME_SLICE = "productDetail";
 
 const INITIAL_STATE: State = {
-  product: null,
+  product: new ProductModel(),
   selectedVariantValues: [],
-  selectedProductVariant: null,
+  selectedProductVariant: new ProductVariantModel(),
   renderVariantValues: {
     keys: [],
     values: {},
   },
-  commentProductData: {
-    items: [],
-    count: 0,
-    userComment: null,
-  },
+  commentProductData: new ResponseGetAllModel(),
   page: 1,
   totalPage: 0,
-  isLoading: false,
-  isError: false,
-  isSuccess: false,
 };
 
 const productDetailSlice = createSlice({
   name: NAME_SLICE,
   initialState: INITIAL_STATE,
   reducers: {
-    setProduct: (state, action: ActionPayload<Product | null>) => {
+    setProduct: (state, action: ActionPayload<ProductModel>) => {
       let product = action.payload;
       state.product = product;
-      if (product) state.renderVariantValues = formatProductVariants(product);
+      if (product) state.renderVariantValues = product.formatProductVariants();
     },
-    clickVariantValue: (state, action: ActionPayload<VariantValue>) => {
+    clickVariantValue: (state, action: ActionPayload<VariantValueModel>) => {
       let variantValue = action.payload;
       let index = state.selectedVariantValues.findIndex(
-        (i: VariantValue) =>
+        (i) =>
           i.variant &&
           variantValue.variant &&
           i.variant.name === variantValue.variant.name
@@ -77,20 +68,18 @@ const productDetailSlice = createSlice({
       if (index === -1) state.selectedVariantValues.push(variantValue);
       else state.selectedVariantValues[index] = variantValue;
 
-      let productVariant = state.product?.productVariants?.find(
-        (pv: ProductVariant) =>
-          pv.variantValues.every(
-            (vv: VariantValue) =>
-              state.selectedVariantValues.findIndex(
-                (_vv: VariantValue) => vv.id === _vv.id
-              ) !== -1
-          )
+      let productVariant = state.product?.productVariants?.find((pv) =>
+        pv.variantValues.every(
+          (vv) =>
+            state.selectedVariantValues.findIndex((_vv) => vv.id === _vv.id) !==
+            -1
+        )
       );
-      state.selectedProductVariant = productVariant || null;
+      if (productVariant) state.selectedProductVariant = productVariant;
     },
     setCommentProductData: (
       state,
-      action: ActionPayload<CommentProductData>
+      action: ActionPayload<ResponseGetAllModel<CommentProductModel>>
     ) => {
       state.commentProductData = action.payload;
       state.totalPage = Math.ceil(action.payload.count / 4);
@@ -102,17 +91,9 @@ const productDetailSlice = createSlice({
     fetchAddCommnetProduct: (
       state,
       action: ActionPayload<CommentProductDTO>
-    ) => {
-      state.isError = false;
-      state.isLoading = true;
-      state.isSuccess = false;
-    },
-    fetchError: (state) => {
-      state.isError = true;
-      state.isLoading = false;
-    },
-    addCommentProduct: (state, action: ActionPayload<CommentProduct>) => {
-      state.commentProductData.userComment = action.payload;
+    ) => {},
+    addCommentProduct: (state, action: ActionPayload<CommentProductModel>) => {
+      // state.commentProductData.userComment = action.payload;
       state.commentProductData.count += 1;
       state.commentProductData.items.unshift(action.payload);
       state.totalPage = Math.ceil(state.commentProductData.count / 4);
@@ -122,24 +103,20 @@ const productDetailSlice = createSlice({
       ) {
         state.commentProductData.items.pop();
       }
-      state.isLoading = false;
-      state.isSuccess = true;
     },
     fetchUpdateCommentProduct: (
       state,
       action: ActionPayload<FetchUpdateCommentProductPayload>
+    ) => {},
+    updateCommnetProduct: (
+      state,
+      action: ActionPayload<CommentProductModel>
     ) => {
-      state.isError = false;
-      state.isLoading = true;
-      state.isSuccess = false;
-    },
-    updateCommnetProduct: (state, action: ActionPayload<CommentProduct>) => {
       let data = action.payload;
-      state.commentProductData.userComment = data;
+      // state.commentProductData.userComment = data;
       state.commentProductData.items = state.commentProductData.items.map((i) =>
         i.id === data.id ? data : i
       );
-      state.isSuccess = true;
     },
   },
 });

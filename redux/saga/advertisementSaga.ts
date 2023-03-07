@@ -1,4 +1,5 @@
 import { call, put, takeEvery } from "redux-saga/effects";
+import { AdvertisementApi } from "../../api";
 import {
   createAdvertisement,
   deleteAdvertisement,
@@ -7,154 +8,121 @@ import {
   restoreAdvertisement,
   softDeleteAdvertisement,
   updateAdvertisement,
+  CreateAdvertisementDTO,
 } from "../../apis/advertisement";
-import { ProductQueryParams } from "../../apis/product";
 import { uploadSingle } from "../../apis/upload";
+import { AdvertisementModel, ResponseGetAllModel } from "../../models";
+import { AdvertisementParams } from "../../types/params";
 import { MSG_SUCCESS } from "../../utils/constants";
 import {
-  CreateAdvertisementPayload,
   advertisementActions,
-  advertisementReducers,
-  UpdateAdvertisementPayload,
+  advertisementReducer,
 } from "../slice/advertisementSlice";
+import { fetchActions } from "../slice/fetchSlice";
 import { ActionPayload } from "../store";
 
-function* fetchGetAllAdvertisement({
-  payload,
-}: ActionPayload<ProductQueryParams>): any {
-  try {
-    const { message, data } = yield call(() => getAllAdvertisements(payload));
+const advApi = new AdvertisementApi();
 
-    yield put(
-      advertisementActions.setAdvertisementData(
-        message === MSG_SUCCESS ? data : { items: 0, count: 0 }
-      )
-    );
-
-    yield put(advertisementActions.fetchSuccess());
-  } catch (error) {
-    console.log("advertisementActions.fetchGetAllAdvertisement", error);
-    yield put(advertisementActions.fetchError());
-  }
-}
-
-function* fetchCreateAdvertisement({
-  payload,
-}: ActionPayload<CreateAdvertisementPayload>) {
+function* fetchGetAll({
+  payload: params,
+}: ActionPayload<AdvertisementParams>): any {
   let isError = true;
   try {
+    yield put(fetchActions.start(advertisementReducer.fetchGetAll));
+    const data: ResponseGetAllModel<AdvertisementModel> = yield call(() =>
+      advApi.getAll(params)
+    );
+    isError = false;
+    yield put(advertisementActions.setAdvertisementData(data));
+    yield put(fetchActions.endAndSuccess());
+  } catch (error) {
+    console.log("advertisementActions.fetchGetAll", error);
+  }
+  if (isError) yield put(fetchActions.endAndError());
+}
+
+function* fetchCreate({
+  payload,
+}: ActionPayload<{ dto: CreateAdvertisementDTO; files: FileList | null }>) {
+  let isError = true;
+  try {
+    yield put(fetchActions.start(advertisementReducer.fetchCreate));
     const { files, dto } = payload;
-    let url = "";
-    if (files) {
-      const formData = new FormData();
-      formData.append("image", files[0]);
-      const { message, data: dataImage } = yield call(() =>
-        uploadSingle(formData)
-      );
-      if (message === MSG_SUCCESS) {
-        url = dataImage.secure_url;
-      }
-    }
-    const { message: msg } = yield call(() =>
-      createAdvertisement({
-        ...dto,
-        ...(url !== "" ? { path: url } : {}),
+    const data: AdvertisementModel = yield call(() =>
+      advApi.create({
+        files,
+        dto,
       })
     );
-    if (msg === MSG_SUCCESS) {
+    if (data.id > 0) {
       isError = false;
-      yield put(advertisementActions.fetchSuccess());
-      yield put(advertisementActions.back());
+      yield put(fetchActions.endAndSuccessAndBack());
     }
   } catch (error) {
-    console.log("advertisementActions.fetchCreateAdvertisement", error);
+    console.log("advertisementActions.fetchCreate", error);
   }
-  if (isError) yield put(advertisementActions.fetchError());
+  if (isError) yield put(fetchActions.endAndError());
 }
 
-function* fetchUpdateAdvertisement({
+function* fetchUpdate({
   payload,
-}: ActionPayload<UpdateAdvertisementPayload>) {
+}: ActionPayload<{
+  id: number;
+  files: FileList | null;
+  dto: Partial<CreateAdvertisementDTO>;
+}>) {
   let isError = true;
   try {
+    yield put(fetchActions.start(advertisementReducer.fetchUpdate));
     const { files, dto, id } = payload;
-    let url = "";
-    if (files) {
-      const formData = new FormData();
-      formData.append("image", files[0]);
-      const { message, data: dataImage } = yield call(() =>
-        uploadSingle(formData)
-      );
-      if (message === MSG_SUCCESS) {
-        url = dataImage.secure_url;
-      }
-    }
-    const { message: msg } = yield call(() =>
-      updateAdvertisement(id, {
-        ...dto,
-        ...(url !== "" ? { path: url } : {}),
-      })
+    const data: AdvertisementModel = yield call(() =>
+      advApi.update({ id, dto, files })
     );
-    if (msg === MSG_SUCCESS) {
+    if (data.id > 0) {
       isError = false;
-      yield put(advertisementActions.fetchSuccess());
-      yield put(advertisementActions.back());
+      yield put(fetchActions.endAndSuccessAndBack());
     }
   } catch (error) {
-    console.log("advertisementActions.fetchUpdateAdvertisement", error);
+    console.log("advertisementActions.fetchUpdate", error);
   }
-  if (isError) yield put(advertisementActions.fetchError());
+  if (isError) yield put(fetchActions.endAndError());
 }
 
-function* fetchGetAdvertisementById({ payload }: ActionPayload<number>) {
+function* fetchGetById({ payload }: ActionPayload<number>) {
   let isError = true;
   try {
-    const { message, data } = yield call(() => getAdvertisementById(payload));
-    if (message === MSG_SUCCESS) {
+    yield put(fetchActions.start(advertisementReducer.fetchGetById));
+    const data: AdvertisementModel = yield call(() => advApi.getById(payload));
+    if (data.id > 0) {
       isError = false;
-      yield put(advertisementActions.fetchSuccess());
-      yield put(advertisementActions.setAdvertisementEditting(data));
+      yield put(advertisementActions.setCurrent(data));
+      yield put(fetchActions.endAndSuccess());
     }
   } catch (error) {
-    console.log("advertisementActions.fetchGetAdvertisementById", error);
+    console.log("advertisementActions.fetchGetById", error);
   }
-  if (isError) yield put(advertisementActions.fetchError());
+  if (isError) yield put(fetchActions.endAndError());
 }
 
-function* fetchDeleteAdvertisement({ payload }: ActionPayload<number>) {
+function* fetchDeleteSingle({ payload: id }: ActionPayload<number>) {
   let isError = true;
   try {
-    const { message } = yield call(() => deleteAdvertisement(payload));
-    if (message === MSG_SUCCESS) {
+    const result: boolean = yield call(() => advApi.deleteSingle(id));
+    if (result) {
       isError = false;
-      yield put(advertisementActions.fetchSuccess());
       yield put(advertisementActions.deleted());
+      yield put(fetchActions.endAndSuccess());
     }
   } catch (error) {
-    console.log("advertisementActions.fetchDeleteAdvertisement", error);
+    console.log("advertisementActions.fetchDeleteSingle", error);
   }
-  if (isError) yield put(advertisementActions.fetchError());
+  if (isError) yield put(fetchActions.endAndError());
 }
 
 export function* advertisementSaga() {
-  yield takeEvery(
-    advertisementReducers.fetchGetAllAdvertisement,
-    fetchGetAllAdvertisement
-  );
-  yield takeEvery(
-    advertisementReducers.fetchCreateAdvertisement,
-    fetchCreateAdvertisement
-  );
-  yield takeEvery(
-    advertisementReducers.fetchUpdateAdvertisement,
-    fetchUpdateAdvertisement
-  );
-  yield takeEvery(
-    advertisementReducers.fetchGetAdvertisementById,
-    fetchGetAdvertisementById
-  );
-  yield takeEvery(
-    advertisementReducers.fetchDeleteAdvertisement,
-    fetchDeleteAdvertisement
-  );
+  yield takeEvery(advertisementReducer.fetchGetAll, fetchGetAll);
+  yield takeEvery(advertisementReducer.fetchCreate, fetchCreate);
+  yield takeEvery(advertisementReducer.fetchUpdate, fetchUpdate);
+  yield takeEvery(advertisementReducer.fetchGetById, fetchGetById);
+  yield takeEvery(advertisementReducer.fetchDeleteSingle, fetchDeleteSingle);
 }

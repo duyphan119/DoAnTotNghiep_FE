@@ -8,6 +8,10 @@ import NotifyIcon from "./NotifyIcon";
 import AccountIcon from "./AccountIcon";
 import { DarkLightButton } from "../../../components";
 import { useThemeContext } from "../../../context/ThemeContext";
+import Link from "next/link";
+import { protectedRoutes } from "../../../utils/routes";
+import Image from "next/image";
+import logoPng from "../../../public/logo.png";
 type Props = Partial<{
   pageTitle: string;
   onToggle: any;
@@ -21,20 +25,21 @@ const Header = ({ pageTitle, onToggle }: Props) => {
       className={`${styles.header} ${
         theme === "dark" ? styles.headerDark : ""
       }`}
-      sx={{
-        ".headerLeft": {
-          display: {
-            xs: "none",
-            xl: "block",
-          },
-        },
-      }}
     >
       <div className={`headerLeft ${styles.left}`}>
+        <Link className={styles.logo} href={protectedRoutes.admin}>
+          <Image
+            src={logoPng}
+            alt="Logo"
+            width={40}
+            height={40}
+            priority={true}
+          />
+          <span className="logoText">SHOP</span>
+        </Link>
         <IconButton onClick={() => onToggle()}>
           <MenuIcon />
         </IconButton>
-        {pageTitle}
       </div>
       <Box className={"headerCenter " + styles.center}>
         <form className={styles.formSearch}>

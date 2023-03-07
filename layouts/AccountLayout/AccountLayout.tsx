@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 import { useSelector } from "react-redux";
 import { NotFound } from "../../components";
 import { authSelector } from "../../redux/slice/authSlice";
+import { fetchSelector } from "../../redux/slice/fetchSlice";
 import DefaultLayout from "../DefaultLayout";
 import Sidebar from "./Sidebar";
 type Props = Partial<{
@@ -11,13 +12,15 @@ type Props = Partial<{
 }>;
 
 const AccountLayout = ({ children, titleHeading }: Props) => {
-  const { profile, isSuccess } = useSelector(authSelector);
+  const { profile } = useSelector(authSelector);
+  const { isLoading, isError } = useSelector(fetchSelector);
 
-  if (isSuccess && !profile) {
+  if (!isLoading && isError && profile.id === 0) {
+    console.log("Sai");
     return <NotFound />;
   }
 
-  return isSuccess ? (
+  return (
     <DefaultLayout>
       <main>
         <Container maxWidth="lg">
@@ -40,7 +43,7 @@ const AccountLayout = ({ children, titleHeading }: Props) => {
         </Container>
       </main>
     </DefaultLayout>
-  ) : null;
+  );
 };
 
 export default AccountLayout;

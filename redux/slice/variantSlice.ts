@@ -1,46 +1,36 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { VariantQueryParams } from "../../apis/variant";
-import { FetchState, Variant } from "../../utils/types";
+import { ResponseGetAllModel, VariantModel } from "../../models";
+import { VariantParams } from "../../types/params";
 import { ActionPayload, RootState } from "../store";
 
 type State = {
-  variants: Variant[];
-} & FetchState;
+  variantData: ResponseGetAllModel<VariantModel>;
+  current: VariantModel;
+};
 
 const NAME_SLICE = "variant";
 
 const INITIAL_STATE: State = {
-  variants: [],
-  isError: false,
-  isLoading: false,
-  isSuccess: false,
+  variantData: new ResponseGetAllModel<VariantModel>(),
+  current: new VariantModel(),
 };
 
 const variantSlice = createSlice({
   name: NAME_SLICE,
   initialState: INITIAL_STATE,
   reducers: {
-    fetchGetAllVariants: (state, action: ActionPayload<VariantQueryParams>) => {
-      state.isError = false;
-      state.isSuccess = false;
-      state.isLoading = true;
-    },
-    fetchError: (state) => {
-      state.isError = true;
-      state.isLoading = false;
-    },
-    fetchSuccess: (state) => {
-      state.isSuccess = true;
-      state.isLoading = false;
-    },
-    setVariants: (state, action: ActionPayload<Variant[]>) => {
-      state.variants = action.payload;
+    fetchGetAll: (state, action: ActionPayload<VariantParams>) => {},
+    setVariantData: (
+      state,
+      action: ActionPayload<ResponseGetAllModel<VariantModel>>
+    ) => {
+      state.variantData = action.payload;
     },
   },
 });
 
-export const variantReducers = {
-  fetchGetAllVariants: `${NAME_SLICE}/fetchGetAllVariants`,
+export const variantReducer = {
+  fetchGetAll: `${NAME_SLICE}/fetchGetAll`,
 };
 export const variantSelector = (state: RootState): State => state.variant;
 export const variantActions = variantSlice.actions;

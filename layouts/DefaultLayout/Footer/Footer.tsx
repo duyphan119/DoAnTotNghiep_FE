@@ -46,26 +46,26 @@ const policies: Policy[] = [
 ];
 
 const Footer = (props: Props) => {
-  const { groupProducts } = useSelector(groupProductSelector);
-  const appDispatch = useAppDispatch();
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data, message } = await getAllGroupProducts({
-          sortType: "asc",
-          sortBy: "slug",
-        });
+  // const { groupProducts } = useSelector(groupProductSelector);
+  // const appDispatch = useAppDispatch();
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const { data, message } = await getAllGroupProducts({
+  //         sortType: "asc",
+  //         sortBy: "slug",
+  //       });
 
-        if (message === MSG_SUCCESS) {
-          appDispatch(groupProductActions.setGroupProducts(data.items));
-        }
-      } catch (error) {
-        console.log("GET ALL GROUP PRODUCTS ERROR", error);
-      }
-    };
+  //       if (message === MSG_SUCCESS) {
+  //         appDispatch(groupProductActions.setGroupProducts(data.items));
+  //       }
+  //     } catch (error) {
+  //       console.log("GET ALL GROUP PRODUCTS ERROR", error);
+  //     }
+  //   };
 
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
   return (
     <footer className={styles.footer}>
       <Container maxWidth="lg">
@@ -110,7 +110,7 @@ const Footer = (props: Props) => {
           <Grid item xs={12} sm={6} lg={3}>
             <div className={styles.title}>Sản phẩm</div>
             <Grid container columnSpacing={1} rowSpacing={1}>
-              {groupProducts.map((groupProduct: GroupProduct) => {
+              {/* {groupProducts.map((groupProduct: GroupProduct) => {
                 return (
                   <Grid item xs={6} key={groupProduct.id}>
                     <Link href={`/san-phan/group-product/${groupProduct.slug}`}>
@@ -118,7 +118,7 @@ const Footer = (props: Props) => {
                     </Link>
                   </Grid>
                 );
-              })}
+              })} */}
             </Grid>
           </Grid>
           <Grid item xs={12} sm={6} lg={3}>

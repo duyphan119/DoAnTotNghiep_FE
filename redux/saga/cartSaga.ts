@@ -1,54 +1,37 @@
-import { hasCookie } from "cookies-next";
 import { call, put, takeEvery } from "redux-saga/effects";
-import {
-  checkout,
-  CheckoutDTO,
-  createCartItem,
-  deleteCartItem,
-  getCart,
-  updateCartItem,
-} from "../../apis/order";
-import { COOKIE_ACCESSTOKEN_NAME, MSG_SUCCESS } from "../../utils/constants";
-import {
-  cartActions,
-  cartReducers,
-  FetchAddToCartPayload,
-  FetchUpdateCartItemPayload,
-} from "../slice/cartSlice";
+import { CartApi } from "../../api";
+import { OrderItemModel, OrderModel } from "../../models";
+import { CheckoutDTO, CreateCartItemDTO } from "../../types/dtos";
+
+import { cartActions, cartReducer } from "../slice/cartSlice";
+import { fetchActions } from "../slice/fetchSlice";
 import { snackbarActions } from "../slice/snackbarSlice";
 import { ActionPayload } from "../store";
 
-function* fetchCart() {
-  try {
-    if (hasCookie(COOKIE_ACCESSTOKEN_NAME)) {
-      let { message, data } = yield call(() => getCart());
+const cApi = new CartApi();
 
-      yield put(
-        cartActions.setCart(
-          message === MSG_SUCCESS && data ? data : { items: [] }
-        )
-      );
-    } else {
-      yield put(cartActions.setCart({ items: [] }));
+function* fetchCart() {
+  let isError = true;
+  try {
+    yield put(fetchActions.start(cartReducer.fetchCart));
+    let data: OrderModel = yield call(() => cApi.getCart());
+    if (data.id > 0) {
+      isError = false;
+      yield put(cartActions.setCart(data));
+      yield put(fetchActions.endAndSuccess());
     }
   } catch (error) {
-    console.log("cartReducers.fetchCart error", error);
-    yield put(cartActions.setCart({ items: [] }));
+    console.log("cartReducer.fetchCart error", error);
   }
+  if (isError) yield put(fetchActions.endAndError());
 }
 
-function* fetchAddToCart({ payload }: ActionPayload<FetchAddToCartPayload>) {
+function* fetchAddToCart({ payload: dto }: ActionPayload<CreateCartItemDTO>) {
+  let isError = true;
   try {
-    let { item, price } = payload;
-    let { productVariantId, quantity } = item;
-    let { message, data } = yield call(() =>
-      createCartItem({
-        productVariantId,
-        quantity,
-        price,
-      })
-    );
-    if (message === MSG_SUCCESS) {
+    let data: OrderItemModel = yield call(() => cApi.createCartItem(dto));
+    if (data.id > 0) {
+      isError = false;
       yield put(cartActions.addToCart(data));
       yield put(
         snackbarActions.show({
@@ -56,33 +39,37 @@ function* fetchAddToCart({ payload }: ActionPayload<FetchAddToCartPayload>) {
           type: "success",
         })
       );
-    } else yield put(cartActions.fetchError());
+      yield put(fetchActions.endAndSuccess());
+    }
   } catch (error) {
-    console.log("cartReducers.fetchAddToCart error", error);
-    yield put(cartActions.fetchError());
+    console.log("cartReducer.fetchAddToCart error", error);
   }
+  if (isError) yield put(fetchActions.endAndError());
 }
 
 function* fetchUpdateCartItem({
-  payload,
-}: ActionPayload<FetchUpdateCartItemPayload>) {
-  let { id, newQuantity } = payload;
+  payload: dto,
+}: ActionPayload<{ id: number; newQuantity: number }>) {
+  let isError = true;
   try {
-    let { message } = yield call(() => updateCartItem(id, newQuantity));
-    if (message === MSG_SUCCESS) {
-      yield put(cartActions.updateCartItem({ id, newQuantity }));
-    } else yield put(cartActions.fetchError());
+    let data: OrderItemModel = yield call(() => cApi.updateCartItem(dto));
+    if (data.id > 0) {
+      isError = false;
+      yield put(cartActions.updateCartItem(dto));
+      yield put(fetchActions.endAndSuccess());
+    }
   } catch (error) {
-    console.log("cartReducers.fetchUpdateCartItem error", error);
-    yield put(cartActions.fetchError());
+    console.log("cartReducer.fetchUpdateCartItem error", error);
   }
+  if (isError) yield put(fetchActions.endAndError());
 }
 
-function* fetchDeleteCartItem({ payload }: ActionPayload<number>) {
-  let id = payload;
+function* fetchDeleteCartItem({ payload: id }: ActionPayload<number>) {
+  let isError = true;
   try {
-    let { message } = yield call(() => deleteCartItem(id));
-    if (message === MSG_SUCCESS) {
+    let result: boolean = yield call(() => cApi.deleteCartItem(id));
+    if (result) {
+      isError = false;
       yield put(cartActions.deleteCartItem(id));
       yield put(
         snackbarActions.show({
@@ -90,28 +77,30 @@ function* fetchDeleteCartItem({ payload }: ActionPayload<number>) {
           type: "success",
         })
       );
-    } else yield put(cartActions.fetchError());
+      yield put(fetchActions.endAndSuccess());
+    }
   } catch (error) {
-    console.log("cartReducers.fetchDeleteCartItem error", error);
-    yield put(cartActions.fetchError());
+    console.log("cartReducer.fetchDeleteCartItem error", error);
   }
+  if (isError) yield put(fetchActions.endAndError());
 }
 
 function* fetchCheckout({ payload }: ActionPayload<CheckoutDTO>) {
-  try {
-    let { message } = yield call(() => checkout(payload));
-    if (message === MSG_SUCCESS) yield put(cartActions.paymentSuccess());
-    else yield put(cartActions.fetchError());
-  } catch (error) {
-    console.log("cartReducers.fetchCheckout error", error);
-    yield put(cartActions.fetchError());
-  }
+  let isError = true;
+  // try {
+  //   let { message } = yield call(() => checkout(payload));
+  //   if (message === MSG_SUCCESS) yield put(cartActions.paymentSuccess());
+  //   else yield put(cartActions.fetchError());
+  // } catch (error) {
+  //   console.log("cartReducer.fetchCheckout error", error);
+  //   yield put(cartActions.fetchError());
+  // }
+  if (isError) yield put(fetchActions.endAndError());
 }
 
 export function* cartSaga() {
-  yield takeEvery(cartReducers.fetchCart, fetchCart);
-  yield takeEvery(cartReducers.fetchAddToCart, fetchAddToCart);
-  yield takeEvery(cartReducers.fetchUpdateCartItem, fetchUpdateCartItem);
-  yield takeEvery(cartReducers.fetchDeleteCartItem, fetchDeleteCartItem);
-  yield takeEvery(cartReducers.fetchCheckout, fetchCheckout);
+  yield takeEvery(cartReducer.fetchCart, fetchCart);
+  yield takeEvery(cartReducer.fetchAddToCart, fetchAddToCart);
+  yield takeEvery(cartReducer.fetchUpdateCartItem, fetchUpdateCartItem);
+  yield takeEvery(cartReducer.fetchDeleteCartItem, fetchDeleteCartItem);
 }

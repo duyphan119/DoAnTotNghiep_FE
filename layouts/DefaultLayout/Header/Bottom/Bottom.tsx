@@ -1,13 +1,13 @@
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import { Container } from "@mui/material";
+import { Container, IconButton } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import logoPng from "../../../../public/logo.png";
 import moneyPng from "../../../../public/money.png";
 import { authSelector } from "../../../../redux/slice/authSlice";
-import { groupProductManagementActions } from "../../../../redux/slice/groupProductManagementSlice";
+import { groupProductActions } from "../../../../redux/slice/groupProductSlice";
 import { useAppDispatch } from "../../../../redux/store";
 import { publicRoutes } from "../../../../utils/routes";
 import CartIcon from "./CartIcon";
@@ -40,9 +40,12 @@ const DPoint = () => {
 
 const Bottom = (props: Props) => {
   const appDispatch = useAppDispatch();
+  const [open, setOpen] = useState<boolean>(false);
+
   useEffect(() => {
-    appDispatch(groupProductManagementActions.fetchHeaderData());
+    appDispatch(groupProductActions.fetchGetGroupProductHeaders());
   }, []);
+
   return (
     <div className={styles.headerBottom}>
       <Container maxWidth="lg">
@@ -58,9 +61,12 @@ const Bottom = (props: Props) => {
               />
               SHOP
             </Link>
-            <Categories />
           </div>
-          <SearchInput />
+          <Categories />
+
+          <div className={`${styles.search} ${open ? styles.searchOpen : ""}`}>
+            <SearchInput />
+          </div>
           <div className={styles.right}>
             <ul className={styles.items}>
               <DPoint />
@@ -68,6 +74,11 @@ const Bottom = (props: Props) => {
                 <CartIcon />
               </li>
             </ul>
+            <div className={styles.searchIcon}>
+              <IconButton onClick={() => setOpen((state) => !state)}>
+                <SearchOutlinedIcon />
+              </IconButton>
+            </div>
             <Drawer />
           </div>
         </div>

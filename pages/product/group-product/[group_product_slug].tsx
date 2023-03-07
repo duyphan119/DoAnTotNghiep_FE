@@ -3,25 +3,34 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { ProductApi } from "../../../api";
 import { getAllProducts } from "../../../apis/product";
 import { ProductCard } from "../../../components";
 import { ProductsLayout } from "../../../layouts";
-import { groupProductSelector } from "../../../redux/slice/groupProductSlice";
-import { CODE_OK, MSG_SUCCESS } from "../../../utils/constants";
-import { fullNameGroupProduct } from "../../../utils/helpers";
 import {
-  Filter,
-  GroupProduct,
-  Product,
-  ResponseItems,
-} from "../../../utils/types";
+  GroupProductModel,
+  ProductModel,
+  ResponseGetAllModel,
+} from "../../../models";
+import {
+  groupProductActions,
+  groupProductSelector,
+} from "../../../redux/slice/groupProductSlice";
+import { useAppDispatch } from "../../../redux/store";
+import { MSG_SUCCESS } from "../../../utils/constants";
+import { fullNameGroupProduct } from "../../../utils/helpers";
+import { Filter } from "../../../utils/types";
 
 type Props = {
-  productData: ResponseItems<Product>;
+  productData: ResponseGetAllModel<ProductModel>;
 };
+const pApi = new ProductApi();
 const LIMIT = 24;
-const Products = ({ productData }: Props) => {
-  const { groupProducts } = useSelector(groupProductSelector);
+const Products = ({ productData: { items, count } }: Props) => {
+  const productData: ResponseGetAllModel<ProductModel> =
+    new ResponseGetAllModel(pApi.getListFromJson(items), count);
+  const appDispatch = useAppDispatch();
+  const { relatedGroupProductData } = useSelector(groupProductSelector);
   const router = useRouter();
   const { p } = router.query;
   const [filter, setFilter] = useState<Filter>({
@@ -40,6 +49,19 @@ const Products = ({ productData }: Props) => {
       p: f.p && f.p > 1 ? 1 : f.p || 1,
     }));
   };
+  useEffect(() => {
+    const { group_product_slug } = router.query;
+
+    if (group_product_slug) {
+      appDispatch(
+        groupProductActions.fetchGetRelated({
+          relatedSlug: `${group_product_slug}`,
+          sortBy: "slug",
+          sortType: "asc",
+        })
+      );
+    }
+  }, [router.query]);
 
   useEffect(() => {
     setFilter((f) => ({
@@ -82,32 +104,18 @@ const Products = ({ productData }: Props) => {
 
   const getCurrentBreadcrumb = () => {
     const slug = router.query.group_product_slug;
-    let groupProduct = groupProducts.find(
-      (gp: GroupProduct) => gp.slug === slug
+    let groupProduct = relatedGroupProductData.items.find(
+      (gp: GroupProductModel) => gp.slug === slug
     );
     if (groupProduct) {
       return fullNameGroupProduct(groupProduct);
     }
 
-    groupProduct = groupProducts.find((gp: GroupProduct) =>
+    groupProduct = relatedGroupProductData.items.find((gp: GroupProductModel) =>
       gp.slug.includes("" + slug)
     );
 
-    if (
-      groupProduct &&
-      (slug === "nam" ||
-        slug === "nu" ||
-        slug === "be-trai" ||
-        slug === "be-gai")
-    ) {
-      const { sex, isAdult } = groupProduct;
-      if (!isAdult && sex === "Nam") return "Bé trai";
-      else if (!isAdult && sex === "Nữ") return "Bé gái";
-      else if (isAdult && sex === "Nam") return "Nam";
-      else if (isAdult && sex === "Nữ") return "Nữ";
-    }
-
-    return groupProduct ? groupProduct.name : "";
+    return groupProduct?.getSuffixName(`${slug}`) ?? "";
   };
 
   useEffect(() => {
@@ -155,6 +163,7 @@ const Products = ({ productData }: Props) => {
         ],
         current: getCurrentBreadcrumb(),
       }}
+      groupProductData={relatedGroupProductData}
     >
       <>
         <Head>
@@ -164,7 +173,7 @@ const Products = ({ productData }: Props) => {
         </Head>
       </>
       <Grid container columnSpacing={2} rowSpacing={2}>
-        {productData.items.map((product: Product) => {
+        {productData.items.map((product) => {
           return (
             <Grid item xs={12} sm={6} md={3} lg={4} key={product.id}>
               <ProductCard product={product} />
@@ -197,33 +206,35 @@ const Products = ({ productData }: Props) => {
 };
 
 export async function getServerSideProps(context: any) {
-  const {
-    group_product_slug,
-    p,
-    sortBy,
-    sortType,
-    v_ids,
-    min_price,
-    max_price,
-  } = context.query;
-  const { message, data } = await getAllProducts({
-    group_product_slug,
-    limit: LIMIT,
-    product_variants: true,
-    ...(p ? { p } : {}),
-    ...(sortBy ? { sortBy } : {}),
-    ...(sortType ? { sortType } : {}),
-    ...(v_ids ? { v_ids } : {}),
-    ...(min_price ? { min_price } : {}),
-    ...(max_price ? { max_price } : {}),
-  });
-  return message === MSG_SUCCESS
-    ? {
-        props: { productData: data },
-      }
-    : {
-        notFound: true,
-      };
+  try {
+    const {
+      group_product_slug,
+      p,
+      sortBy,
+      sortType,
+      v_ids,
+      min_price,
+      max_price,
+    } = context.query;
+    const data: ResponseGetAllModel<ProductModel> = await pApi.getAll({
+      group_product_slug,
+      limit: LIMIT,
+      product_variants: true,
+      ...(p ? { p } : {}),
+      ...(sortBy ? { sortBy } : {}),
+      ...(sortType ? { sortType } : {}),
+      ...(v_ids ? { v_ids } : {}),
+      ...(min_price ? { min_price } : {}),
+      ...(max_price ? { max_price } : {}),
+    });
+    return {
+      props: { productData: JSON.parse(JSON.stringify(data)) },
+    };
+  } catch (error) {
+    return {
+      notFound: true,
+    };
+  }
 }
 
 export default Products;

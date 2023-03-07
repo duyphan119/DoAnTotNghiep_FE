@@ -6,12 +6,19 @@ import { useRouter } from "next/router";
 import { ChangeEvent, useEffect, useReducer, useRef } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
+import { OrderDiscountApi } from "../../api";
 import { CheckoutDTO } from "../../apis/order";
-import { checkOrderDiscount } from "../../apis/orderdiscount";
 import { InputControl, RadioControl, SelectControl } from "../../components";
+import { OrderDiscountModel, UserAddressModel } from "../../models";
 import provinces from "../../province.json";
 import { authSelector } from "../../redux/slice/authSlice";
-import { cartActions, cartSelector } from "../../redux/slice/cartSlice";
+import {
+  cartActions,
+  cartReducer,
+  cartSelector,
+} from "../../redux/slice/cartSlice";
+import { fetchSelector } from "../../redux/slice/fetchSlice";
+import { orderActions, orderSelector } from "../../redux/slice/orderSlice";
 import { snackbarActions } from "../../redux/slice/snackbarSlice";
 import {
   userAddressActions,
@@ -19,18 +26,8 @@ import {
 } from "../../redux/slice/userAddressSlice";
 import { useAppDispatch } from "../../redux/store";
 import styles from "../../styles/_Payment.module.scss";
-import { MSG_SUCCESS } from "../../utils/constants";
-import { getPriceCartItem, getThumbnailOrderItem } from "../../utils/helpers";
 import { publicRoutes } from "../../utils/routes";
-import {
-  District,
-  OrderDiscount,
-  OrderItem,
-  Province,
-  UserAddress,
-  VariantValue,
-  Ward,
-} from "../../utils/types";
+import { District, Province, Ward } from "../../utils/types";
 
 type Props = {};
 
@@ -43,11 +40,11 @@ type State = {
   districts: District[];
   wards: Ward[];
   paymentMethod: "COD" | "MOMO";
-  userAddresses: UserAddress[];
-  userAddress: UserAddress | null;
+  userAddresses: UserAddressModel[];
+  userAddress: UserAddressModel;
   visible: boolean;
   code: string;
-  orderDiscount: OrderDiscount | null;
+  orderDiscount: OrderDiscountModel;
   usePoint: boolean;
 };
 
@@ -66,19 +63,23 @@ const initialState: State = {
   wards: [],
   paymentMethod: "COD",
   userAddresses: [],
-  userAddress: null,
+  userAddress: new UserAddressModel(),
   visible: false,
   code: "",
-  orderDiscount: null,
+  orderDiscount: new OrderDiscountModel(),
   usePoint: false,
 };
 
 const Payment = (props: Props) => {
   const appDispatch = useAppDispatch();
   const router = useRouter();
-  const { cart, total, isPaymentSuccess } = useSelector(cartSelector);
-  const { userAddresses } = useSelector(userAddressSelector);
+  const { cart } = useSelector(cartSelector);
+  const { isCheckoutSuccess } = useSelector(orderSelector);
+  const { userAddressData } = useSelector(userAddressSelector);
   const { profile } = useSelector(authSelector);
+  const { reducers: stateReducers } = useSelector(fetchSelector);
+
+  const total = cart.getTotalPrice();
 
   const [state, dispatch] = useReducer(reducers, initialState);
   const { districts, orderDiscount, userAddress, visible, wards, usePoint } =
@@ -103,7 +104,7 @@ const Payment = (props: Props) => {
       const reqData = {
         ...data,
         shippingPrice: 0,
-        ...(visible && userAddress
+        ...(visible && userAddress.id > 0
           ? {
               province: userAddress.province,
               district: userAddress.district,
@@ -111,10 +112,11 @@ const Payment = (props: Props) => {
               address: userAddress.address,
             }
           : {}),
-        ...(orderDiscount ? { discountId: orderDiscount.id } : {}),
+        ...(orderDiscount.id > 0 ? { discountId: orderDiscount.id } : {}),
         point: usePoint ? +data.point : 0,
       };
-      appDispatch(cartActions.fetchCheckout(reqData));
+      console.log(reqData);
+      appDispatch(orderActions.fetchCheckout(reqData));
     } catch (error) {
       console.log(error);
     }
@@ -122,7 +124,7 @@ const Payment = (props: Props) => {
 
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const id = +e.target.value;
-    const result = userAddresses.find((_) => _.id === id);
+    const result = userAddressData.items.find((_) => _.id === id);
 
     if (result) {
       dispatch({ payload: { userAddress: result } });
@@ -131,11 +133,12 @@ const Payment = (props: Props) => {
 
   const handleUse = async () => {
     try {
+      const odApi = new OrderDiscountApi();
       if (discountRef.current) {
         const code = discountRef.current.value;
         if (code !== "") {
-          const { message, data } = await checkOrderDiscount(code, total);
-          if (message === MSG_SUCCESS) {
+          const data: OrderDiscountModel = await odApi.check({ code, total });
+          if (data.id > 0) {
             dispatch({ payload: { orderDiscount: data, code: "" } });
           } else {
             appDispatch(
@@ -157,12 +160,18 @@ const Payment = (props: Props) => {
   };
 
   useEffect(() => {
-    appDispatch(userAddressActions.fetchGetUserAddresses());
+    appDispatch(userAddressActions.fetchGetAll({}));
   }, []);
 
   useEffect(() => {
-    if (isPaymentSuccess) router.push(publicRoutes.paymentSuccess);
-  }, [isPaymentSuccess]);
+    if (!stateReducers.includes(cartReducer.fetchCart)) {
+      appDispatch(cartActions.fetchCart());
+    }
+  }, [stateReducers]);
+
+  useEffect(() => {
+    if (isCheckoutSuccess) router.push(publicRoutes.paymentSuccess);
+  }, [isCheckoutSuccess]);
 
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {
@@ -249,12 +258,12 @@ const Payment = (props: Props) => {
                   <Grid item xs={12}>
                     <SelectControl
                       label="Địa chỉ"
-                      options={userAddresses.map((item: UserAddress) => ({
-                        value: item.id,
-                        display: `${item.address}, ${item.ward}
-                        , ${item.district}, 
-                        ${item.province}`,
-                      }))}
+                      options={userAddressData.items.map(
+                        (item: UserAddressModel) => ({
+                          value: item.id,
+                          display: item.getFullAddress(),
+                        })
+                      )}
                       value={userAddress.id}
                       onChange={handleChange}
                     />
@@ -352,7 +361,7 @@ const Payment = (props: Props) => {
             <Grid item xs={12} md={4}>
               <h1>Đơn hàng</h1>
               <ul className={styles.items}>
-                {cart.items.map((item: OrderItem) => {
+                {cart.items.map((item) => {
                   return (
                     <li key={item.id} className={styles.item}>
                       <div className={styles.start}>
@@ -361,7 +370,7 @@ const Payment = (props: Props) => {
                           height={64}
                           priority={true}
                           alt=""
-                          src={getThumbnailOrderItem(item)}
+                          src={item.getThumbnail()}
                         />
                       </div>
                       <div className={styles.center}>
@@ -370,7 +379,7 @@ const Payment = (props: Props) => {
                         </div>
                         <div className={styles.variants}>
                           {item.productVariant?.variantValues.map(
-                            (variantValue: VariantValue) => {
+                            (variantValue) => {
                               return (
                                 <div key={variantValue.id}>
                                   {variantValue?.variant?.name}:{" "}
@@ -382,10 +391,10 @@ const Payment = (props: Props) => {
                         </div>
                       </div>
                       <div className={styles.right}>
-                        <div>{getPriceCartItem(item)}</div>
+                        <div>{item.price}</div>
                         <div>x{item.quantity}</div>
                         <div className={styles.total}>
-                          {getPriceCartItem(item) * item.quantity}
+                          {item.getTotalPrice()}
                         </div>
                       </div>
                     </li>
@@ -401,7 +410,7 @@ const Payment = (props: Props) => {
                       Sử dụng
                     </button>
                   </div>
-                  {orderDiscount ? (
+                  {orderDiscount.id > 0 ? (
                     <div className={styles.usingDiscount}>
                       Đã áp dụng mã giảm giá {orderDiscount.code}.
                       <span

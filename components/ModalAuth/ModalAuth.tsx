@@ -1,9 +1,8 @@
 import ClearIcon from "@mui/icons-material/Clear";
 import { Box, Modal } from "@mui/material";
 import { useState, memo } from "react";
+import Form from "./Form";
 
-import Login from "./Login";
-import Register from "./Register";
 import styles from "./_style.module.scss";
 
 type Props = {
@@ -77,10 +76,12 @@ const ModalAuth = ({ open, onClose }: Props) => {
             />
           </Box>
           <TabPanel value={value} index={0}>
-            <Login />
+            {/* <Login /> */}
+            <Form isLoginForm={true} />
           </TabPanel>
           <TabPanel value={value} index={1}>
-            <Register />
+            {/* <Register /> */}
+            <Form />
           </TabPanel>
         </Box>
       </Box>

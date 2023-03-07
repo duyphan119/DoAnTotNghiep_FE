@@ -1,0 +1,37 @@
+@import "../../../styles/mixin";
+.paper {
+  padding: 16px;
+  .paperTitle {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+  .actionsWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 16px 0;
+    gap: 16px;
+    .actionsWrapperLeft,
+    .actionsWrapperRight {
+      display: flex;
+      gap: 32px;
+      @include xs {
+        width: 100%;
+      }
+      @include sm {
+        width: 100%;
+      }
+    }
+    .actionsWrapperLeft {
+      .searchWrapper {
+        display: flex;
+        gap: 8px;
+      }
+    }
+  }
+}
+.goToPageInput {
+  width: 60px;
+  padding: 4px;
+}

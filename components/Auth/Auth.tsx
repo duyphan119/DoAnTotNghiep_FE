@@ -1,6 +1,13 @@
 import { ReactNode, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { authActions, authSelector } from "../../redux/slice/authSlice";
+import { OrderModel } from "../../models";
+import {
+  authActions,
+  authReducer,
+  authSelector,
+} from "../../redux/slice/authSlice";
+import { cartActions } from "../../redux/slice/cartSlice";
+import { fetchSelector } from "../../redux/slice/fetchSlice";
 import { useAppDispatch } from "../../redux/store";
 import ModalAuth from "../ModalAuth";
 
@@ -11,9 +18,10 @@ type Props = Partial<{
 const Auth = ({ children }: Props) => {
   const appDispatch = useAppDispatch();
   const { openModalAuth } = useSelector(authSelector);
+  const { reducers } = useSelector(fetchSelector);
 
   useEffect(() => {
-    appDispatch(authActions.fetchProfile());
+    appDispatch(authActions.fetchGetProfile());
   }, []);
 
   return (

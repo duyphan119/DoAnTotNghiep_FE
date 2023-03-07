@@ -10,12 +10,15 @@ export type BlogQueryParams = QueryParams &
     title: string;
     slug: string;
     content: string;
+    blogCategoryId: number;
   }>;
 
 export type CreateBlogDTO = {
   title: string;
   content: string;
+  blogCategoryId: number;
   thumbnail?: string;
+  heading?: string;
 };
 
 export const getAllBlogs = (

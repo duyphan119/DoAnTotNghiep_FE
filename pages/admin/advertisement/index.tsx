@@ -1,48 +1,46 @@
-import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import {
-  deleteAdvertisement,
-  getAllAdvertisements,
-} from "../../../apis/advertisement";
-import { ConfirmDialog, DataManagement } from "../../../components";
+import { ButtonControl, DataManagement, DataTable } from "../../../components";
 import { AdminLayout } from "../../../layouts";
+import { AdvertisementModel } from "../../../models";
 import {
   advertisementActions,
   advertisementSelector,
 } from "../../../redux/slice/advertisementSlice";
+import { confirmDialogActions } from "../../../redux/slice/confirmDialogSlice";
 import { useAppDispatch } from "../../../redux/store";
-import { MSG_SUCCESS } from "../../../utils/constants";
-import { formatDateTime } from "../../../utils/helpers";
-import { Advertisement, ResponseItems } from "../../../utils/types";
+import helper from "../../../utils/helpers";
+import { Advertisement } from "../../../utils/types";
 
 type Props = {};
 const LIMIT = 10;
 const Orders = (props: Props) => {
   const router = useRouter();
   const appDispatch = useAppDispatch();
-  const { advertisementData, current, isDeleted, openDialog } = useSelector(
-    advertisementSelector
-  );
+  const { advertisementData, isDeleted } = useSelector(advertisementSelector);
 
-  const handleDelete = () => {
-    if (current) {
-      appDispatch(advertisementActions.fetchDeleteAdvertisement(current.id));
-    }
+  const handleDelete = (id: number) => {
+    appDispatch(
+      confirmDialogActions.show({
+        onConfirm: () => {
+          appDispatch(advertisementActions.fetchDelete(id));
+        },
+      })
+    );
   };
 
   useEffect(() => {
     const { p, sortBy, sortType, limit } = router.query;
     appDispatch(
-      advertisementActions.fetchGetAllAdvertisement({
+      advertisementActions.fetchGetAll({
         p: +`${p}` || 1,
         limit: limit ? `${limit}` : LIMIT,
-        ...(sortBy ? { sortBy: `${sortBy}` } : {}),
-        ...(sortType ? { sortType: `${sortType}` } : {}),
+        sortBy: `${sortBy || "id"}`,
+        sortType: `${sortType}` === "asc" ? "asc" : "desc",
       })
     );
   }, [router.query, isDeleted]);
@@ -57,111 +55,81 @@ const Orders = (props: Props) => {
         </Head>
         <DataManagement
           paperTitle="Danh sách quảng cáo"
-          sortable={["title", "createdAt", "page", "href"]}
-          rows={advertisementData.items}
           count={advertisementData.count}
           limit={LIMIT}
-          hasCheck={false}
-          columns={[
-            {
-              style: { width: 70, textAlign: "center" },
-              display: "#",
-              key: "index",
-            },
-            {
-              style: { textAlign: "center", width: 360 },
-              key: "path",
-              display: "Hình ảnh",
-              render: (row: Advertisement) => (
-                <Image
-                  width={360}
-                  height={200}
-                  src={row.path}
-                  alt=""
-                  priority={true}
-                />
-              ),
-            },
-            {
-              style: { textAlign: "left" },
-              key: "title",
-              display: "Tiêu đề",
-            },
-            {
-              style: { textAlign: "left" },
-              key: "page",
-              display: "Trang",
-            },
-            {
-              style: { textAlign: "left" },
-              key: "href",
-              display: "Liên kết",
-            },
-            {
-              style: { width: 120, textAlign: "center" },
-              key: "createdAt",
-              display: "Ngày tạo",
-              render: (row: any) => formatDateTime(row.createdAt),
-            },
-            {
-              style: { width: 100 },
-              key: "actions",
-              render: (row: any) => (
-                <>
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <Link href={`/admin/advertisement/${row.id}/update`}>
-                      <button className="btnEdit">Sửa</button>
-                    </Link>
-                    <button
-                      className="btnDelete"
-                      style={{ marginLeft: "8px" }}
-                      onClick={() =>
-                        appDispatch(advertisementActions.showDialog(row))
-                      }
-                    >
-                      Xóa
-                    </button>
-                  </div>
-                  {openDialog && current ? (
-                    <ConfirmDialog
-                      open={current.id === row.id ? true : false}
-                      onClose={() =>
-                        appDispatch(advertisementActions.hideDialog())
-                      }
-                      onConfirm={handleDelete}
-                      title="Xác nhận"
-                      text="Bạn có chắc chắn muốn xóa không?"
-                    />
-                  ) : null}
-                </>
-              ),
-            },
-          ]}
-        />
+        >
+          <DataTable
+            hasCheck={true}
+            sortable={["id", "title", "createdAt", "page", "href"]}
+            rows={advertisementData.items}
+            columns={[
+              {
+                style: { width: 70, textAlign: "center" },
+                display: "ID",
+                key: "id",
+              },
+              {
+                style: { textAlign: "center", width: 360 },
+                key: "path",
+                display: "Hình ảnh",
+                render: (row: AdvertisementModel) => (
+                  <Image
+                    width={360}
+                    height={200}
+                    src={row.path}
+                    alt=""
+                    priority={true}
+                  />
+                ),
+              },
+              {
+                style: { textAlign: "left" },
+                key: "title",
+                display: "Tiêu đề",
+              },
+              {
+                style: { textAlign: "left" },
+                key: "page",
+                display: "Trang",
+              },
+              {
+                style: { textAlign: "left" },
+                key: "href",
+                display: "Liên kết",
+              },
+              {
+                style: { width: 120, textAlign: "center" },
+                key: "createdAt",
+                display: "Ngày tạo",
+                render: (row: AdvertisementModel) =>
+                  helper.formatDateTime(row.createdAt),
+              },
+              {
+                style: { width: 100 },
+                key: "actions",
+                render: (row: AdvertisementModel) => (
+                  <>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <Link href={`/admin/advertisement/${row.id}/update`}>
+                        <ButtonControl color="secondary">Sửa</ButtonControl>
+                      </Link>
+                      <ButtonControl
+                        color="error"
+                        sx={{ ml: 1 }}
+                        onClick={() => handleDelete(row.id)}
+                      >
+                        Xóa
+                      </ButtonControl>
+                    </div>
+                  </>
+                ),
+              },
+            ]}
+          />
+        </DataManagement>
       </>
     </AdminLayout>
   );
 };
 
 export default Orders;
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  try {
-    const { p, sortBy, sortType, q } = context.query as any;
-    const params = {
-      p: p || 1,
-      limit: LIMIT,
-      sortBy,
-      sortType,
-      q,
-    };
-    let { message, data } = await getAllAdvertisements(params);
-    if (message === MSG_SUCCESS)
-      return {
-        props: { advData: data },
-      };
-  } catch (error) {
-    console.log("GET ALL ADVERTISEMENTS ERROR::", error);
-  }
-  return { notFound: true };
-}

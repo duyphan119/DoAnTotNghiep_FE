@@ -2,10 +2,10 @@ import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { getAllUsers } from "../../../apis/user";
-import { DataManagement } from "../../../components";
+import { DataManagement, DataTable } from "../../../components";
 import { AdminLayout } from "../../../layouts";
 import { COOKIE_ACCESSTOKEN_NAME, MSG_SUCCESS } from "../../../utils/constants";
-import { formatDateTime } from "../../../utils/helpers";
+import helper from "../../../utils/helpers";
 import { ResponseItems, User } from "../../../utils/types";
 
 type Props = {
@@ -30,40 +30,43 @@ const Page = ({ accountData: propAccountData }: Props) => {
         </Head>
         <DataManagement
           paperTitle="Danh sách tài khoản"
-          sortable={["fullName", "email", "phone", "createdAt"]}
-          rows={accountData.items}
           count={accountData.count}
           limit={LIMIT}
-          hasCheck={false}
-          columns={[
-            {
-              style: { width: 70, textAlign: "center" },
-              display: "#",
-              key: "index",
-            },
-            {
-              style: { textAlign: "left" },
-              key: "email",
-              display: "Email",
-            },
-            {
-              style: { textAlign: "left" },
-              key: "fullName",
-              display: "Họ tên",
-            },
-            {
-              style: { textAlign: "center", width: 120 },
-              key: "phone",
-              display: "Số điện thoại",
-            },
-            {
-              style: { width: 120, textAlign: "center" },
-              key: "createdAt",
-              display: "Ngày tạo",
-              render: (row: User) => formatDateTime(row.createdAt),
-            },
-          ]}
-        />
+        >
+          <DataTable
+            hasCheck={true}
+            rows={accountData.items}
+            sortable={["id", "fullName", "email", "phone", "createdAt"]}
+            columns={[
+              {
+                style: { width: 70, textAlign: "center" },
+                display: "ID",
+                key: "id",
+              },
+              {
+                style: { textAlign: "left" },
+                key: "email",
+                display: "Email",
+              },
+              {
+                style: { textAlign: "left" },
+                key: "fullName",
+                display: "Họ tên",
+              },
+              {
+                style: { textAlign: "center", width: 120 },
+                key: "phone",
+                display: "Số điện thoại",
+              },
+              {
+                style: { width: 120, textAlign: "center" },
+                key: "createdAt",
+                display: "Ngày tạo",
+                render: (row: User) => helper.formatDateTime(row.createdAt),
+              },
+            ]}
+          />
+        </DataManagement>
       </>
     </AdminLayout>
   );

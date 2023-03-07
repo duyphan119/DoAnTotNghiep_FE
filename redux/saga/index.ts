@@ -1,11 +1,13 @@
 import { all } from "redux-saga/effects";
 import { advertisementSaga } from "./advertisementSaga";
 import { authSaga } from "./authSaga";
-import { blogManamentSaga } from "./blogManamentSaga";
+import { blogCategorySaga } from "./blogCategorySaga";
+import { blogManamentSaga } from "./blogSaga";
 import { cartSaga } from "./cartSaga";
-import { groupProductManamentSaga } from "./groupProductManamentSaga";
+import { groupProductSaga } from "./groupProductSaga";
+import { orderSaga } from "./orderSaga";
 import { productDetailSaga } from "./productDetailSaga";
-import { productManamentSaga } from "./productManamentSaga";
+import { productSaga } from "./productSaga";
 import { productVariantSaga } from "./productVariantSaga";
 import { userAddressSaga } from "./userAddressSaga";
 import { variantSaga } from "./variantSaga";
@@ -16,11 +18,13 @@ export default function* rootSaga() {
     cartSaga(),
     productDetailSaga(),
     userAddressSaga(),
-    productManamentSaga(),
-    groupProductManamentSaga(),
+    productSaga(),
     productVariantSaga(),
     variantSaga(),
     blogManamentSaga(),
     advertisementSaga(),
+    blogCategorySaga(),
+    groupProductSaga(),
+    orderSaga(),
   ]);
 }

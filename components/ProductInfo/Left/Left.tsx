@@ -1,14 +1,22 @@
 import Image from "next/image";
 import React from "react";
+import { ProductImageModel } from "../../../models";
 import { ProductVariantImage } from "../../../utils/types";
+import ImageFill from "../../common/ImageFill";
 import styles from "../_style.module.scss";
 type Props = {
-  images: ProductVariantImage[];
+  images: ProductImageModel[];
   thumbnail: string;
 };
 
 const Left = ({ images, thumbnail }: Props) => {
   const [index, setIndex] = React.useState<number>(-1);
+
+  const src =
+    index > -1 && images.length > index ? images[index].path : thumbnail;
+
+  console.log("left re-render");
+
   return (
     <div className={styles.left}>
       <div className={styles.images} style={{ height: 548 }}>
@@ -27,14 +35,7 @@ const Left = ({ images, thumbnail }: Props) => {
         })}
       </div>
       <div className={styles.singleImageWrapper}>
-        <div className={styles.singleImage}>
-          <Image
-            src={index > -1 ? images[index].path : thumbnail}
-            alt=""
-            fill={true}
-            sizes="(min-width: 0) 480px"
-          />
-        </div>
+        <ImageFill src={src} alt="" height="133%" />
       </div>
     </div>
   );

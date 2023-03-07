@@ -16,10 +16,10 @@ const ProductInfo = (props: Props) => {
   const getImages = () => {
     if (!product.images) return [];
     const images = [...product.images];
-    const newImages = images.filter((i: ProductVariantImage) =>
+    const newImages = images.filter((i) =>
       selectedVariantValues.length > 0
         ? selectedVariantValues.findIndex(
-            (vv: VariantValue) => vv.id === i.variantValueId
+            (vv) => vv.id === i.variantValueId
           ) !== -1
         : true
     );

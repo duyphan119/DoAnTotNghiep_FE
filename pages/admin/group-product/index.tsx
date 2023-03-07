@@ -1,60 +1,48 @@
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
+import { Button } from "@mui/material";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import {
-  deleteGroupProduct,
-  restoreGroupProduct,
-  softDeleteGroupProduct,
-} from "../../../apis/groupProduct";
-import { ConfirmDialog, DataManagement } from "../../../components";
+import { ButtonControl, DataManagement, DataTable } from "../../../components";
 import { AdminLayout } from "../../../layouts";
+import { GroupProductModel } from "../../../models";
+import { confirmDialogActions } from "../../../redux/slice/confirmDialogSlice";
 import {
-  groupProductManagementActions,
-  groupProductManagementSelector,
-} from "../../../redux/slice/groupProductManagementSlice";
+  groupProductActions,
+  groupProductSelector,
+} from "../../../redux/slice/groupProductSlice";
 import { useAppDispatch } from "../../../redux/store";
-import { formatDateTime } from "../../../utils/helpers";
+import helper from "../../../utils/helpers";
 import { protectedRoutes } from "../../../utils/routes";
-import { GroupProduct } from "../../../utils/types";
 
 type Props = {};
 const LIMIT = 10;
 const GroupProducts = (props: Props) => {
   const appDispatch = useAppDispatch();
   const router = useRouter();
-  const { groupProductData, current, openDialog, isDeleted } = useSelector(
-    groupProductManagementSelector
-  );
-
-  const handleSoftDelete = (id: number) => {
-    appDispatch(groupProductManagementActions.fetchSoftDeleteGroupProduct(id));
-  };
-
-  const handleRestore = (id: number) => {
-    appDispatch(groupProductManagementActions.fetchRestoreGroupProduct(id));
-  };
-
-  const handleDelete = () => {
-    if (current)
-      appDispatch(
-        groupProductManagementActions.fetchDeleteGroupProduct(current.id)
-      );
+  const { groupProductData, isDeleted } = useSelector(groupProductSelector);
+  const handleDeleteAll = (ids: number[]) => {
+    appDispatch(
+      confirmDialogActions.show({
+        onConfirm: () => {
+          appDispatch(groupProductActions.fetchSoftDeleteMultiple(ids));
+        },
+      })
+    );
   };
 
   useEffect(() => {
     const { p, sortBy, sortType } = router.query;
     appDispatch(
-      groupProductManagementActions.fetchGroupProductData({
+      groupProductActions.fetchGetAll({
         p: +`${p}` || 1,
         limit: LIMIT,
-        withDeleted: true,
-        ...(sortBy ? { sortBy: `${sortBy}` } : {}),
-        ...(sortType ? { sortType: `${sortType}` } : {}),
+        sortBy: `${sortBy || "id"}`,
+        sortType: `${sortType}` === "asc" ? "asc" : "desc",
       })
     );
   }, [router.query, isDeleted]);
@@ -69,121 +57,113 @@ const GroupProducts = (props: Props) => {
         </Head>
         <DataManagement
           paperTitle="Danh sách nhóm sản phẩm"
-          sortable={["name", "slug", "sex", "isAdult", "createdAt"]}
-          rows={groupProductData.items}
           count={groupProductData.count}
           limit={LIMIT}
-          // hasCheck={false}
-          columns={[
-            {
-              style: { width: 70, textAlign: "center" },
-              display: "#",
-              key: "index",
-            },
-            {
-              style: { textAlign: "left" },
-              key: "name",
-              display: "Tên nhóm sản phẩm",
-              render: (row: GroupProduct) => (
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "16px" }}
-                >
-                  {row.thumbnail ? (
-                    <div>
-                      <Image
-                        alt=""
-                        width={72}
-                        height={72}
-                        priority={true}
-                        src={row.thumbnail}
-                      />
-                    </div>
-                  ) : null}
-                  {row.name}
-                </div>
-              ),
-            },
-            {
-              style: { width: 90, textAlign: "center" },
-              key: "sex",
-              display: "Giới tính",
-            },
-            {
-              style: { width: 90, textAlign: "center" },
-              key: "isAdult",
-              display: "Người lớn",
-              render: (row: GroupProduct) =>
-                row.isAdult ? (
-                  <CheckIcon style={{ color: "#33eb91" }} />
-                ) : (
-                  <ClearIcon style={{ color: "#d32f2f" }} />
-                ),
-            },
-            {
-              style: { textAlign: "left" },
-              key: "slug",
-              display: "Bí danh",
-            },
-            {
-              style: { width: 180, textAlign: "center" },
-              key: "createdAt",
-              display: "Ngày tạo",
-              render: (row: GroupProduct) => formatDateTime(row.createdAt),
-            },
-            {
-              style: { width: 90, textAlign: "center" },
-              key: "deletedAt",
-              display: "Hiển thị",
-              render: (row: GroupProduct) =>
-                row.deletedAt ? (
-                  <ClearIcon
-                    style={{ color: "#d32f2f" }}
-                    onClick={() => handleRestore(row.id)}
-                  />
-                ) : (
-                  <CheckIcon
-                    style={{ color: "#33eb91" }}
-                    onClick={() => handleSoftDelete(row.id)}
-                  />
-                ),
-            },
-            {
-              style: { width: 100 },
-              key: "actions",
-              render: (row: GroupProduct) => (
-                <>
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <Link href={protectedRoutes.updateGroupProduct(row.id)}>
-                      <button className="btnEdit">Sửa</button>
-                    </Link>
-                    <button
-                      className="btnDelete"
-                      style={{ marginLeft: "8px" }}
-                      onClick={() =>
-                        appDispatch(
-                          groupProductManagementActions.showDialog(row)
-                        )
-                      }
-                    >
-                      Xóa
-                    </button>
+          onDeleteAll={handleDeleteAll}
+        >
+          <DataTable
+            rows={groupProductData.items}
+            sortable={["id", "name", "slug", "sex", "isAdult", "createdAt"]}
+            hasCheck={true}
+            columns={[
+              {
+                style: { width: 70, textAlign: "center" },
+                display: "ID",
+                key: "id",
+              },
+              {
+                style: { textAlign: "left" },
+                key: "name",
+                display: "Tên nhóm sản phẩm",
+                render: (row: GroupProductModel) => (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "16px",
+                    }}
+                  >
+                    {row.thumbnail ? (
+                      <div>
+                        <Image
+                          alt=""
+                          width={72}
+                          height={72}
+                          priority={true}
+                          src={row.thumbnail}
+                        />
+                      </div>
+                    ) : null}
+                    {row.name}
                   </div>
-                  {openDialog && current ? (
-                    <ConfirmDialog
-                      open={current.id === row.id ? true : false}
-                      onClose={() =>
-                        appDispatch(groupProductManagementActions.hideDialog())
-                      }
-                      onConfirm={handleDelete}
-                      title="Xác nhận"
-                      text="Bạn có chắc chắn muốn xóa không?"
-                    />
-                  ) : null}
-                </>
-              ),
-            },
-          ]}
-        />
+                ),
+              },
+              {
+                style: { width: 90, textAlign: "center" },
+                key: "sex",
+                display: "Giới tính",
+              },
+              {
+                style: { width: 90, textAlign: "center" },
+                key: "isAdult",
+                display: "Người lớn",
+                render: (row: GroupProductModel) =>
+                  row.isAdult ? (
+                    <CheckIcon style={{ color: "#33eb91" }} />
+                  ) : (
+                    <ClearIcon style={{ color: "#d32f2f" }} />
+                  ),
+              },
+              {
+                style: { textAlign: "left" },
+                key: "slug",
+                display: "Bí danh",
+              },
+              {
+                style: { width: 180, textAlign: "center" },
+                key: "createdAt",
+                display: "Ngày tạo",
+                render: (row: GroupProductModel) =>
+                  helper.formatDateTime(row.createdAt),
+              },
+              {
+                style: { width: 152 },
+                key: "actions",
+                render: (row: GroupProductModel) => (
+                  <>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <Link href={protectedRoutes.updateGroupProduct(row.id)}>
+                        <ButtonControl color="secondary" size="small">
+                          Sửa
+                        </ButtonControl>
+                      </Link>
+                      <ButtonControl
+                        color="error"
+                        onClick={() =>
+                          appDispatch(
+                            confirmDialogActions.show({
+                              onConfirm: () => {
+                                appDispatch(
+                                  groupProductActions.fetchSoftDeleteSingle(
+                                    row.id
+                                  )
+                                );
+                              },
+                            })
+                          )
+                        }
+                        sx={{ ml: 1 }}
+                        size="small"
+                      >
+                        Xóa
+                      </ButtonControl>
+                    </div>
+                  </>
+                ),
+              },
+            ]}
+          />
+        </DataManagement>
       </>
     </AdminLayout>
   );

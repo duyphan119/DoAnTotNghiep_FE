@@ -10,6 +10,7 @@ export const publicRoutes = {
   changePassword: "/change-password",
   cart: "/cart",
   blogs: "/blog",
+  blogCategory: (slug: string) => `/blog/blog-category/${slug}`,
   blogDetail: (slug: string) => `/blog/${slug}`,
   adminSignin: "/admin/signin",
 };
@@ -26,9 +27,14 @@ export const protectedRoutes = {
   createAdvertisement: "/admin/advertisement/create",
   updateAdvertisement: (id: number) => `/admin/advertisement/${id}/update`,
 
-  blogManagement: "/admin/blog",
+  blogCategoryManagement: "/admin/blog-category",
+  createBlogCategory: "/admin/blog-category/create",
+  updateBlogCategory: (id: number) => `/admin/blog-category/${id}/update`,
+
+  blog: "/admin/blog",
   createBlog: "/admin/blog/create",
   updateBlog: (id: number) => `/admin/blog/${id}/update`,
+  previewBlog: (id: number) => `/admin/blog/${id}/preview`,
 
   orderManagement: "/admin/order",
   createOrder: "/admin/order/create",

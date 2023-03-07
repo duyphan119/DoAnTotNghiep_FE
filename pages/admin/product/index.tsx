@@ -1,155 +1,179 @@
-import CheckIcon from "@mui/icons-material/Check";
-import ClearIcon from "@mui/icons-material/Clear";
-import ModeEditIcon from "@mui/icons-material/ModeEdit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import PreviewIcon from "@mui/icons-material/Preview";
-import { Button, IconButton, Tooltip } from "@mui/material";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import {
+  Box,
+  Checkbox,
+  ClickAwayListener,
+  Grid,
+  IconButton,
+  Popper,
+  Typography,
+} from "@mui/material";
 import Head from "next/head";
-import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import { CSSProperties, MouseEvent, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { ProductApi } from "../../../api";
 import {
-  deleteProduct,
-  getAllProducts,
-  restoreProduct,
-  softDeleteProduct,
-} from "../../../apis/product";
-import {
-  ConfirmDialog,
   DataManagement,
+  ImageFill,
   ModalPreviewProduct,
-  ModalProductVariant,
-  ModalProductVariantImage,
 } from "../../../components";
 import { AdminLayout } from "../../../layouts";
-import { MSG_SUCCESS } from "../../../utils/constants";
-import { formatDateTime } from "../../../utils/helpers";
-import { Product, ResponseItems } from "../../../utils/types";
-import { useAppDispatch } from "../../../redux/store";
-import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
+import { ProductModel } from "../../../models";
+import ResponseGetAllModel from "../../../models/ResponseGetAllModel";
 import {
-  productManagementActions,
-  productManagementSelector,
-} from "../../../redux/slice/productManagementSlice";
+  productActions,
+  productSelector,
+} from "../../../redux/slice/productSlice";
+import { snackbarActions } from "../../../redux/slice/snackbarSlice";
+import { useAppDispatch } from "../../../redux/store";
 import { protectedRoutes } from "../../../utils/routes";
 
 type Props = {};
 const LIMIT = 10;
-const Products = () => {
-  const router = useRouter();
+const ulStyle: CSSProperties = {
+  backgroundColor: "#fff",
+  border: "1px solid lightgray",
+  padding: "4px 0",
+};
+const liStyle: CSSProperties = {
+  padding: "4px 8px",
+  width: "100%",
+  cursor: "pointer",
+  minWidth: 120,
+  maxWidth: 200,
+};
+
+const ProductItem = ({ product }: { product: ProductModel }) => {
   const appDispatch = useAppDispatch();
-  const {
-    current,
-    openModalPV,
-    openModalPVI,
-    productData,
-    openModalPreview,
-    openDialog,
-  } = useSelector(productManagementSelector);
-  const handleCloseModalPV = () => {
-    // setOpenModalPV(false);
+  const [open, setOpen] = useState<boolean>(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement>();
+
+  const handleClick = (e: MouseEvent<HTMLElement>) => {
+    setAnchorEl(e.currentTarget);
+    setOpen((state) => !state);
   };
-  const handleCloseModalPVI = () => {
-    // setOpenModalPVI(false);
-  };
-  const handleOpenModalPVI = (row: Product) => {
-    // setProduct(row);
-    // setOpenModalPVI(true);
-  };
-  const handleOpenModalPV = (row: Product) => {
-    // setProduct(row);
-    // setOpenModalPV(true);
-  };
-  const handlePreview = async (row: Product) => {
-    appDispatch(productManagementActions.showModalPreview(row));
+
+  const handleClickPreview = async (e: MouseEvent<HTMLElement>) => {
+    const pApi = new ProductApi();
+    let isError = true;
     try {
-      const { message, data } = await getAllProducts({
-        slug: row.slug,
-        group_product: true,
+      const { items }: ResponseGetAllModel<ProductModel> = await pApi.getAll({
         product_variants: true,
         images: true,
+        group_product: true,
+        slug: product.slug,
       });
-      if (message === MSG_SUCCESS) {
-        appDispatch(productManagementActions.showModalPreview(data.items[0]));
+
+      if (items.length === 1) {
+        isError = false;
+        appDispatch(
+          productActions.showModalPreview(pApi.getListFromJson(items)[0])
+        );
       }
     } catch (error) {
-      console.log("PREVIEW PRODUCT ERROR");
+      console.log(error);
     }
-  };
-  const handleCloseModalPreview = () => {
-    // setOpenModalPreview(false);
-  };
-  const handleUploadThumbnail = (id: number, thumbnail: string) => {
-    // setProductData({
-    //   ...productData,
-    //   items: productData.items.map((p: Product) =>
-    //     p.id === id ? { ...p, thumbnail } : p
-    //   ),
-    // });
+    if (isError)
+      appDispatch(
+        snackbarActions.show({
+          msg: "Có lỗi xảy ra, vui lòng thử lại sau.",
+          type: "error",
+        })
+      );
+    setOpen((state) => !state);
   };
 
-  const handleSoftDelete = async (id: number) => {
-    // try {
-    //   const { message } = await softDeleteProduct(id);
-    //   if (message === MSG_SUCCESS) {
-    //     const _productData = { ...productData };
-    //     const index = _productData.items.findIndex((p: Product) => p.id === id);
-    //     if (index !== -1) {
-    //       _productData.items[index].deletedAt = "" + new Date().getTime();
-    //       setProductData(_productData);
-    //     }
-    //   }
-    // } catch (error) {
-    //   console.log("Soft delete group product error", error);
-    // }
-  };
+  return (
+    <Box
+      position="relative"
+      width="100%"
+      overflow="hidden"
+      sx={{
+        "&:hover": {
+          ".checkbox, .btn": {
+            visibility: "visible",
+          },
+        },
+      }}
+    >
+      <ImageFill src={product.thumbnail} alt="" height="133%" />
+      <Typography variant="subtitle2" mt={1} className="three-dot three-dot-2">
+        {product.name}
+      </Typography>
+      <Typography variant="caption" className="three-dot three-dot-2">
+        {product.price}đ
+      </Typography>
+      <Box
+        className="checkbox"
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          display: "none",
+        }}
+      >
+        <Checkbox />
+      </Box>
+      <Box
+        className="btn"
+        sx={{
+          position: "absolute",
+          top: 0,
+          right: 0,
+          visibility: "hidden",
+        }}
+      >
+        <IconButton type="button" onClick={handleClick}>
+          <MoreVertIcon />
+        </IconButton>
+      </Box>
 
-  const handleRestore = async (id: number) => {
-    // try {
-    //   const { message } = await restoreProduct(id);
-    //   if (message === MSG_SUCCESS) {
-    //     const _productData = { ...productData };
-    //     const index = _productData.items.findIndex((p: Product) => p.id === id);
-    //     if (index !== -1) {
-    //       _productData.items[index].deletedAt = null;
-    //       setProductData(_productData);
-    //     }
-    //   }
-    // } catch (error) {
-    //   console.log("Restore delete group product error", error);
-    // }
-  };
+      {open ? (
+        <ClickAwayListener onClickAway={() => setOpen(false)}>
+          <Popper anchorEl={anchorEl} open={open} placement="bottom-start">
+            <ul style={ulStyle}>
+              <li
+                style={liStyle}
+                className="text-hover"
+                onClick={handleClickPreview}
+              >
+                Xem chi tiết
+              </li>
+              <li style={liStyle}>
+                <Link
+                  className="text-hover"
+                  href={protectedRoutes.updateProduct(product.id)}
+                >
+                  Sửa
+                </Link>
+              </li>
+              <li className="text-hover" style={liStyle}>
+                Xoá
+              </li>
+            </ul>
+          </Popper>
+        </ClickAwayListener>
+      ) : null}
+    </Box>
+  );
+};
 
-  const handleDelete = async () => {
-    // try {
-    //   if (current) {
-    //     let { id } = current;
-    //     const { message } = await deleteProduct(id);
-    //     if (message === MSG_SUCCESS) {
-    //       const _productData = { ...productData };
-    //       _productData.items = _productData.items.filter(
-    //         (gp: Product) => gp.id !== id
-    //       );
-    //       _productData.count -= 1;
-    //       setProductData(_productData);
-    //     }
-    //   }
-    // } catch (error) {
-    //   console.log("Delete group product error", error);
-    // }
-  };
+const Page = () => {
+  const router = useRouter();
+  const appDispatch = useAppDispatch();
+  const { productData, openModalPreview } = useSelector(productSelector);
 
   useEffect(() => {
     const { p, sortBy, sortType } = router.query;
 
     appDispatch(
-      productManagementActions.fetchProductData({
+      productActions.fetchGetAll({
         p: +`${p}` || 1,
-        ...(sortBy ? { sortBy: `${sortBy}` } : {}),
-        ...(sortType ? { sortType: `${sortType}` } : {}),
         limit: LIMIT,
-        withDeleted: true,
+        sortBy: `${sortBy || "id"}`,
+        sortType: `${sortType}` === "asc" ? "asc" : "desc",
         group_product: true,
       })
     );
@@ -165,169 +189,45 @@ const Products = () => {
         </Head>
         <DataManagement
           paperTitle="Danh sách sản phẩm"
-          rows={productData.items}
           count={productData.count}
           limit={LIMIT}
-          hasCheck={false}
-          columns={[
+          sorts={[
             {
-              style: { width: 70, textAlign: "center" },
-              display: "#",
-              key: "index",
+              label: "Tên tăng dần",
+              sortBy: "name",
+              sortType: "asc",
             },
             {
-              style: { textAlign: "left" },
-              key: "name",
-              display: "Tên sản phẩm",
-              render: (row: Product) => (
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "16px" }}
-                >
-                  <div>
-                    <Image
-                      alt=""
-                      width={72}
-                      height={72}
-                      priority={true}
-                      src={row.thumbnail}
-                    />
-                  </div>
-                  {row.name}
-                </div>
-              ),
+              label: "Tên giảm dần",
+              sortBy: "name",
+              sortType: "desc",
             },
             {
-              style: { textAlign: "left" },
-              key: "slug",
-              display: "Bí danh",
+              label: "Giá tăng dần",
+              sortBy: "price",
+              sortType: "asc",
             },
             {
-              style: { textAlign: "left", width: 200 },
-              key: "groupProduct",
-              display: "Nhóm sản phẩm",
-              render: (row: Product) => row.groupProduct?.name,
-            },
-            {
-              style: { textAlign: "center", width: 110 },
-              key: "productVariantImages",
-              display: "Hình ảnh",
-              render: (row: Product) => (
-                <Button
-                  onClick={() =>
-                    appDispatch(productManagementActions.showModalPVI(row))
-                  }
-                >
-                  Thiết lập
-                </Button>
-              ),
-            },
-            {
-              style: { textAlign: "center", width: 110 },
-              key: "productVariants",
-              display: "Biến thể",
-              render: (row: Product) => (
-                <Button
-                  onClick={() =>
-                    appDispatch(productManagementActions.showModalPV(row))
-                  }
-                >
-                  Thiết lập
-                </Button>
-              ),
-            },
-            {
-              style: { width: 120, textAlign: "center" },
-              key: "createdAt",
-              display: "Ngày tạo",
-              render: (row: Product) => formatDateTime(row.createdAt),
-            },
-            {
-              style: { width: 90, textAlign: "center" },
-              key: "isVisible",
-              display: "Hiển thị",
-              render: (row: Product) =>
-                row.deletedAt ? (
-                  <ClearIcon
-                    style={{ color: "#d32f2f" }}
-                    onClick={() => handleRestore(row.id)}
-                  />
-                ) : (
-                  <CheckIcon
-                    style={{ color: "#33eb91" }}
-                    onClick={() => handleSoftDelete(row.id)}
-                  />
-                ),
-            },
-            {
-              style: { width: 80 },
-              key: "actions",
-              render: (row: Product) => (
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <Tooltip title="Xem trước">
-                    <IconButton
-                      color="secondary"
-                      onClick={() => handlePreview(row)}
-                    >
-                      <PreviewIcon />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="Sửa sản phẩm">
-                    <Link href={protectedRoutes.updateProduct(row.id)}>
-                      <IconButton color="warning">
-                        <ModeEditIcon />
-                      </IconButton>
-                    </Link>
-                  </Tooltip>
-                  <Tooltip title="Xóa sản phẩm">
-                    <IconButton
-                      color="error"
-                      onClick={() =>
-                        appDispatch(productManagementActions.showDialog(row))
-                      }
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </Tooltip>
-                  {openDialog && current ? (
-                    <ConfirmDialog
-                      open={openDialog && current.id === row.id ? true : false}
-                      onClose={() =>
-                        appDispatch(productManagementActions.hideDialog())
-                      }
-                      onConfirm={handleDelete}
-                      title="Xác nhận"
-                      text="Bạn có chắc chắn muốn xóa không?"
-                    />
-                  ) : null}
-                </div>
-              ),
+              label: "Giá giảm dần",
+              sortBy: "price",
+              sortType: "desc",
             },
           ]}
-          sortable={["name", "slug", "groupProduct", "createdAt"]}
-        />
-        {openModalPVI ? (
-          <ModalProductVariantImage onUpdateThumbnail={handleUploadThumbnail} />
-        ) : null}
-        {openModalPV ? <ModalProductVariant /> : null}
+        >
+          <Grid container columnSpacing={2} rowSpacing={2}>
+            {productData.items.map((product) => {
+              return (
+                <Grid item xs={6} sm={4} md={3} lg={2} key={product.id}>
+                  <ProductItem product={product} />
+                </Grid>
+              );
+            })}
+          </Grid>
+        </DataManagement>
         {openModalPreview ? <ModalPreviewProduct /> : null}
       </>
     </AdminLayout>
   );
 };
 
-export default Products;
-
-// export async function getServerSideProps(context: any) {
-//   const { p, sortBy, sortType } = context.query;
-//   const res = await getAllProducts({
-//     p: p || 1,
-//     limit: LIMIT,
-//     sortBy,
-//     sortType,
-//     withDeleted: true,
-//     group_product: true,
-//   });
-//   const { message, data } = res;
-//   if (message === MSG_SUCCESS) return { props: { productData: data } };
-//   return { notFound: true };
-// }
+export default Page;

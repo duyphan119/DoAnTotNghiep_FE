@@ -1,7 +1,7 @@
 import Head from "next/head";
 import React from "react";
-import { AdminFormPaper } from "../../../components";
-import ChangePasswordForm from "../../../components/ChangePasswordForm";
+import { DashboardPaper } from "../../../components";
+import ChangePasswordForm from "../../../components/form/ChangePasswordForm";
 import { AdminLayout } from "../../../layouts";
 
 type Props = {};
@@ -13,9 +13,9 @@ const Page = (props: Props) => {
         <Head>
           <title>Đổi mật khẩu</title>
         </Head>
-        <AdminFormPaper title="Thông tin">
+        <DashboardPaper title="Đổi mật khẩu">
           <ChangePasswordForm />
-        </AdminFormPaper>
+        </DashboardPaper>
       </>
     </AdminLayout>
   );

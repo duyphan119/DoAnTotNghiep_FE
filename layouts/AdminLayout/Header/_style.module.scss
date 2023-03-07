@@ -6,6 +6,12 @@
   padding-inline: 16px;
   border-bottom: 1px solid lightgray;
   gap: 24px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 2;
+  background-color: #fff;
   &.headerDark {
     background-color: #000;
     svg,
@@ -53,10 +59,17 @@
   }
   .left {
     font-weight: 500;
-    font-size: 1.8em;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 8px;
+    width: 264px;
+    max-width: 264px;
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
   }
 
   .right {

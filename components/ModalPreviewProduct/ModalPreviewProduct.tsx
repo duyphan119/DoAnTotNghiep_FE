@@ -6,37 +6,42 @@ import {
   ProductVariantImage,
   VariantValue,
 } from "../../utils/types";
-import { formatProductVariants, rangePrice } from "../../utils/helpers";
+import helper from "../../utils/helpers";
 import { useAppDispatch } from "../../redux/store";
 import { useSelector } from "react-redux";
 import {
-  productManagementActions,
-  productManagementSelector,
-} from "../../redux/slice/productManagementSlice";
+  productActions,
+  productSelector,
+} from "../../redux/slice/productSlice";
 import styles from "./_style.module.scss";
+import { ProductImageModel, VariantValueModel } from "../../models";
+import ImageFill from "../common/ImageFill";
 
 type Props = Partial<{}>;
 
 const ModalPreviewProduct = (props: Props) => {
   const appDispatch = useAppDispatch();
-  const { openModalPreview, current: product } = useSelector(
-    productManagementSelector
-  );
+  const { openModalPreview, current: product } = useSelector(productSelector);
   const [index, setIndex] = useState<number>(-1);
   const [selectedVariantValues, setSelectedVariantValues] = useState<
-    VariantValue[]
+    VariantValueModel[]
   >([]);
   const [selectedProductVariant, setSelectedProductVariant] =
     useState<ProductVariant>();
-  const [variants, setVariants] = useState<any>({
+  const [variants, setVariants] = useState<{
+    keys: string[];
+    values: {
+      [key: string]: VariantValueModel[];
+    };
+  }>({
     keys: [],
     values: {},
   });
 
-  const clickVariantValue = (variantValue: VariantValue) => {
+  const clickVariantValue = (variantValue: VariantValueModel) => {
     const newArr = [...selectedVariantValues];
     const index = selectedVariantValues.findIndex(
-      (i: VariantValue) =>
+      (i) =>
         i.variant &&
         variantValue.variant &&
         i.variant.name === variantValue.variant.name
@@ -48,7 +53,7 @@ const ModalPreviewProduct = (props: Props) => {
 
   useEffect(() => {
     if (product) {
-      setVariants(formatProductVariants(product));
+      setVariants(product.formatProductVariants());
     }
   }, [product]);
 
@@ -79,20 +84,24 @@ const ModalPreviewProduct = (props: Props) => {
   return (
     <Modal
       open={openModalPreview}
-      onClose={() => appDispatch(productManagementActions.hideModalPreview())}
+      onClose={() => appDispatch(productActions.hideModalPreview())}
     >
       <Box
         bgcolor="#fff"
         position="absolute"
         top="50%"
         left="50%"
-        sx={{ transform: "translate(-50%, -50%)", maxWidth: "75vw" }}
+        sx={{
+          transform: "translate(-50%, -50%)",
+          minWidth: "50vw",
+          maxWidth: "80vw",
+        }}
       >
         <Box p={2}>
           <div className={styles.body}>
             <div className={styles.left}>
-              <div className={styles.images} style={{ height: 548 }}>
-                {images.map((image: ProductVariantImage, i: number) => {
+              <div className={styles.images} style={{ height: 496 }}>
+                {images.map((image: ProductImageModel, i: number) => {
                   return (
                     <Image
                       src={image.path}
@@ -106,13 +115,7 @@ const ModalPreviewProduct = (props: Props) => {
                   );
                 })}
               </div>
-              <Image
-                src={imgSrc}
-                alt=""
-                width={480}
-                height={548}
-                priority={true}
-              />
+              <ImageFill src={imgSrc} alt="" height="133%" />
             </div>
             <div className={styles.right}>
               <div className={styles.name}>{product.name}</div>
@@ -122,7 +125,7 @@ const ModalPreviewProduct = (props: Props) => {
               <div className={styles.price}>
                 {selectedProductVariant
                   ? selectedProductVariant.price
-                  : rangePrice(product)}
+                  : product.rangePrice()}
                 đ
               </div>
               {variants.keys.map((key: string) => {
@@ -131,7 +134,7 @@ const ModalPreviewProduct = (props: Props) => {
                     <div className={styles.title}>{key}</div>
                     <ul className={styles.variant}>
                       {variants.values[key].map(
-                        (variantValue: VariantValue) => {
+                        (variantValue: VariantValueModel) => {
                           return (
                             <li
                               key={variantValue.id}
@@ -139,7 +142,8 @@ const ModalPreviewProduct = (props: Props) => {
                               className={
                                 selectedVariantValues &&
                                 selectedVariantValues.findIndex(
-                                  (i: VariantValue) => i.id === variantValue.id
+                                  (i: VariantValueModel) =>
+                                    i.id === variantValue.id
                                 ) !== -1
                                   ? styles.active
                                   : ""
@@ -154,15 +158,6 @@ const ModalPreviewProduct = (props: Props) => {
                   </div>
                 );
               })}
-              {/* <div className={styles.quantity}>
-        <button onClick={() => changeQuantity(quantity - 1)}>-</button>
-        <span>{quantity}</span>
-        <button onClick={() => changeQuantity(quantity + 1)}>+</button>
-      </div>
-      <div className={styles.buttons}>
-        <button>Mua ngay</button>
-        <button onClick={handleAddToCart}>Thêm vào giỏ hàng</button>
-      </div> */}
             </div>
           </div>
         </Box>

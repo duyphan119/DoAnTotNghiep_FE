@@ -6,8 +6,6 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import Link from "next/link";
-
-import { AdminLayout } from "../../layouts";
 import {
   BarChart,
   CartesianGrid,
@@ -18,13 +16,14 @@ import {
   Bar,
   ResponsiveContainer,
 } from "recharts";
-import { formatDateTime, formatYAxisPrice } from "../../utils/helpers";
-import styles from "../../styles/_Dashboard.module.scss";
+import Image from "next/image";
+import helper from "../../utils/helpers";
 import { getStatistics } from "../../apis/statistics";
 import { MSG_SUCCESS } from "../../utils/constants";
 import { BarChartData, Order } from "../../utils/types";
-import Image from "next/image";
 import { protectedRoutes } from "../../utils/routes";
+import { AdminLayout } from "../../layouts";
+import styles from "../../styles/_Dashboard.module.scss";
 
 type Props = {};
 
@@ -184,7 +183,7 @@ const Chart = ({ tabs }: ChartProps) => {
         <BarChart data={tab ? tab.data : []}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="key" />
-          <YAxis tickFormatter={(value) => formatYAxisPrice(value)} />
+          <YAxis tickFormatter={(value) => helper.formatYAxisPrice(value)} />
           <Tooltip />
           <Legend />
           <Bar name="Doanh thu" dataKey="value" fill="var(--blue)" />
@@ -328,7 +327,7 @@ const Dashboard = (props: Props) => {
                       <td style={{ textAlign: "center" }}>{index + 1}</td>
                       <td>{order.user.fullName}</td>
                       <td style={{ textAlign: "center", width: 200 }}>
-                        {formatDateTime(order.orderDate)}
+                        {helper.formatDateTime(order.orderDate)}
                       </td>
                       <td style={{ textAlign: "center", width: 160 }}>
                         <span

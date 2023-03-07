@@ -1,0 +1,47 @@
+.profileWrapper {
+  width: 100%;
+  .headingWrapper {
+    position: relative;
+    .headingTop {
+      background-color: #1af2f2;
+      height: 120px;
+      border-top-left-radius: 50px;
+    }
+    .headingBottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 80px;
+      background-color: #fff;
+      .information {
+        margin-left: 140px;
+        font-weight: 600;
+        font-size: 18px;
+      }
+      .actions {
+        margin-right: 20px;
+        display: flex;
+        gap: 12px;
+      }
+    }
+    .avatar {
+      position: absolute;
+      left: 20px;
+      bottom: 20px;
+    }
+  }
+  .controls {
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+    .controlWrapper {
+      display: flex;
+      align-items: center;
+      .label {
+        width: 200px;
+      }
+    }
+  }
+}

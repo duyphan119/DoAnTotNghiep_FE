@@ -5,19 +5,21 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
+import { ButtonControl } from "../../components";
 import { DefaultLayout } from "../../layouts";
+import { OrderItemModel } from "../../models";
 import emptyCartPng from "../../public/empty-cart.png";
 import { cartActions, cartSelector } from "../../redux/slice/cartSlice";
+import { fetchSelector } from "../../redux/slice/fetchSlice";
 import { useAppDispatch } from "../../redux/store";
 import styles from "../../styles/_Cart.module.scss";
-import { getPriceCartItem, getThumbnailOrderItem } from "../../utils/helpers";
 import { publicRoutes } from "../../utils/routes";
 import { OrderItem } from "../../utils/types";
 
 type Props = {};
 
 type CartItemProps = {
-  item: OrderItem;
+  item: OrderItemModel;
 };
 
 const CartItem = React.memo(({ item }: CartItemProps) => {
@@ -28,12 +30,10 @@ const CartItem = React.memo(({ item }: CartItemProps) => {
   };
 
   const handleDeleteItem = () => {
-    appDispatch(cartActions.deleteCartItem(item.id));
+    appDispatch(cartActions.fetchDeleteCartItem(item.id));
   };
 
-  const getPrice = useMemo(() => {
-    return item ? getPriceCartItem(item) : 0;
-  }, [item]);
+  const price = item ? item.getTotalPrice() : 0;
 
   return (
     <tr>
@@ -48,7 +48,7 @@ const CartItem = React.memo(({ item }: CartItemProps) => {
               height={72}
               priority={true}
               alt=""
-              src={item ? getThumbnailOrderItem(item) : ""}
+              src={item.getThumbnail()}
             />
           </div>
           <div>
@@ -65,10 +65,10 @@ const CartItem = React.memo(({ item }: CartItemProps) => {
           </div>
         </div>
       </td>
-      <td>{getPrice}</td>
+      <td>{item.price}</td>
       <td>
         <div className={styles["quantity-wrapper"]}>
-          <div>{getPrice}</div>
+          <div>{item.price}</div>
           <div className={styles.quantity}>
             <button
               className={styles.inc}
@@ -84,10 +84,10 @@ const CartItem = React.memo(({ item }: CartItemProps) => {
               +
             </button>
           </div>
-          <div>{item.quantity * getPrice}</div>
+          <div>{price}</div>
         </div>
       </td>
-      <td>{item.quantity * getPrice}</td>
+      <td>{price}</td>
     </tr>
   );
 });
@@ -106,7 +106,7 @@ const TableCart = () => {
         </tr>
       </thead>
       <tbody>
-        {cart.items.map((item: OrderItem) => {
+        {cart.items.map((item) => {
           return <CartItem key={item.id} item={item} />;
         })}
       </tbody>
@@ -117,7 +117,8 @@ const TableCart = () => {
 };
 
 const CartResult = () => {
-  const { total } = useSelector(cartSelector);
+  const { cart } = useSelector(cartSelector);
+  const total = cart.getTotalPrice();
   return (
     <div className={styles["cart-result"]}>
       <div className={styles.row}>
@@ -129,7 +130,7 @@ const CartResult = () => {
         <span>{total}</span>
       </div>
       <Link href={publicRoutes.payment} className={styles.checkout}>
-        Thanh toán
+        <ButtonControl>Thanh toán</ButtonControl>
       </Link>
     </div>
   );
@@ -148,13 +149,16 @@ const EmptyCart = () => {
         />
       </div>
       <p>Giỏ hàng của bạn đang trống</p>
-      <Link href={publicRoutes.products()}>Xem tất cả sản phẩm</Link>
+      <Link href={publicRoutes.products()}>
+        <ButtonControl>Xem tất cả sản phẩm</ButtonControl>
+      </Link>
     </div>
   );
 };
 
 const Cart = (props: Props) => {
-  const { count, isSuccess } = useSelector(cartSelector);
+  const { cart } = useSelector(cartSelector);
+  const { isSuccess } = useSelector(fetchSelector);
 
   return (
     <DefaultLayout>
@@ -167,7 +171,7 @@ const Cart = (props: Props) => {
 
         <main className={styles.main}>
           {isSuccess ? (
-            count > 0 ? (
+            cart.getCount() > 0 ? (
               <Container maxWidth="lg">
                 <h1>Giỏ hàng của bạn</h1>
                 <TableCart />
