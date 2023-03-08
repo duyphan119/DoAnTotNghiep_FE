@@ -1,75 +1,10 @@
-import { Button, Grid, Paper } from "@mui/material";
 import Head from "next/head";
-import { ChangeEvent, useState, useEffect } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import {
-  CreateAdvertisementDTO,
-  updateAdvertisement,
-} from "../../../../apis/advertisement";
 import { AdminLayout } from "../../../../layouts";
+import { AdvertisementForm, DashboardPaper } from "../../../../components";
 
-import { useRouter } from "next/router";
-import { uploadSingle } from "../../../../apis/upload";
-import { MSG_SUCCESS } from "../../../../utils/constants";
-import { Advertisement } from "../../../../utils/types";
-import { getAdvertisementById } from "../../../../apis/advertisement";
-import {
-  DashboardPaper,
-  FooterForm,
-  InputControl,
-} from "../../../../components";
-import { useAppDispatch } from "../../../../redux/store";
-import { useSelector } from "react-redux";
-import {
-  advertisementActions,
-  advertisementSelector,
-} from "../../../../redux/slice/advertisementSlice";
+type Props = {};
 
-type Props = {
-  advertisement: Advertisement;
-};
-
-const UpdateAdvertisement = ({ advertisement }: Props) => {
-  const router = useRouter();
-  const appDispatch = useAppDispatch();
-  const { advertisementEditing, isBack, isLoading } = useSelector(
-    advertisementSelector
-  );
-  const [files, setFiles] = useState<FileList | null>(null);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-  } = useForm<CreateAdvertisementDTO>();
-
-  const onSubmit: SubmitHandler<CreateAdvertisementDTO> = (data) => {
-    if (advertisementEditing) {
-      appDispatch(
-        advertisementActions.fetchUpdateAdvertisement({
-          id: advertisementEditing.id,
-          files,
-          dto: data,
-        })
-      );
-    }
-  };
-
-  useEffect(() => {
-    const { id } = router.query;
-    if (id) {
-      appDispatch(advertisementActions.fetchGetAdvertisementById(+`${id}`));
-    }
-  }, [router.query]);
-
-  useEffect(() => {
-    if (advertisementEditing) {
-      setValue("href", advertisementEditing.href);
-      setValue("title", advertisementEditing.title);
-      setValue("page", advertisementEditing.page);
-    }
-  }, [advertisementEditing]);
-
+const Page = (props: Props) => {
   return (
     <AdminLayout pageTitle="Chỉnh sửa quảng cáo">
       <>
@@ -79,60 +14,11 @@ const UpdateAdvertisement = ({ advertisement }: Props) => {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <DashboardPaper title="Thông tin quảng cáo">
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Grid container rowSpacing={3} columnSpacing={3}>
-              <Grid item xs={12}>
-                <InputControl
-                  register={register("title", {
-                    required: {
-                      value: true,
-                      message: "Tiêu đề không được để trống",
-                    },
-                  })}
-                  error={errors.title}
-                  label="Tiêu đề"
-                  required={true}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <InputControl register={register("page")} label="Trang" />
-              </Grid>
-              <Grid item xs={12}>
-                <InputControl register={register("href")} label="Liên kết" />
-              </Grid>
-              <Grid item xs={12}>
-                <InputControl
-                  label="Hình ảnh"
-                  type="file"
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    setFiles(e.target.files)
-                  }
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <FooterForm
-                  isLoading={advertisementEditing && isLoading ? true : false}
-                />
-              </Grid>
-            </Grid>
-          </form>
+          <AdvertisementForm />
         </DashboardPaper>
       </>
     </AdminLayout>
   );
 };
 
-export async function getServerSideProps(context: any) {
-  try {
-    const { id } = context.query;
-    const { message, data } = await getAdvertisementById(+id);
-    if (message === MSG_SUCCESS) {
-      return { props: { advertisement: data } };
-    }
-  } catch (error) {
-    console.log("getServerSideProps - getAdvertisementById - error", error);
-  }
-  return { notFound: true };
-}
-
-export default UpdateAdvertisement;
+export default Page;

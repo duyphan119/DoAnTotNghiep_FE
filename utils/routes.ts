@@ -51,11 +51,13 @@ export const protectedRoutes = {
   createGroupProduct: "/admin/group-product/create",
   updateGroupProduct: (id: number) => `/admin/group-product/${id}/update`,
 
+  commentProductManagement: "/admin/comment-product",
+  createCommentProduct: "/admin/comment-product/create",
+  updateCommentProduct: (id: number) => `/admin/comment-product/${id}/update`,
+
   orderDiscountManagement: "/admin/orderDiscount",
   createOrderDiscount: "/admin/orderDiscount/create",
   updateOrderDiscount: (id: number) => `/admin/orderDiscount/${id}/update`,
-
-  commentProductManagement: "/admin/comment-product",
 
   statistics: "/admin/statistics",
 };

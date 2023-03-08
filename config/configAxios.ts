@@ -2,7 +2,6 @@ import axios, { GenericAbortSignal } from "axios";
 import { getCookie, hasCookie, setCookie } from "cookies-next";
 import jwtDecode from "jwt-decode";
 import { UserApi } from "../api";
-import { refreshToken } from "../apis/auth";
 import {
   BASE_URL,
   COOKIE_ACCESSTOKEN_NAME,
@@ -31,10 +30,12 @@ export const serverSideAxios = (accessToken?: string, rToken?: string) => {
           config.headers.authorization = `Bearer ${accessToken}`;
           return config;
         } else {
-          const { message, data } = await refreshToken(rToken);
-          if (message === MSG_SUCCESS) {
-            const { accessToken: newAccessToken } = data;
-            setCookie(COOKIE_ACCESSTOKEN_NAME, newAccessToken);
+          const uApi = new UserApi();
+          const newAccessToken: string = await uApi.refreshToken();
+          if (newAccessToken) {
+            setCookie(COOKIE_ACCESSTOKEN_NAME, newAccessToken, {
+              maxAge: 6000,
+            });
             config.headers.authorization = `Bearer ${newAccessToken}`;
           }
         }
@@ -53,8 +54,10 @@ export const privateAxios = (signal?: GenericAbortSignal) => {
   instance.interceptors.request.use(
     async (config) => {
       if (config.headers) {
-        const accessToken = getCookie(COOKIE_ACCESSTOKEN_NAME)?.toString();
-        if (accessToken) {
+        const data = getCookie(COOKIE_ACCESSTOKEN_NAME)?.toString();
+        const parseData = JSON.parse(data || "null");
+        if (parseData) {
+          const { accessToken } = parseData;
           const decoded: any = jwtDecode(accessToken);
           if (decoded) {
             const exp = decoded.exp * 1000;
@@ -67,7 +70,7 @@ export const privateAxios = (signal?: GenericAbortSignal) => {
         const uApi = new UserApi();
         const newAccessToken: string = await uApi.refreshToken();
         if (newAccessToken) {
-          setCookie(COOKIE_ACCESSTOKEN_NAME, newAccessToken);
+          setCookie(COOKIE_ACCESSTOKEN_NAME, newAccessToken, { maxAge: 6000 });
           config.headers.authorization = `Bearer ${newAccessToken}`;
           return config;
         }

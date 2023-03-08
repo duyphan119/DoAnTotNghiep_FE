@@ -1,17 +1,17 @@
 import { useRef, useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import SaveIcon from "@mui/icons-material/Save";
-import { ChangePassword } from "../../../apis/auth";
 import { authActions, authReducer } from "../../../redux/slice/authSlice";
 import { useAppDispatch } from "../../../redux/store";
 import { ButtonControl, InputControl } from "../../common";
 import styles from "./_style.module.scss";
 import { useSelector } from "react-redux";
 import { fetchSelector } from "../../../redux/slice/fetchSlice";
+import { ChangePasswordDTO } from "../../../types/dtos";
 
 type Props = {};
 
-type ChangePasswordInputs = ChangePassword & {
+type ChangePasswordInputs = ChangePasswordDTO & {
   reTypePassword: string;
 };
 

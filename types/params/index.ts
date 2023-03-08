@@ -10,3 +10,4 @@ export type { default as CommentProductParams } from "./CommentProductParams";
 export type { default as BlogParams } from "./BlogParams";
 export type { default as BlogCategoryParams } from "./BlogCategoryParams";
 export type { default as OrderParams } from "./OrderParams";
+export type { default as UserParams } from "./UserParams";

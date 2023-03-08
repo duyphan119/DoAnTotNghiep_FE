@@ -14,3 +14,4 @@ export type { default as CreateCartItemDTO } from "./CreateCartItemDTO";
 export type { default as CreateUserAddressDTO } from "./CreateUserAddressDTO";
 export type { default as CheckoutDTO } from "./CheckoutDTO";
 export type { default as CreateBlogCategoryDTO } from "./CreateBlogCategoryDTO";
+export type { default as CreateCommentProductDTO } from "./CreateCommentProductDTO";

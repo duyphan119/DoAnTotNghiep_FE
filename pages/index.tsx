@@ -81,28 +81,17 @@ const Products = ({ products }: ProductsProps) => {
 };
 
 type BannersProps = Partial<{
-  banners: Advertisement[];
+  banners: AdvertisementModel[];
 }>;
 
 const Banners = ({ banners }: BannersProps) => {
   return banners ? (
     <Swiper slidesPerView={1}>
-      {banners.map((adv: Advertisement) => {
+      {banners.map((adv: AdvertisementModel) => {
         return (
           <SwiperSlide key={adv.id}>
             <Link href={adv.href} rel="preloaded" as="image">
-              <Box
-                sx={{ width: "100vw", position: "relative", height: "560px" }}
-              >
-                <ImageFill src={adv.path} alt="banner" />
-                {/* <Image
-                  src={adv.path}
-                  alt="banner"
-                  priority={true}
-                  fill={true}
-                  sizes="(min-width: 0) 100vw"
-                /> */}
-              </Box>
+              <ImageFill src={adv.path} alt="banner" height="560px" />
             </Link>
           </SwiperSlide>
         );

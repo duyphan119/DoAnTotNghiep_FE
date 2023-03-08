@@ -12,6 +12,7 @@ import CategoryIcon from "@mui/icons-material/Category";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import WebIcon from "@mui/icons-material/Web";
 import LockResetIcon from "@mui/icons-material/LockReset";
+import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 
 export type NavItem = {
   id?: string;
@@ -64,6 +65,12 @@ export const navItems: NavItem[] = [
         label: "Sản phẩm",
         icon: <Inventory2Icon />,
         tooltip: "Quản lý sản phẩm",
+      },
+      {
+        href: protectedRoutes.commentProductManagement,
+        label: "Đánh giá sản phẩm",
+        icon: <ChatBubbleIcon />,
+        tooltip: "Quản lý đánh giá sản phẩm",
       },
     ],
   },

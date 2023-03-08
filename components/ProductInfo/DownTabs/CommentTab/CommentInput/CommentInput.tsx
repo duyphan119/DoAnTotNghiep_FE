@@ -2,11 +2,7 @@ import { Button, Rating } from "@mui/material";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import {
-  CommentProductDTO,
-  createCommentProduct,
-  updateCommentProduct,
-} from "../../../../../apis/commentproduct";
+import { CommentProductModel } from "../../../../../models";
 import { useProductDetailContext } from "../../../../../pages/product/[slug]";
 import {
   authActions,
@@ -18,6 +14,7 @@ import {
 } from "../../../../../redux/slice/productDetailSlice";
 import { snackbarActions } from "../../../../../redux/slice/snackbarSlice";
 import { useAppDispatch } from "../../../../../redux/store";
+import { CreateCommentProductDTO } from "../../../../../types/dtos";
 import { MSG_SUCCESS } from "../../../../../utils/constants";
 import styles from "../../../_style.module.scss";
 
@@ -28,10 +25,11 @@ const CommentInput = (props: Props) => {
   const { product, commentProductData } = useSelector(productDetailSelector);
   const { profile } = useSelector(authSelector);
 
-  const { userComment } = commentProductData;
+  // const { userComment } = commentProductData;
+  const userComment = new CommentProductModel();
 
   const { register, handleSubmit, setValue, getValues } =
-    useForm<CommentProductDTO>();
+    useForm<CreateCommentProductDTO>();
 
   const [star, setStar] = useState<number>(userComment ? userComment.star : 0);
 
@@ -40,7 +38,7 @@ const CommentInput = (props: Props) => {
     setStar(userComment ? userComment.star : 0);
   }, [userComment]);
 
-  const onSubmit: SubmitHandler<CommentProductDTO> = async (data) => {
+  const onSubmit: SubmitHandler<CreateCommentProductDTO> = async (data) => {
     try {
       if (star > 0 && product) {
         const input = {

@@ -9,7 +9,6 @@ import "moment/locale/vi";
 import { useSocketContext } from "../../../../context/SocketContext";
 import { Notification, ResponseItems } from "../../../../utils/types";
 import styles from "../_style.module.scss";
-import { getAllNotifications } from "../../../../apis/notitfy";
 import { EMPTY_ITEMS, MSG_SUCCESS } from "../../../../utils/constants";
 
 type Props = {};
@@ -88,24 +87,23 @@ const NotifyIcon = (props: Props) => {
   }, [countUnRead]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data, message } = await getAllNotifications({
-          unread: true,
-          limit: 6,
-          p: 1,
-        });
-        if (message === MSG_SUCCESS) {
-          const { items, count, countUnRead } = data;
-          setNotificationData({ items, count });
-          setCountUnRead(countUnRead);
-        }
-      } catch (error) {
-        console.log("GET NOTIFICATIONS ERROR", error);
-      }
-    };
-
-    fetchData();
+    // const fetchData = async () => {
+    //   try {
+    //     const { data, message } = await getAllNotifications({
+    //       unread: true,
+    //       limit: 6,
+    //       p: 1,
+    //     });
+    //     if (message === MSG_SUCCESS) {
+    //       const { items, count, countUnRead } = data;
+    //       setNotificationData({ items, count });
+    //       setCountUnRead(countUnRead);
+    //     }
+    //   } catch (error) {
+    //     console.log("GET NOTIFICATIONS ERROR", error);
+    //   }
+    // };
+    // fetchData();
   }, []);
 
   return (

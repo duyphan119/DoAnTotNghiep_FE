@@ -11,7 +11,7 @@ import {
   UseFormStateReturn,
 } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { CreateBlogDTO } from "../../apis/blog";
+import { CreateBlogDTO } from "../../types/dtos";
 import {
   blogCategoryActions,
   blogCategorySeletor,

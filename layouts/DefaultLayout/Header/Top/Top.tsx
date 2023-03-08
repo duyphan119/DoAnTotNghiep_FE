@@ -1,16 +1,16 @@
 import EmailIcon from "@mui/icons-material/Email";
 import PhoneIcon from "@mui/icons-material/Phone";
-import Link from "next/link";
 import { Container } from "@mui/material";
+import Link from "next/link";
 import { useEffect, useState } from "react";
-import { getSettingWebsiteByKeys } from "../../../../apis/settingwebsite";
-import { SettingWebsite } from "../../../../utils/types";
-import styles from "./_style.module.scss";
-import AccountIcon from "./AccountIcon";
+import { useSelector } from "react-redux";
+// import { getSettingWebsiteByKeys } from "../../../../apis/settingwebsite";
+import { authSelector } from "../../../../redux/slice/authSlice";
 import { MSG_SUCCESS } from "../../../../utils/constants";
 import { protectedRoutes } from "../../../../utils/routes";
-import { useSelector } from "react-redux";
-import { authSelector } from "../../../../redux/slice/authSlice";
+import { SettingWebsite } from "../../../../utils/types";
+import AccountIcon from "./AccountIcon";
+import styles from "./_style.module.scss";
 type Props = {};
 
 const Top = (props: Props) => {
@@ -51,21 +51,18 @@ const Top = (props: Props) => {
   };
 
   useEffect(() => {
-    const fetchSettings = async () => {
-      const keys = ["Email Contact", "Phone Contact"];
-
-      try {
-        const { data, message } = await getSettingWebsiteByKeys(keys);
-
-        if (message === MSG_SUCCESS) {
-          setSettings(data.items);
-        }
-      } catch (error) {
-        console.log("GET SETTINGS WEBSITE BY KEYS ERROR", error);
-      }
-    };
-
-    fetchSettings();
+    // const fetchSettings = async () => {
+    //   const keys = ["Email Contact", "Phone Contact"];
+    //   try {
+    //     const { data, message } = await getSettingWebsiteByKeys(keys);
+    //     if (message === MSG_SUCCESS) {
+    //       setSettings(data.items);
+    //     }
+    //   } catch (error) {
+    //     console.log("GET SETTINGS WEBSITE BY KEYS ERROR", error);
+    //   }
+    // };
+    // fetchSettings();
   }, []);
 
   return (

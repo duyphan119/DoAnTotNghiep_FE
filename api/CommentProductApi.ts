@@ -1,7 +1,7 @@
 import { privateAxios, publicAxios } from "../config/configAxios";
 import { CommentProductModel, ResponseGetAllModel } from "../models";
-import { VariantValueParams } from "../types/params";
-import { CreateAdvertisementDTO, CreateVariantValueDTO } from "../types/dtos";
+import { CreateCommentProductDTO } from "../types/dtos";
+import { CommentProductParams } from "../types/params";
 import { MSG_SUCCESS } from "../utils/constants";
 
 class CommentProductApi {
@@ -14,7 +14,7 @@ class CommentProductApi {
   }
 
   getAll(
-    params?: VariantValueParams
+    params?: CommentProductParams
   ): Promise<ResponseGetAllModel<CommentProductModel>> {
     return new Promise(async (resolve, reject) => {
       try {
@@ -40,7 +40,7 @@ class CommentProductApi {
     });
   }
 
-  create(dto: CreateAdvertisementDTO): Promise<CommentProductModel> {
+  create(dto: CreateCommentProductDTO): Promise<CommentProductModel> {
     return new Promise(async (resolve, reject) => {
       try {
         const { data, message } = await (privateAxios().post(
@@ -50,9 +50,10 @@ class CommentProductApi {
           data: any;
           message: string;
         }>);
-        const VariantValue = this.getListFromJson([data])[0];
         resolve(
-          message === MSG_SUCCESS ? VariantValue : new CommentProductModel()
+          message === MSG_SUCCESS
+            ? new CommentProductModel(data)
+            : new CommentProductModel()
         );
       } catch (error) {
         console.log(error);
@@ -66,7 +67,7 @@ class CommentProductApi {
     dto,
   }: {
     id: number;
-    dto: Partial<CreateVariantValueDTO>;
+    dto: Partial<CreateCommentProductDTO>;
   }): Promise<CommentProductModel> {
     return new Promise(async (resolve, reject) => {
       try {
@@ -77,9 +78,10 @@ class CommentProductApi {
           data: any;
           message: string;
         }>);
-        const VariantValue = this.getListFromJson([data])[0];
         resolve(
-          message === MSG_SUCCESS ? VariantValue : new CommentProductModel()
+          message === MSG_SUCCESS
+            ? new CommentProductModel(data)
+            : new CommentProductModel()
         );
       } catch (error) {
         console.log(error);

@@ -47,6 +47,9 @@ const fetchSlice = createSlice({
     back: (state) => {
       state.isBack = true;
     },
+    setBack: (state, action: ActionPayload<boolean>) => {
+      state.isBack = action.payload;
+    },
     endAndSuccessAndBack: (state) => {
       state.isSuccess = true;
       state.isLoading = false;

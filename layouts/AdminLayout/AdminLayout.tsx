@@ -4,7 +4,8 @@ import { useRouter } from "next/router";
 import { ReactNode, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { authSelector } from "../../redux/slice/authSlice";
-import { fetchSelector } from "../../redux/slice/fetchSlice";
+import { fetchActions, fetchSelector } from "../../redux/slice/fetchSlice";
+import { useAppDispatch } from "../../redux/store";
 import { publicRoutes } from "../../utils/routes";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
@@ -40,6 +41,7 @@ type Props = Partial<{
 
 const AdminLayout = ({ children, pageTitle }: Props) => {
   const router = useRouter();
+  const appDispatch = useAppDispatch();
   const { profile } = useSelector(authSelector);
   const { isError, isBack } = useSelector(fetchSelector);
   const [open, setOpen] = useState(true);
@@ -50,7 +52,10 @@ const AdminLayout = ({ children, pageTitle }: Props) => {
   }, [isError, profile]);
 
   useEffect(() => {
-    isBack && router.back();
+    if (isBack) {
+      appDispatch(fetchActions.setBack(false));
+      router.back();
+    }
   }, [isBack]);
 
   if (!profile) return null;

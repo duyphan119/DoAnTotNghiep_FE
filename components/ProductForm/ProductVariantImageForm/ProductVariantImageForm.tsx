@@ -2,7 +2,6 @@ import { Grid } from "@mui/material";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import React, { ChangeEvent, memo, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { uploadSingle } from "../../../apis/upload";
 import { ProductImageModel } from "../../../models";
 import { productSelector } from "../../../redux/slice/productSlice";
 import { variantSelector } from "../../../redux/slice/variantSlice";
@@ -10,6 +9,7 @@ import { ProductVariantImage } from "../../../utils/types";
 import { ButtonControl } from "../../common";
 import ImageItem from "./ImageItem";
 import styles from "./_style.module.scss";
+import { UploadApi } from "../../../api";
 
 type Props = {
   uploadResults: any;
@@ -92,14 +92,9 @@ const ProductVariantImageForm = ({
     if (files) {
       const upload = async () => {
         try {
-          const promisesUpload = [];
-          for (let i = 0; i < files.length; i++) {
-            const formData = new FormData();
-            formData.append("image", files[i]);
-            promisesUpload.push(uploadSingle(formData));
-          }
-          const results: any = await Promise.all(promisesUpload);
-          setUploadResults(results.map((item: any) => item.data));
+          const uApi = new UploadApi();
+          const results = await uApi.uploadMultiple(files);
+          setUploadResults(results);
           setFiles(null);
         } catch (error) {}
       };

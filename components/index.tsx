@@ -15,13 +15,16 @@ export { default as ImageFill } from "./common/ImageFill";
 export { default as ConfirmDialog } from "./common/ConfirmDialog";
 export { default as DataTable } from "./common/DataTable";
 
+export { default as ProductForm } from "./form/ProductForm";
+export { default as ChangePasswordForm } from "./form/ChangePasswordForm";
+export { default as AdvertisementForm } from "./form/AdvertisementForm";
+
 export { default as ProductInfo } from "./ProductInfo";
 export { default as ModalAuth } from "./ModalAuth";
 export { default as ModalUserAddress } from "./ModalUserAddress";
 export { default as ModalPreviewProduct } from "./ModalPreviewProduct";
 export { default as Auth } from "./Auth";
 export { default as DarkLightButton } from "./DarkLightButton";
-export { default as ProductForm } from "./ProductForm";
 export { default as BlogCategoryForm } from "./BlogCategoryForm";
 export { default as BlogForm } from "./BlogForm";
 export { default as BlogCategoryCard } from "./BlogCategoryCard";

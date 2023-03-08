@@ -1,18 +1,15 @@
-import { useState, useEffect, ChangeEvent, FormEvent } from "react";
-import { ClickAwayListener } from "@mui/material";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import Link from "next/link";
+import { ClickAwayListener } from "@mui/material";
 import Image from "next/image";
+import Link from "next/link";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
-import { getAllProducts as apiSearch } from "../../../../../apis/product";
-import { MSG_SUCCESS } from "../../../../../utils/constants";
 import { useRouter } from "next/router";
-import { publicRoutes } from "../../../../../utils/routes";
+import { ProductApi } from "../../../../../api";
 import { ProductModel } from "../../../../../models";
 import ResponseGetAllModel from "../../../../../models/ResponseGetAllModel";
+import { publicRoutes } from "../../../../../utils/routes";
 import styles from "./_style.module.scss";
-import { ProductApi } from "../../../../../api";
-import { ImageFill } from "../../../../../components";
 
 type Props = {};
 

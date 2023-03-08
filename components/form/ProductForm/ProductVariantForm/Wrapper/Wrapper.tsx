@@ -1,16 +1,16 @@
 import { Button } from "@mui/material";
 import { memo } from "react";
 import { useSelector } from "react-redux";
-import { productSelector } from "../../../../redux/slice/productSlice";
+import { productSelector } from "../../../../../redux/slice/productSlice";
 import {
   productVariantActions,
   productVariantSelector,
-} from "../../../../redux/slice/productVariantSlice";
-import { useAppDispatch } from "../../../../redux/store";
-import { ProductVariant } from "../../../../utils/types";
+} from "../../../../../redux/slice/productVariantSlice";
+import { useAppDispatch } from "../../../../../redux/store";
+import { ProductVariant } from "../../../../../utils/types";
 import styles from "../_style.module.scss";
 import TrItem from "../TrItem";
-import { ProductVariantModel } from "../../../../models";
+import { ProductVariantModel } from "../../../../../models";
 
 type Props = {
   title?: string;

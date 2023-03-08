@@ -1,10 +1,9 @@
-import { CreateAdvertisementDTO } from "../apis/advertisement";
 import { privateAxios, publicAxios } from "../config/configAxios";
 import { AdvertisementModel } from "../models";
 import ResponseGetAllModel from "../models/ResponseGetAllModel";
 import UploadRepository from "../repositories/UploadRepository";
-import { CreateGroupProductDTO } from "../types/dtos";
-import { AdvertisementParams, GroupProductParams } from "../types/params";
+import { CreateAdvertisementDTO } from "../types/dtos";
+import { AdvertisementParams } from "../types/params";
 import { MSG_SUCCESS } from "../utils/constants";
 
 class AdvertisementApi {
@@ -66,9 +65,10 @@ class AdvertisementApi {
           data: any;
           message: string;
         }>);
-        const groupProduct = this.getListFromJson([data])[0];
         resolve(
-          message === MSG_SUCCESS ? groupProduct : new AdvertisementModel()
+          message === MSG_SUCCESS
+            ? new AdvertisementModel(data)
+            : new AdvertisementModel()
         );
       } catch (error) {
         console.log(error);

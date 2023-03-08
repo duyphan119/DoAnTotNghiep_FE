@@ -1,11 +1,12 @@
 import { privateAxios, publicAxios } from "../config/configAxios";
-import { UserModel } from "../models";
+import { ResponseGetAllModel, UserModel } from "../models";
 import {
   ChangePasswordDTO,
   ChangeProfileDTO,
   LoginDTO,
   RegisterDTO,
 } from "../types/dtos";
+import { UserParams } from "../types/params";
 import { MSG_SUCCESS } from "../utils/constants";
 
 class UserApi {
@@ -14,6 +15,9 @@ class UserApi {
   constructor() {
     this.nameApiAuth = "auth";
     this.nameApiUser = "user";
+  }
+  getListFromJson(json: any): UserModel[] {
+    return json.map((item: any) => new UserModel(item));
   }
 
   login(dto: LoginDTO): Promise<{ user: UserModel; accessToken: string }> {
@@ -135,8 +139,8 @@ class UserApi {
       try {
         const { data, message } = await (publicAxios().patch(
           `${this.nameApiAuth}/refresh`
-        ) as Promise<{ data: string; message: string }>);
-        resolve(message === MSG_SUCCESS ? data : "");
+        ) as Promise<{ data: { accessToken: string }; message: string }>);
+        resolve(message === MSG_SUCCESS ? data.accessToken : "");
       } catch (error) {
         console.log("UserApi.refreshToken error", error);
         resolve("");
@@ -146,7 +150,29 @@ class UserApi {
 
   getOrders() {}
 
-  getAll() {}
+  getAll(params: UserParams): Promise<ResponseGetAllModel<UserModel>> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const { data, message } = await (privateAxios().get(this.nameApiUser, {
+          params,
+        }) as Promise<{
+          data: { items: any; count: number };
+          message: string;
+        }>);
+        resolve(
+          message === MSG_SUCCESS
+            ? new ResponseGetAllModel(
+                this.getListFromJson(data.items),
+                data.count
+              )
+            : new ResponseGetAllModel()
+        );
+      } catch (error) {
+        console.log(error);
+        reject(error);
+      }
+    });
+  }
 
   softDeleteSingle() {}
 

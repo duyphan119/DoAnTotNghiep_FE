@@ -1,5 +1,5 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import { RegisterDTO } from "../../../apis/auth";
+import { RegisterDTO } from "../../../types/dtos";
 import { authActions } from "../../../redux/slice/authSlice";
 import { useAppDispatch } from "../../../redux/store";
 import { InputControl } from "../../common";

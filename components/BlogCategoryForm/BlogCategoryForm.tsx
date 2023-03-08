@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { CreateBlogCategoryDTO } from "../../apis/blogCategory";
+import { CreateBlogCategoryDTO } from "../../types/dtos";
 import {
   blogCategorySeletor,
   blogCategoryActions,

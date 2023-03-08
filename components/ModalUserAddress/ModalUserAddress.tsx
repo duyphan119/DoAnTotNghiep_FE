@@ -1,11 +1,6 @@
 import { Modal, Box, Grid, Typography, Button } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import {
-  createUserAddress,
-  CreateUserAddressDTO,
-  updateUserAddress,
-} from "../../apis/useraddress";
 import { MSG_SUCCESS } from "../../utils/constants";
 import provinces from "../../province.json";
 import { District, Province, UserAddress, Ward } from "../../utils/types";
@@ -13,6 +8,7 @@ import { ButtonControl, InputControl, SelectControl } from "../../components";
 import { useAppDispatch } from "../../redux/store";
 import { userAddressActions } from "../../redux/slice/userAddressSlice";
 import { UserAddressModel } from "../../models";
+import { CreateUserAddressDTO } from "../../types/dtos";
 
 type Props = Partial<{
   open: boolean;

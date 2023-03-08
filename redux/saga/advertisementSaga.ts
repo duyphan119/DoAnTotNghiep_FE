@@ -1,19 +1,8 @@
 import { call, put, takeEvery } from "redux-saga/effects";
 import { AdvertisementApi } from "../../api";
-import {
-  createAdvertisement,
-  deleteAdvertisement,
-  getAllAdvertisements,
-  getAdvertisementById,
-  restoreAdvertisement,
-  softDeleteAdvertisement,
-  updateAdvertisement,
-  CreateAdvertisementDTO,
-} from "../../apis/advertisement";
-import { uploadSingle } from "../../apis/upload";
+import { CreateAdvertisementDTO } from "../../apis/advertisement";
 import { AdvertisementModel, ResponseGetAllModel } from "../../models";
 import { AdvertisementParams } from "../../types/params";
-import { MSG_SUCCESS } from "../../utils/constants";
 import {
   advertisementActions,
   advertisementReducer,

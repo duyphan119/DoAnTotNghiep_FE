@@ -18,7 +18,6 @@ type Props = Partial<{
 const Auth = ({ children }: Props) => {
   const appDispatch = useAppDispatch();
   const { openModalAuth } = useSelector(authSelector);
-  const { reducers } = useSelector(fetchSelector);
 
   useEffect(() => {
     appDispatch(authActions.fetchGetProfile());

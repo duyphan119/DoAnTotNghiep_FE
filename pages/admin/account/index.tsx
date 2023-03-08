@@ -1,24 +1,36 @@
 import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { getAllUsers } from "../../../apis/user";
+import { useSelector } from "react-redux";
 import { DataManagement, DataTable } from "../../../components";
 import { AdminLayout } from "../../../layouts";
-import { COOKIE_ACCESSTOKEN_NAME, MSG_SUCCESS } from "../../../utils/constants";
+import { ResponseGetAllModel, UserModel } from "../../../models";
+import { userActions, userSelector } from "../../../redux/slice/userSlice";
+import { useAppDispatch } from "../../../redux/store";
 import helper from "../../../utils/helpers";
 import { ResponseItems, User } from "../../../utils/types";
 
 type Props = {
-  accountData: ResponseItems<User>;
+  userData: ResponseItems<User>;
 };
 const LIMIT = 10;
-const Page = ({ accountData: propAccountData }: Props) => {
-  const [accountData, setAccountData] =
-    useState<ResponseItems<User>>(propAccountData);
+const Page = (props: Props) => {
+  const router = useRouter();
+  const appDispatch = useAppDispatch();
+  const { userData } = useSelector(userSelector);
 
   useEffect(() => {
-    setAccountData(propAccountData);
-  }, [propAccountData]);
+    const { p, sortBy, sortType, limit } = router.query;
+    appDispatch(
+      userActions.fetchGetAll({
+        p: +`${p}` || 1,
+        limit: limit ? `${limit}` : LIMIT,
+        sortBy: `${sortBy || "id"}`,
+        sortType: `${sortType}` === "asc" ? "asc" : "desc",
+      })
+    );
+  }, [router.query]);
 
   return (
     <AdminLayout pageTitle="Tài khoản">
@@ -30,12 +42,12 @@ const Page = ({ accountData: propAccountData }: Props) => {
         </Head>
         <DataManagement
           paperTitle="Danh sách tài khoản"
-          count={accountData.count}
+          count={userData.count}
           limit={LIMIT}
         >
           <DataTable
             hasCheck={true}
-            rows={accountData.items}
+            rows={userData.items}
             sortable={["id", "fullName", "email", "phone", "createdAt"]}
             columns={[
               {
@@ -62,7 +74,8 @@ const Page = ({ accountData: propAccountData }: Props) => {
                 style: { width: 120, textAlign: "center" },
                 key: "createdAt",
                 display: "Ngày tạo",
-                render: (row: User) => helper.formatDateTime(row.createdAt),
+                render: (row: UserModel) =>
+                  helper.formatDateTime(row.createdAt),
               },
             ]}
           />
@@ -73,29 +86,3 @@ const Page = ({ accountData: propAccountData }: Props) => {
 };
 
 export default Page;
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  try {
-    const { p, sortBy, sortType, q } = context.query as any;
-    const params = {
-      p: p || 1,
-      limit: LIMIT,
-      sortBy,
-      sortType,
-      withDeleted: true,
-      q,
-    };
-    let { message, data } = await getAllUsers(
-      context.req.cookies[COOKIE_ACCESSTOKEN_NAME],
-      params
-    );
-    console.log({ message, data });
-    if (message === MSG_SUCCESS)
-      return {
-        props: { accountData: data },
-      };
-  } catch (error) {
-    console.log("GET ALL ACCOUNTS ERROR::", error);
-  }
-  return { notFound: true };
-}
