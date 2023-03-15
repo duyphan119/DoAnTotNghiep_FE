@@ -12,6 +12,8 @@ import { productVariantSaga } from "./productVariantSaga";
 import { userAddressSaga } from "./userAddressSaga";
 import { variantSaga } from "./variantSaga";
 import { userSaga } from "./userSaga";
+import { commentProductSaga } from "./commentProductSaga";
+import { orderDiscountSaga } from "./orderDiscountSaga";
 
 export default function* rootSaga() {
   yield all([
@@ -28,5 +30,7 @@ export default function* rootSaga() {
     groupProductSaga(),
     orderSaga(),
     userSaga(),
+    commentProductSaga(),
+    orderDiscountSaga(),
   ]);
 }

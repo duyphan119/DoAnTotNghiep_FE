@@ -23,6 +23,7 @@ const DPoint = () => {
   return profile ? (
     <li className={styles.item}>
       <Link href="/d-point" className={styles.pointLink}>
+        {profile.point}
         <Image
           src={moneyPng}
           alt="D-Point"
@@ -30,7 +31,6 @@ const DPoint = () => {
           height={24}
           priority={true}
         />
-        {profile.point}
       </Link>
     </li>
   ) : (
@@ -69,10 +69,10 @@ const Bottom = (props: Props) => {
           </div>
           <div className={styles.right}>
             <ul className={styles.items}>
-              <DPoint />
               <li className={styles.item}>
                 <CartIcon />
               </li>
+              <DPoint />
             </ul>
             <div className={styles.searchIcon}>
               <IconButton onClick={() => setOpen((state) => !state)}>

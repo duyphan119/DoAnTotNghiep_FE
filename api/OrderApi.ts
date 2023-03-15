@@ -1,8 +1,8 @@
-import { privateAxios } from "../config/configAxios";
-import { OrderModel, ResponseGetAllModel } from "../models";
-import { CheckoutDTO } from "../types/dtos";
-import { OrderParams, PaginationParams } from "../types/params";
-import { MSG_SUCCESS } from "../utils/constants";
+import { privateAxios } from "@/config/configAxios";
+import { OrderModel, ResponseGetAllModel } from "@/models";
+import { CheckoutDTO } from "@/types/dtos";
+import { OrderParams, PaginationParams } from "@/types/params";
+import { MSG_SUCCESS } from "@/utils/constants";
 
 class OrderApi {
   nameApi: string;

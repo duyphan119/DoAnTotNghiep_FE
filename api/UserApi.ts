@@ -1,13 +1,13 @@
-import { privateAxios, publicAxios } from "../config/configAxios";
-import { ResponseGetAllModel, UserModel } from "../models";
+import { privateAxios, publicAxios } from "@/config/configAxios";
+import { ResponseGetAllModel, UserModel } from "@/models";
 import {
   ChangePasswordDTO,
   ChangeProfileDTO,
   LoginDTO,
   RegisterDTO,
-} from "../types/dtos";
-import { UserParams } from "../types/params";
-import { MSG_SUCCESS } from "../utils/constants";
+} from "@/types/dtos";
+import { UserParams } from "@/types/params";
+import { MSG_SUCCESS } from "@/utils/constants";
 
 class UserApi {
   nameApiAuth: string;

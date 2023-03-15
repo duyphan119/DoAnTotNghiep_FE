@@ -1,4 +1,4 @@
-import { privateAxios } from "../config/configAxios";
+import { privateAxios } from "@/config/configAxios";
 import { PaginationParams } from "../utils/types";
 
 export type NotificationQueryParams = Partial<{

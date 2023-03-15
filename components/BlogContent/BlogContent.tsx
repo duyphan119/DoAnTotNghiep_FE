@@ -1,9 +1,9 @@
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { Box, Breadcrumbs, Typography } from "@mui/material";
 import Link from "next/link";
-import helper from "../../utils/helpers";
-import { publicRoutes } from "../../utils/routes";
-import { Blog } from "../../utils/types";
+import helper from "@/utils/helpers";
+import { publicRoutes } from "@/utils/routes";
+import { Blog } from "@/utils/types";
 import ImageFill from "../common/ImageFill";
 import styles from "./_style.module.scss";
 

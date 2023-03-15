@@ -1,8 +1,7 @@
-import { ProductApi } from "../api";
-import { ProductParams } from "../types/params";
-import { ProductModel } from "../models";
-import ResponseGetAllModel from "../models/ResponseGetAllModel";
-import { CreateProductDTO } from "../types/dtos";
+import { ProductApi } from "@/api";
+import { ProductParams } from "@/types/params";
+import { ProductModel, ResponseGetAllModel } from "@/models";
+import { CreateProductDTO } from "@/types/dtos";
 
 class ProductRepository {
   _api: ProductApi;

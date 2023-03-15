@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo } from "react";
+import { useState, useEffect, memo } from "react";
 import Image from "next/image";
 import { Modal, Box, Rating } from "@mui/material";
 import {

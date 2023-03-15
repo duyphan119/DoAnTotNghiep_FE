@@ -1,10 +1,9 @@
-import { privateAxios, publicAxios } from "../config/configAxios";
-import { AdvertisementModel } from "../models";
-import ResponseGetAllModel from "../models/ResponseGetAllModel";
-import UploadRepository from "../repositories/UploadRepository";
-import { CreateAdvertisementDTO } from "../types/dtos";
-import { AdvertisementParams } from "../types/params";
-import { MSG_SUCCESS } from "../utils/constants";
+import { privateAxios, publicAxios } from "@/config/configAxios";
+import { AdvertisementModel, ResponseGetAllModel } from "@/models";
+import UploadRepository from "@/repositories/UploadRepository";
+import { CreateAdvertisementDTO } from "@/types/dtos";
+import { AdvertisementParams } from "@/types/params";
+import { MSG_SUCCESS } from "@/utils/constants";
 
 class AdvertisementApi {
   nameApi: string;

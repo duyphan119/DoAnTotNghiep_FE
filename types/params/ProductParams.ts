@@ -10,6 +10,7 @@ type ProductParams = SortParams &
     product_variants: boolean;
     images: boolean;
     group_product: boolean;
+    q: string;
   }>;
 
 export default ProductParams;

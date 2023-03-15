@@ -2,11 +2,13 @@ import PaginationParams from "./PaginationParams";
 import SortParams from "./SortParams";
 
 type CommentProductParams = Partial<{
-  productId: string;
+  productId: number;
   content: string;
-  star: string;
+  star: number;
   user: string;
-  depth: string;
+  depth: number;
+  product: boolean;
+  repComments: boolean;
 }> &
   PaginationParams &
   SortParams;

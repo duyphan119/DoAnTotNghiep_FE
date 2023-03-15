@@ -1,10 +1,11 @@
 import DeleteIcon from "@mui/icons-material/Delete";
-import { ChangeEvent, memo, useState } from "react";
-import { ConfirmDialog } from "../../../../components";
-import { ProductVariantModel } from "../../../../models";
-import { productVariantActions } from "../../../../redux/slice/productVariantSlice";
-import { useAppDispatch } from "../../../../redux/store";
+import { ChangeEvent, memo } from "react";
+import { ProductVariantModel } from "@/models";
+import { productVariantActions } from "@/redux/slice/productVariantSlice";
+import { useAppDispatch } from "@/redux/store";
+import { confirmDialogActions } from "@/redux/slice/confirmDialogSlice";
 import styles from "../_style.module.scss";
+
 type Props = {
   hasDeleteBtn?: boolean;
   input: ProductVariantModel;
@@ -13,7 +14,6 @@ type Props = {
 
 const TrItem = ({ input, hasDeleteBtn, id }: Props) => {
   const appDispatch = useAppDispatch();
-  const [open, setOpen] = useState<boolean>(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     appDispatch(
@@ -24,16 +24,14 @@ const TrItem = ({ input, hasDeleteBtn, id }: Props) => {
     );
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleConfirm = () => {
-    if (id) appDispatch(productVariantActions.fetchSoftDeleteSingle(id));
+  const handleDelete = () => {
+    if (id)
+      appDispatch(
+        confirmDialogActions.show({
+          onConfirm: () =>
+            appDispatch(productVariantActions.fetchSoftDeleteSingle(id)),
+        })
+      );
   };
 
   return (
@@ -62,21 +60,12 @@ const TrItem = ({ input, hasDeleteBtn, id }: Props) => {
       </td>
       <td>
         {hasDeleteBtn ? (
-          <>
-            <span
-              style={{ color: "#d32f2f", cursor: "pointer" }}
-              onClick={handleOpen}
-            >
-              <DeleteIcon />
-            </span>
-            <ConfirmDialog
-              open={open}
-              onClose={handleClose}
-              title="Xác nhận"
-              text="Bạn thật tự muốn xóa biến thể sản phẩm này?"
-              onConfirm={handleConfirm}
-            />
-          </>
+          <span
+            style={{ color: "#d32f2f", cursor: "pointer" }}
+            onClick={handleDelete}
+          >
+            <DeleteIcon />
+          </span>
         ) : null}
       </td>
     </tr>

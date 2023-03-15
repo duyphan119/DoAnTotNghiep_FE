@@ -2,7 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useSelector } from "react-redux";
-import { NotFound } from "../../components";
+import { ButtonControl, NotFound } from "../../components";
 import checkoutSuccessSvg from "../../public/checkout_success.svg";
 import { orderSelector } from "../../redux/slice/orderSlice";
 import { publicRoutes } from "../../utils/routes";
@@ -36,8 +36,8 @@ const CheckoutSuccess = (props: Props) => {
           Chúng tôi sẽ thông tin đến bạn và trạng thái đơn hàng thông qua{" "}
           <strong>Email</strong>
         </p>
-        <Link href={publicRoutes.home} className={styles.link}>
-          Quay về trang chủ
+        <Link href={publicRoutes.home}>
+          <ButtonControl>Quay về trang chủ</ButtonControl>
         </Link>
       </div>
     </>

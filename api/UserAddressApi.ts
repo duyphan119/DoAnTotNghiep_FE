@@ -1,8 +1,8 @@
-import { privateAxios } from "../config/configAxios";
-import { ResponseGetAllModel, UserAddressModel } from "../models";
-import { CreateUserAddressDTO } from "../types/dtos";
-import { PaginationParams } from "../types/params";
-import { MSG_SUCCESS } from "../utils/constants";
+import { privateAxios } from "@/config/configAxios";
+import { ResponseGetAllModel, UserAddressModel } from "@/models";
+import { CreateUserAddressDTO } from "@/types/dtos";
+import { PaginationParams } from "@/types/params";
+import { MSG_SUCCESS } from "@/utils/constants";
 
 class UserAddressApi {
   nameApi: string;

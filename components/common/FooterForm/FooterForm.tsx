@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import { memo } from "react";
 import { useRouter } from "next/router";
 import ButtonControl from "../ButtonControl";
 

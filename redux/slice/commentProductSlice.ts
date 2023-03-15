@@ -1,6 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { CommentProductModel, ResponseGetAllModel } from "../../models";
-import { CreateCommentProductDTO } from "../../types/dtos";
+import {
+  CommentProductModel,
+  RepCommentProductModel,
+  ResponseGetAllModel,
+} from "../../models";
+import {
+  CreateCommentProductDTO,
+  CreateRepCommentProductDTO,
+} from "../../types/dtos";
 import { CommentProductParams } from "../../types/params";
 import { ActionPayload, RootState } from "../store";
 
@@ -31,11 +38,62 @@ const commentProductSlice = createSlice({
     ) => {
       state.commentProductData = action.payload;
     },
+    fetchCreateRep: (
+      state,
+      action: ActionPayload<CreateRepCommentProductDTO>
+    ) => {},
+    createRep: (state, action: ActionPayload<RepCommentProductModel>) => {
+      const { payload } = action;
+      const index = state.commentProductData.items.findIndex(
+        (item) => item.id === payload.commentProductId
+      );
+
+      if (index !== -1) {
+        const newCommentProductData = state.commentProductData;
+        newCommentProductData.items[index].repComments.push(payload);
+        state.commentProductData = newCommentProductData;
+      }
+    },
+    fetchUpdateRep: (
+      state,
+      action: ActionPayload<{ id: number; dto: CreateRepCommentProductDTO }>
+    ) => {},
+    updateRep: (state, action: ActionPayload<RepCommentProductModel>) => {
+      const { payload } = action;
+      const index = state.commentProductData.items.findIndex(
+        (item) => item.id === payload.commentProductId
+      );
+
+      if (index !== -1) {
+        const newCommentProductData = state.commentProductData;
+        const index2 = newCommentProductData.items[index].repComments.findIndex(
+          (item) => item.id === payload.id
+        );
+        if (index2 !== -1) {
+          const newRepComments = newCommentProductData.items[index].repComments;
+          newRepComments[index2].content = payload.content;
+          newCommentProductData.items[index].repComments = newRepComments;
+          state.commentProductData = newCommentProductData;
+        }
+      }
+    },
+    fetchDeleteRep: (state, action: ActionPayload<number>) => {},
+    deleteRep: (state, { payload: id }: ActionPayload<number>) => {
+      const newCommentProductData = state.commentProductData;
+      newCommentProductData.items = newCommentProductData.items.map((item) => ({
+        ...item,
+        repComments: item.repComments.filter((subItem) => subItem.id !== id),
+      }));
+      state.commentProductData = newCommentProductData;
+    },
   },
 });
 
 export const commentProductReducer = {
   fetchGetAll: `${NAME_SLICE}/fetchGetAll`,
+  fetchCreateRep: `${NAME_SLICE}/fetchCreateRep`,
+  fetchUpdateRep: `${NAME_SLICE}/fetchUpdateRep`,
+  fetchDeleteRep: `${NAME_SLICE}/fetchDeleteRep`,
 };
 export const commentProductActions = commentProductSlice.actions;
 export const commentProductSelector = (state: RootState): State =>

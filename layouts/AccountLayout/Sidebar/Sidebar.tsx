@@ -8,8 +8,8 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { authActions, authSelector } from "../../../redux/slice/authSlice";
-import { useAppDispatch } from "../../../redux/store";
-import { protectedRoutes, publicRoutes } from "../../../utils/routes";
+import { useAppDispatch } from "@/redux/store";
+import { protectedRoutes, publicRoutes } from "@/utils/routes";
 import styles from "./_style.module.scss";
 type Props = {};
 
@@ -30,7 +30,7 @@ const items: any[] = [
     icon: <LocalShippingOutlinedIcon />,
   },
   {
-    href: protectedRoutes.changePassword,
+    href: protectedRoutes.customerChangePassword,
     label: "Đổi mật khẩu",
     icon: <PasswordOutlinedIcon />,
   },

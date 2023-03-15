@@ -1,19 +1,24 @@
+import { ProductApi } from "@/api";
+import { ProductCard } from "@/components";
+import { DefaultLayout } from "@/layouts";
+import { ProductModel, ResponseGetAllModel } from "@/models";
+import { ResponseItems } from "@/utils/types";
 import { Container, Grid, Pagination } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { getAllProducts, searchProducts } from "../../apis/product";
-import { ProductCard } from "../../components";
-import { DefaultLayout } from "../../layouts";
-import { EMPTY_ITEMS, MSG_SUCCESS } from "../../utils/constants";
-import { Product, ResponseItems } from "../../utils/types";
 
 type Props = {
-  productData: ResponseItems<Product>;
+  productData: ResponseItems<ProductModel>;
 };
 
-const Page = ({ productData: propProductData }: Props) => {
+const pApi = new ProductApi();
+const Page = ({ productData: { items, count } }: Props) => {
   const router = useRouter();
   const { q } = router.query;
+  const productData = new ResponseGetAllModel<ProductModel>(
+    pApi.getListFromJson(items),
+    count
+  );
   return (
     <DefaultLayout>
       <>
@@ -23,19 +28,19 @@ const Page = ({ productData: propProductData }: Props) => {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <Container maxWidth="lg">
-          <h1>Kết quả tìm kiếm "{q || ""}"</h1>
+          <h1 style={{ marginBottom: "12px" }}>Kết quả tìm kiếm "{q || ""}"</h1>
           <Grid container columnSpacing={2} rowSpacing={2}>
-            {propProductData.items.map((product: Product) => {
+            {productData.items.map((product) => {
               return (
                 <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
                   <ProductCard product={product} />
                 </Grid>
               );
             })}
-            {propProductData.count > 0 ? (
+            {productData.count > 0 ? (
               <Grid item xs={12}>
                 <Pagination
-                  count={Math.ceil(propProductData.count / 12)}
+                  count={Math.ceil(productData.count / 12)}
                   sx={{ ul: { justifyContent: "center" } }}
                   variant="outlined"
                   shape="rounded"
@@ -44,7 +49,11 @@ const Page = ({ productData: propProductData }: Props) => {
                   page={router.query.p ? +router.query.p : 1}
                 />
               </Grid>
-            ) : null}
+            ) : (
+              <Grid item xs={12}>
+                Không tìm thấy sản phẩm
+              </Grid>
+            )}
           </Grid>
         </Container>
       </>
@@ -54,14 +63,14 @@ const Page = ({ productData: propProductData }: Props) => {
 
 export async function getServerSideProps(context: any) {
   const { q } = context.query;
-  const { message, data } = await searchProducts({
+  const data = await pApi.getAll({
     q,
     limit: 12,
   });
 
   return {
     props: {
-      productData: message === MSG_SUCCESS ? data : EMPTY_ITEMS,
+      productData: JSON.parse(JSON.stringify(data)),
     },
   };
 }

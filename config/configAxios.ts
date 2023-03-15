@@ -1,12 +1,8 @@
 import axios, { GenericAbortSignal } from "axios";
-import { getCookie, hasCookie, setCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 import jwtDecode from "jwt-decode";
-import { UserApi } from "../api";
-import {
-  BASE_URL,
-  COOKIE_ACCESSTOKEN_NAME,
-  MSG_SUCCESS,
-} from "../utils/constants";
+import { UserApi } from "@/api";
+import { BASE_URL, COOKIE_ACCESSTOKEN_NAME } from "@/utils/constants";
 
 export const publicAxios = (signal?: GenericAbortSignal) => {
   const instance = axios.create({
@@ -54,10 +50,8 @@ export const privateAxios = (signal?: GenericAbortSignal) => {
   instance.interceptors.request.use(
     async (config) => {
       if (config.headers) {
-        const data = getCookie(COOKIE_ACCESSTOKEN_NAME)?.toString();
-        const parseData = JSON.parse(data || "null");
-        if (parseData) {
-          const { accessToken } = parseData;
+        const accessToken = getCookie(COOKIE_ACCESSTOKEN_NAME)?.toString();
+        if (accessToken) {
           const decoded: any = jwtDecode(accessToken);
           if (decoded) {
             const exp = decoded.exp * 1000;

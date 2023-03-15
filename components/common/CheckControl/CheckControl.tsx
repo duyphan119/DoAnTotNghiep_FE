@@ -1,4 +1,4 @@
-import React, { useId, memo } from "react";
+import { useId, memo } from "react";
 import { FieldError } from "react-hook-form";
 
 type Props = Partial<{

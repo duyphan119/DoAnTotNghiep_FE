@@ -1,4 +1,4 @@
-import { privateAxios, serverSideAxios } from "../config/configAxios";
+import { privateAxios, serverSideAxios } from "@/config/configAxios";
 import { QueryParams } from "../utils/types";
 
 export type CommentProductQueryParams = QueryParams &

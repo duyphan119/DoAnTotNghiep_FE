@@ -49,14 +49,6 @@
   text-decoration: underline;
   color: var(--blue);
 }
-.actions button {
-  border: none;
-  padding: 16px 32px;
-  box-shadow: 0 0 1px 1px var(--blue);
-}
-.actions button:hover {
-  box-shadow: 0 0 1px 2px var(--blue);
-}
 .dPointTitle,
 .discountTitle {
   font-weight: 500;
@@ -95,4 +87,8 @@
   color: red;
   text-decoration: underline;
   cursor: pointer;
+}
+.h1 {
+  margin-bottom: 12px;
+  margin-top: 12px;
 }

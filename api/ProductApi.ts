@@ -1,10 +1,9 @@
-import { privateAxios, publicAxios } from "../config/configAxios";
-import { ProductModel } from "../models";
-import ResponseGetAllModel from "../models/ResponseGetAllModel";
-import UploadRepository from "../repositories/UploadRepository";
-import { PaginationParams, ProductParams, SortParams } from "../types/params";
-import { CreateProductDTO, UpdateProductDTO } from "../types/dtos";
-import { MSG_SUCCESS } from "../utils/constants";
+import { privateAxios, publicAxios } from "@/config/configAxios";
+import { ProductModel } from "@/models";
+import ResponseGetAllModel from "@/models/ResponseGetAllModel";
+import { CreateProductDTO, UpdateProductDTO } from "@/types/dtos";
+import { PaginationParams, ProductParams, SortParams } from "@/types/params";
+import { MSG_SUCCESS } from "@/utils/constants";
 
 class ProductApi {
   nameApi: string;
@@ -39,6 +38,30 @@ class ProductApi {
               )
             : new ResponseGetAllModel<ProductModel>();
         resolve(response);
+      } catch (error) {
+        console.log(error);
+        reject(error);
+      }
+    });
+  }
+
+  getBySlug(slug: string): Promise<ProductModel> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const {
+          data: { items },
+          message,
+        } = await (publicAxios().get(this.nameApi, {
+          params: { slug, images: true, product_variants: true },
+        }) as Promise<{
+          data: { items: any; count: number };
+          message: string;
+        }>);
+        resolve(
+          message === MSG_SUCCESS && items.length > 0
+            ? new ProductModel(items[0])
+            : new ProductModel()
+        );
       } catch (error) {
         console.log(error);
         reject(error);

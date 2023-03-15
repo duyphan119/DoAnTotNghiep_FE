@@ -1,9 +1,8 @@
-import { privateAxios, publicAxios } from "../config/configAxios";
-import { VariantModel } from "../models";
-import ResponseGetAllModel from "../models/ResponseGetAllModel";
-import { VariantParams } from "../types/params";
-import { CreateVariantDTO } from "../types/dtos";
-import { MSG_SUCCESS } from "../utils/constants";
+import { privateAxios, publicAxios } from "@/config/configAxios";
+import { VariantModel, ResponseGetAllModel } from "@/models";
+import { VariantParams } from "@/types/params";
+import { CreateVariantDTO } from "@/types/dtos";
+import { MSG_SUCCESS } from "@/utils/constants";
 
 class VariantApi {
   nameApi: string;

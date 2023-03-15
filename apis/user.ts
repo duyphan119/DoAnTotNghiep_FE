@@ -1,4 +1,4 @@
-import { serverSideAxios } from "../config/configAxios";
+import { serverSideAxios } from "@/config/configAxios";
 import { QueryParams } from "../utils/types";
 
 type UserQueryParams = Partial<{

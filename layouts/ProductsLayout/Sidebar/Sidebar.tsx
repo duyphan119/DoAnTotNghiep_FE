@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
-import { getAllVariantValues } from "../../../apis/variantvalue";
-import { GroupProductModel, VariantValueModel } from "../../../models";
-import ResponseGetAllModel from "../../../models/ResponseGetAllModel";
-import { useAppDispatch } from "../../../redux/store";
-import { MSG_SUCCESS } from "../../../utils/constants";
-import helper from "../../../utils/helpers";
+import { getAllVariantValues } from "@/apis/variantvalue";
+import {
+  GroupProductModel,
+  VariantValueModel,
+  ResponseGetAllModel,
+} from "@/models";
+import { useAppDispatch } from "@/redux/store";
+import { MSG_SUCCESS } from "@/utils/constants";
+import helper from "@/utils/helpers";
 import styles from "../_style.module.scss";
 
 type Props = {

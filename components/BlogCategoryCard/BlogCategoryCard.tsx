@@ -3,10 +3,10 @@ import Image from "next/image";
 import EastIcon from "@mui/icons-material/East";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { Box, Divider } from "@mui/material";
-import { publicRoutes } from "../../utils/routes";
-import helper from "../../utils/helpers";
+import { publicRoutes } from "@/utils/routes";
+import helper from "@/utils/helpers";
 import styles from "./_style.module.scss";
-import { BlogCategoryModel } from "../../models";
+import { BlogCategoryModel } from "@/models";
 
 type Props = {
   blogCategory: BlogCategoryModel;

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { GroupProductRepository } from "../../../repositories";
+import { GroupProductRepository } from "@/repositories";
 import Bottom from "./Bottom";
 import Top from "./Top";
 

@@ -3,10 +3,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Button, Tooltip } from "@mui/material";
 import Image from "next/image";
 import { ChangeEvent, memo, useState } from "react";
-import { ConfirmDialog } from "../../../../components";
-import { confirmDialogActions } from "../../../../redux/slice/confirmDialogSlice";
-import { useAppDispatch } from "../../../../redux/store";
-import { VariantValue } from "../../../../utils/types";
+import { confirmDialogActions } from "@/redux/slice/confirmDialogSlice";
+import { useAppDispatch } from "@/redux/store";
+import { VariantValue } from "@/utils/types";
 import styles from "../_style.module.scss";
 
 type Props = {

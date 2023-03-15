@@ -1,4 +1,4 @@
-import { privateAxios } from "../config/configAxios";
+import { privateAxios } from "@/config/configAxios";
 import { QueryParams, UserAddress } from "../utils/types";
 export type UserAddressQueryParams = QueryParams &
   Partial<{

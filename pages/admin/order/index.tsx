@@ -1,31 +1,16 @@
-import CheckIcon from "@mui/icons-material/Check";
-import ClearIcon from "@mui/icons-material/Clear";
-import { GetServerSidePropsContext } from "next";
-import { useRouter } from "next/router";
 import Head from "next/head";
-import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { getAllOrders } from "../../../apis/order";
-import {
-  ButtonControl,
-  ConfirmDialog,
-  DataManagement,
-  DataTable,
-} from "../../../components";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { ButtonControl, DataManagement, DataTable } from "../../../components";
 import { AdminLayout } from "../../../layouts";
-import { OrderModel, ResponseGetAllModel } from "../../../models";
+import { OrderModel } from "../../../models";
+import { confirmDialogActions } from "../../../redux/slice/confirmDialogSlice";
 import { orderActions, orderSelector } from "../../../redux/slice/orderSlice";
 import { useAppDispatch } from "../../../redux/store";
-import {
-  COOKIE_ACCESSTOKEN_NAME,
-  EMPTY_ITEMS,
-  MSG_SUCCESS,
-} from "../../../utils/constants";
 import helper from "../../../utils/helpers";
-import { useSelector } from "react-redux";
 import { protectedRoutes } from "../../../utils/routes";
-import { confirmDialogActions } from "../../../redux/slice/confirmDialogSlice";
 
 type Props = {};
 const LIMIT = 10;

@@ -1,6 +1,6 @@
 import { Grid } from "@mui/material";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
-import React, { ChangeEvent, memo, useEffect, useState } from "react";
+import { ChangeEvent, memo, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { ProductImageModel } from "../../../../models";
 import { productSelector } from "../../../../redux/slice/productSlice";

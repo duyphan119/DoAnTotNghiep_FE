@@ -1,5 +1,5 @@
-import { publicAxios } from "../config/configAxios";
-import { MSG_SUCCESS } from "../utils/constants";
+import { publicAxios } from "@/config/configAxios";
+import { MSG_SUCCESS } from "@/utils/constants";
 
 class UploadApi {
   uploadSingle(file: File): Promise<{ secure_url: string }> {
@@ -28,7 +28,7 @@ class UploadApi {
           formData.append("images", files[i]);
         }
         const { data, message } = await (publicAxios().post(
-          "upload/single",
+          "upload/multiple",
           formData
         ) as Promise<{
           message: string;

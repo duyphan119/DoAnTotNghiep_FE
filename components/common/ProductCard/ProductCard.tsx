@@ -1,7 +1,7 @@
 import StarIcon from "@mui/icons-material/Star";
 import Link from "next/link";
-import { ProductModel } from "../../../models";
-import { publicRoutes } from "../../../utils/routes";
+import { ProductModel } from "@/models";
+import { publicRoutes } from "@/utils/routes";
 import ImageFill from "../ImageFill";
 import styles from "./_style.module.scss";
 

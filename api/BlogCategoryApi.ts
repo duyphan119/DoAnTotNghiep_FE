@@ -1,13 +1,8 @@
-import { privateAxios, publicAxios } from "../config/configAxios";
-import { BlogCategoryModel } from "../models";
-import ResponseGetAllModel from "../models/ResponseGetAllModel";
-import { BlogCategoryParams, BlogParams } from "../types/params";
-import {
-  CreateBlogCategoryDTO,
-  CreateBlogDTO,
-  CreateVariantDTO,
-} from "../types/dtos";
-import { MSG_SUCCESS } from "../utils/constants";
+import { privateAxios, publicAxios } from "@/config/configAxios";
+import { BlogCategoryModel, ResponseGetAllModel } from "@/models";
+import { CreateBlogCategoryDTO } from "@/types/dtos";
+import { BlogCategoryParams } from "@/types/params";
+import { MSG_SUCCESS } from "@/utils/constants";
 
 class BlogCategoryApi {
   nameApi: string;

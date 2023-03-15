@@ -10,6 +10,16 @@ class ResponseGetAllModel<T> {
   getTotalPages(limit: number) {
     return Math.ceil(this.count / limit);
   }
+
+  addFirst(item: T) {
+    this.items.push(item);
+    this.count += 1;
+  }
+
+  addLast(item: T) {
+    this.items.unshift(item);
+    this.count += 1;
+  }
 }
 
 export default ResponseGetAllModel;

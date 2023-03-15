@@ -120,7 +120,12 @@ const GroupProducts = (props: Props) => {
                 display: "Bí danh",
               },
               {
-                style: { width: 180, textAlign: "center" },
+                style: { textAlign: "left" },
+                key: "description",
+                display: "Mô tả",
+              },
+              {
+                style: { width: 100, textAlign: "center" },
                 key: "createdAt",
                 display: "Ngày tạo",
                 render: (row: GroupProductModel) =>

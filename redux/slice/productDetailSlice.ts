@@ -7,16 +7,14 @@ import {
   VariantValueModel,
 } from "../../models";
 import CommentProductModel from "../../models/CommentProductModel";
+import { CreateCommentProductDTO } from "../../types/dtos";
+import { CommentProductParams } from "../../types/params";
 import { ActionPayload, RootState } from "../store";
 
 export type SetPagePayload = {
   page: number;
   product: ProductModel;
 };
-
-export type FetchUpdateCommentProductPayload = {
-  id: number;
-} & Partial<CommentProductDTO>;
 
 type State = {
   product: ProductModel;
@@ -31,6 +29,7 @@ type State = {
   commentProductData: ResponseGetAllModel<CommentProductModel>;
   page: number;
   totalPage: number;
+  userCommentProduct: CommentProductModel;
 };
 
 const NAME_SLICE = "productDetail";
@@ -46,6 +45,7 @@ const INITIAL_STATE: State = {
   commentProductData: new ResponseGetAllModel(),
   page: 1,
   totalPage: 0,
+  userCommentProduct: new CommentProductModel(),
 };
 
 const productDetailSlice = createSlice({
@@ -82,7 +82,6 @@ const productDetailSlice = createSlice({
       action: ActionPayload<ResponseGetAllModel<CommentProductModel>>
     ) => {
       state.commentProductData = action.payload;
-      state.totalPage = Math.ceil(action.payload.count / 4);
     },
     setPage: (state, action: ActionPayload<SetPagePayload>) => {
       let { page } = action.payload;
@@ -90,11 +89,9 @@ const productDetailSlice = createSlice({
     },
     fetchAddCommnetProduct: (
       state,
-      action: ActionPayload<CommentProductDTO>
+      action: ActionPayload<CreateCommentProductDTO>
     ) => {},
     addCommentProduct: (state, action: ActionPayload<CommentProductModel>) => {
-      // state.commentProductData.userComment = action.payload;
-      state.commentProductData.count += 1;
       state.commentProductData.items.unshift(action.payload);
       state.totalPage = Math.ceil(state.commentProductData.count / 4);
       if (
@@ -103,28 +100,45 @@ const productDetailSlice = createSlice({
       ) {
         state.commentProductData.items.pop();
       }
+      state.commentProductData = new ResponseGetAllModel(
+        state.commentProductData.items,
+        state.commentProductData.count + 1
+      );
     },
     fetchUpdateCommentProduct: (
       state,
-      action: ActionPayload<FetchUpdateCommentProductPayload>
+      action: ActionPayload<{ id: number; dto: CreateCommentProductDTO }>
     ) => {},
     updateCommnetProduct: (
       state,
       action: ActionPayload<CommentProductModel>
     ) => {
       let data = action.payload;
-      // state.commentProductData.userComment = data;
-      state.commentProductData.items = state.commentProductData.items.map((i) =>
-        i.id === data.id ? data : i
+      const newCommentProductData = state.commentProductData;
+      newCommentProductData.items = newCommentProductData.items.map((item) =>
+        item.id === data.id ? data : item
       );
+      state.commentProductData = newCommentProductData;
+      state.userCommentProduct = action.payload;
+    },
+    fetchGetAllCommentProduct: (
+      state,
+      action: ActionPayload<CommentProductParams>
+    ) => {},
+    setUserCommentProduct: (
+      state,
+      action: ActionPayload<CommentProductModel>
+    ) => {
+      state.userCommentProduct = action.payload;
     },
   },
 });
-export const productDetailReducers = {
+export const productDetailReducer = {
   setProduct: `${NAME_SLICE}/setProduct`,
   setPage: `${NAME_SLICE}/setPage`,
   fetchAddCommnetProduct: `${NAME_SLICE}/fetchAddCommnetProduct`,
   fetchUpdateCommentProduct: `${NAME_SLICE}/fetchUpdateCommentProduct`,
+  fetchGetAllCommentProduct: `${NAME_SLICE}/fetchGetAllCommentProduct`,
 };
 export const productDetailSelector = (state: RootState): State =>
   state.productDetail;

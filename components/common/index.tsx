@@ -12,3 +12,4 @@ export { default as TextAreaControl } from "./TextAreaControl";
 export { default as ButtonControl } from "./ButtonControl";
 export { default as Snackbar } from "./Snackbar";
 export { default as ConfirmDialog } from "./ConfirmDialog";
+export { default as Breadcrumbs } from "./Breadcrumbs";

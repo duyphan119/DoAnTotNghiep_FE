@@ -14,10 +14,12 @@ export { default as ProductCard } from "./common/ProductCard";
 export { default as ImageFill } from "./common/ImageFill";
 export { default as ConfirmDialog } from "./common/ConfirmDialog";
 export { default as DataTable } from "./common/DataTable";
+export { default as Breadcrumbs } from "./common/Breadcrumbs";
 
 export { default as ProductForm } from "./form/ProductForm";
 export { default as ChangePasswordForm } from "./form/ChangePasswordForm";
 export { default as AdvertisementForm } from "./form/AdvertisementForm";
+export { default as OrderDiscountForm } from "./form/OrderDiscountForm";
 
 export { default as ProductInfo } from "./ProductInfo";
 export { default as ModalAuth } from "./ModalAuth";

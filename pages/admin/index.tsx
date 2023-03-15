@@ -1,6 +1,6 @@
 import { Grid, Paper, Typography, Box } from "@mui/material";
 import Head from "next/head";
-import React, { ReactElement, useState, useEffect, CSSProperties } from "react";
+import { ReactElement, useState, useEffect, CSSProperties } from "react";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import ReceiptIcon from "@mui/icons-material/Receipt";

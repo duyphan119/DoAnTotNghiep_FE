@@ -5,15 +5,15 @@ import {
   OrderItemModel,
   ProductVariantModel,
   VariantValueModel,
-} from "../../../models";
-import { authSelector } from "../../../redux/slice/authSlice";
-import { cartActions } from "../../../redux/slice/cartSlice";
+} from "@/models";
+import { authSelector } from "@/redux/slice/authSlice";
+import { cartActions } from "@/redux/slice/cartSlice";
 import {
   productDetailActions,
   productDetailSelector,
-} from "../../../redux/slice/productDetailSlice";
-import { useAppDispatch } from "../../../redux/store";
-import { ButtonControl } from "../../common";
+} from "@/redux/slice/productDetailSlice";
+import { useAppDispatch } from "@/redux/store";
+import { ButtonControl } from "@/components";
 import styles from "../_style.module.scss";
 
 type Props = {};

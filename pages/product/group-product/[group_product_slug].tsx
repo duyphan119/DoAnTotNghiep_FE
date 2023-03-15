@@ -1,25 +1,19 @@
-import { Grid, Pagination, Box } from "@mui/material";
+import { Box, Grid, Pagination } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { ProductApi } from "../../../api";
-import { getAllProducts } from "../../../apis/product";
-import { ProductCard } from "../../../components";
-import { ProductsLayout } from "../../../layouts";
-import {
-  GroupProductModel,
-  ProductModel,
-  ResponseGetAllModel,
-} from "../../../models";
+import { ProductApi } from "@/api";
+import { getAllProducts } from "@/apis/product";
+import { ProductCard } from "@/components";
+import { ProductsLayout } from "@/layouts";
+import { GroupProductModel, ProductModel, ResponseGetAllModel } from "@/models";
 import {
   groupProductActions,
   groupProductSelector,
-} from "../../../redux/slice/groupProductSlice";
-import { useAppDispatch } from "../../../redux/store";
-import { MSG_SUCCESS } from "../../../utils/constants";
-import { fullNameGroupProduct } from "../../../utils/helpers";
-import { Filter } from "../../../utils/types";
+} from "@/redux/slice/groupProductSlice";
+import { useAppDispatch } from "@/redux/store";
+import { Filter } from "@/utils/types";
 
 type Props = {
   productData: ResponseGetAllModel<ProductModel>;
@@ -108,7 +102,7 @@ const Products = ({ productData: { items, count } }: Props) => {
       (gp: GroupProductModel) => gp.slug === slug
     );
     if (groupProduct) {
-      return fullNameGroupProduct(groupProduct);
+      return groupProduct.getFullName();
     }
 
     groupProduct = relatedGroupProductData.items.find((gp: GroupProductModel) =>
@@ -117,33 +111,6 @@ const Products = ({ productData: { items, count } }: Props) => {
 
     return groupProduct?.getSuffixName(`${slug}`) ?? "";
   };
-
-  useEffect(() => {
-    const {
-      group_product_slug,
-      p,
-      sortBy,
-      sortType,
-      v_ids,
-      min_price,
-      max_price,
-    } = router.query;
-    getAllProducts({
-      group_product_slug: `${group_product_slug}`,
-      limit: LIMIT,
-      product_variants: true,
-      ...(p ? { p } : {}),
-      ...(sortBy ? { sortBy } : {}),
-      ...(sortType ? { sortType } : {}),
-      ...(v_ids ? { v_ids } : {}),
-      ...(min_price ? { min_price } : {}),
-      ...(max_price ? { max_price } : {}),
-    } as any)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => console.log(err));
-  }, [router.query]);
 
   return (
     <ProductsLayout

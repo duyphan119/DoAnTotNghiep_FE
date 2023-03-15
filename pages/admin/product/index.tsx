@@ -13,22 +13,14 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { CSSProperties, MouseEvent, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { ProductApi } from "../../../api";
-import {
-  DataManagement,
-  ImageFill,
-  ModalPreviewProduct,
-} from "../../../components";
-import { AdminLayout } from "../../../layouts";
-import { ProductModel } from "../../../models";
-import ResponseGetAllModel from "../../../models/ResponseGetAllModel";
-import {
-  productActions,
-  productSelector,
-} from "../../../redux/slice/productSlice";
-import { snackbarActions } from "../../../redux/slice/snackbarSlice";
-import { useAppDispatch } from "../../../redux/store";
-import { protectedRoutes } from "../../../utils/routes";
+import { ProductApi } from "@/api";
+import { DataManagement, ImageFill, ModalPreviewProduct } from "@/components";
+import { AdminLayout } from "@/layouts";
+import { ProductModel, ResponseGetAllModel } from "@/models";
+import { productActions, productSelector } from "@/redux/slice/productSlice";
+import { snackbarActions } from "@/redux/slice/snackbarSlice";
+import { useAppDispatch } from "@/redux/store";
+import { protectedRoutes } from "@/utils/routes";
 
 type Props = {};
 const LIMIT = 10;

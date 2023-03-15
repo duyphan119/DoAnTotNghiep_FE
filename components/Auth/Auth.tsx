@@ -1,14 +1,7 @@
 import { ReactNode, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { OrderModel } from "../../models";
-import {
-  authActions,
-  authReducer,
-  authSelector,
-} from "../../redux/slice/authSlice";
-import { cartActions } from "../../redux/slice/cartSlice";
-import { fetchSelector } from "../../redux/slice/fetchSlice";
-import { useAppDispatch } from "../../redux/store";
+import { authActions, authSelector } from "@/redux/slice/authSlice";
+import { useAppDispatch } from "@/redux/store";
 import ModalAuth from "../ModalAuth";
 
 type Props = Partial<{

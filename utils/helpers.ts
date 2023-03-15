@@ -57,6 +57,12 @@ class Helper {
     if (!input) return "";
     return `${this.formatDate(input)} ${this.formatTime(input)}`;
   }
+
+  getAvatarName(fullName: string) {
+    const splitFullName = fullName.split(" ");
+    const lastItem = splitFullName[splitFullName.length - 1];
+    return lastItem.charAt(0);
+  }
 }
 
 const helper = new Helper();

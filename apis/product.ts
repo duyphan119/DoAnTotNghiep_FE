@@ -1,4 +1,4 @@
-import { privateAxios, publicAxios } from "../config/configAxios";
+import { privateAxios, publicAxios } from "@/config/configAxios";
 import { PaginationParams, QueryParams } from "../utils/types";
 
 export type ProductQueryParams = QueryParams &

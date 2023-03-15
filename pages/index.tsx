@@ -1,38 +1,149 @@
-import { Box, Container, Grid } from "@mui/material";
+import { AdvertisementApi, BlogApi, GroupProductApi, ProductApi } from "@/api";
+import { groupProductSelector } from "@/redux/slice/groupProductSlice";
+import { Box, Container, Grid, useTheme } from "@mui/material";
 import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { AdvertisementApi, BlogApi, GroupProductApi, ProductApi } from "../api";
 
-import { getAllAdvertisements } from "../apis/advertisement";
-import { getAllBlogsPublic } from "../apis/blog";
-import { getAllGroupProducts } from "../apis/groupProduct";
-import { getAllProducts } from "../apis/product";
-import { ImageFill, ProductCard } from "../components";
-import { DefaultLayout } from "../layouts";
+import { ImageFill, ProductCard } from "@/components";
+import { DefaultLayout } from "@/layouts";
 import {
   AdvertisementModel,
   BlogModel,
+  GroupProductHeaderModel,
   GroupProductModel,
   ProductModel,
-} from "../models";
-import ResponseGetAllModel from "../models/ResponseGetAllModel";
-import styles from "../styles/_Home.module.scss";
-import { EMPTY_ITEMS } from "../utils/constants";
-import helper from "../utils/helpers";
-import { publicRoutes } from "../utils/routes";
-import { Advertisement } from "../utils/types";
+  ResponseGetAllModel,
+} from "@/models";
+import styles from "@/styles/_Home.module.scss";
+import helper from "@/utils/helpers";
+import { publicRoutes } from "@/utils/routes";
+import { Advertisement } from "@/utils/types";
 
 type GroupProductsProps = {
   items: GroupProductModel[];
 };
 
 const GroupProducts = ({ items }: GroupProductsProps) => {
+  const theme = useTheme();
+  const { groupProductHeaders } = useSelector(groupProductSelector);
+  const [header, setHeader] = useState<GroupProductHeaderModel>();
+
+  const headers = useMemo(() => {
+    return groupProductHeaders
+      .filter((item) => item.items.length > 0)
+      .map((item) => ({
+        ...item,
+        items: item.items.filter((subItem) => subItem.thumbnail !== ""),
+      }));
+  }, [groupProductHeaders]);
+
+  useEffect(() => {
+    if (headers.length > 0) {
+      setHeader(headers[0]);
+    }
+  }, [headers]);
+
   return (
     <Container maxWidth="lg">
-      <Grid container>
+      <Box
+        className="flex-center"
+        sx={{
+          gap: "24px",
+          mb: 2,
+        }}
+      >
+        {headers.map((item) => {
+          const isActive = header && item.name === header.name;
+          return (
+            <Box
+              sx={{
+                borderBottom: `2px solid ${isActive ? "var(--blue)" : "#000"}`,
+                color: `${isActive ? "var(--blue)" : "#000"}`,
+                fontWeight: `${isActive ? "500" : "normal"}`,
+                minWidth: "15%",
+                textAlign: "center",
+                py: 1,
+                cursor: "pointer",
+                textTransform: "uppercase",
+              }}
+              key={item.name}
+              onClick={() => setHeader(item)}
+            >
+              {item.name}
+            </Box>
+          );
+        })}
+      </Box>
+      {header ? (
+        <Swiper
+          breakpoints={{
+            300: {
+              slidesPerView: 2,
+            },
+            600: {
+              slidesPerView: 4,
+            },
+            1200: {
+              slidesPerView: 6,
+            },
+          }}
+        >
+          {header.items.map((item) => {
+            return (
+              <SwiperSlide key={item.id}>
+                <Link href={publicRoutes.products(item.slug)}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexDirection: "column",
+                      "&:hover": {
+                        transform: "translateY(-2px)",
+                        transition: "all linear 0.1s ",
+                        span: {
+                          color: "var(--blue)",
+                        },
+                      },
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        margin: "20px",
+                        background: "#00aaff85",
+                        width: "100px",
+                        height: "100px",
+                        borderRadius: "50%",
+                      }}
+                    >
+                      <Image
+                        src={item.thumbnail}
+                        alt=""
+                        height={64}
+                        width={56}
+                        priority={true}
+                      />
+                    </div>
+                    <span style={{ textTransform: "uppercase" }}>
+                      {item.name}
+                    </span>
+                  </Box>
+                </Link>
+              </SwiperSlide>
+            );
+          })}
+        </Swiper>
+      ) : null}
+
+      {/* <Grid container>
         {items.map((gp) => {
           return (
             <Grid item xs={6} md={4} lg={3} xl={2} key={gp.id}>
@@ -46,7 +157,7 @@ const GroupProducts = ({ items }: GroupProductsProps) => {
             </Grid>
           );
         })}
-      </Grid>
+      </Grid> */}
     </Container>
   );
 };
@@ -119,13 +230,6 @@ const Blogs = ({ blogs }: BlogProps) => {
                 as="image"
               >
                 <ImageFill src={blog.thumbnail} alt="" height="280px" />
-                {/* <Image
-                  fill={true}
-                  sizes="(max-width: 768px) 1vw"
-                  src={blog.thumbnail}
-                  alt=""
-                  priority={true}
-                /> */}
               </Link>
               <Link href={`/blog/${blog.slug}`} className={styles.blogTitle}>
                 {blog.title}
@@ -178,7 +282,7 @@ export default function Home({
   );
 
   return (
-    <DefaultLayout>
+    <DefaultLayout contentStyle={{ marginBlock: 0 }}>
       <>
         <Head>
           <title>Trang chủ</title>

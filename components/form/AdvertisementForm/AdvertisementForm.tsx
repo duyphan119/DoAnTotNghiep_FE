@@ -37,6 +37,13 @@ const AdvertisementForm = (props: Props) => {
           dto: data,
         })
       );
+    } else {
+      appDispatch(
+        advertisementActions.fetchCreate({
+          files,
+          dto: data,
+        })
+      );
     }
   };
 

@@ -12,3 +12,4 @@ export { default as CartApi } from "./CartApi";
 export { default as OrderApi } from "./OrderApi";
 export { default as OrderDiscountApi } from "./OrderDiscountApi";
 export { default as BlogCategoryApi } from "./BlogCategoryApi";
+export { default as RepCommentProductApi } from "./RepCommentProductApi";

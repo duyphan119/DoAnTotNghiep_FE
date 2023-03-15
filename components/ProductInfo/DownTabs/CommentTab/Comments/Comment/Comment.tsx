@@ -1,11 +1,10 @@
-import React from "react";
-import { CommentProduct } from "../../../../../../utils/types";
 import { Rating } from "@mui/material";
-import styles from "../../../../_style.module.scss";
 import moment from "moment";
+import { CommentProductModel } from "@/models";
+import styles from "../../../../_style.module.scss";
 import "moment/locale/vi";
 type Props = {
-  commentProduct: CommentProduct;
+  commentProduct: CommentProductModel;
 };
 
 const Comment = ({ commentProduct }: Props) => {

@@ -1,8 +1,8 @@
-import { privateAxios, publicAxios } from "../config/configAxios";
-import { CommentProductModel, ResponseGetAllModel } from "../models";
-import { CreateCommentProductDTO } from "../types/dtos";
-import { CommentProductParams } from "../types/params";
-import { MSG_SUCCESS } from "../utils/constants";
+import { privateAxios, publicAxios } from "@/config/configAxios";
+import { CommentProductModel, ResponseGetAllModel } from "@/models";
+import { CreateCommentProductDTO } from "@/types/dtos";
+import { CommentProductParams } from "@/types/params";
+import { MSG_SUCCESS } from "@/utils/constants";
 
 class CommentProductApi {
   nameApi: string;
@@ -13,26 +13,32 @@ class CommentProductApi {
     return json.map((item: any) => new CommentProductModel(item));
   }
 
-  getAll(
-    params?: CommentProductParams
-  ): Promise<ResponseGetAllModel<CommentProductModel>> {
+  getAll(params?: CommentProductParams): Promise<{
+    commentProductData: ResponseGetAllModel<CommentProductModel>;
+    userCommentProduct: CommentProductModel;
+  }> {
     return new Promise(async (resolve, reject) => {
       try {
         const { data, message } = await (publicAxios().get(this.nameApi, {
           params,
         }) as Promise<{
-          data: { items: any; count: number };
+          data: { items: any; count: number; userCommentProduct: any };
           message: string;
         }>);
-        const { items, count } = data;
-        const response =
-          message === MSG_SUCCESS
-            ? new ResponseGetAllModel<CommentProductModel>(
-                this.getListFromJson(items),
-                count
-              )
-            : new ResponseGetAllModel<CommentProductModel>();
-        resolve(response);
+        const { items, count, userCommentProduct } = data;
+        resolve({
+          commentProductData:
+            message === MSG_SUCCESS
+              ? new ResponseGetAllModel<CommentProductModel>(
+                  this.getListFromJson(items),
+                  count
+                )
+              : new ResponseGetAllModel<CommentProductModel>(),
+          userCommentProduct:
+            message === MSG_SUCCESS && userCommentProduct
+              ? new CommentProductModel(userCommentProduct)
+              : new CommentProductModel(),
+        });
       } catch (error) {
         console.log(error);
         reject(error);

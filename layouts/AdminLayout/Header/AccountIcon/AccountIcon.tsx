@@ -2,8 +2,8 @@ import Link from "next/link";
 import React from "react";
 import { useSelector } from "react-redux";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { authSelector } from "../../../../redux/slice/authSlice";
-import { protectedRoutes } from "../../../../utils/routes";
+import { authSelector } from "@/redux/slice/authSlice";
+import { protectedRoutes } from "@/utils/routes";
 import styles from "../_style.module.scss";
 
 type Props = {};

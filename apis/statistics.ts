@@ -1,4 +1,4 @@
-import { privateAxios } from "../config/configAxios";
+import { privateAxios } from "@/config/configAxios";
 
 export const getStatistics = (): Promise<any> =>
   privateAxios().get("statistics");

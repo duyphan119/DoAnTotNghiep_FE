@@ -1,15 +1,15 @@
 import ClearIcon from "@mui/icons-material/Clear";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import { Badge, ClickAwayListener } from "@mui/material";
-import Link from "next/link";
-import { useEffect, useState } from "react";
 import moment from "moment";
 import "moment/locale/vi";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
-import { useSocketContext } from "../../../../context/SocketContext";
-import { Notification, ResponseItems } from "../../../../utils/types";
+import { useSocketContext } from "@/context/SocketContext";
+import { EMPTY_ITEMS } from "@/utils/constants";
+import { Notification, ResponseItems } from "@/utils/types";
 import styles from "../_style.module.scss";
-import { EMPTY_ITEMS, MSG_SUCCESS } from "../../../../utils/constants";
 
 type Props = {};
 

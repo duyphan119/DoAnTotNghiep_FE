@@ -1,4 +1,4 @@
-import { privateAxios, publicAxios } from "../config/configAxios";
+import { privateAxios, publicAxios } from "@/config/configAxios";
 import { QueryParams } from "../utils/types";
 
 export type ProductVariantImageQueryParams = {

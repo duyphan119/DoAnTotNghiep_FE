@@ -1,7 +1,7 @@
 import { Grid } from "@mui/material";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import React, { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import {
   Controller,
   ControllerFieldState,
@@ -11,19 +11,19 @@ import {
   UseFormStateReturn,
 } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { CreateBlogDTO } from "../../types/dtos";
+import { CreateBlogDTO } from "@/types/dtos";
 import {
   blogCategoryActions,
   blogCategorySeletor,
-} from "../../redux/slice/blogCategorySlice";
+} from "@/redux/slice/blogCategorySlice";
 import {
   blogSelector,
   blogActions,
   blogReducers,
-} from "../../redux/slice/blogSlice";
-import { fetchActions, fetchSelector } from "../../redux/slice/fetchSlice";
-import { useAppDispatch } from "../../redux/store";
-import { FooterForm, InputControl, SelectControl } from "../common";
+} from "@/redux/slice/blogSlice";
+import { fetchActions, fetchSelector } from "@/redux/slice/fetchSlice";
+import { useAppDispatch } from "@/redux/store";
+import { FooterForm, InputControl, SelectControl } from "@/components";
 
 type Props = {};
 

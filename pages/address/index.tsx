@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
 import Head from "next/head";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { deleteUserAddress } from "../../apis/useraddress";
 import {
   ButtonControl,

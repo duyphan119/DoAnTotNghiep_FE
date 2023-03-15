@@ -11,8 +11,8 @@ import { useSelector } from "react-redux";
 import {
   confirmDialogActions,
   confirmDialogSelector,
-} from "../../../redux/slice/confirmDialogSlice";
-import { useAppDispatch } from "../../../redux/store";
+} from "@/redux/slice/confirmDialogSlice";
+import { useAppDispatch } from "@/redux/store";
 import ButtonControl from "../ButtonControl";
 
 const ConfirmDialog = () => {

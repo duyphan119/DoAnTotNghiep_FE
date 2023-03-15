@@ -3,14 +3,11 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Badge } from "@mui/material";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
-import {
-  cartActions,
-  cartSelector,
-} from "../../../../../redux/slice/cartSlice";
-import { useAppDispatch } from "../../../../../redux/store";
-import { publicRoutes } from "../../../../../utils/routes";
+import { cartActions, cartSelector } from "@/redux/slice/cartSlice";
+import { useAppDispatch } from "@/redux/store";
+import { publicRoutes } from "@/utils/routes";
 import styles from "./_style.module.scss";
-import { authSelector } from "../../../../../redux/slice/authSlice";
+import { authSelector } from "@/redux/slice/authSlice";
 type Props = {};
 
 const CartIcon = (props: Props) => {
@@ -18,8 +15,6 @@ const CartIcon = (props: Props) => {
   const { profile } = useSelector(authSelector);
 
   const appDispatch = useAppDispatch();
-
-  console.log("Giỏ hàng::::", cart);
 
   useEffect(() => {
     if (profile.id > 0) {

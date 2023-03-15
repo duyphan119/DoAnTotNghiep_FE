@@ -6,10 +6,10 @@ import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import MenuIcon from "@mui/icons-material/Menu";
 import NotifyIcon from "./NotifyIcon";
 import AccountIcon from "./AccountIcon";
-import { DarkLightButton } from "../../../components";
-import { useThemeContext } from "../../../context/ThemeContext";
+import { DarkLightButton } from "@/components";
+import { useThemeContext } from "@/context/ThemeContext";
 import Link from "next/link";
-import { protectedRoutes } from "../../../utils/routes";
+import { protectedRoutes } from "@/utils/routes";
 import Image from "next/image";
 import logoPng from "../../../public/logo.png";
 type Props = Partial<{

@@ -124,7 +124,11 @@ const DataManagement = ({
       >
         <ChevronLeftIcon />
       </IconButton>
-      <ButtonControl variant="text" onClick={handleClick}>
+      <ButtonControl
+        variant="text"
+        onClick={handleClick}
+        disabled={TOTAL_PAGE <= 1}
+      >
         Trang {PAGE} / {TOTAL_PAGE || 1}
       </ButtonControl>
       {openPopper ? (

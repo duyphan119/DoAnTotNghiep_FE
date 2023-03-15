@@ -16,6 +16,12 @@ class OrderDiscountModel extends DateModel {
     this.minPrice = obj?.minPrice ?? 0;
     this.value = obj?.value ?? 0;
   }
+
+  displayValue(): string {
+    return this.value <= 100 && this.value >= 0
+      ? `${this.value}%`
+      : `${this.value}đ`;
+  }
 }
 
 export default OrderDiscountModel;

@@ -1,6 +1,6 @@
-import { publicAxios } from "../config/configAxios";
-import { GroupProductHeaderModel } from "../models";
-import { MSG_SUCCESS } from "../utils/constants";
+import { publicAxios } from "@/config/configAxios";
+import { GroupProductHeaderModel } from "@/models";
+import { MSG_SUCCESS } from "@/utils/constants";
 
 class GroupProductHeaderApi {
   getListFromJson(json: any): GroupProductHeaderModel[] {

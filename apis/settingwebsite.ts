@@ -1,4 +1,4 @@
-import { publicAxios } from "../config/configAxios";
+import { publicAxios } from "@/config/configAxios";
 
 export const getAllSettingWebsite = (): Promise<any> =>
   publicAxios().get("setting-website");

@@ -1,31 +1,63 @@
 .contact {
   height: 32px;
-  background-color: #f5f5f5;
+  background-color: #c0dfff;
+  color: #333;
   display: flex;
   align-items: center;
-}
-.contactWrapper {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: #2d2d2d;
-  font-size: 14px;
-}
-.contactList {
-  display: flex;
-  align-items: center;
-  gap: 32px;
-}
-.contactLink {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-}
-.contactLink svg {
-  font-size: 18px;
-  transform: translateY(1px);
-}
-.contactLink:hover {
-  color: var(--blue);
+  .contactWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    .contactList {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      .accountWrapper {
+        position: relative;
+        .authDropdown {
+          display: none;
+        }
+        &:hover {
+          .authDropdown {
+            &::before {
+              content: "";
+              position: absolute;
+              top: -12px;
+              left: 0;
+              right: 0;
+              height: 12px;
+            }
+            position: absolute;
+            right: 0;
+            top: calc(100% + 12px);
+            flex-direction: column;
+            gap: 12px;
+            display: flex;
+            background-color: #fff;
+            z-index: 9999;
+            padding: 12px 0;
+            li {
+              white-space: nowrap;
+              padding: 0 12px;
+              cursor: pointer;
+            }
+          }
+        }
+      }
+      .authLink {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        svg {
+          font-size: 18px;
+          transform: translateY(1px);
+        }
+        &:hover {
+          color: var(--blue);
+        }
+      }
+    }
+  }
 }

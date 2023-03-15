@@ -34,6 +34,18 @@ const snackbarSlice = createSlice({
     hide: (state) => {
       state.open = false;
     },
+    success: (state, { payload: text }: ActionPayload<string>) => {
+      state.text = text;
+      state.type = "success";
+    },
+    error: (state, { payload: text }: ActionPayload<string>) => {
+      state.text = text;
+      state.type = "error";
+    },
+    info: (state, { payload: text }: ActionPayload<string>) => {
+      state.text = text;
+      state.type = "info";
+    },
   },
 });
 

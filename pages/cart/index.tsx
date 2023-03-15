@@ -3,7 +3,7 @@ import { Container, IconButton } from "@mui/material";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { ButtonControl } from "../../components";
 import { DefaultLayout } from "../../layouts";

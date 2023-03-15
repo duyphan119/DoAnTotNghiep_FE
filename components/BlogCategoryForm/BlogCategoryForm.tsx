@@ -1,16 +1,16 @@
 import { Grid } from "@mui/material";
 import { useRouter } from "next/router";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { CreateBlogCategoryDTO } from "../../types/dtos";
+import { CreateBlogCategoryDTO } from "@/types/dtos";
 import {
   blogCategorySeletor,
   blogCategoryActions,
   blogCategoryReducers,
-} from "../../redux/slice/blogCategorySlice";
-import { fetchActions, fetchSelector } from "../../redux/slice/fetchSlice";
-import { useAppDispatch } from "../../redux/store";
+} from "@/redux/slice/blogCategorySlice";
+import { fetchActions, fetchSelector } from "@/redux/slice/fetchSlice";
+import { useAppDispatch } from "@/redux/store";
 import { FooterForm, InputControl, TextAreaControl } from "../common";
 
 type Props = {};

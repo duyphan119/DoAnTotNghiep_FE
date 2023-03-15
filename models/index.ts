@@ -16,3 +16,4 @@ export { default as AdvertisementModel } from "./AdvertisementModel";
 export { default as CommentProductModel } from "./CommentProductModel";
 export { default as ResponseGetAllModel } from "./ResponseGetAllModel";
 export { default as AddressModel } from "./AddressModel";
+export { default as RepCommentProductModel } from "./RepCommentProductModel";

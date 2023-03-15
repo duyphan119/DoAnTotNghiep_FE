@@ -11,17 +11,14 @@ import {
   InputControl,
   SelectControl,
   TextAreaControl,
-} from "../../components";
-import { GroupProductModel, ProductImageModel } from "../../models";
-import { fetchSelector } from "../../redux/slice/fetchSlice";
-import { groupProductSelector } from "../../redux/slice/groupProductSlice";
-import {
-  productActions,
-  productSelector,
-} from "../../redux/slice/productSlice";
-import { productVariantSelector } from "../../redux/slice/productVariantSlice";
-import { snackbarActions } from "../../redux/slice/snackbarSlice";
-import { useAppDispatch } from "../../redux/store";
+} from "@/components";
+import { GroupProductModel, ProductImageModel } from "@/models";
+import { fetchSelector } from "@/redux/slice/fetchSlice";
+import { groupProductSelector } from "@/redux/slice/groupProductSlice";
+import { productActions, productSelector } from "@/redux/slice/productSlice";
+import { productVariantSelector } from "@/redux/slice/productVariantSlice";
+import { snackbarActions } from "@/redux/slice/snackbarSlice";
+import { useAppDispatch } from "@/redux/store";
 import ProductVariantForm from "./ProductVariantForm";
 import ProductVariantImageForm from "./ProductVariantImageForm";
 type Props = {};

@@ -1,20 +1,26 @@
 import { call, put, takeEvery } from "redux-saga/effects";
+import CommentProductApi from "../../api/CommentProductApi";
 import {
   CommentProductDTO,
   createCommentProduct,
   getAllCommentProductsClient,
   updateCommentProduct,
 } from "../../apis/commentproduct";
+import { CommentProductModel, ResponseGetAllModel } from "../../models";
+import { CreateCommentProductDTO } from "../../types/dtos";
+import { CommentProductParams } from "../../types/params";
 import { MSG_SUCCESS } from "../../utils/constants";
 import { Product } from "../../utils/types";
+import { fetchActions } from "../slice/fetchSlice";
 import {
-  FetchUpdateCommentProductPayload,
   productDetailActions,
-  productDetailReducers,
+  productDetailReducer,
   SetPagePayload,
 } from "../slice/productDetailSlice";
 import { snackbarActions } from "../slice/snackbarSlice";
 import { ActionPayload } from "../store";
+
+const cpApi = new CommentProductApi();
 
 function* setProduct({ payload }: ActionPayload<Product | null>) {
   if (payload) {
@@ -31,7 +37,7 @@ function* setProduct({ payload }: ActionPayload<Product | null>) {
         yield put(productDetailActions.setCommentProductData(data));
       }
     } catch (error) {
-      console.log("productDetailReducers.setProduct error", error);
+      console.log("productDetailReducer.setProduct error", error);
     }
   }
 }
@@ -51,17 +57,19 @@ function* setPage({ payload }: ActionPayload<SetPagePayload>) {
         yield put(productDetailActions.setCommentProductData(data));
       }
     } catch (error) {
-      console.log("productDetailReducers.setPage error", error);
+      console.log("productDetailReducer.setPage error", error);
     }
   }
 }
 
 function* fetchAddCommnetProduct({
-  payload,
-}: ActionPayload<CommentProductDTO>) {
+  payload: dto,
+}: ActionPayload<CreateCommentProductDTO>) {
+  let isError = true;
   try {
-    let { message, data } = yield call(() => createCommentProduct(payload));
-    if (message === MSG_SUCCESS) {
+    yield put(fetchActions.start(productDetailReducer.fetchAddCommnetProduct));
+    const data: CommentProductModel = yield call(() => cpApi.create(dto));
+    if (data.id > 0) {
       yield put(productDetailActions.addCommentProduct(data));
       yield put(
         snackbarActions.show({
@@ -69,20 +77,27 @@ function* fetchAddCommnetProduct({
           type: "success",
         })
       );
-    } else yield put(productDetailActions.fetchError());
+      yield put(fetchActions.endAndSuccess());
+    }
   } catch (error) {
-    console.log("productDetailReducers.fetchAddCommnetProduct error", error);
-    yield put(productDetailActions.fetchError());
+    console.log("productDetailReducer.fetchAddCommnetProduct error", error);
   }
+  if (isError) yield put(fetchActions.endAndError());
 }
 
 function* fetchUpdateCommentProduct({
-  payload,
-}: ActionPayload<FetchUpdateCommentProductPayload>) {
+  payload: { id, dto },
+}: ActionPayload<{ id: number; dto: CreateCommentProductDTO }>) {
+  let isError = true;
   try {
-    const { id, ...others } = payload;
-    let { message, data } = yield call(() => updateCommentProduct(id, others));
-    if (message === MSG_SUCCESS) {
+    yield put(
+      fetchActions.start(productDetailReducer.fetchUpdateCommentProduct)
+    );
+    const data: CommentProductModel = yield call(() =>
+      cpApi.update({ id, dto })
+    );
+    if (data.id > 0) {
+      isError = false;
       yield put(productDetailActions.updateCommnetProduct(data));
       yield put(
         snackbarActions.show({
@@ -90,22 +105,52 @@ function* fetchUpdateCommentProduct({
           type: "success",
         })
       );
-    } else yield put(productDetailActions.fetchError());
+      yield put(fetchActions.endAndSuccess());
+    }
   } catch (error) {
-    console.log("productDetailReducers.fetchAddCommnetProduct error", error);
-    yield put(productDetailActions.fetchError());
+    console.log("productDetailReducer.fetchUpdateCommentProduct error", error);
   }
+  if (isError) yield put(fetchActions.endAndError());
+}
+
+function* fetchGetAllCommentProduct({
+  payload: params,
+}: ActionPayload<CommentProductParams>) {
+  let isError = true;
+  try {
+    yield put(
+      fetchActions.start(productDetailReducer.fetchGetAllCommentProduct)
+    );
+    const {
+      commentProductData,
+      userCommentProduct,
+    }: {
+      commentProductData: ResponseGetAllModel<CommentProductModel>;
+      userCommentProduct: CommentProductModel;
+    } = yield call(() => cpApi.getAll(params));
+    isError = false;
+    yield put(productDetailActions.setCommentProductData(commentProductData));
+    yield put(productDetailActions.setUserCommentProduct(userCommentProduct));
+    yield put(fetchActions.endAndSuccess());
+  } catch (error) {
+    console.log("productDetailReducer.fetchGetAllCommentProduct error", error);
+  }
+  if (isError) yield put(fetchActions.endAndError());
 }
 
 export function* productDetailSaga() {
-  yield takeEvery(productDetailReducers.setProduct, setProduct);
-  yield takeEvery(productDetailReducers.setPage, setPage);
+  yield takeEvery(productDetailReducer.setProduct, setProduct);
+  yield takeEvery(productDetailReducer.setPage, setPage);
   yield takeEvery(
-    productDetailReducers.fetchAddCommnetProduct,
+    productDetailReducer.fetchAddCommnetProduct,
     fetchAddCommnetProduct
   );
   yield takeEvery(
-    productDetailReducers.fetchUpdateCommentProduct,
+    productDetailReducer.fetchUpdateCommentProduct,
     fetchUpdateCommentProduct
+  );
+  yield takeEvery(
+    productDetailReducer.fetchGetAllCommentProduct,
+    fetchGetAllCommentProduct
   );
 }

@@ -4,6 +4,7 @@ import SortParams from "./SortParams";
 type VariantParams = {
   name?: string;
   variant_values?: boolean;
+  q?: string;
 } & PaginationParams &
   SortParams;
 

@@ -1,11 +1,9 @@
-import { privateAxios, publicAxios } from "../config/configAxios";
-import { GroupProductModel } from "../models";
-import ResponseGetAllModel from "../models/ResponseGetAllModel";
-import UploadRepository from "../repositories/UploadRepository";
-import { GroupProductParams } from "../types/params";
-import { CreateGroupProductDTO } from "../types/dtos";
-import { EMPTY_ITEMS, MSG_SUCCESS } from "../utils/constants";
-import UploadApi from "./UploadApi";
+import { privateAxios, publicAxios } from "@/config/configAxios";
+import { GroupProductModel, ResponseGetAllModel } from "@/models";
+import UploadRepository from "@/repositories/UploadRepository";
+import { CreateGroupProductDTO } from "@/types/dtos";
+import { GroupProductParams } from "@/types/params";
+import { MSG_SUCCESS } from "@/utils/constants";
 
 class GroupProductApi {
   nameApi: string;

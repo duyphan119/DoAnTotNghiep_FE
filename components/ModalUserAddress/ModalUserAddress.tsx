@@ -1,5 +1,5 @@
 import { Modal, Box, Grid, Typography, Button } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { MSG_SUCCESS } from "../../utils/constants";
 import provinces from "../../province.json";

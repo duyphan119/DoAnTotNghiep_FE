@@ -1,5 +1,5 @@
 import { GenericAbortSignal } from "axios";
-import { privateAxios, publicAxios } from "../config/configAxios";
+import { privateAxios, publicAxios } from "@/config/configAxios";
 
 export type ChangeProfile = {
   email: string;

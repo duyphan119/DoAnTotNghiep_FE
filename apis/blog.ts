@@ -2,7 +2,7 @@ import {
   privateAxios,
   publicAxios,
   serverSideAxios,
-} from "../config/configAxios";
+} from "@/config/configAxios";
 import { Blog, QueryParams } from "../utils/types";
 
 export type BlogQueryParams = QueryParams &

@@ -1,25 +1,16 @@
 import { Container } from "@mui/material";
 import Head from "next/head";
-import { createContext, useContext, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { getAllCommentProductsClient } from "../../apis/commentproduct";
-import { getAllProducts } from "../../apis/product";
+import { createContext, useContext, useEffect } from "react";
+import { ProductApi } from "../../api";
 import { ProductInfo } from "../../components";
 import { DefaultLayout } from "../../layouts";
 import { ProductModel } from "../../models";
-import { authSelector } from "../../redux/slice/authSlice";
 import { productDetailActions } from "../../redux/slice/productDetailSlice";
 import { useAppDispatch } from "../../redux/store";
 import styles from "../../styles/_ProductDetail.module.scss";
-import { MSG_SUCCESS } from "../../utils/constants";
-import { CommentProduct, Product, ResponseItems } from "../../utils/types";
-
-type CommentProductData = ResponseItems<CommentProduct> & {
-  userComment: CommentProduct | null;
-};
 
 type Props = {
-  product: ProductModel;
+  product: any;
 };
 
 const ProductDetailContext = createContext<any>({});
@@ -61,23 +52,30 @@ const ProductDetail = ({ product }: Props) => {
 };
 export async function getServerSideProps(context: any) {
   const { slug } = context.query;
-  let product;
-  const { message: msg1, data: data1 } = await getAllProducts({
-    slug,
-    product_variants: true,
-    images: true,
-  });
-  if (msg1 === MSG_SUCCESS) {
-    product = JSON.parse(JSON.stringify(data1.items[0]));
-  }
+  // let product;
+  // const { message: msg1, data: data1 } = await getAllProducts({
+  //   slug,
+  //   product_variants: true,
+  //   images: true,
+  // });
+  // if (msg1 === MSG_SUCCESS) {
+  //   product = JSON.parse(JSON.stringify(data1.items[0]));
+  // }
 
-  return product
-    ? {
-        props: { product },
-      }
-    : {
-        notFound: true,
-      };
+  // return product
+  //   ? {
+  //       props: { product },
+  //     }
+  //   : {
+  //       notFound: true,
+  //     };
+  const pApi = new ProductApi();
+  const product = JSON.parse(JSON.stringify(await pApi.getBySlug(slug)));
+  if (product.id > 0)
+    return {
+      props: { product },
+    };
+  return { notFound: true };
 }
 
 export default ProductDetail;

@@ -1,7 +1,7 @@
-import { privateAxios } from "../config/configAxios";
-import { OrderItemModel, OrderModel } from "../models";
-import { CreateCartItemDTO } from "../types/dtos";
-import { MSG_SUCCESS } from "../utils/constants";
+import { privateAxios } from "@/config/configAxios";
+import { OrderItemModel, OrderModel } from "@/models";
+import { CreateCartItemDTO } from "@/types/dtos";
+import { MSG_SUCCESS } from "@/utils/constants";
 
 class CartApi {
   nameApi: string;

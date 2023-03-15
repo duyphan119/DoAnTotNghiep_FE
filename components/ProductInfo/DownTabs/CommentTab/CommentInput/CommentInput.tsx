@@ -1,60 +1,61 @@
 import { Button, Rating } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { CommentProductModel } from "../../../../../models";
-import { useProductDetailContext } from "../../../../../pages/product/[slug]";
-import {
-  authActions,
-  authSelector,
-} from "../../../../../redux/slice/authSlice";
+import { CommentProductModel } from "@/models";
+import { useProductDetailContext } from "@/pages/product/[slug]";
+import { authActions, authSelector } from "@/redux/slice/authSlice";
 import {
   productDetailActions,
   productDetailSelector,
-} from "../../../../../redux/slice/productDetailSlice";
-import { snackbarActions } from "../../../../../redux/slice/snackbarSlice";
-import { useAppDispatch } from "../../../../../redux/store";
-import { CreateCommentProductDTO } from "../../../../../types/dtos";
-import { MSG_SUCCESS } from "../../../../../utils/constants";
+} from "@/redux/slice/productDetailSlice";
+import { snackbarActions } from "@/redux/slice/snackbarSlice";
+import { useAppDispatch } from "@/redux/store";
+import { CreateCommentProductDTO } from "@/types/dtos";
+import { MSG_SUCCESS } from "@/utils/constants";
+import { ButtonControl, TextAreaControl } from "../../../../common";
 import styles from "../../../_style.module.scss";
 
 type Props = {};
 
 const CommentInput = (props: Props) => {
   const appDispatch = useAppDispatch();
-  const { product, commentProductData } = useSelector(productDetailSelector);
+  const { product, userCommentProduct } = useSelector(productDetailSelector);
   const { profile } = useSelector(authSelector);
-
   // const { userComment } = commentProductData;
-  const userComment = new CommentProductModel();
+  // const userComment = new CommentProductModel();
 
   const { register, handleSubmit, setValue, getValues } =
     useForm<CreateCommentProductDTO>();
 
-  const [star, setStar] = useState<number>(userComment ? userComment.star : 0);
+  const [star, setStar] = useState<number>(0);
+  const isEditing = useMemo(
+    () => userCommentProduct.id > 0,
+    [userCommentProduct]
+  );
 
   useEffect(() => {
-    setValue("content", userComment ? userComment.content : "");
-    setStar(userComment ? userComment.star : 0);
-  }, [userComment]);
+    setValue("content", isEditing ? userCommentProduct.content : "");
+    setStar(isEditing ? userCommentProduct.star : 0);
+  }, [userCommentProduct]);
 
   const onSubmit: SubmitHandler<CreateCommentProductDTO> = async (data) => {
     try {
-      if (star > 0 && product) {
-        const input = {
+      if (star > 0 && product.id > 0) {
+        const dto = {
           ...data,
           star,
           productId: product.id,
         };
-        if (!userComment) {
-          appDispatch(productDetailActions.fetchAddCommnetProduct(input));
-        } else {
+        if (isEditing) {
           appDispatch(
             productDetailActions.fetchUpdateCommentProduct({
-              id: userComment.id,
-              ...input,
+              id: userCommentProduct.id,
+              dto: dto,
             })
           );
+        } else {
+          appDispatch(productDetailActions.fetchAddCommnetProduct(dto));
         }
       }
     } catch (error) {
@@ -67,6 +68,11 @@ const CommentInput = (props: Props) => {
       );
     }
   };
+
+  console.log(
+    userCommentProduct.star === star &&
+      userCommentProduct.content === getValues("content")
+  );
 
   return profile ? (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -81,28 +87,9 @@ const CommentInput = (props: Props) => {
           size="large"
         />
       </div>
-      <div className="form-group">
-        <label className="form-label">Nội dung</label>
-
-        <textarea
-          className="form-control"
-          rows={4}
-          {...register("content")}
-        ></textarea>
-      </div>
+      <TextAreaControl register={register("content")} label="Nội dung" />
       <div>
-        <Button
-          variant="contained"
-          type="submit"
-          disabled={
-            !userComment
-              ? star === 0
-              : userComment.star === star &&
-                userComment.content === getValues("content")
-          }
-        >
-          {userComment ? "Sửa" : "Gửi"}
-        </Button>
+        <ButtonControl type="submit">{isEditing ? "Sửa" : "Gửi"}</ButtonControl>
       </div>
     </form>
   ) : (

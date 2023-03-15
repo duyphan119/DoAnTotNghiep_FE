@@ -3,12 +3,17 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ChangeEvent, useEffect, useReducer, useRef } from "react";
+import { ChangeEvent, useEffect, useMemo, useReducer, useRef } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { OrderDiscountApi } from "../../api";
 import { CheckoutDTO } from "../../apis/order";
-import { InputControl, RadioControl, SelectControl } from "../../components";
+import {
+  ButtonControl,
+  InputControl,
+  RadioControl,
+  SelectControl,
+} from "../../components";
 import { OrderDiscountModel, UserAddressModel } from "../../models";
 import provinces from "../../province.json";
 import { authSelector } from "../../redux/slice/authSlice";
@@ -79,7 +84,7 @@ const Payment = (props: Props) => {
   const { profile } = useSelector(authSelector);
   const { reducers: stateReducers } = useSelector(fetchSelector);
 
-  const total = cart.getTotalPrice();
+  const total = useMemo(() => cart.getTotalPrice(), [cart]);
 
   const [state, dispatch] = useReducer(reducers, initialState);
   const { districts, orderDiscount, userAddress, visible, wards, usePoint } =
@@ -220,7 +225,7 @@ const Payment = (props: Props) => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container columnSpacing={2} rowSpacing={2}>
             <Grid item xs={12} md={8}>
-              <h1>Thông tin đặt hàng</h1>
+              <h1 className={styles.h1}>Thông tin đặt hàng</h1>
               <Grid container columnSpacing={2} rowSpacing={2}>
                 <Grid item xs={12} md={6}>
                   <InputControl
@@ -294,36 +299,40 @@ const Payment = (props: Props) => {
                         required={true}
                       />
                     </Grid>
-                    <Grid item xs={12}>
-                      <SelectControl
-                        label="Quận / Huyện"
-                        options={districts.map((dis: any) => ({
-                          value: dis.name,
-                        }))}
-                        register={register("district", {
-                          required: {
-                            value: true,
-                            message: "Quận / Huyện không được để trống",
-                          },
-                        })}
-                        required={true}
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <SelectControl
-                        label="Phường / Xã"
-                        options={wards.map((w: any) => ({
-                          value: w.name,
-                        }))}
-                        register={register("ward", {
-                          required: {
-                            value: true,
-                            message: "Phường / Xã không được để trống",
-                          },
-                        })}
-                        required={true}
-                      />
-                    </Grid>
+                    {districts.length > 0 ? (
+                      <Grid item xs={12}>
+                        <SelectControl
+                          label="Quận / Huyện"
+                          options={districts.map((dis: any) => ({
+                            value: dis.name,
+                          }))}
+                          register={register("district", {
+                            required: {
+                              value: true,
+                              message: "Quận / Huyện không được để trống",
+                            },
+                          })}
+                          required={true}
+                        />
+                      </Grid>
+                    ) : null}
+                    {wards.length > 0 ? (
+                      <Grid item xs={12}>
+                        <SelectControl
+                          label="Phường / Xã"
+                          options={wards.map((w: any) => ({
+                            value: w.name,
+                          }))}
+                          register={register("ward", {
+                            required: {
+                              value: true,
+                              message: "Phường / Xã không được để trống",
+                            },
+                          })}
+                          required={true}
+                        />
+                      </Grid>
+                    ) : null}
                     <Grid item xs={12}>
                       <InputControl
                         label="Địa chỉ"
@@ -339,7 +348,7 @@ const Payment = (props: Props) => {
                   </>
                 ) : null}
               </Grid>
-              <h1>Phương thức thanh toán</h1>
+              <h1 className={styles.h1}>Phương thức thanh toán</h1>
               <Grid container columnSpacing={2} rowSpacing={2}>
                 <Grid item xs={12}>
                   <RadioControl
@@ -359,7 +368,7 @@ const Payment = (props: Props) => {
               </Grid>
             </Grid>
             <Grid item xs={12} md={4}>
-              <h1>Đơn hàng</h1>
+              <h1 className={styles.h1}>Đơn hàng</h1>
               <ul className={styles.items}>
                 {cart.items.map((item) => {
                   return (
@@ -463,7 +472,7 @@ const Payment = (props: Props) => {
                 </li>
                 <li className={styles.actions}>
                   <Link href={publicRoutes.cart}>Quay lại giỏ hàng</Link>
-                  <button type="submit">Thanh toán</button>
+                  <ButtonControl type="submit">Thanh toán</ButtonControl>
                 </li>
               </ul>
             </Grid>

@@ -1,4 +1,4 @@
-import React, { CSSProperties, ReactNode } from "react";
+import { CSSProperties, ReactNode } from "react";
 import Footer from "./Footer";
 import Header from "./Header";
 

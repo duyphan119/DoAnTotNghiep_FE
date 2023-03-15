@@ -1,4 +1,4 @@
-import React, { useState, useMemo, FormEvent, useEffect } from "react";
+import { useState, useMemo, FormEvent, useEffect } from "react";
 import { AdminLayout } from "../../../../layouts";
 import Head from "next/head";
 import { getOrderById, updateStatus } from "../../../../apis/order";

@@ -1,9 +1,9 @@
 import { Container, Grid } from "@mui/material";
 import { ReactNode } from "react";
 import { useSelector } from "react-redux";
-import { NotFound } from "../../components";
-import { authSelector } from "../../redux/slice/authSlice";
-import { fetchSelector } from "../../redux/slice/fetchSlice";
+import { NotFound } from "@/components";
+import { authSelector } from "@/redux/slice/authSlice";
+import { fetchSelector } from "@/redux/slice/fetchSlice";
 import DefaultLayout from "../DefaultLayout";
 import Sidebar from "./Sidebar";
 type Props = Partial<{
@@ -16,7 +16,6 @@ const AccountLayout = ({ children, titleHeading }: Props) => {
   const { isLoading, isError } = useSelector(fetchSelector);
 
   if (!isLoading && isError && profile.id === 0) {
-    console.log("Sai");
     return <NotFound />;
   }
 

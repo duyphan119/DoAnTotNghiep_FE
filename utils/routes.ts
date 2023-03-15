@@ -21,6 +21,7 @@ export const protectedRoutes = {
   address: "/address",
   myOrders: "/order",
   userManagement: "/admin/account",
+  customerChangePassword: "/change-password",
   changePassword: "/admin/setting/change-password",
 
   advertisementManagement: "/admin/advertisement",
@@ -55,9 +56,9 @@ export const protectedRoutes = {
   createCommentProduct: "/admin/comment-product/create",
   updateCommentProduct: (id: number) => `/admin/comment-product/${id}/update`,
 
-  orderDiscountManagement: "/admin/orderDiscount",
-  createOrderDiscount: "/admin/orderDiscount/create",
-  updateOrderDiscount: (id: number) => `/admin/orderDiscount/${id}/update`,
+  orderDiscountManagement: "/admin/order-discount",
+  createOrderDiscount: "/admin/order-discount/create",
+  updateOrderDiscount: (id: number) => `/admin/order-discount/${id}/update`,
 
   statistics: "/admin/statistics",
 };

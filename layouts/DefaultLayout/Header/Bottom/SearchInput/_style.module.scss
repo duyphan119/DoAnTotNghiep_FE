@@ -16,8 +16,8 @@
     color: #fff;
     padding: 6px 16px;
     box-shadow: 0 0 2px 0px var(--blue);
-    border-top-right-radius: 50px;
-    border-bottom-right-radius: 50px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
   }
   svg {
     font-size: 24px;
@@ -29,21 +29,26 @@
     flex: 1;
     color: inherit;
     font-size: 14px;
-    border-top-left-radius: 50px;
-    border-bottom-left-radius: 50px;
-    border: 1px solid lightgray;
-    border-right: 1px solid transparent;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border: 1px solid lightblue;
+    border-right: 1px solid var(--blue) !important;
     padding-left: 16px;
     align-self: stretch;
+    background-color: #fff;
+    &:focus-visible {
+      border-color: var(--blue);
+    }
   }
   .search-result-wrapper {
     position: absolute;
     top: 100%;
-    left: 16px;
-    right: 16px;
+    left: 0;
+    right: 0;
     z-index: 9999;
     background-color: #fff;
     box-shadow: 0 0 1px 1px lightgray;
+    border-radius: 2px;
     ul {
       display: flex;
       flex-direction: column;

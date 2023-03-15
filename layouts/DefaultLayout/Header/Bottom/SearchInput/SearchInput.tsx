@@ -5,10 +5,9 @@ import Link from "next/link";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 import { useRouter } from "next/router";
-import { ProductApi } from "../../../../../api";
-import { ProductModel } from "../../../../../models";
-import ResponseGetAllModel from "../../../../../models/ResponseGetAllModel";
-import { publicRoutes } from "../../../../../utils/routes";
+import { ProductApi } from "@/api";
+import { ProductModel, ResponseGetAllModel } from "@/models";
+import { publicRoutes } from "@/utils/routes";
 import styles from "./_style.module.scss";
 
 type Props = {};
@@ -63,8 +62,6 @@ const SearchInput = (props: Props) => {
 
     return () => clearTimeout(timerId);
   }, [q]);
-
-  console.log("visible:::", visible);
 
   return (
     <ClickAwayListener onClickAway={handleBlur}>

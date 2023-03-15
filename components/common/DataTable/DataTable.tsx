@@ -79,7 +79,7 @@ const DataTable = ({ isLoading, columns, hasCheck, rows, sortable }: Props) => {
   };
 
   return (
-    <table className="table">
+    <table className="table" style={{ fontSize: "14px" }}>
       <thead>
         <tr>
           {hasCheck ? (

@@ -1,9 +1,10 @@
 import { ReactElement } from "react";
-import { protectedRoutes, publicRoutes } from "../../../utils/routes";
+import { protectedRoutes, publicRoutes } from "@/utils/routes";
 import HomeIcon from "@mui/icons-material/Home";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import TableRowsIcon from "@mui/icons-material/TableRows";
 import FeedIcon from "@mui/icons-material/Feed";
+import DiscountIcon from "@mui/icons-material/Discount";
 import CampaignIcon from "@mui/icons-material/Campaign";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
@@ -43,11 +44,26 @@ export const navItems: NavItem[] = [
     tooltip: "Quản lý tài khoản",
   },
   {
-    href: protectedRoutes.orderManagement,
-    label: "Đơn hàng",
-    icon: <LocalShippingIcon />,
-    tooltip: "Quản lý đơn hàng",
+    label: "Quản lý đơn hàng",
+    icon: <TableRowsIcon />,
+    id: "order",
+    href: "",
+    children: [
+      {
+        href: protectedRoutes.orderManagement,
+        label: "Đơn hàng",
+        icon: <LocalShippingIcon />,
+        tooltip: "Quản lý đơn hàng",
+      },
+      {
+        href: protectedRoutes.orderDiscountManagement,
+        label: "Giảm giá đơn hàng",
+        icon: <DiscountIcon />,
+        tooltip: "Quản lý giảm giá đơn hàng",
+      },
+    ],
   },
+
   {
     label: "Quản lý sản phẩm",
     icon: <TableRowsIcon />,

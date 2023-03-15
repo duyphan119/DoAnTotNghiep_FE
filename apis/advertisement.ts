@@ -1,4 +1,4 @@
-import { privateAxios, publicAxios } from "../config/configAxios";
+import { privateAxios, publicAxios } from "@/config/configAxios";
 import { Advertisement, QueryParams } from "../utils/types";
 
 export type AdvertisementQueryParams = QueryParams &

@@ -43,38 +43,37 @@ const ButtonControl = ({
   size,
   disabled,
 }: Props) => {
-  return (
-    <Tooltip title={tooltip}>
-      <Button
-        variant={variant || "contained"}
-        type={type || "button"}
-        className={className || ""}
-        sx={sx || {}}
-        color={color || "primary"}
-        onClick={onClick}
-        component={component || "button"}
-        startIcon={
-          isLoading ? (
-            <CircularProgress
-              style={{
-                color: "#fff",
-                width: "20px",
-                height: "20px",
-                ...loadingStyle,
-              }}
-            />
-          ) : (
-            startIcon
-          )
-        }
-        autoFocus={autoFocus}
-        size={size || "medium"}
-        disabled={disabled || false}
-      >
-        {isLoading ? "Đang xử lý" : children}
-      </Button>
-    </Tooltip>
+  const button = (
+    <Button
+      variant={variant || "contained"}
+      type={type || "button"}
+      className={className || ""}
+      sx={sx || {}}
+      color={color || "primary"}
+      onClick={onClick}
+      component={component || "button"}
+      startIcon={
+        isLoading ? (
+          <CircularProgress
+            style={{
+              color: "#fff",
+              width: "20px",
+              height: "20px",
+              ...loadingStyle,
+            }}
+          />
+        ) : (
+          startIcon
+        )
+      }
+      autoFocus={autoFocus}
+      size={size || "medium"}
+      disabled={disabled || false}
+    >
+      {isLoading ? "Đang xử lý" : children}
+    </Button>
   );
+  return disabled ? button : <Tooltip title={tooltip}>{button}</Tooltip>;
 };
 
 export default memo(ButtonControl);

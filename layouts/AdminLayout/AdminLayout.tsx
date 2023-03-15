@@ -3,10 +3,10 @@ import { styled } from "@mui/material/styles";
 import { useRouter } from "next/router";
 import { ReactNode, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { authSelector } from "../../redux/slice/authSlice";
-import { fetchActions, fetchSelector } from "../../redux/slice/fetchSlice";
-import { useAppDispatch } from "../../redux/store";
-import { publicRoutes } from "../../utils/routes";
+import { authSelector } from "@/redux/slice/authSlice";
+import { fetchActions, fetchSelector } from "@/redux/slice/fetchSlice";
+import { useAppDispatch } from "@/redux/store";
+import { publicRoutes } from "@/utils/routes";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 
