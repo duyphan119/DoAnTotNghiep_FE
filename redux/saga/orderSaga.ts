@@ -7,7 +7,7 @@ import { cartActions } from "../slice/cartSlice";
 import { fetchActions } from "../slice/fetchSlice";
 import { orderActions, orderReducer } from "../slice/orderSlice";
 import { snackbarActions } from "../slice/snackbarSlice";
-import { ActionPayload } from "../store";
+import { ActionPayload } from "@/redux/store";
 
 const oApi = new OrderApi();
 

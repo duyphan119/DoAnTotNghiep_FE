@@ -8,6 +8,8 @@ class GroupProductModel extends DateModel {
   thumbnail: string;
   sex: "Nam" | "Nữ" | "Unisex";
   isAdult: boolean;
+  metaKeywords: string;
+  metaDescription: string;
 
   constructor(obj?: any) {
     super(obj);
@@ -18,6 +20,8 @@ class GroupProductModel extends DateModel {
     this.thumbnail = obj?.thumbnail ?? "";
     this.sex = obj?.sex ?? "Nam";
     this.isAdult = obj?.isAdult ?? true;
+    this.metaKeywords = obj?.metaKeywords ?? "";
+    this.metaDescription = obj?.metaDescription ?? "";
   }
 
   getFullName() {

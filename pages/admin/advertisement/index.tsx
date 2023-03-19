@@ -1,20 +1,19 @@
+import { ButtonControl, DataManagement, DataTable } from "@/components";
+import { AdminLayout } from "@/layouts";
+import { AdvertisementModel } from "@/models";
+import {
+  advertisementActions,
+  advertisementSelector,
+} from "@/redux/slice/advertisementSlice";
+import { confirmDialogActions } from "@/redux/slice/confirmDialogSlice";
+import { useAppDispatch } from "@/redux/store";
+import helper from "@/utils/helpers";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { ButtonControl, DataManagement, DataTable } from "../../../components";
-import { AdminLayout } from "../../../layouts";
-import { AdvertisementModel } from "../../../models";
-import {
-  advertisementActions,
-  advertisementSelector,
-} from "../../../redux/slice/advertisementSlice";
-import { confirmDialogActions } from "../../../redux/slice/confirmDialogSlice";
-import { useAppDispatch } from "../../../redux/store";
-import helper from "../../../utils/helpers";
-import { Advertisement } from "../../../utils/types";
 
 type Props = {};
 const LIMIT = 10;

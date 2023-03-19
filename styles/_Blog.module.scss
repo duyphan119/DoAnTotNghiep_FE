@@ -1,0 +1,75 @@
+.typography {
+  text-align: center;
+  margin: 36px 0 12px 0;
+}
+.newBlogs {
+  .firstBlog {
+    .firstBlogImageLink {
+      position: relative;
+      display: block;
+      height: 0;
+      padding-bottom: 66.7%;
+      overflow: hidden;
+      .firstBlogInfos {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        z-index: 2;
+        width: 66.7%;
+        padding: 32px;
+        color: #fff;
+        background-color: rgb(0, 0, 0, 0.4);
+        .firstBlogName {
+          font-weight: 500;
+        }
+        .firstBlogTitle {
+          text-transform: uppercase;
+          margin-block: 8px;
+          font-weight: 600;
+          font-size: 20px;
+        }
+        .firstBlogHeading {
+          font-weight: thin;
+        }
+      }
+    }
+  }
+  .otherBlogs {
+    height: 400px;
+    overflow: hidden auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    .otherBlogImageLink {
+      position: relative;
+      display: block;
+      height: 0;
+      padding-bottom: 66.7%;
+      overflow: hidden;
+    }
+    .otherBlogInfos {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+      padding: 8px;
+      .otherBlogTitle {
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+      .otherBlogHeading {
+        color: gray;
+        font-size: 14px;
+        margin-block: 8px;
+      }
+      .otherBlogTime {
+        font-size: 12px;
+        color: gray;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 4px;
+      }
+    }
+  }
+}

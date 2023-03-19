@@ -2,8 +2,9 @@ import { privateAxios, publicAxios } from "@/config/configAxios";
 import { ProductModel } from "@/models";
 import ResponseGetAllModel from "@/models/ResponseGetAllModel";
 import { CreateProductDTO, UpdateProductDTO } from "@/types/dtos";
+import { ProductJson } from "@/types/json";
 import { PaginationParams, ProductParams, SortParams } from "@/types/params";
-import { MSG_SUCCESS } from "@/utils/constants";
+import { EMPTY_ITEMS, MSG_SUCCESS } from "@/utils/constants";
 
 class ProductApi {
   nameApi: string;
@@ -45,6 +46,26 @@ class ProductApi {
     });
   }
 
+  getBySlugJson(slug: string): Promise<ProductJson | null> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const {
+          data: { items },
+          message,
+        } = await (publicAxios().get(this.nameApi, {
+          params: { slug, images: true, product_variants: true },
+        }) as Promise<{
+          data: { items: ProductJson[]; count: number };
+          message: string;
+        }>);
+        resolve(message === MSG_SUCCESS && items.length > 0 ? items[0] : null);
+      } catch (error) {
+        console.log(error);
+        reject(error);
+      }
+    });
+  }
+
   getBySlug(slug: string): Promise<ProductModel> {
     return new Promise(async (resolve, reject) => {
       try {
@@ -69,12 +90,62 @@ class ProductApi {
     });
   }
 
+  getAllJson(
+    params?: ProductParams
+  ): Promise<{ items: ProductJson[]; count: number }> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const { data, message } = await (publicAxios().get(this.nameApi, {
+          params,
+        }) as Promise<{
+          data: { items: ProductJson[]; count: number };
+          message: string;
+        }>);
+        const response = message === MSG_SUCCESS ? data : EMPTY_ITEMS;
+        resolve(response);
+      } catch (error) {
+        console.log(error);
+        reject(error);
+      }
+    });
+  }
+
   getAll(params?: ProductParams): Promise<ResponseGetAllModel<ProductModel>> {
     return new Promise(async (resolve, reject) => {
       try {
         const { data, message } = await (publicAxios().get(this.nameApi, {
           params,
         }) as Promise<{
+          data: { items: any; count: number };
+          message: string;
+        }>);
+        const { items, count } = data;
+        const response =
+          message === MSG_SUCCESS
+            ? new ResponseGetAllModel<ProductModel>(
+                this.getListFromJson(items),
+                count
+              )
+            : new ResponseGetAllModel<ProductModel>();
+        resolve(response);
+      } catch (error) {
+        console.log(error);
+        reject(error);
+      }
+    });
+  }
+
+  recommend(
+    params?: Partial<{ slug: string }> & PaginationParams & SortParams
+  ): Promise<ResponseGetAllModel<ProductModel>> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const { data, message } = await (publicAxios().get(
+          `${this.nameApi}/recommend`,
+          {
+            params,
+          }
+        ) as Promise<{
           data: { items: any; count: number };
           message: string;
         }>);

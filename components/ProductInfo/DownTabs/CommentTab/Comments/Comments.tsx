@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { CommentProductModel } from "@/models";
 import { productDetailSelector } from "@/redux/slice/productDetailSlice";
-import styles from "../../../_style.module.scss";
+import styles from "./_style.module.scss";
 import Comment from "./Comment";
 
 type Props = {};

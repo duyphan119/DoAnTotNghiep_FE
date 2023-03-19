@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { OrderItemModel, OrderModel } from "../../models";
 import { CreateCartItemDTO } from "../../types/dtos";
-import { ActionPayload, RootState } from "../store";
+import { ActionPayload, RootState } from "@/redux/store";
 
 type State = {
   cart: OrderModel;

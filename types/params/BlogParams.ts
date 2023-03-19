@@ -6,6 +6,8 @@ type BlogParams = {
   slug?: string;
   content?: string;
   blogCategoryId?: number;
+  blogCategorySlug?: string;
+  blogCategory?: boolean;
 } & PaginationParams &
   SortParams;
 

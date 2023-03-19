@@ -61,21 +61,21 @@
           content: "";
           position: absolute;
           left: 8px;
-          top: -24px;
-          border-bottom: 12px solid lightgray;
-          border-left: 12px solid transparent;
-          border-right: 12px solid transparent;
-          border-top: 12px solid transparent;
+          top: -22px;
+          border-bottom: 11px solid lightgray;
+          border-left: 11px solid transparent;
+          border-right: 11px solid transparent;
+          border-top: 11px solid transparent;
         }
         &::after {
           content: "";
           position: absolute;
           left: 9px;
-          top: -21px;
-          border-bottom: 11px solid #fff;
-          border-left: 11px solid transparent;
-          border-right: 11px solid transparent;
-          border-top: 11px solid transparent;
+          top: -19px;
+          border-bottom: 10px solid #fff;
+          border-left: 10px solid transparent;
+          border-right: 10px solid transparent;
+          border-top: 10px solid transparent;
         }
       }
     }

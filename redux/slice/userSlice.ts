@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { ResponseGetAllModel, UserModel } from "../../models";
 import { UserParams } from "../../types/params";
-import { ActionPayload, RootState } from "../store";
+import { ActionPayload, RootState } from "@/redux/store";
 
 type State = {
   userData: ResponseGetAllModel<UserModel>;

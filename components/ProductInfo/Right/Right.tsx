@@ -1,6 +1,4 @@
-import { Rating } from "@mui/material";
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { ButtonControl } from "@/components";
 import {
   OrderItemModel,
   ProductVariantModel,
@@ -13,14 +11,17 @@ import {
   productDetailSelector,
 } from "@/redux/slice/productDetailSlice";
 import { useAppDispatch } from "@/redux/store";
-import { ButtonControl } from "@/components";
-import styles from "../_style.module.scss";
+import { Rating } from "@mui/material";
+import { FC, useState } from "react";
+import { useSelector } from "react-redux";
+import styles from "./_style.module.scss";
 
 type Props = {};
 
-const Right = (props: Props) => {
+const Right: FC<Props> = () => {
   const appDispatch = useAppDispatch();
   const { profile } = useSelector(authSelector);
+
   const {
     product,
     selectedVariantValues,
@@ -66,7 +67,7 @@ const Right = (props: Props) => {
     appDispatch(productDetailActions.clickVariantValue(variantValue));
   };
 
-  return product ? (
+  return product.id > 0 ? (
     <div className={styles.right}>
       <div className={styles.name}>{product.name}</div>
       <div className={styles.star}>
@@ -80,7 +81,7 @@ const Right = (props: Props) => {
       </div>
       {renderVariantValues.keys.map((key: string) => {
         return (
-          <div className={styles["variant-type"]} key={key}>
+          <div className={styles.variantType} key={key}>
             <div className={styles.title}>{key}</div>
             <ul className={styles.variant}>
               {renderVariantValues.values[key].map((variantValue) => {

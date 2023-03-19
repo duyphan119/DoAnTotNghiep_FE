@@ -1,5 +1,5 @@
+import { GroupProductApi } from "@/api";
 import { useEffect } from "react";
-import { GroupProductRepository } from "@/repositories";
 import Bottom from "./Bottom";
 import Top from "./Top";
 
@@ -7,8 +7,8 @@ type Props = {};
 
 const Header = (props: Props) => {
   useEffect(() => {
-    const repo = new GroupProductRepository();
-    repo.getAll();
+    const gpApi = new GroupProductApi();
+    gpApi.getAll();
   }, []);
 
   return (

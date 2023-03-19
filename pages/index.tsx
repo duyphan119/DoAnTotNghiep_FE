@@ -20,9 +20,15 @@ import {
   ResponseGetAllModel,
 } from "@/models";
 import styles from "@/styles/_Home.module.scss";
+import {
+  AdvertisementJson,
+  BlogJson,
+  GroupProductJson,
+  ProductJson,
+} from "@/types/json";
+import { EMPTY_ITEMS } from "@/utils/constants";
 import helper from "@/utils/helpers";
 import { publicRoutes } from "@/utils/routes";
-import { Advertisement } from "@/utils/types";
 
 type GroupProductsProps = {
   items: GroupProductModel[];
@@ -197,17 +203,25 @@ type BannersProps = Partial<{
 
 const Banners = ({ banners }: BannersProps) => {
   return banners ? (
-    <Swiper slidesPerView={1}>
-      {banners.map((adv: AdvertisementModel) => {
-        return (
-          <SwiperSlide key={adv.id}>
-            <Link href={adv.href} rel="preloaded" as="image">
-              <ImageFill src={adv.path} alt="banner" height="560px" />
-            </Link>
-          </SwiperSlide>
-        );
-      })}
-    </Swiper>
+    <Box
+      sx={{
+        ".swiper": {
+          width: "100vw",
+        },
+      }}
+    >
+      <Swiper slidesPerView={1}>
+        {banners.map((adv: AdvertisementModel) => {
+          return (
+            <SwiperSlide key={adv.id}>
+              <Link href={adv.href} rel="preloaded" as="image">
+                <ImageFill src={adv.path} alt="banner" height="560px" />
+              </Link>
+            </SwiperSlide>
+          );
+        })}
+      </Swiper>
+    </Box>
   ) : (
     <></>
   );
@@ -255,10 +269,10 @@ const Blogs = ({ blogs }: BlogProps) => {
 };
 
 type Props = {
-  productData: ResponseGetAllModel<ProductModel>;
-  blogData: ResponseGetAllModel<BlogModel>;
-  advertisements: Advertisement[];
-  groupProducts: GroupProductModel[];
+  productData: { items: ProductJson[]; count: number };
+  blogData: { items: BlogJson[]; count: number };
+  advertisements: AdvertisementJson[];
+  groupProducts: GroupProductJson[];
 };
 export default function Home({
   productData,
@@ -267,22 +281,22 @@ export default function Home({
   groupProducts,
 }: Props) {
   let _productData = new ResponseGetAllModel(
-    productData.items.map((item: any) => new ProductModel(item)),
+    productData.items.map((item: ProductJson) => new ProductModel(item)),
     productData.count
   );
   let _blogData = new ResponseGetAllModel(
-    blogData.items.map((item: any) => new BlogModel(item)),
+    blogData.items.map((item: BlogJson) => new BlogModel(item)),
     blogData.count
   );
   let _advertisements = advertisements.map(
-    (item: any) => new AdvertisementModel(item)
+    (item: AdvertisementJson) => new AdvertisementModel(item)
   );
   let _groupProducts = groupProducts.map(
-    (item: any) => new GroupProductModel(item)
+    (item: GroupProductJson) => new GroupProductModel(item)
   );
 
   return (
-    <DefaultLayout contentStyle={{ marginBlock: 0 }}>
+    <DefaultLayout contentStyle={{ marginBlock: 0, marginBottom: 16 }}>
       <>
         <Head>
           <title>Trang chủ</title>
@@ -306,39 +320,39 @@ export default function Home({
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
-  let productData = new ResponseGetAllModel();
-  let blogData = new ResponseGetAllModel();
-  let advData = new ResponseGetAllModel();
-  let groupProducts: GroupProductModel[] = [];
+  let productData: { items: ProductJson[]; count: number } = EMPTY_ITEMS;
+  let blogData: { items: BlogJson[]; count: number } = EMPTY_ITEMS;
+  let advData: { items: AdvertisementJson[]; count: number } = EMPTY_ITEMS;
+  let groupProducts: GroupProductJson[] = [];
   const gpApi = new GroupProductApi();
   const pApi = new ProductApi();
   const bApi = new BlogApi();
   const advApi = new AdvertisementApi();
   try {
     const [res1, res2, res3, res4] = await Promise.allSettled([
-      pApi.getAll({
+      pApi.getAllJson({
         limit: 24,
         product_variants: true,
         images: true,
       }),
-      bApi.getAll({
+      bApi.getAllJson({
         limit: 3,
       }),
-      advApi.getAll({ page: "Trang chủ", sortType: "asc" }),
-      gpApi.getAll({ limit: 12 }),
+      advApi.getAllJson({ page: "Trang chủ", sortType: "asc" }),
+      gpApi.getAllJson({ limit: 12 }),
     ]);
 
     if (res1.status === "fulfilled") {
-      productData = JSON.parse(JSON.stringify(res1.value));
+      productData = res1.value;
     }
     if (res2.status === "fulfilled") {
-      blogData = JSON.parse(JSON.stringify(res2.value));
+      blogData = res2.value;
     }
     if (res3.status === "fulfilled") {
-      advData = JSON.parse(JSON.stringify(res3.value));
+      advData = res3.value;
     }
     if (res4.status === "fulfilled") {
-      groupProducts = JSON.parse(JSON.stringify(res4.value.items));
+      groupProducts = res4.value.items;
     }
   } catch (error) {
     console.log(error);

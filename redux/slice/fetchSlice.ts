@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { ActionPayload, RootState } from "../store";
+import { ActionPayload, RootState } from "@/redux/store";
 
 const NAME_SLICE = "fetch";
 
@@ -25,15 +25,15 @@ const fetchSlice = createSlice({
   name: NAME_SLICE,
   initialState: INITIAL_STATE,
   reducers: {
-    start: (state, action: ActionPayload<string>) => {
+    start: (state, { payload: name }: ActionPayload<string>) => {
       state.isError = false;
       state.isLoading = true;
       state.isSuccess = false;
-      state.reducer = action.payload;
+      state.reducer = name;
       state.isBack = false;
       state.reducers = [
-        ...state.reducers.filter((name) => name !== action.payload),
-        action.payload,
+        ...state.reducers.filter((name) => name !== name),
+        name,
       ];
     },
     endAndError: (state) => {
@@ -47,8 +47,8 @@ const fetchSlice = createSlice({
     back: (state) => {
       state.isBack = true;
     },
-    setBack: (state, action: ActionPayload<boolean>) => {
-      state.isBack = action.payload;
+    setBack: (state, { payload }: ActionPayload<boolean>) => {
+      state.isBack = payload;
     },
     endAndSuccessAndBack: (state) => {
       state.isSuccess = true;

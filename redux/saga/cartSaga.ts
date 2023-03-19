@@ -6,7 +6,7 @@ import { CheckoutDTO, CreateCartItemDTO } from "../../types/dtos";
 import { cartActions, cartReducer } from "../slice/cartSlice";
 import { fetchActions } from "../slice/fetchSlice";
 import { snackbarActions } from "../slice/snackbarSlice";
-import { ActionPayload } from "../store";
+import { ActionPayload } from "@/redux/store";
 
 const cApi = new CartApi();
 

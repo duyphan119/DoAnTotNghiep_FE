@@ -1,14 +1,13 @@
 import { Modal, Box, Grid, Typography, Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { MSG_SUCCESS } from "../../utils/constants";
-import provinces from "../../province.json";
-import { District, Province, UserAddress, Ward } from "../../utils/types";
-import { ButtonControl, InputControl, SelectControl } from "../../components";
-import { useAppDispatch } from "../../redux/store";
-import { userAddressActions } from "../../redux/slice/userAddressSlice";
-import { UserAddressModel } from "../../models";
-import { CreateUserAddressDTO } from "../../types/dtos";
+import provinces from "@/province.json";
+import { ButtonControl, InputControl, SelectControl } from "@/components";
+import { useAppDispatch } from "@/redux/store";
+import { userAddressActions } from "@/redux/slice/userAddressSlice";
+import { UserAddressModel } from "@/models";
+import { CreateUserAddressDTO } from "@/types/dtos";
+import { DistrictJson, ProvinceJson, WardJson } from "@/types/json";
 
 type Props = Partial<{
   open: boolean;
@@ -19,20 +18,21 @@ type Props = Partial<{
 
 const ModalUserAddress = ({ open, onClose, row }: Props) => {
   const appDispatch = useAppDispatch();
-  const [districts, setDistricts] = useState<any>(() => {
+  const [districts, setDistricts] = useState<DistrictJson[]>(() => {
     const province = provinces.find(
-      (province: Province) =>
+      (province: ProvinceJson) =>
         province.districts.findIndex(
-          (district: District) => row && district.name === row.district
+          (district: DistrictJson) => row && district.name === row.district
         ) !== -1
     );
     if (province) return province.districts;
     return [];
   });
-  const [wards, setWards] = useState<any>(() => {
+  const [wards, setWards] = useState<WardJson[]>(() => {
     const district = districts.find(
-      (d: District) =>
-        d.wards.findIndex((ward: Ward) => row && ward.name === row.ward) !== -1
+      (d: DistrictJson) =>
+        d.wards.findIndex((ward: WardJson) => row && ward.name === row.ward) !==
+        -1
     );
     if (district) return district.wards;
     return [];
@@ -66,7 +66,7 @@ const ModalUserAddress = ({ open, onClose, row }: Props) => {
           const { province } = value;
           if (province !== "") {
             setDistricts(
-              provinces.find((p: any) => p.name === province)?.districts
+              provinces.find((p) => p.name === province)?.districts ?? []
             );
             value.district = "";
             value.ward = "";
@@ -76,8 +76,8 @@ const ModalUserAddress = ({ open, onClose, row }: Props) => {
           const { district, province } = value;
           if (province !== "" && district !== "") {
             const dis = provinces
-              .find((p: any) => p.name === province)
-              ?.districts.find((d: any) => d.name === district);
+              .find((p) => p.name === province)
+              ?.districts.find((d) => d.name === district);
             setWards(dis ? dis.wards : []);
             value.ward = "";
           } else {
@@ -117,7 +117,7 @@ const ModalUserAddress = ({ open, onClose, row }: Props) => {
             <SelectControl
               error={errors.province}
               required={true}
-              options={provinces.map((pro: any) => ({ value: pro.name }))}
+              options={provinces.map((pro) => ({ value: pro.name }))}
               label="Tỉnh / Thành phố"
               register={register("province", {
                 required: {
@@ -131,7 +131,7 @@ const ModalUserAddress = ({ open, onClose, row }: Props) => {
             <SelectControl
               error={errors.district}
               required={true}
-              options={districts.map((dis: any) => ({ value: dis.name }))}
+              options={districts.map((dis) => ({ value: dis.name }))}
               label="Quận / Huyện"
               register={register("district", {
                 required: {
@@ -145,7 +145,7 @@ const ModalUserAddress = ({ open, onClose, row }: Props) => {
             <SelectControl
               error={errors.ward}
               required={true}
-              options={wards.map((w: any) => ({ value: w.name }))}
+              options={wards.map((w) => ({ value: w.name }))}
               label="Phường / Xã"
               register={register("ward", {
                 required: {

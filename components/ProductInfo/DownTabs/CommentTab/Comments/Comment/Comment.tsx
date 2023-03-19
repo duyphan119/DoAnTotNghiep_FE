@@ -1,8 +1,8 @@
 import { Rating } from "@mui/material";
 import moment from "moment";
 import { CommentProductModel } from "@/models";
-import styles from "../../../../_style.module.scss";
 import "moment/locale/vi";
+import styles from "./_style.module.scss";
 type Props = {
   commentProduct: CommentProductModel;
 };

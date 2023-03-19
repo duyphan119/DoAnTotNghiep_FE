@@ -1,52 +1,36 @@
-import CheckIcon from "@mui/icons-material/Check";
-import ClearIcon from "@mui/icons-material/Clear";
-import { Button } from "@mui/material";
+import { ButtonControl, DataManagement, DataTable } from "@/components";
+import { AdminLayout } from "@/layouts";
+import { BlogModel } from "@/models";
+import { blogActions, blogSelector } from "@/redux/slice/blogSlice";
+import { confirmDialogActions } from "@/redux/slice/confirmDialogSlice";
+import { useAppDispatch } from "@/redux/store";
+import helper from "@/utils/helpers";
+import { protectedRoutes } from "@/utils/routes";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { ButtonControl, DataManagement, DataTable } from "../../../components";
-import { AdminLayout } from "../../../layouts";
-import { BlogModel } from "../../../models";
-import { blogActions, blogSelector } from "../../../redux/slice/blogSlice";
-import { useAppDispatch } from "../../../redux/store";
-import helper from "../../../utils/helpers";
-import { protectedRoutes } from "../../../utils/routes";
 
 type Props = {};
 const LIMIT = 10;
 const Page = (props: Props) => {
   const appDispatch = useAppDispatch();
-  const { current, blogData, isDeleted, openDialog } =
-    useSelector(blogSelector);
+  const { blogData } = useSelector(blogSelector);
   const router = useRouter();
 
-  const handleSoftDelete = (id: number) => {
-    appDispatch(blogActions.fetchSoftDeleteBlog(id));
-  };
-
-  const handleRestore = (id: number) => {
-    appDispatch(blogActions.fetchRestoreBlog(id));
-  };
-
-  const handleDelete = () => {
-    if (current) appDispatch(blogActions.fetchDeleteBlog(current.id));
-  };
-
   useEffect(() => {
-    const { p, sortBy, sortType } = router.query;
+    const { p, sortBy, sortType, limit } = router.query;
     appDispatch(
-      blogActions.fetchBlogData({
+      blogActions.fetchGetAll({
         p: +`${p}` || 1,
-        limit: LIMIT,
-        withDeleted: true,
-        ...(sortBy ? { sortBy: `${sortBy}` } : {}),
-        ...(sortType ? { sortType: `${sortType}` } : {}),
+        limit: limit ? `${limit}` : LIMIT,
+        sortBy: `${sortBy || "id"}`,
+        sortType: `${sortType}` === "asc" ? "asc" : "desc",
       })
     );
-  }, [router.query, isDeleted]);
+  }, [router.query]);
 
   return (
     <AdminLayout pageTitle="Bài viết">
@@ -124,7 +108,17 @@ const Page = (props: Props) => {
                       </Link>
                       <ButtonControl
                         color="error"
-                        onClick={() => appDispatch(blogActions.showDialog(row))}
+                        onClick={() =>
+                          appDispatch(
+                            confirmDialogActions.show({
+                              onConfirm: () => {
+                                appDispatch(
+                                  blogActions.fetchSoftDeleteSingle(row.id)
+                                );
+                              },
+                            })
+                          )
+                        }
                         size="small"
                       >
                         Xóa

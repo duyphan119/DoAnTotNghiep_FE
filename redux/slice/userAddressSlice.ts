@@ -2,8 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { ResponseGetAllModel, UserAddressModel } from "../../models";
 import { CreateUserAddressDTO } from "../../types/dtos";
 import { PaginationParams } from "../../types/params";
-import { FetchState, UserAddress } from "../../utils/types";
-import { ActionPayload, RootState } from "../store";
+import { ActionPayload, RootState } from "@/redux/store";
 
 type State = {
   userAddressData: ResponseGetAllModel<UserAddressModel>;

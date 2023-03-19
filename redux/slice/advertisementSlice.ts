@@ -1,8 +1,8 @@
+import { CreateAdvertisementDTO } from "@/types/dtos";
 import { createSlice } from "@reduxjs/toolkit";
-import { CreateAdvertisementDTO } from "../../apis/advertisement";
-import { AdvertisementModel, ResponseGetAllModel } from "../../models";
-import { AdvertisementParams } from "../../types/params";
-import { ActionPayload, RootState } from "../store";
+import { AdvertisementModel, ResponseGetAllModel } from "@/models";
+import { AdvertisementParams } from "@/types/params";
+import { ActionPayload, RootState } from "@/redux/store";
 
 type State = {
   advertisementData: ResponseGetAllModel<AdvertisementModel>;

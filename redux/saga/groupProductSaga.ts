@@ -11,7 +11,7 @@ import {
   groupProductActions,
   groupProductReducer,
 } from "../slice/groupProductSlice";
-import { ActionPayload } from "../store";
+import { ActionPayload } from "@/redux/store";
 import { CreateGroupProductDTO } from "../../types/dtos";
 
 const gpApi = new GroupProductApi();

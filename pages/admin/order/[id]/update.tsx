@@ -1,25 +1,19 @@
-import { useState, useMemo, FormEvent, useEffect } from "react";
-import { AdminLayout } from "../../../../layouts";
-import Head from "next/head";
-import { getOrderById, updateStatus } from "../../../../apis/order";
+import { DashboardPaper, FooterForm } from "@/components";
+import { AdminLayout } from "@/layouts";
+import { OrderItemModel } from "@/models";
+import { fetchSelector } from "@/redux/slice/fetchSlice";
 import {
-  COOKIE_ACCESSTOKEN_NAME,
-  MSG_SUCCESS,
-} from "../../../../utils/constants";
-import { Order, OrderItem } from "../../../../utils/types";
-import { Paper, Button, Box, Typography } from "@mui/material";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import { DashboardPaper, FooterForm } from "../../../../components";
-import { OrderItemModel, OrderModel } from "../../../../models";
-import { useAppDispatch } from "../../../../redux/store";
-import orderSlice, {
   orderActions,
   orderReducer,
   orderSelector,
-} from "../../../../redux/slice/orderSlice";
+} from "@/redux/slice/orderSlice";
+import { useAppDispatch } from "@/redux/store";
+import { Box, Typography } from "@mui/material";
+import Head from "next/head";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { FormEvent, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { fetchSelector } from "../../../../redux/slice/fetchSlice";
 type Props = {};
 
 const Page = (props: Props) => {

@@ -1,5 +1,5 @@
 import { Grid } from "@mui/material";
-import { useMemo } from "react";
+import { FC, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { productDetailSelector } from "@/redux/slice/productDetailSlice";
 import { Breadcrumbs } from "@/components";
@@ -8,10 +8,11 @@ import Left from "./Left";
 import Right from "./Right";
 import styles from "./_style.module.scss";
 import { publicRoutes } from "@/utils/routes";
+import { ProductModel } from "@/models";
 type Props = {};
 
-const ProductInfo = (props: Props) => {
-  const { product, selectedVariantValues } = useSelector(productDetailSelector);
+const ProductInfo: FC<Props> = () => {
+  const { selectedVariantValues, product } = useSelector(productDetailSelector);
 
   if (!product) return <></>;
 
@@ -46,10 +47,11 @@ const ProductInfo = (props: Props) => {
                 },
               ]}
               current={product.name}
+              sx={{ justifyContent: "flex-start" }}
             />
           </Grid>
           <Grid item xs={12} lg={6}>
-            <Left thumbnail={product.thumbnail} images={images} />
+            <Left images={images} />
           </Grid>
           <Grid item xs={12} lg={6}>
             <Right />

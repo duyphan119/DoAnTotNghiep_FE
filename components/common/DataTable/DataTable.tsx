@@ -79,7 +79,7 @@ const DataTable = ({ isLoading, columns, hasCheck, rows, sortable }: Props) => {
   };
 
   return (
-    <table className="table" style={{ fontSize: "14px" }}>
+    <table className="table" style={{ fontSize: "12px" }}>
       <thead>
         <tr>
           {hasCheck ? (
@@ -89,11 +89,16 @@ const DataTable = ({ isLoading, columns, hasCheck, rows, sortable }: Props) => {
                 width: 40,
               }}
             >
-              <Checkbox
-                name="checkboxAll"
-                onChange={handleCheckAll}
-                checked={rows && rows.length > 0 && ids.length === rows.length}
-              />
+              <div className="flex-center">
+                <input
+                  type="checkbox"
+                  onChange={handleCheckAll}
+                  checked={
+                    rows && rows.length > 0 && ids.length === rows.length
+                  }
+                  name="checkboxAll"
+                />
+              </div>
             </th>
           ) : null}
           {columns?.map((column: Column) => (
@@ -124,11 +129,14 @@ const DataTable = ({ isLoading, columns, hasCheck, rows, sortable }: Props) => {
               <tr key={row.id}>
                 {hasCheck ? (
                   <td style={{ textAlign: "center" }}>
-                    <Checkbox
-                      name="checkbox"
-                      checked={ids.includes(row.id)}
-                      onChange={() => handleCheck(row.id)}
-                    />
+                    <div className="flex-center">
+                      <input
+                        type="checkbox"
+                        checked={ids.includes(row.id)}
+                        onChange={() => handleCheck(row.id)}
+                        name="checkbox"
+                      />
+                    </div>
                   </td>
                 ) : null}
                 {columns?.map((column: Column) => (

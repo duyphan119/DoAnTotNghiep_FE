@@ -1,19 +1,15 @@
-import { GetServerSidePropsContext } from "next";
+import { DataManagement, DataTable } from "@/components";
+import { AdminLayout } from "@/layouts";
+import { UserModel } from "@/models";
+import { userActions, userSelector } from "@/redux/slice/userSlice";
+import { useAppDispatch } from "@/redux/store";
+import helper from "@/utils/helpers";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { DataManagement, DataTable } from "../../../components";
-import { AdminLayout } from "../../../layouts";
-import { ResponseGetAllModel, UserModel } from "../../../models";
-import { userActions, userSelector } from "../../../redux/slice/userSlice";
-import { useAppDispatch } from "../../../redux/store";
-import helper from "../../../utils/helpers";
-import { ResponseItems, User } from "../../../utils/types";
 
-type Props = {
-  userData: ResponseItems<User>;
-};
+type Props = {};
 const LIMIT = 10;
 const Page = (props: Props) => {
   const router = useRouter();

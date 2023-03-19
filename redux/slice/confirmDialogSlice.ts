@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { ActionPayload, RootState } from "../store";
+import { ActionPayload, RootState } from "@/redux/store";
 
 const NAME_SLICE = "confirmDialog";
 

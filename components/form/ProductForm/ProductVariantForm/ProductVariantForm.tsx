@@ -1,18 +1,14 @@
 import { Box, Button, Grid } from "@mui/material";
 import { memo, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { VariantModel, VariantValueModel } from "../../../../models";
-import { productSelector } from "../../../../redux/slice/productSlice";
+import { VariantModel, VariantValueModel } from "@/models";
+import { productSelector } from "@/redux/slice/productSlice";
 import {
   productVariantActions,
   productVariantSelector,
-} from "../../../../redux/slice/productVariantSlice";
-import {
-  variantActions,
-  variantSelector,
-} from "../../../../redux/slice/variantSlice";
-import { useAppDispatch } from "../../../../redux/store";
-import { Variant, VariantValue } from "../../../../utils/types";
+} from "@/redux/slice/productVariantSlice";
+import { variantActions, variantSelector } from "@/redux/slice/variantSlice";
+import { useAppDispatch } from "@/redux/store";
 import { Wrapper } from "./Wrapper";
 import styles from "./_style.module.scss";
 
@@ -30,10 +26,7 @@ const ProductVariantForm = ({ getPrice, getInventory }: Props) => {
 
   const countSelected = useMemo(() => {
     return selected.length > 0
-      ? selected.reduce(
-          (prev: number, cur: Variant) => prev * cur.variantValues.length,
-          1
-        )
+      ? selected.reduce((prev, cur) => prev * cur.variantValues.length, 1)
       : 0;
   }, [selected]);
 

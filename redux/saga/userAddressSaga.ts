@@ -1,15 +1,15 @@
 import { call, put, takeEvery } from "redux-saga/effects";
-import UserAddressApi from "../../api/UserAddressApi";
-import { CreateUserAddressDTO } from "../../apis/useraddress";
-import { ResponseGetAllModel, UserAddressModel } from "../../models";
-import { PaginationParams } from "../../types/params";
-import { fetchActions } from "../slice/fetchSlice";
-import { snackbarActions } from "../slice/snackbarSlice";
+import { ResponseGetAllModel, UserAddressModel } from "@/models";
+import { PaginationParams } from "@/types/params";
+import { fetchActions } from "@/redux/slice/fetchSlice";
+import { snackbarActions } from "@/redux/slice/snackbarSlice";
 import {
   userAddressActions,
   userAddressReducer,
-} from "../slice/userAddressSlice";
-import { ActionPayload } from "../store";
+} from "@/redux/slice/userAddressSlice";
+import { ActionPayload } from "@/redux/store";
+import { UserAddressApi } from "@/api";
+import { CreateUserAddressDTO } from "@/types/dtos";
 
 const udApi = new UserAddressApi();
 

@@ -1,24 +1,16 @@
-import { Button } from "@mui/material";
-import Head from "next/head";
-import { useState, useEffect } from "react";
-import { deleteUserAddress } from "../../apis/useraddress";
-import {
-  ButtonControl,
-  ConfirmDialog,
-  ModalUserAddress,
-} from "../../components";
-import { AccountLayout } from "../../layouts";
-import { MSG_SUCCESS } from "../../utils/constants";
-import { UserAddress } from "../../utils/types";
-import AddIcon from "@mui/icons-material/Add";
-import { useAppDispatch } from "../../redux/store";
+import { ButtonControl, ModalUserAddress } from "@/components";
+import { AccountLayout } from "@/layouts";
+import { UserAddressModel } from "@/models";
+import { confirmDialogActions } from "@/redux/slice/confirmDialogSlice";
 import {
   userAddressActions,
   userAddressSelector,
-} from "../../redux/slice/userAddressSlice";
+} from "@/redux/slice/userAddressSlice";
+import { useAppDispatch } from "@/redux/store";
+import AddIcon from "@mui/icons-material/Add";
+import Head from "next/head";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { UserAddressModel } from "../../models";
-import { confirmDialogActions } from "../../redux/slice/confirmDialogSlice";
 
 type Props = {};
 

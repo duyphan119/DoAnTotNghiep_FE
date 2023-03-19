@@ -9,7 +9,7 @@ import {
   CreateRepCommentProductDTO,
 } from "../../types/dtos";
 import { CommentProductParams } from "../../types/params";
-import { ActionPayload, RootState } from "../store";
+import { ActionPayload, RootState } from "@/redux/store";
 
 type State = {
   commentProductData: ResponseGetAllModel<CommentProductModel>;

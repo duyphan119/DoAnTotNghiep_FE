@@ -1,33 +1,31 @@
+import CommentProductApi from "@/api/CommentProductApi";
+import { ActionPayload } from "@/redux/store";
 import { call, put, takeEvery } from "redux-saga/effects";
-import CommentProductApi from "../../api/CommentProductApi";
+
 import {
-  CommentProductDTO,
-  createCommentProduct,
-  getAllCommentProductsClient,
-  updateCommentProduct,
-} from "../../apis/commentproduct";
-import { CommentProductModel, ResponseGetAllModel } from "../../models";
-import { CreateCommentProductDTO } from "../../types/dtos";
-import { CommentProductParams } from "../../types/params";
-import { MSG_SUCCESS } from "../../utils/constants";
-import { Product } from "../../utils/types";
-import { fetchActions } from "../slice/fetchSlice";
+  CommentProductModel,
+  ProductModel,
+  ResponseGetAllModel,
+} from "@/models";
+import { fetchActions } from "@/redux/slice/fetchSlice";
 import {
   productDetailActions,
   productDetailReducer,
   SetPagePayload,
-} from "../slice/productDetailSlice";
-import { snackbarActions } from "../slice/snackbarSlice";
-import { ActionPayload } from "../store";
+} from "@/redux/slice/productDetailSlice";
+import { snackbarActions } from "@/redux/slice/snackbarSlice";
+import { CreateCommentProductDTO } from "@/types/dtos";
+import { CommentProductParams } from "@/types/params";
+import { MSG_SUCCESS } from "@/utils/constants";
 
 const cpApi = new CommentProductApi();
 
-function* setProduct({ payload }: ActionPayload<Product | null>) {
+function* setProduct({ payload }: ActionPayload<ProductModel>) {
   if (payload) {
     try {
       let product = payload;
       let { message, data } = yield call(() =>
-        getAllCommentProductsClient({
+        cpApi.getAll({
           productId: product.id,
           limit: 4,
           p: 1,
@@ -42,12 +40,13 @@ function* setProduct({ payload }: ActionPayload<Product | null>) {
   }
 }
 
-function* setPage({ payload }: ActionPayload<SetPagePayload>) {
-  const { product, page } = payload;
+function* setPage({
+  payload: { product, page },
+}: ActionPayload<{ page: number; product: ProductModel }>) {
   if (product) {
     try {
       let { message, data } = yield call(() =>
-        getAllCommentProductsClient({
+        cpApi.getAll({
           productId: product.id,
           limit: 4,
           p: page,

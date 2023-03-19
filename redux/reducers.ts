@@ -7,7 +7,6 @@ import cartSlice from "./slice/cartSlice";
 import commentProductSlice from "./slice/commentProductSlice";
 import confirmDialogSlice from "./slice/confirmDialogSlice";
 import fetchSlice from "./slice/fetchSlice";
-import groupProductManagementSlice from "./slice/groupProductManagementSlice";
 import groupProductSlice from "./slice/groupProductSlice";
 import orderDiscountSlice from "./slice/orderDiscountSlice";
 import orderSlice from "./slice/orderSlice";
@@ -26,7 +25,6 @@ export const rootReducer = combineReducers({
   productDetail: productDetailSlice,
   userAddress: userAddressSlice,
   product: productSlice,
-  groupProductManagement: groupProductManagementSlice,
   productVariant: productVariantSlice,
   variant: variantSlice,
   blog: blogSlice,

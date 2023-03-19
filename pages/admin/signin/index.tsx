@@ -1,11 +1,11 @@
+import { LoginDTO } from "@/types/dtos";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { LoginDTO } from "../../../apis/auth";
-import { InputControl } from "../../../components";
-import { authActions } from "../../../redux/slice/authSlice";
-import { useAppDispatch } from "../../../redux/store";
-import styles from "../../../styles/_AdminAuth.module.scss";
+import { InputControl } from "@/components";
+import { authActions } from "@/redux/slice/authSlice";
+import { useAppDispatch } from "@/redux/store";
+import styles from "@/styles/_AdminAuth.module.scss";
 type Props = {};
 
 const Login = (props: Props) => {

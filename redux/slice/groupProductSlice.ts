@@ -5,7 +5,7 @@ import {
   GroupProductModel,
   ResponseGetAllModel,
 } from "../../models";
-import { ActionPayload, RootState } from "../store";
+import { ActionPayload, RootState } from "@/redux/store";
 import { CreateGroupProductDTO } from "../../types/dtos";
 
 const NAME_SLICE = "groupProduct";

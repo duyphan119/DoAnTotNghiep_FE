@@ -1,126 +1,104 @@
+import { BlogCategoryApi } from "@/api";
+import { BlogCategoryModel, ResponseGetAllModel } from "@/models";
+import { ActionPayload } from "@/redux/store";
+import { CreateBlogCategoryDTO } from "@/types/dtos";
+import { BlogCategoryParams } from "@/types/params";
 import { call, put, takeEvery } from "redux-saga/effects";
-import {
-  BlogCategoryQueryParams,
-  createBlogCategory,
-  CreateBlogCategoryDTO,
-  deleteBlogCategory,
-  getAllBlogCategories,
-  getBlogCategoryById,
-  updateBlogCategory,
-} from "../../apis/blogCategory";
-import { MSG_SUCCESS } from "../../utils/constants";
+import { MSG_SUCCESS } from "@/utils/constants";
 import {
   blogCategoryActions,
   blogCategoryReducers,
-} from "../slice/blogCategorySlice";
-import { fetchActions } from "../slice/fetchSlice";
-import { ActionPayload } from "../store";
+} from "@/redux/slice/blogCategorySlice";
+import { fetchActions } from "@/redux/slice/fetchSlice";
 
-function* fetchBlogCategoryData({
-  payload,
-}: ActionPayload<BlogCategoryQueryParams>) {
+const bcApi = new BlogCategoryApi();
+
+function* fetchGetAll({ payload: params }: ActionPayload<BlogCategoryParams>) {
   let isError = true;
-  yield put(fetchActions.start(blogCategoryReducers.fetchBlogCategoryData));
+  yield put(fetchActions.start(blogCategoryReducers.fetchGetAll));
   try {
-    const { message, data } = yield call(() => getAllBlogCategories(payload));
-    if (message === MSG_SUCCESS) {
-      isError = false;
-      yield put(fetchActions.endAndSuccess());
-      yield put(blogCategoryActions.setBlogCategoryData(data));
-    }
+    const data: ResponseGetAllModel<BlogCategoryModel> = yield call(() =>
+      bcApi.getAll(params)
+    );
+    isError = false;
+    yield put(blogCategoryActions.setBlogCategoryData(data));
+    yield put(fetchActions.endAndSuccess());
   } catch (error) {
-    console.log("blogCategorySaga.fetchBlogCategoryData error", error);
+    console.log("blogCategorySaga.fetchGetAll error", error);
   }
   if (isError) yield put(fetchActions.endAndError());
 }
 
-function* fetchCreateBlogCategory({
-  payload,
-}: ActionPayload<CreateBlogCategoryDTO>) {
+function* fetchCreate({ payload: dto }: ActionPayload<CreateBlogCategoryDTO>) {
   let isError = true;
-  yield put(fetchActions.start(blogCategoryReducers.fetchCreateBlogCategory));
+  yield put(fetchActions.start(blogCategoryReducers.fetchCreate));
   try {
-    const { message } = yield call(() => createBlogCategory(payload));
+    const { message } = yield call(() => bcApi.create(dto));
     if (message === MSG_SUCCESS) {
       isError = false;
-      yield put(fetchActions.endAndSuccess());
-      yield put(blogCategoryActions.back());
+      yield put(fetchActions.endAndSuccessAndBack());
     }
   } catch (error) {
-    console.log("blogCategorySaga.fetchCreateBlogCategory error", error);
+    console.log("blogCategorySaga.fetchCreate error", error);
   }
   if (isError) yield put(fetchActions.endAndError());
 }
 
-function* fetchUpdateBlogCategory({
-  payload,
+function* fetchUpdate({
+  payload: { id, ...dto },
 }: ActionPayload<{ id: number } & Partial<CreateBlogCategoryDTO>>) {
   let isError = true;
-  yield put(fetchActions.start(blogCategoryReducers.fetchUpdateBlogCategory));
+  yield put(fetchActions.start(blogCategoryReducers.fetchUpdate));
   try {
-    const { id, ...dto } = payload;
-    const { message } = yield call(() => updateBlogCategory(id, dto));
+    const { message } = yield call(() => bcApi.update({ id, dto }));
     if (message === MSG_SUCCESS) {
       isError = false;
-      yield put(fetchActions.endAndSuccess());
-      yield put(blogCategoryActions.back());
+      yield put(fetchActions.endAndSuccessAndBack());
     }
   } catch (error) {
-    console.log("blogCategorySaga.fetchCreateBlogCategory error", error);
+    console.log("blogCategorySaga.fetchUpdate error", error);
   }
   if (isError) yield put(fetchActions.endAndError());
 }
 
-function* fetchDeleteBlogCategory({ payload }: ActionPayload<number>) {
+function* fetchSoftDeleteSingle({ payload: id }: ActionPayload<number>) {
   let isError = true;
-  yield put(fetchActions.start(blogCategoryReducers.fetchDeleteBlogCategory));
+  yield put(fetchActions.start(blogCategoryReducers.fetchSoftDeleteSingle));
   try {
-    const { message } = yield call(() => deleteBlogCategory(payload));
+    const { message } = yield call(() => bcApi.softDeleteSingle(id));
     if (message === MSG_SUCCESS) {
       isError = false;
       yield put(fetchActions.endAndSuccess());
     }
   } catch (error) {
-    console.log("blogCategorySaga.fetchDeleteBlogCategory error", error);
+    console.log("blogCategorySaga.fetchSoftDeleteSingle error", error);
   }
   if (isError) yield put(fetchActions.endAndError());
 }
 
-function* fetchGetBlogCategoryById({ payload }: ActionPayload<number>) {
+function* fetchGetById({ payload: id }: ActionPayload<number>) {
   let isError = true;
-  yield put(fetchActions.start(blogCategoryReducers.fetchGetBlogCategoryById));
+  yield put(fetchActions.start(blogCategoryReducers.fetchGetById));
   try {
-    const { message, data } = yield call(() => getBlogCategoryById(payload));
+    const { message, data } = yield call(() => bcApi.getById(id));
     if (message === MSG_SUCCESS) {
       isError = false;
-      yield put(blogCategoryActions.setBlogCategoryEditing(data));
+      yield put(blogCategoryActions.setCurrent(data));
       yield put(fetchActions.endAndSuccess());
     }
   } catch (error) {
-    console.log("blogCategorySaga.fetchGetBlogCategoryById error", error);
+    console.log("blogCategorySaga.fetchGetById error", error);
   }
   if (isError) yield put(fetchActions.endAndError());
 }
 
 export function* blogCategorySaga() {
+  yield takeEvery(blogCategoryReducers.fetchGetAll, fetchGetAll);
+  yield takeEvery(blogCategoryReducers.fetchCreate, fetchCreate);
+  yield takeEvery(blogCategoryReducers.fetchUpdate, fetchUpdate);
   yield takeEvery(
-    blogCategoryReducers.fetchBlogCategoryData,
-    fetchBlogCategoryData
+    blogCategoryReducers.fetchSoftDeleteSingle,
+    fetchSoftDeleteSingle
   );
-  yield takeEvery(
-    blogCategoryReducers.fetchCreateBlogCategory,
-    fetchCreateBlogCategory
-  );
-  yield takeEvery(
-    blogCategoryReducers.fetchUpdateBlogCategory,
-    fetchUpdateBlogCategory
-  );
-  yield takeEvery(
-    blogCategoryReducers.fetchDeleteBlogCategory,
-    fetchDeleteBlogCategory
-  );
-  yield takeEvery(
-    blogCategoryReducers.fetchGetBlogCategoryById,
-    fetchGetBlogCategoryById
-  );
+  yield takeEvery(blogCategoryReducers.fetchGetById, fetchGetById);
 }

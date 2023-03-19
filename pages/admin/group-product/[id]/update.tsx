@@ -1,24 +1,24 @@
+import { CreateGroupProductDTO } from "@/types/dtos";
 import { Grid } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { ChangeEvent, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { CreateGroupProductDTO } from "../../../../apis/groupProduct";
 import {
   DashboardPaper,
   FooterForm,
   InputControl,
   NotFound,
   SelectControl,
-} from "../../../../components";
-import { AdminLayout } from "../../../../layouts";
-import { fetchSelector } from "../../../../redux/slice/fetchSlice";
+} from "@/components";
+import { AdminLayout } from "@/layouts";
+import { fetchSelector } from "@/redux/slice/fetchSlice";
 import {
   groupProductActions,
   groupProductSelector,
-} from "../../../../redux/slice/groupProductSlice";
-import { useAppDispatch } from "../../../../redux/store";
+} from "@/redux/slice/groupProductSlice";
+import { useAppDispatch } from "@/redux/store";
 
 type Props = {};
 

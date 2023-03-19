@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import { ChangeEvent, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { CreateGroupProductDTO } from "@/apis/groupProduct";
 import {
   DashboardPaper,
   FooterForm,
@@ -15,6 +14,7 @@ import { AdminLayout } from "@/layouts";
 import { fetchSelector } from "@/redux/slice/fetchSlice";
 import { groupProductActions } from "@/redux/slice/groupProductSlice";
 import { useAppDispatch } from "@/redux/store";
+import { CreateGroupProductDTO } from "@/types/dtos";
 
 type Props = {};
 

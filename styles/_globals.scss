@@ -105,6 +105,9 @@ textarea + .form-label {
 .three-dot-4 {
   -webkit-line-clamp: 4;
 }
+.three-dot-8 {
+  -webkit-line-clamp: 8;
+}
 .form-error {
   position: absolute;
   top: -14px;
@@ -192,7 +195,7 @@ textarea + .form-label {
 .table th,
 .table td {
   box-shadow: 0 0 1px 0 gray;
-  padding: 8px;
+  padding: 4px;
   position: relative;
 }
 .btnSearch,

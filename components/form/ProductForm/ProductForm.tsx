@@ -11,17 +11,14 @@ import {
   InputControl,
   SelectControl,
   TextAreaControl,
-} from "../../../components";
-import { GroupProductModel, ProductImageModel } from "../../../models";
-import { fetchSelector } from "../../../redux/slice/fetchSlice";
-import { groupProductSelector } from "../../../redux/slice/groupProductSlice";
-import {
-  productActions,
-  productSelector,
-} from "../../../redux/slice/productSlice";
-import { productVariantSelector } from "../../../redux/slice/productVariantSlice";
-import { snackbarActions } from "../../../redux/slice/snackbarSlice";
-import { useAppDispatch } from "../../../redux/store";
+} from "@/components";
+import { GroupProductModel, ProductImageModel } from "@/models";
+import { fetchSelector } from "@/redux/slice/fetchSlice";
+import { groupProductSelector } from "@/redux/slice/groupProductSlice";
+import { productActions, productSelector } from "@/redux/slice/productSlice";
+import { productVariantSelector } from "@/redux/slice/productVariantSlice";
+import { snackbarActions } from "@/redux/slice/snackbarSlice";
+import { useAppDispatch } from "@/redux/store";
 import ProductVariantForm from "./ProductVariantForm";
 import ProductVariantImageForm from "./ProductVariantImageForm";
 type Props = {};
@@ -34,6 +31,8 @@ export type ProductInputs = {
   detail: string;
   price: number;
   inventory: number;
+  metaKeywords: string;
+  metaDescription: string;
 };
 
 const ProductForm = (props: Props) => {
@@ -184,6 +183,19 @@ const ProductForm = (props: Props) => {
                 register={register("description")}
                 rows={6}
                 label="Mô tả"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <InputControl
+                register={register("metaKeywords")}
+                label="Meta Từ khoá"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextAreaControl
+                register={register("metaDescription")}
+                rows={6}
+                label="Meta Mô tả"
               />
             </Grid>
             <Grid item xs={12}>

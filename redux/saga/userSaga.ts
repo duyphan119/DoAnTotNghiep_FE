@@ -4,7 +4,7 @@ import { ResponseGetAllModel, UserModel } from "../../models";
 import { UserParams } from "../../types/params";
 import { fetchActions } from "../slice/fetchSlice";
 import { userActions, userReducer } from "../slice/userSlice";
-import { ActionPayload } from "../store";
+import { ActionPayload } from "@/redux/store";
 
 const uApi = new UserApi();
 

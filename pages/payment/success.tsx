@@ -2,11 +2,11 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useSelector } from "react-redux";
-import { ButtonControl, NotFound } from "../../components";
-import checkoutSuccessSvg from "../../public/checkout_success.svg";
-import { orderSelector } from "../../redux/slice/orderSlice";
-import { publicRoutes } from "../../utils/routes";
-import styles from "../../styles/_CheckoutSuccess.module.scss";
+import { ButtonControl, NotFound } from "@/components";
+import checkoutSuccessSvg from "@/public/checkout_success.svg";
+import { orderSelector } from "@/redux/slice/orderSlice";
+import { publicRoutes } from "@/utils/routes";
+import styles from "@/styles/_CheckoutSuccess.module.scss";
 
 type Props = {};
 

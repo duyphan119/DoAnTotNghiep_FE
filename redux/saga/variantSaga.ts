@@ -4,7 +4,7 @@ import { VariantModel, ResponseGetAllModel } from "../../models";
 import { VariantParams } from "../../types/params";
 import { fetchActions } from "../slice/fetchSlice";
 import { variantActions, variantReducer } from "../slice/variantSlice";
-import { ActionPayload } from "../store";
+import { ActionPayload } from "@/redux/store";
 
 const vApi = new VariantApi();
 

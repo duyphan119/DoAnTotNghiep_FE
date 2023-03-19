@@ -1,12 +1,11 @@
-import { Grid } from "@mui/material";
-import { ProductImageModel } from "@/models";
 import { ImageFill } from "@/components";
+import { ProductImageModel } from "@/models";
+import { Grid } from "@mui/material";
 type Props = {
   images: ProductImageModel[];
-  thumbnail: string;
 };
 
-const Left = ({ images, thumbnail }: Props) => {
+const Left = ({ images }: Props) => {
   return images.length === 1 ? (
     <ImageFill src={images[0].path} alt="" height="133%" />
   ) : (

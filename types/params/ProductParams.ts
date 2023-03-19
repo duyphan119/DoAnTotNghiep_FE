@@ -11,6 +11,9 @@ type ProductParams = SortParams &
     images: boolean;
     group_product: boolean;
     q: string;
+    min_price: number;
+    max_price: number;
+    v_ids: string;
   }>;
 
 export default ProductParams;

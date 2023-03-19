@@ -1,6 +1,5 @@
 import { useId, ChangeEvent, memo } from "react";
 import { FieldError } from "react-hook-form";
-import { SelectOption } from "../../../utils/types";
 
 type Props = Partial<{
   error: FieldError;
@@ -9,7 +8,10 @@ type Props = Partial<{
   register: any;
   onChange: (e: ChangeEvent<HTMLSelectElement>) => void;
   value: any;
-  options: SelectOption[];
+  options: {
+    value: string | number;
+    display?: string | number;
+  }[];
   disabled: boolean;
 }>;
 
@@ -35,7 +37,7 @@ const SelectControl = ({
         disabled={disabled}
         {...register}
       >
-        {options?.map((item: SelectOption, index: number) => {
+        {options?.map((item, index: number) => {
           return (
             <option value={item.value} key={index}>
               {item.display || item.value}

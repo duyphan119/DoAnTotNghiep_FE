@@ -1,6 +1,6 @@
 import Head from "next/head";
-import { AdminLayout } from "../../../layouts";
-import { BlogForm, DashboardPaper } from "../../../components";
+import { AdminLayout } from "@/layouts";
+import { BlogForm, DashboardPaper } from "@/components";
 
 type Props = {};
 

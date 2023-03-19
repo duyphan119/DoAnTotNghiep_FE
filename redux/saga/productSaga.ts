@@ -5,7 +5,7 @@ import { CreateProductDTO, UpdateProductDTO } from "../../types/dtos";
 import { ProductParams } from "../../types/params";
 import { fetchActions } from "../slice/fetchSlice";
 import { productActions, productReducer } from "../slice/productSlice";
-import { ActionPayload } from "../store";
+import { ActionPayload } from "@/redux/store";
 
 const pApi = new ProductApi();
 

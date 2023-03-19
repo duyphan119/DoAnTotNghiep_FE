@@ -1,3 +1,30 @@
+import { OrderDiscountApi } from "@/api";
+import {
+  ButtonControl,
+  InputControl,
+  RadioControl,
+  SelectControl,
+} from "@/components";
+import { OrderDiscountModel, UserAddressModel } from "@/models";
+import provinces from "@/province.json";
+import { authSelector } from "@/redux/slice/authSlice";
+import {
+  cartActions,
+  cartReducer,
+  cartSelector,
+} from "@/redux/slice/cartSlice";
+import { fetchSelector } from "@/redux/slice/fetchSlice";
+import { orderActions, orderSelector } from "@/redux/slice/orderSlice";
+import { snackbarActions } from "@/redux/slice/snackbarSlice";
+import {
+  userAddressActions,
+  userAddressSelector,
+} from "@/redux/slice/userAddressSlice";
+import { useAppDispatch } from "@/redux/store";
+import styles from "@/styles/_Payment.module.scss";
+import { CheckoutDTO } from "@/types/dtos";
+import { DistrictJson, ProvinceJson, WardJson } from "@/types/json";
+import { publicRoutes } from "@/utils/routes";
 import { Container, Grid } from "@mui/material";
 import Head from "next/head";
 import Image from "next/image";
@@ -6,33 +33,6 @@ import { useRouter } from "next/router";
 import { ChangeEvent, useEffect, useMemo, useReducer, useRef } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { OrderDiscountApi } from "../../api";
-import { CheckoutDTO } from "../../apis/order";
-import {
-  ButtonControl,
-  InputControl,
-  RadioControl,
-  SelectControl,
-} from "../../components";
-import { OrderDiscountModel, UserAddressModel } from "../../models";
-import provinces from "../../province.json";
-import { authSelector } from "../../redux/slice/authSlice";
-import {
-  cartActions,
-  cartReducer,
-  cartSelector,
-} from "../../redux/slice/cartSlice";
-import { fetchSelector } from "../../redux/slice/fetchSlice";
-import { orderActions, orderSelector } from "../../redux/slice/orderSlice";
-import { snackbarActions } from "../../redux/slice/snackbarSlice";
-import {
-  userAddressActions,
-  userAddressSelector,
-} from "../../redux/slice/userAddressSlice";
-import { useAppDispatch } from "../../redux/store";
-import styles from "../../styles/_Payment.module.scss";
-import { publicRoutes } from "../../utils/routes";
-import { District, Province, Ward } from "../../utils/types";
 
 type Props = {};
 
@@ -42,8 +42,8 @@ type Action = {
 };
 
 type State = {
-  districts: District[];
-  wards: Ward[];
+  districts: DistrictJson[];
+  wards: WardJson[];
   paymentMethod: "COD" | "MOMO";
   userAddresses: UserAddressModel[];
   userAddress: UserAddressModel;
@@ -53,9 +53,16 @@ type State = {
   usePoint: boolean;
 };
 
-const reducers = (state: State, action: Action) => {
-  const { type, payload } = action;
-
+const reducers = (
+  state: State,
+  {
+    type,
+    payload,
+  }: {
+    payload: any;
+    type?: string;
+  }
+) => {
   switch (type) {
     default: {
       return { ...state, ...payload };
@@ -185,7 +192,7 @@ const Payment = (props: Props) => {
           const { province } = value;
           if (province !== "") {
             const findProvince = provinces.find(
-              (p: Province) => p.name === province
+              (p: ProvinceJson) => p.name === province
             );
             const districts = findProvince ? findProvince.districts : [];
             dispatch({ payload: { districts } });
@@ -198,8 +205,8 @@ const Payment = (props: Props) => {
           const { district, province } = value;
           if (province !== "" && district !== "") {
             const findDistrict = provinces
-              .find((p: Province) => p.name === province)
-              ?.districts.find((d: District) => d.name === district);
+              .find((p: ProvinceJson) => p.name === province)
+              ?.districts.find((d: DistrictJson) => d.name === district);
             const wards = findDistrict ? findDistrict.wards : [];
             dispatch({ payload: { wards } });
             value.ward = "";

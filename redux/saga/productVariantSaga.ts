@@ -10,7 +10,7 @@ import {
   productVariantReducer,
 } from "../slice/productVariantSlice";
 import { snackbarActions } from "../slice/snackbarSlice";
-import { ActionPayload } from "../store";
+import { ActionPayload } from "@/redux/store";
 
 const pvApi = new ProductVariantApi();
 

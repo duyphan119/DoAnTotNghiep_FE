@@ -1,14 +1,14 @@
 import { call, put, takeEvery } from "redux-saga/effects";
-import { AdvertisementApi } from "../../api";
-import { CreateAdvertisementDTO } from "../../apis/advertisement";
-import { AdvertisementModel, ResponseGetAllModel } from "../../models";
-import { AdvertisementParams } from "../../types/params";
+import { AdvertisementApi } from "@/api";
+import { CreateAdvertisementDTO } from "@/types/dtos";
+import { AdvertisementModel, ResponseGetAllModel } from "@/models";
+import { AdvertisementParams } from "@/types/params";
 import {
   advertisementActions,
   advertisementReducer,
-} from "../slice/advertisementSlice";
-import { fetchActions } from "../slice/fetchSlice";
-import { ActionPayload } from "../store";
+} from "@/redux/slice/advertisementSlice";
+import { fetchActions } from "@/redux/slice/fetchSlice";
+import { ActionPayload } from "@/redux/store";
 
 const advApi = new AdvertisementApi();
 

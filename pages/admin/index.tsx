@@ -1,29 +1,28 @@
-import { Grid, Paper, Typography, Box } from "@mui/material";
-import Head from "next/head";
-import { ReactElement, useState, useEffect, CSSProperties } from "react";
-import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
+import { StatisticsApi } from "@/api";
+import { AdminLayout } from "@/layouts";
+import { StatisticsModel } from "@/models";
+import styles from "@/styles/_Dashboard.module.scss";
+import helper from "@/utils/helpers";
+import { protectedRoutes } from "@/utils/routes";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import StarRateIcon from "@mui/icons-material/StarRate";
+import { Box, Grid, Paper, Typography } from "@mui/material";
+import Head from "next/head";
+import Image from "next/image";
 import Link from "next/link";
+import { ReactElement, useEffect, useState } from "react";
 import {
+  Bar,
   BarChart,
   CartesianGrid,
+  Legend,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  Tooltip,
-  Legend,
-  Bar,
-  ResponsiveContainer,
 } from "recharts";
-import Image from "next/image";
-import helper from "../../utils/helpers";
-import { getStatistics } from "../../apis/statistics";
-import { MSG_SUCCESS } from "../../utils/constants";
-import { BarChartData, Order } from "../../utils/types";
-import { protectedRoutes } from "../../utils/routes";
-import { AdminLayout } from "../../layouts";
-import styles from "../../styles/_Dashboard.module.scss";
 
 type Props = {};
 
@@ -38,7 +37,10 @@ type WidgetProps = Partial<{
 }>;
 
 type ChartTab = {
-  data: BarChartData[];
+  data: {
+    key: string;
+    value: number;
+  }[];
   label: string;
 };
 
@@ -46,37 +48,7 @@ type ChartProps = Partial<{
   tabs: ChartTab[];
 }>;
 
-type BestSellerProduct = {
-  productId: number;
-  productName: string;
-  thumbnail: string;
-  inventory: number;
-  total: number;
-};
-
-type Statistics = {
-  countUser: {
-    currentMonth: number;
-    lastMonth: number;
-  };
-  countOrder: {
-    currentMonth: number;
-    lastMonth: number;
-  };
-  countCommentProduct: {
-    currentMonth: number;
-    lastMonth: number;
-  };
-  revenue: {
-    currentMonth: number;
-    lastMonth: number;
-  };
-  listRevenueToday: BarChartData[];
-  recentOrders: Order[];
-  bestSellerProducts: BestSellerProduct[];
-  listRevenueByYear: BarChartData[];
-  listRevenueByMonth: BarChartData[];
-};
+const sApi = new StatisticsApi();
 
 const Widget = ({
   title,
@@ -194,29 +166,9 @@ const Chart = ({ tabs }: ChartProps) => {
 };
 
 const Dashboard = (props: Props) => {
-  const [statisticsData, setStatisticsData] = useState<Statistics>({
-    countUser: {
-      currentMonth: 0,
-      lastMonth: 0,
-    },
-    countOrder: {
-      currentMonth: 0,
-      lastMonth: 0,
-    },
-    countCommentProduct: {
-      currentMonth: 0,
-      lastMonth: 0,
-    },
-    revenue: {
-      currentMonth: 0,
-      lastMonth: 0,
-    },
-    listRevenueToday: [],
-    recentOrders: [],
-    bestSellerProducts: [],
-    listRevenueByMonth: [],
-    listRevenueByYear: [],
-  });
+  const [statisticsData, setStatisticsData] = useState<StatisticsModel>(
+    new StatisticsModel()
+  );
 
   const {
     countUser,
@@ -233,10 +185,9 @@ const Dashboard = (props: Props) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data, message } = await getStatistics();
-        if (message === MSG_SUCCESS) {
-          setStatisticsData(data);
-        }
+        const data = await sApi.getStatistics();
+        console.log(data);
+        setStatisticsData(data);
       } catch (error) {
         console.log("GET STATISTICS ERROR", error);
       }
@@ -321,7 +272,7 @@ const Dashboard = (props: Props) => {
                 </tr>
               </thead>
               <tbody>
-                {recentOrders.map((order: Order, index: number) => {
+                {recentOrders.map((order, index) => {
                   return (
                     <tr key={order.id}>
                       <td style={{ textAlign: "center" }}>{index + 1}</td>
@@ -366,39 +317,37 @@ const Dashboard = (props: Props) => {
                 </tr>
               </thead>
               <tbody>
-                {bestSellerProducts.map(
-                  (item: BestSellerProduct, index: number) => {
-                    return (
-                      <tr key={item.productId}>
-                        <td style={{ textAlign: "center" }}>{index + 1}</td>
-                        <td>
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "4px",
-                            }}
-                          >
-                            <Image
-                              src={item.thumbnail}
-                              alt=""
-                              priority={true}
-                              width={64}
-                              height={74}
-                            />
-                            {item.productName}
-                          </div>
-                        </td>
-                        <td style={{ textAlign: "center", width: 100 }}>
-                          {item.total}
-                        </td>
-                        <td style={{ textAlign: "center", width: 100 }}>
-                          {item.inventory}
-                        </td>
-                      </tr>
-                    );
-                  }
-                )}
+                {bestSellerProducts.map((item, index) => {
+                  return (
+                    <tr key={item.productId}>
+                      <td style={{ textAlign: "center" }}>{index + 1}</td>
+                      <td>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "4px",
+                          }}
+                        >
+                          <Image
+                            src={item.thumbnail}
+                            alt=""
+                            priority={true}
+                            width={64}
+                            height={74}
+                          />
+                          {item.productName}
+                        </div>
+                      </td>
+                      <td style={{ textAlign: "center", width: 100 }}>
+                        {item.total}
+                      </td>
+                      <td style={{ textAlign: "center", width: 100 }}>
+                        {item.inventory}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
             <div className={styles.productVariantsViewMore}>

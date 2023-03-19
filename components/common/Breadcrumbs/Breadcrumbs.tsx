@@ -1,6 +1,6 @@
-import { Breadcrumbs as MuiBreadcrumbs, SxProps } from "@mui/material";
+import { Box, SxProps } from "@mui/material";
 import Link from "next/link";
-import { CSSProperties } from "react";
+import { CSSProperties, Fragment, memo } from "react";
 
 type Props = Partial<{
   links: {
@@ -11,26 +11,68 @@ type Props = Partial<{
   current: string;
   currentstyle: CSSProperties;
   sx: SxProps;
+  currentWrap: boolean;
 }>;
 
-const Breadcrumbs = ({ links, current, currentstyle, sx }: Props) => {
+const Breadcrumbs = ({
+  links,
+  current,
+  currentstyle,
+  sx,
+  currentWrap,
+}: Props) => {
+  const currentElement = <strong>{current}</strong>;
   return (
-    <MuiBreadcrumbs sx={{ fontSize: "14px", ...sx }}>
-      {(links || []).map(({ label, href, style }) => {
+    <Box
+      sx={{
+        fontSize: "16px",
+        display: "flex",
+        justifyContent: "center",
+        flexWrap: "wrap",
+        ...sx,
+      }}
+    >
+      {(links || []).map(({ label, href, style }, index) => {
         return (
-          <Link
-            href={href}
-            style={{ cursor: "pointer", ...style }}
-            key={label}
-            className="text-hover"
-          >
-            {label}
-          </Link>
+          <Fragment key={label}>
+            {index !== 0 ? <>&nbsp;&nbsp;/&nbsp;&nbsp;</> : ""}
+            <Link
+              href={href}
+              style={{ cursor: "pointer", ...style }}
+              className="text-hover"
+            >
+              {label}
+            </Link>
+          </Fragment>
         );
       })}
-      <strong style={currentstyle}>{current}</strong>
-    </MuiBreadcrumbs>
+      {currentWrap ? (
+        <div
+          style={{
+            width: "100%",
+            textAlign: "center",
+            fontSize: 18,
+            color: "var(--blue)",
+            ...currentstyle,
+          }}
+        >
+          {currentElement}
+        </div>
+      ) : (
+        <Fragment>
+          &nbsp;&nbsp;/&nbsp;&nbsp;
+          <div
+            style={{
+              color: "var(--blue)",
+              ...currentstyle,
+            }}
+          >
+            {currentElement}
+          </div>
+        </Fragment>
+      )}
+    </Box>
   );
 };
 
-export default Breadcrumbs;
+export default memo(Breadcrumbs);

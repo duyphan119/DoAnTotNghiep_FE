@@ -2,13 +2,13 @@ import { ProductApi } from "@/api";
 import { ProductCard } from "@/components";
 import { DefaultLayout } from "@/layouts";
 import { ProductModel, ResponseGetAllModel } from "@/models";
-import { ResponseItems } from "@/utils/types";
+import { ProductJson } from "@/types/json";
 import { Container, Grid, Pagination } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
 type Props = {
-  productData: ResponseItems<ProductModel>;
+  productData: { items: ProductJson[]; count: number };
 };
 
 const pApi = new ProductApi();
@@ -63,14 +63,14 @@ const Page = ({ productData: { items, count } }: Props) => {
 
 export async function getServerSideProps(context: any) {
   const { q } = context.query;
-  const data = await pApi.getAll({
+  const data = await pApi.getAllJson({
     q,
     limit: 12,
   });
 
   return {
     props: {
-      productData: JSON.parse(JSON.stringify(data)),
+      productData: data,
     },
   };
 }

@@ -1,9 +1,10 @@
 import { privateAxios, publicAxios } from "@/config/configAxios";
 import { GroupProductModel, ResponseGetAllModel } from "@/models";
-import UploadRepository from "@/repositories/UploadRepository";
 import { CreateGroupProductDTO } from "@/types/dtos";
+import { GroupProductJson } from "@/types/json";
 import { GroupProductParams } from "@/types/params";
-import { MSG_SUCCESS } from "@/utils/constants";
+import { EMPTY_ITEMS, MSG_SUCCESS } from "@/utils/constants";
+import UploadApi from "./UploadApi";
 
 class GroupProductApi {
   nameApi: string;
@@ -12,6 +13,26 @@ class GroupProductApi {
   }
   getListFromJson(json: any): GroupProductModel[] {
     return json.map((item: any) => new GroupProductModel(item));
+  }
+
+  getAllJson(
+    params?: GroupProductParams
+  ): Promise<{ items: GroupProductJson[]; count: number }> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const { data, message } = await (publicAxios().get(this.nameApi, {
+          params,
+        }) as Promise<{
+          data: { items: GroupProductJson[]; count: number };
+          message: string;
+        }>);
+        const response = message === MSG_SUCCESS ? data : EMPTY_ITEMS;
+        resolve(response);
+      } catch (error) {
+        console.log(error);
+        reject(error);
+      }
+    });
   }
 
   getAll(
@@ -52,9 +73,7 @@ class GroupProductApi {
       try {
         let thumbnail = dto?.thumbnail ?? "";
         if (files) {
-          const { secure_url } = await new UploadRepository().uploadSingle(
-            files[0]
-          );
+          const { secure_url } = await new UploadApi().uploadSingle(files[0]);
           thumbnail = secure_url;
         }
         const { data, message } = await (privateAxios().post(this.nameApi, {
@@ -88,9 +107,7 @@ class GroupProductApi {
       try {
         let thumbnail = dto.thumbnail || "";
         if (files) {
-          const { secure_url } = await new UploadRepository().uploadSingle(
-            files[0]
-          );
+          const { secure_url } = await new UploadApi().uploadSingle(files[0]);
           thumbnail = secure_url;
         }
         const { data, message } = await (privateAxios().patch(

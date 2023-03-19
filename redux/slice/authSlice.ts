@@ -1,17 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { deleteCookie, setCookie } from "cookies-next";
 
-import { OrderQueryParams } from "../../apis/order";
-import { OrderModel, ResponseGetAllModel, UserModel } from "../../models";
+import { OrderModel, ResponseGetAllModel, UserModel } from "@/models";
+import { ActionPayload, RootState } from "@/redux/store";
 import {
   ChangePasswordDTO,
   ChangeProfileDTO,
   LoginDTO,
   RegisterDTO,
-} from "../../types/dtos";
-import { COOKIE_ACCESSTOKEN_NAME, EMPTY_ITEMS } from "../../utils/constants";
-import { FetchState, Order, ResponseItems, User } from "../../utils/types";
-import { ActionPayload, RootState } from "../store";
+} from "@/types/dtos";
+import { OrderParams } from "@/types/params";
+import { COOKIE_ACCESSTOKEN_NAME } from "@/utils/constants";
 
 type State = {
   profile: UserModel;
@@ -68,7 +67,7 @@ const authSlice = createSlice({
       state,
       action: ActionPayload<ChangePasswordDTO>
     ) => {},
-    fetchUserOrderData: (state, action: ActionPayload<OrderQueryParams>) => {},
+    fetchUserOrderData: (state, action: ActionPayload<OrderParams>) => {},
     setUserOrderData: (
       state,
       action: ActionPayload<ResponseGetAllModel<OrderModel>>

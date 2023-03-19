@@ -1,21 +1,19 @@
 import { call, put, takeEvery } from "redux-saga/effects";
-import { CartApi, OrderApi, UserApi } from "../../api";
+import { CartApi, OrderApi, UserApi } from "@/api";
 
-import { myOrders, OrderQueryParams } from "../../apis/order";
-import { OrderModel, ResponseGetAllModel, UserModel } from "../../models";
+import { ActionPayload } from "@/redux/store";
+import { OrderModel, ResponseGetAllModel, UserModel } from "@/models";
 import {
   ChangePasswordDTO,
   ChangeProfileDTO,
   LoginDTO,
   RegisterDTO,
-} from "../../types/dtos";
-import { PaginationParams } from "../../types/params";
-import { MSG_SUCCESS } from "../../utils/constants";
-import { authActions, authReducer } from "../slice/authSlice";
-import { cartActions } from "../slice/cartSlice";
-import { fetchActions } from "../slice/fetchSlice";
-import { snackbarActions } from "../slice/snackbarSlice";
-import { ActionPayload } from "../store";
+} from "@/types/dtos";
+import { PaginationParams } from "@/types/params";
+import { authActions, authReducer } from "@/redux/slice/authSlice";
+import { cartActions } from "@/redux/slice/cartSlice";
+import { fetchActions } from "@/redux/slice/fetchSlice";
+import { snackbarActions } from "@/redux/slice/snackbarSlice";
 
 const uApi = new UserApi();
 const cApi = new CartApi();

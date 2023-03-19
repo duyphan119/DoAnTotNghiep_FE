@@ -1,7 +1,6 @@
+import { ChangePasswordForm } from "@/components";
+import { AccountLayout } from "@/layouts";
 import Head from "next/head";
-import { ChangePassword } from "../../apis/auth";
-import ChangePasswordForm from "../../components/form/ChangePasswordForm";
-import { AccountLayout } from "../../layouts";
 
 type Props = {};
 

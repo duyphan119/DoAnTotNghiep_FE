@@ -1,13 +1,15 @@
+import { BlogApi } from "@/api";
+import { BlogContent, ImageFill } from "@/components";
+import { DefaultLayout } from "@/layouts";
+import { BlogModel } from "@/models";
+import { BlogJson } from "@/types/json";
 import { Box, Container, Grid } from "@mui/material";
+import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
-import { BlogApi } from "../../api";
-import { BlogContent, ImageFill } from "../../components";
-import { DefaultLayout } from "../../layouts";
-import { BlogModel } from "../../models";
 
 type Props = {
-  blog: BlogModel;
-  relatedBlogs: BlogModel[];
+  blog: BlogJson | null;
+  relatedBlogs: BlogJson[];
 };
 
 const bApi = new BlogApi();
@@ -82,18 +84,18 @@ const BlogBySlug = ({ blog: _blog, relatedBlogs: _relatedBlogs }: Props) => {
   );
 };
 
-export async function getServerSideProps(context: any) {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
   try {
     const { slug } = context.query;
     const RELATED_BLOGS_LIMIT = 3;
-    let blog: BlogModel = new BlogModel();
-    let relatedBlogs: BlogModel[] = [];
-    const data = await bApi.getAll({
-      slug,
+    let blog: BlogJson | null = null;
+    let relatedBlogs: BlogJson[] = [];
+    const data = await bApi.getAllJson({
+      slug: `${slug}`,
     });
     if (data.items.length > 0) blog = data.items[0];
-    if (blog.id > 0) {
-      const data2 = await bApi.getAll({
+    if (blog) {
+      const data2 = await bApi.getAllJson({
         blogCategoryId: blog.blogCategoryId,
         limit: RELATED_BLOGS_LIMIT,
       });
@@ -105,8 +107,8 @@ export async function getServerSideProps(context: any) {
     }
     return {
       props: {
-        blog: JSON.parse(JSON.stringify(blog)),
-        relatedBlogs: JSON.parse(JSON.stringify(relatedBlogs)),
+        blog,
+        relatedBlogs,
       },
     };
   } catch (error) {

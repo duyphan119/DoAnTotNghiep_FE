@@ -1,16 +1,38 @@
 import { privateAxios, publicAxios } from "@/config/configAxios";
 import { BlogModel, ResponseGetAllModel } from "@/models";
 import { CreateBlogDTO } from "@/types/dtos";
+import { BlogJson } from "@/types/json";
 import { BlogParams } from "@/types/params";
-import { MSG_SUCCESS } from "@/utils/constants";
+import { EMPTY_ITEMS, MSG_SUCCESS } from "@/utils/constants";
+import UploadApi from "./UploadApi";
 
 class BlogApi {
   nameApi: string;
   constructor() {
     this.nameApi = "blog";
   }
-  getListFromJson(json: any): BlogModel[] {
-    return json.map((item: any) => new BlogModel(item));
+  getListFromJson(json: BlogJson[]): BlogModel[] {
+    return json.map((item: BlogJson) => new BlogModel(item));
+  }
+
+  getAllJson(
+    params?: BlogParams
+  ): Promise<{ items: BlogJson[]; count: number }> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const { data, message } = await (publicAxios().get(this.nameApi, {
+          params,
+        }) as Promise<{
+          data: { items: BlogJson[]; count: number };
+          message: string;
+        }>);
+        const response = message === MSG_SUCCESS ? data : EMPTY_ITEMS;
+        resolve(response);
+      } catch (error) {
+        console.log(error);
+        reject(error);
+      }
+    });
   }
 
   getAll(params?: BlogParams): Promise<ResponseGetAllModel<BlogModel>> {
@@ -38,13 +60,24 @@ class BlogApi {
     });
   }
 
-  create(dto: CreateBlogDTO): Promise<BlogModel> {
+  create({
+    files,
+    dto,
+  }: {
+    files: FileList | null;
+    dto: CreateBlogDTO;
+  }): Promise<BlogModel> {
     return new Promise(async (resolve, reject) => {
       try {
-        const { data, message } = await (privateAxios().post(
-          this.nameApi,
-          dto
-        ) as Promise<{
+        let thumbnail = dto?.thumbnail ?? "";
+        if (files) {
+          const { secure_url } = await new UploadApi().uploadSingle(files[0]);
+          thumbnail = secure_url;
+        }
+        const { data, message } = await (privateAxios().post(this.nameApi, {
+          ...dto,
+          thumbnail,
+        }) as Promise<{
           data: any;
           message: string;
         }>);
@@ -60,15 +93,25 @@ class BlogApi {
   update({
     id,
     dto,
+    files,
   }: {
     id: number;
     dto: Partial<CreateBlogDTO>;
+    files: FileList | null;
   }): Promise<BlogModel> {
     return new Promise(async (resolve, reject) => {
       try {
+        let thumbnail = dto.thumbnail || "";
+        if (files) {
+          const { secure_url } = await new UploadApi().uploadSingle(files[0]);
+          thumbnail = secure_url;
+        }
         const { data, message } = await (privateAxios().patch(
           `${this.nameApi}/${id}`,
-          dto
+          {
+            ...dto,
+            ...(thumbnail !== "" ? { thumbnail } : {}),
+          }
         ) as Promise<{
           data: any;
           message: string;

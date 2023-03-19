@@ -1,17 +1,17 @@
 import Head from "next/head";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { ButtonControl, InputControl } from "../../components";
-import { AccountLayout } from "../../layouts";
+import { ButtonControl, InputControl } from "@/components";
+import { AccountLayout } from "@/layouts";
 import {
   authActions,
   authReducer,
   authSelector,
-} from "../../redux/slice/authSlice";
-import { fetchSelector } from "../../redux/slice/fetchSlice";
-import { useAppDispatch } from "../../redux/store";
-import styles from "../../styles/_Profile.module.scss";
-import { ChangeProfileDTO } from "../../types/dtos";
+} from "@/redux/slice/authSlice";
+import { fetchSelector } from "@/redux/slice/fetchSlice";
+import { useAppDispatch } from "@/redux/store";
+import styles from "@/styles/_Profile.module.scss";
+import { ChangeProfileDTO } from "@/types/dtos";
 
 type Props = {};
 

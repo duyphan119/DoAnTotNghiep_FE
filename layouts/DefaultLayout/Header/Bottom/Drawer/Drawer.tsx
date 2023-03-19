@@ -1,17 +1,16 @@
+import { groupProductSelector } from "@/redux/slice/groupProductSlice";
+import { publicRoutes } from "@/utils/routes";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import { Drawer as MuiDrawer, IconButton } from "@mui/material";
 import Link from "next/link";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { groupProductManagementSelector } from "../../../../../redux/slice/groupProductManagementSlice";
-import { publicRoutes } from "../../../../../utils/routes";
-import { GroupProduct, GroupProductHeader } from "../../../../../utils/types";
 import styles from "./_style.module.scss";
 type Props = {};
 
 const Drawer = (props: Props) => {
-  const { headerData } = useSelector(groupProductManagementSelector);
+  const { groupProductHeaders } = useSelector(groupProductSelector);
   const [state, setState] = useState<boolean>(false);
   const toggleDrawer = (newState: boolean) => {
     setState(newState);
@@ -39,7 +38,7 @@ const Drawer = (props: Props) => {
                 Giỏ hàng
               </Link>
             </li>
-            {headerData.map((item: GroupProductHeader, index: number) => {
+            {groupProductHeaders.map((item, index) => {
               return (
                 <li className={styles.navItem} key={item.name}>
                   <div className={styles.navItemWrapper}>
@@ -67,7 +66,7 @@ const Drawer = (props: Props) => {
                         className={styles.navItemCheckbox}
                       />
                       <ul className={styles.navMenuItems}>
-                        {item.items.map((gp: GroupProduct) => {
+                        {item.items.map((gp) => {
                           return (
                             <li key={gp.id} className={styles.navMenuItem}>
                               <Link

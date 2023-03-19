@@ -1,21 +1,20 @@
-import { Button } from "@mui/material";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-import { useSelector } from "react-redux";
-import { ButtonControl, DataManagement, DataTable } from "../../../components";
-import { AdminLayout } from "../../../layouts";
+import { ButtonControl, DataManagement, DataTable } from "@/components";
+import { AdminLayout } from "@/layouts";
+import { BlogCategoryModel } from "@/models";
 import {
   blogCategoryActions,
   blogCategorySeletor,
-} from "../../../redux/slice/blogCategorySlice";
-import { fetchSelector } from "../../../redux/slice/fetchSlice";
-import { useAppDispatch } from "../../../redux/store";
-import helper from "../../../utils/helpers";
-import { protectedRoutes } from "../../../utils/routes";
-import { BlogCategory } from "../../../utils/types";
+} from "@/redux/slice/blogCategorySlice";
+import { confirmDialogActions } from "@/redux/slice/confirmDialogSlice";
+import { useAppDispatch } from "@/redux/store";
+import helper from "@/utils/helpers";
+import { protectedRoutes } from "@/utils/routes";
+import { useSelector } from "react-redux";
 
 type Props = {};
 
@@ -24,24 +23,16 @@ const LIMIT = 10;
 const Page = (props: Props) => {
   const router = useRouter();
   const appDispatch = useAppDispatch();
-  const { blogCategoryData, openDialog, current } =
-    useSelector(blogCategorySeletor);
-  const { isLoading } = useSelector(fetchSelector);
-
-  console.log("isLoading", isLoading);
-
-  const handleDelete = () => {
-    //
-  };
+  const { blogCategoryData } = useSelector(blogCategorySeletor);
 
   useEffect(() => {
-    const { p, sortBy, sortType } = router.query;
+    const { p, limit, sortBy, sortType } = router.query;
     appDispatch(
-      blogCategoryActions.fetchBlogCategoryData({
+      blogCategoryActions.fetchGetAll({
         p: +`${p}` || 1,
-        ...(sortBy ? { sortBy: `${sortBy}` } : {}),
-        ...(sortType ? { sortType: `${sortType}` } : {}),
-        limit: LIMIT,
+        limit: limit ? `${limit}` : LIMIT,
+        sortBy: `${sortBy || "id"}`,
+        sortType: `${sortType}` === "asc" ? "asc" : "desc",
       })
     );
   }, [router.query]);
@@ -76,30 +67,34 @@ const Page = (props: Props) => {
               style: { width: 180, textAlign: "center" },
               key: "createdAt",
               display: "Ngày tạo",
-              render: (row: BlogCategory) =>
+              render: (row: BlogCategoryModel) =>
                 helper.formatDateTime(row.createdAt),
             },
             {
               style: { width: 152 },
               key: "actions",
-              render: (row: BlogCategory) => (
+              render: (row: BlogCategoryModel) => (
                 <>
                   <div style={{ display: "flex", alignItems: "center" }}>
                     <Link href={protectedRoutes.updateBlogCategory(row.id)}>
-                      <ButtonControl
-                        color="secondary"
-                        size="small"
-                        onClick={() =>
-                          appDispatch(blogCategoryActions.setCurrent(row))
-                        }
-                      >
+                      <ButtonControl color="secondary" size="small">
                         Sửa
                       </ButtonControl>
                     </Link>
                     <ButtonControl
                       color="error"
                       onClick={() =>
-                        appDispatch(blogCategoryActions.showDialog(row))
+                        appDispatch(
+                          confirmDialogActions.show({
+                            onConfirm: () => {
+                              appDispatch(
+                                blogCategoryActions.fetchSoftDeleteSingle(
+                                  row.id
+                                )
+                              );
+                            },
+                          })
+                        )
                       }
                       sx={{ ml: 1 }}
                       size="small"

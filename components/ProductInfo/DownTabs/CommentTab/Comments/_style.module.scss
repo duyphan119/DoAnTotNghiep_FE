@@ -1,0 +1,16 @@
+.commentProducts {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.commentProduct .heading .top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.commentProduct .heading .top .fullName {
+  font-weight: 600;
+}
+.commentProduct .content {
+  margin-top: 2px;
+}

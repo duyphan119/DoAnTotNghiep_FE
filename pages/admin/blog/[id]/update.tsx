@@ -1,22 +1,20 @@
+import { BlogForm, DashboardPaper } from "@/components";
+import { AdminLayout } from "@/layouts";
+import { blogActions } from "@/redux/slice/blogSlice";
+import { useAppDispatch } from "@/redux/store";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
-import { BlogForm, DashboardPaper } from "../../../../components";
-import { AdminLayout } from "../../../../layouts";
-import { blogActions, blogSelector } from "../../../../redux/slice/blogSlice";
-import { useAppDispatch } from "../../../../redux/store";
 
 type Props = {};
 
 const Page = (props: Props) => {
   const router = useRouter();
   const appDispatch = useAppDispatch();
-  const { current } = useSelector(blogSelector);
 
   useEffect(() => {
     const { id } = router.query;
-    appDispatch(blogActions.fetchGetBlogById(+`${id}`));
+    appDispatch(blogActions.fetchGetById(+`${id}`));
   }, [router.query]);
 
   return (

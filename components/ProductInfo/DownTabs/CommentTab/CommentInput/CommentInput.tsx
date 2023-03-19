@@ -1,9 +1,5 @@
-import { Button, Rating } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
-import { CommentProductModel } from "@/models";
-import { useProductDetailContext } from "@/pages/product/[slug]";
+import { ButtonControl, TextAreaControl } from "@/components";
+import { ProductModel } from "@/models";
 import { authActions, authSelector } from "@/redux/slice/authSlice";
 import {
   productDetailActions,
@@ -12,15 +8,17 @@ import {
 import { snackbarActions } from "@/redux/slice/snackbarSlice";
 import { useAppDispatch } from "@/redux/store";
 import { CreateCommentProductDTO } from "@/types/dtos";
-import { MSG_SUCCESS } from "@/utils/constants";
-import { ButtonControl, TextAreaControl } from "../../../../common";
+import { Rating } from "@mui/material";
+import { FC, useEffect, useMemo, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
 import styles from "../../../_style.module.scss";
 
 type Props = {};
 
-const CommentInput = (props: Props) => {
+const CommentInput: FC<Props> = () => {
   const appDispatch = useAppDispatch();
-  const { product, userCommentProduct } = useSelector(productDetailSelector);
+  const { userCommentProduct, product } = useSelector(productDetailSelector);
   const { profile } = useSelector(authSelector);
   // const { userComment } = commentProductData;
   // const userComment = new CommentProductModel();
@@ -68,11 +66,6 @@ const CommentInput = (props: Props) => {
       );
     }
   };
-
-  console.log(
-    userCommentProduct.star === star &&
-      userCommentProduct.content === getValues("content")
-  );
 
   return profile ? (
     <form onSubmit={handleSubmit(onSubmit)}>

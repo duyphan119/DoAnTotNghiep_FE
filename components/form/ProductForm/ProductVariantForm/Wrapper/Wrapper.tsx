@@ -1,49 +1,15 @@
-import { Button } from "@mui/material";
+import { productVariantSelector } from "@/redux/slice/productVariantSlice";
 import { memo } from "react";
 import { useSelector } from "react-redux";
-import { productSelector } from "../../../../../redux/slice/productSlice";
-import {
-  productVariantActions,
-  productVariantSelector,
-} from "../../../../../redux/slice/productVariantSlice";
-import { useAppDispatch } from "../../../../../redux/store";
-import { ProductVariant } from "../../../../../utils/types";
-import styles from "../_style.module.scss";
 import TrItem from "../TrItem";
-import { ProductVariantModel } from "../../../../../models";
+import styles from "../_style.module.scss";
 
 type Props = {
   title?: string;
 };
 
 const Wrapper = ({ title }: Props) => {
-  const appDispatch = useAppDispatch();
-  const { current: product } = useSelector(productSelector);
   const { productVariants, inputs } = useSelector(productVariantSelector);
-  const handleClick = () => {
-    if (productVariants) {
-      if (product) {
-        const productId = product.id;
-        appDispatch(
-          productVariantActions.fetchCreateMany(
-            inputs.map((input: ProductVariantModel) => ({
-              ...input,
-              productId,
-            }))
-          )
-        );
-      } else {
-        appDispatch(
-          productVariantActions.fetchUpdateMany(
-            productVariants.map((item: ProductVariantModel) => {
-              const { id, name, price, inventory, productId } = item;
-              return { id, dto: { name, price, inventory, productId } };
-            })
-          )
-        );
-      }
-    }
-  };
 
   return (
     <div className={styles.generatedSelectedWrapper}>
@@ -73,11 +39,6 @@ const Wrapper = ({ title }: Props) => {
           })}
         </tbody>
       </table>
-      <div style={{ marginTop: 16 }}>
-        <Button variant="contained" onClick={handleClick}>
-          Lưu
-        </Button>
-      </div>
     </div>
   );
 };

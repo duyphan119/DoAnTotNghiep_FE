@@ -72,6 +72,7 @@ const BlogCategoryCard = ({ blogCategory, bgColorTag }: Props) => {
                       fill={true}
                       alt=""
                       sizes="(max-width:600px) 100vw"
+                      priority={true}
                     />
                   </Link>
                 </Box>

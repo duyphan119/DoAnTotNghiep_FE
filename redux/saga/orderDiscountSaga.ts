@@ -7,7 +7,7 @@ import {
   orderDiscountActions,
   orderDiscountReducer,
 } from "../slice/orderDiscountSlice";
-import { ActionPayload } from "../store";
+import { ActionPayload } from "@/redux/store";
 import { CreateOrderDiscountDTO } from "../../types/dtos";
 
 const odApi = new OrderDiscountApi();

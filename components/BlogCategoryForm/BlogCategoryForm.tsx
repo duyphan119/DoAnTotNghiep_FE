@@ -29,20 +29,16 @@ const BlogCategoryForm = (props: Props) => {
 
   const onSubmit: SubmitHandler<CreateBlogCategoryDTO> = (data) => {
     if (blogCategoryEditing) {
+      appDispatch(fetchActions.start(blogCategoryReducers.fetchUpdate));
       appDispatch(
-        fetchActions.start(blogCategoryReducers.fetchUpdateBlogCategory)
-      );
-      appDispatch(
-        blogCategoryActions.fetchUpdateBlogCategory({
+        blogCategoryActions.fetchUpdate({
           id: blogCategoryEditing.id,
           ...data,
         })
       );
     } else {
-      appDispatch(
-        fetchActions.start(blogCategoryReducers.fetchCreateBlogCategory)
-      );
-      appDispatch(blogCategoryActions.fetchCreateBlogCategory(data));
+      appDispatch(fetchActions.start(blogCategoryReducers.fetchCreate));
+      appDispatch(blogCategoryActions.fetchCreate(data));
     }
   };
 
@@ -80,8 +76,8 @@ const BlogCategoryForm = (props: Props) => {
         <Grid item xs={12}>
           <FooterForm
             isLoading={
-              (reducer === blogCategoryReducers.fetchCreateBlogCategory ||
-                reducer === blogCategoryReducers.fetchUpdateBlogCategory) &&
+              (reducer === blogCategoryReducers.fetchCreate ||
+                reducer === blogCategoryReducers.fetchUpdate) &&
               isLoading
             }
           />

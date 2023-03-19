@@ -3,17 +3,17 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Button, Tooltip } from "@mui/material";
 import Image from "next/image";
 import { ChangeEvent, memo, useState } from "react";
-import { confirmDialogActions } from "../../../../../redux/slice/confirmDialogSlice";
-import { useAppDispatch } from "../../../../../redux/store";
-import { VariantValue } from "../../../../../utils/types";
+import { confirmDialogActions } from "@/redux/slice/confirmDialogSlice";
+import { useAppDispatch } from "@/redux/store";
 import styles from "../_style.module.scss";
+import { VariantValueModel } from "@/models";
 
 type Props = {
   src: string;
   onSelect: any;
   onDelete: any;
   hasSelectBtn: boolean;
-  variantValues: VariantValue[];
+  variantValues: VariantValueModel[];
   variantValueId: number | string | null;
   onSelectVariantValue: any;
 };
@@ -56,7 +56,7 @@ const ImageItem = ({
           Màu:&nbsp;
           <select onChange={handleChange} value={value}>
             <option>Chọn màu</option>
-            {variantValues.map((variantValue: VariantValue) => (
+            {variantValues.map((variantValue) => (
               <option key={variantValue.id} value={variantValue.id}>
                 {variantValue.value}
               </option>

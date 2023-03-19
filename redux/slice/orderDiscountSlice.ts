@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { OrderDiscountParams } from "../../types/params";
 import { OrderDiscountModel, ResponseGetAllModel } from "../../models";
-import { ActionPayload, RootState } from "../store";
+import { ActionPayload, RootState } from "@/redux/store";
 import { CreateOrderDiscountDTO } from "../../types/dtos";
 
 const NAME_SLICE = "orderDiscount";

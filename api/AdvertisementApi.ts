@@ -1,17 +1,40 @@
 import { privateAxios, publicAxios } from "@/config/configAxios";
 import { AdvertisementModel, ResponseGetAllModel } from "@/models";
-import UploadRepository from "@/repositories/UploadRepository";
+
 import { CreateAdvertisementDTO } from "@/types/dtos";
+import { AdvertisementJson } from "@/types/json";
 import { AdvertisementParams } from "@/types/params";
-import { MSG_SUCCESS } from "@/utils/constants";
+import { EMPTY_ITEMS, MSG_SUCCESS } from "@/utils/constants";
+import UploadApi from "./UploadApi";
 
 class AdvertisementApi {
   nameApi: string;
   constructor() {
     this.nameApi = "advertisement";
   }
+
   getListFromJson(json: any): AdvertisementModel[] {
     return json.map((item: any) => new AdvertisementModel(item));
+  }
+
+  getAllJson(
+    params?: AdvertisementParams
+  ): Promise<{ items: AdvertisementJson[]; count: number }> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const { data, message } = await (publicAxios().get(this.nameApi, {
+          params,
+        }) as Promise<{
+          data: { items: AdvertisementJson[]; count: number };
+          message: string;
+        }>);
+        const response = message === MSG_SUCCESS ? data : EMPTY_ITEMS;
+        resolve(response);
+      } catch (error) {
+        console.log(error);
+        reject(error);
+      }
+    });
   }
 
   getAll(
@@ -52,9 +75,7 @@ class AdvertisementApi {
       try {
         let path = dto?.path ?? "";
         if (files) {
-          const { secure_url } = await new UploadRepository().uploadSingle(
-            files[0]
-          );
+          const { secure_url } = await new UploadApi().uploadSingle(files[0]);
           path = secure_url;
         }
         const { data, message } = await (privateAxios().post(this.nameApi, {
@@ -89,9 +110,7 @@ class AdvertisementApi {
       try {
         let path = dto.path || "";
         if (files) {
-          const { secure_url } = await new UploadRepository().uploadSingle(
-            files[0]
-          );
+          const { secure_url } = await new UploadApi().uploadSingle(files[0]);
           path = secure_url;
         }
         const { data, message } = await (privateAxios().patch(

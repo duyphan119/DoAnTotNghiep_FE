@@ -1,93 +1,51 @@
 import { createSlice } from "@reduxjs/toolkit";
-import {
-  BlogCategoryQueryParams,
-  CreateBlogCategoryDTO,
-} from "../../apis/blogCategory";
-import { EMPTY_ITEMS } from "../../utils/constants";
-import { BlogCategory, FetchState, ResponseItems } from "../../utils/types";
-import { ActionPayload, RootState } from "../store";
+import { BlogCategoryModel, ResponseGetAllModel } from "@/models";
+import { ActionPayload, RootState } from "@/redux/store";
+import { CreateBlogCategoryDTO } from "@/types/dtos";
+import { BlogCategoryParams } from "@/types/params";
 
 const NAME_SLICE = "blogCategory";
 
 type State = {
-  blogCategoryData: ResponseItems<BlogCategory>;
-  isBack: boolean;
-  openDialog: boolean;
-  current: BlogCategory | null;
-  blogCategoryEditing: BlogCategory | null;
+  blogCategoryData: ResponseGetAllModel<BlogCategoryModel>;
+  current: BlogCategoryModel;
 };
 
 const INITIAL_STATE: State = {
-  isBack: false,
-  blogCategoryData: EMPTY_ITEMS,
-  openDialog: false,
-  current: null,
-  blogCategoryEditing: null,
+  blogCategoryData: new ResponseGetAllModel(),
+  current: new BlogCategoryModel(),
 };
 
 const blogCategorySlice = createSlice({
   name: NAME_SLICE,
   initialState: INITIAL_STATE,
   reducers: {
-    fetchBlogCategoryData: (
-      state,
-      action: ActionPayload<BlogCategoryQueryParams>
-    ) => {
-      state.isBack = false;
-    },
-    fetchCreateBlogCategory: (
-      state,
-      action: ActionPayload<CreateBlogCategoryDTO>
-    ) => {
-      state.isBack = false;
-    },
-    fetchUpdateBlogCategory: (
+    fetchGetAll: (state, action: ActionPayload<BlogCategoryParams>) => {},
+    fetchCreate: (state, action: ActionPayload<CreateBlogCategoryDTO>) => {},
+    fetchUpdate: (
       state,
       action: ActionPayload<{ id: number } & Partial<CreateBlogCategoryDTO>>
-    ) => {
-      state.isBack = false;
-    },
-    fetchGetBlogCategoryById: (state, action: ActionPayload<number>) => {
-      state.isBack = false;
-    },
-    fetchDeleteBlogCategory: (state, action: ActionPayload<number>) => {
-      state.isBack = false;
-    },
+    ) => {},
+    fetchGetById: (state, action: ActionPayload<number>) => {},
+    fetchSoftDeleteSingle: (state, action: ActionPayload<number>) => {},
     setBlogCategoryData: (
       state,
-      action: ActionPayload<ResponseItems<BlogCategory>>
+      action: ActionPayload<ResponseGetAllModel<BlogCategoryModel>>
     ) => {
       state.blogCategoryData = action.payload;
     },
-    back: (state) => {
-      state.isBack = true;
-    },
-    showDialog: (state, action: ActionPayload<BlogCategory | null>) => {
-      state.openDialog = true;
+    setCurrent: (state, action: ActionPayload<BlogCategoryModel>) => {
       state.current = action.payload;
-    },
-    hideDialog: (state) => {
-      state.openDialog = false;
-      state.current = null;
-    },
-    setCurrent: (state, action: ActionPayload<BlogCategory | null>) => {
-      state.current = action.payload;
-    },
-    setBlogCategoryEditing: (
-      state,
-      action: ActionPayload<BlogCategory | null>
-    ) => {
-      state.blogCategoryEditing = action.payload;
     },
   },
 });
 
 export const blogCategoryReducers = {
-  fetchBlogCategoryData: `${NAME_SLICE}/fetchBlogCategoryData`,
-  fetchCreateBlogCategory: `${NAME_SLICE}/fetchCreateBlogCategory`,
-  fetchUpdateBlogCategory: `${NAME_SLICE}/fetchUpdateBlogCategory`,
-  fetchGetBlogCategoryById: `${NAME_SLICE}/fetchGetBlogCategoryById`,
-  fetchDeleteBlogCategory: `${NAME_SLICE}/fetchDeleteBlogCategory`,
+  fetchGetAll: `${NAME_SLICE}/fetchGetAll`,
+  fetchCreate: `${NAME_SLICE}/fetchCreate`,
+  fetchUpdate: `${NAME_SLICE}/fetchUpdate`,
+  fetchGetById: `${NAME_SLICE}/fetchGetById`,
+  fetchSoftDeleteSingle: `${NAME_SLICE}/fetchSoftDeleteSingle`,
 };
 export const blogCategorySeletor = (state: RootState): State =>
   state.blogCategory;

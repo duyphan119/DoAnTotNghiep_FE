@@ -2,15 +2,15 @@ import { Grid } from "@mui/material";
 import Head from "next/head";
 import { ChangeEvent, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { AdminLayout } from "../../../layouts";
+import { AdminLayout } from "@/layouts";
 
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
-import { DashboardPaper, FooterForm, InputControl } from "../../../components";
-import { advertisementActions } from "../../../redux/slice/advertisementSlice";
-import { useAppDispatch } from "../../../redux/store";
-import { fetchSelector } from "../../../redux/slice/fetchSlice";
-import { CreateAdvertisementDTO } from "../../../types/dtos";
+import { DashboardPaper, FooterForm, InputControl } from "@/components";
+import { advertisementActions } from "@/redux/slice/advertisementSlice";
+import { useAppDispatch } from "@/redux/store";
+import { fetchSelector } from "@/redux/slice/fetchSlice";
+import { CreateAdvertisementDTO } from "@/types/dtos";
 
 type Props = {};
 

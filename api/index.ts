@@ -13,3 +13,5 @@ export { default as OrderApi } from "./OrderApi";
 export { default as OrderDiscountApi } from "./OrderDiscountApi";
 export { default as BlogCategoryApi } from "./BlogCategoryApi";
 export { default as RepCommentProductApi } from "./RepCommentProductApi";
+export { default as UserAddressApi } from "./UserAddressApi";
+export { default as StatisticsApi } from "./StatisticsApi";

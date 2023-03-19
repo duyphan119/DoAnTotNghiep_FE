@@ -1,6 +1,4 @@
-import { Box, Tab, Tabs } from "@mui/material";
-import { ReactNode, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { ProductModel } from "@/models";
 import { fetchSelector } from "@/redux/slice/fetchSlice";
 import {
   productDetailActions,
@@ -8,6 +6,9 @@ import {
   productDetailSelector,
 } from "@/redux/slice/productDetailSlice";
 import { useAppDispatch } from "@/redux/store";
+import { Box, Tab, Tabs } from "@mui/material";
+import { FC, ReactNode, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import CommentTab from "./CommentTab";
 
 type Props = {};
@@ -24,10 +25,10 @@ const TabPanel = ({ value, index, children }: TabPanelProps) => {
 
 const LIMIT = 5;
 
-const DownTabs = (props: Props) => {
+const DownTabs: FC<Props> = () => {
   const appDispatch = useAppDispatch();
-  const { product } = useSelector(productDetailSelector);
   const { reducers } = useSelector(fetchSelector);
+  const { product } = useSelector(productDetailSelector);
   const [value, setValue] = useState<number>(0);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -52,19 +53,19 @@ const DownTabs = (props: Props) => {
     <Box sx={{ width: "100%" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs value={value} onChange={handleChange}>
-          <Tab label="Chi tiết sản phẩm" />
           <Tab label="Đánh giá" />
+          <Tab label="Chi tiết sản phẩm" />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <Box p={2}>
-          {product ? (
-            <div dangerouslySetInnerHTML={{ __html: product.detail }}></div>
-          ) : null}
-        </Box>
+        <CommentTab product={product} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <CommentTab />
+        {product.id > 0 && product.detail !== "" ? (
+          <Box p={2}>
+            <div dangerouslySetInnerHTML={{ __html: product.detail }}></div>
+          </Box>
+        ) : null}
       </TabPanel>
     </Box>
   );

@@ -4,24 +4,22 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { BlogContent, DashboardPaper } from "../../../../components";
-import { AdminLayout } from "../../../../layouts";
-import { blogActions, blogSelector } from "../../../../redux/slice/blogSlice";
-import { useAppDispatch } from "../../../../redux/store";
+import { BlogContent, DashboardPaper } from "@/components";
+import { AdminLayout } from "@/layouts";
+import { blogActions, blogSelector } from "@/redux/slice/blogSlice";
+import { useAppDispatch } from "@/redux/store";
 
 type Props = {};
 
 const Page = (props: Props) => {
   const router = useRouter();
   const appDispatch = useAppDispatch();
-  const { current, blogEditing } = useSelector(blogSelector);
+  const { current } = useSelector(blogSelector);
 
   useEffect(() => {
     const { id } = router.query;
-    appDispatch(blogActions.fetchGetBlogById(+`${id}`));
+    appDispatch(blogActions.fetchGetById(+`${id}`));
   }, [router.query]);
-
-  const blog = current || blogEditing;
 
   return (
     <AdminLayout pageTitle="Chỉnh sửa bài viết">
@@ -33,10 +31,10 @@ const Page = (props: Props) => {
         </Head>
 
         <DashboardPaper title="Xem trước bài viết">
-          {!blog ? (
+          {!current ? (
             <div>Không tìm thấy bài viết</div>
           ) : (
-            <BlogContent blog={blog} />
+            <BlogContent blog={current} />
           )}
         </DashboardPaper>
       </>

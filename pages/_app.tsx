@@ -2,11 +2,11 @@ import { Roboto } from "@next/font/google";
 import type { AppProps } from "next/app";
 import NextNProgress from "nextjs-progressbar";
 import { Provider } from "react-redux";
-import { Auth, ConfirmDialog, ScrollToTop, Snackbar } from "../components";
-import SocketWrapper from "../context/SocketContext";
-import ThemeWrapper from "../context/ThemeContext";
-import { wrapper } from "../redux/store";
-import "../styles/_globals.scss";
+import { Auth, ConfirmDialog, ScrollToTop, Snackbar } from "@/components";
+import SocketWrapper from "@/context/SocketContext";
+import ThemeWrapper from "@/context/ThemeContext";
+import { wrapper } from "@/redux/store";
+import "@/styles/_globals.scss";
 import "swiper/css";
 import "swiper/css/pagination";
 

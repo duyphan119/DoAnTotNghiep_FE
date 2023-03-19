@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { OrderModel, ResponseGetAllModel } from "../../models";
 import { CheckoutDTO } from "../../types/dtos";
 import { OrderParams } from "../../types/params";
-import { ActionPayload, RootState } from "../store";
+import { ActionPayload, RootState } from "@/redux/store";
 
 type State = {
   orderData: ResponseGetAllModel<OrderModel>;

@@ -63,6 +63,13 @@ class Helper {
     const lastItem = splitFullName[splitFullName.length - 1];
     return lastItem.charAt(0);
   }
+
+  getPathFromSearchParams(pathName: string, params: any) {
+    const queryString =
+      (Object.keys(params).length > 0 ? "?" : "") +
+      new URLSearchParams(params).toString();
+    return pathName + queryString;
+  }
 }
 
 const helper = new Helper();

@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { ResponseGetAllModel, VariantModel } from "../../models";
 import { VariantParams } from "../../types/params";
-import { ActionPayload, RootState } from "../store";
+import { ActionPayload, RootState } from "@/redux/store";
 
 type State = {
   variantData: ResponseGetAllModel<VariantModel>;

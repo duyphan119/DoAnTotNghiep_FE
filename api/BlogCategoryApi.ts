@@ -1,8 +1,9 @@
 import { privateAxios, publicAxios } from "@/config/configAxios";
 import { BlogCategoryModel, ResponseGetAllModel } from "@/models";
 import { CreateBlogCategoryDTO } from "@/types/dtos";
+import { BlogCategoryJson } from "@/types/json";
 import { BlogCategoryParams } from "@/types/params";
-import { MSG_SUCCESS } from "@/utils/constants";
+import { EMPTY_ITEMS, MSG_SUCCESS } from "@/utils/constants";
 
 class BlogCategoryApi {
   nameApi: string;
@@ -11,6 +12,26 @@ class BlogCategoryApi {
   }
   getListFromJson(json: any): BlogCategoryModel[] {
     return json.map((item: any) => new BlogCategoryModel(item));
+  }
+
+  getAllJson(
+    params?: BlogCategoryParams
+  ): Promise<{ items: BlogCategoryJson[]; count: number }> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const { data, message } = await (publicAxios().get(this.nameApi, {
+          params,
+        }) as Promise<{
+          data: { items: BlogCategoryJson[]; count: number };
+          message: string;
+        }>);
+        const response = message === MSG_SUCCESS ? data : EMPTY_ITEMS;
+        resolve(response);
+      } catch (error) {
+        console.log(error);
+        reject(error);
+      }
+    });
   }
 
   getAll(

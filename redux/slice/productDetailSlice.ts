@@ -1,15 +1,14 @@
+import { ActionPayload, RootState } from "@/redux/store";
 import { createSlice } from "@reduxjs/toolkit";
-import { CommentProductDTO } from "../../apis/commentproduct";
 import {
+  CommentProductModel,
   ProductModel,
   ProductVariantModel,
   ResponseGetAllModel,
   VariantValueModel,
-} from "../../models";
-import CommentProductModel from "../../models/CommentProductModel";
-import { CreateCommentProductDTO } from "../../types/dtos";
-import { CommentProductParams } from "../../types/params";
-import { ActionPayload, RootState } from "../store";
+} from "@/models";
+import { CreateCommentProductDTO } from "@/types/dtos";
+import { CommentProductParams } from "@/types/params";
 
 export type SetPagePayload = {
   page: number;
@@ -55,7 +54,8 @@ const productDetailSlice = createSlice({
     setProduct: (state, action: ActionPayload<ProductModel>) => {
       let product = action.payload;
       state.product = product;
-      if (product) state.renderVariantValues = product.formatProductVariants();
+      if (product.id)
+        state.renderVariantValues = product.formatProductVariants();
     },
     clickVariantValue: (state, action: ActionPayload<VariantValueModel>) => {
       let variantValue = action.payload;

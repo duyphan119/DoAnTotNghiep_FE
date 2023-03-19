@@ -4,12 +4,12 @@ import { Grid, Pagination } from "@mui/material";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { AccountLayout } from "../../layouts";
-import { OrderItemModel, OrderModel } from "../../models";
-import { authActions, authSelector } from "../../redux/slice/authSlice";
-import { useAppDispatch } from "../../redux/store";
-import helper from "../../utils/helpers";
-import styles from "../../styles/_FollowOrder.module.scss";
+import { AccountLayout } from "@/layouts";
+import { OrderItemModel, OrderModel } from "@/models";
+import { authActions, authSelector } from "@/redux/slice/authSlice";
+import { useAppDispatch } from "@/redux/store";
+import helper from "@/utils/helpers";
+import styles from "@/styles/_FollowOrder.module.scss";
 
 const LIMIT = 10;
 

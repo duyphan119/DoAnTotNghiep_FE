@@ -1,32 +1,53 @@
-import { Container } from "@mui/material";
+import { Container, Grid } from "@mui/material";
+import { useRouter } from "next/router";
 import Head from "next/head";
-import { createContext, useContext, useEffect } from "react";
-import { ProductApi } from "../../api";
-import { ProductInfo } from "../../components";
-import { DefaultLayout } from "../../layouts";
-import { ProductModel } from "../../models";
-import { productDetailActions } from "../../redux/slice/productDetailSlice";
-import { useAppDispatch } from "../../redux/store";
-import styles from "../../styles/_ProductDetail.module.scss";
+import { Fragment, useEffect, useState } from "react";
+import { ProductApi } from "@/api";
+import { ProductCard, ProductInfo } from "@/components";
+import { DefaultLayout } from "@/layouts";
+import { ProductModel, ResponseGetAllModel } from "@/models";
+import { productDetailActions } from "@/redux/slice/productDetailSlice";
+import { useAppDispatch } from "@/redux/store";
+import styles from "@/styles/_ProductDetail.module.scss";
+import { ProductJson } from "@/types/json";
 
 type Props = {
-  product: any;
+  productJson: ProductJson;
 };
 
-const ProductDetailContext = createContext<any>({});
+const RECOMMEND_LIMIT = 20;
 
-export function useProductDetailContext() {
-  return useContext(ProductDetailContext);
-}
-
-const ProductDetail = ({ product }: Props) => {
+const ProductDetail = ({ productJson }: Props) => {
+  const router = useRouter();
   const appDispatch = useAppDispatch();
+  const product = new ProductModel(productJson);
+  const [recommendedProductData, setRecommendedProductData] = useState<
+    ResponseGetAllModel<ProductModel>
+  >(new ResponseGetAllModel());
 
   useEffect(() => {
-    appDispatch(productDetailActions.setProduct(new ProductModel(product)));
-  }, [product]);
+    appDispatch(productDetailActions.setProduct(product));
+  }, [productJson]);
 
-  return (
+  useEffect(() => {
+    const recommendProducts = async () => {
+      try {
+        const pApi = new ProductApi();
+
+        const res = await pApi.recommend({
+          slug: `${router.query.slug}`,
+          limit: RECOMMEND_LIMIT,
+          sortBy: "star",
+          sortType: "desc",
+        });
+        setRecommendedProductData(res);
+      } catch (error) {}
+    };
+
+    recommendProducts();
+  }, [router.query]);
+
+  return product.id > 0 ? (
     <DefaultLayout>
       <>
         <Head>
@@ -45,35 +66,45 @@ const ProductDetail = ({ product }: Props) => {
           <div className={styles.body}>
             <ProductInfo />
           </div>
+          {recommendedProductData.count > 0 ? (
+            <Fragment>
+              <h1 className={styles.h1}>Gợi ý cho bạn</h1>
+              <Grid container columnSpacing={2} rowSpacing={2}>
+                {recommendedProductData.items.map((item) => {
+                  return (
+                    <Grid
+                      item
+                      xs={6}
+                      md={4}
+                      lg={3}
+                      key={item.id}
+                      sx={{
+                        flexBasis: {
+                          lg: "20%",
+                        },
+                      }}
+                    >
+                      <ProductCard product={item} />
+                    </Grid>
+                  );
+                })}
+              </Grid>
+            </Fragment>
+          ) : null}
         </Container>
       </>
     </DefaultLayout>
+  ) : (
+    <Fragment></Fragment>
   );
 };
 export async function getServerSideProps(context: any) {
   const { slug } = context.query;
-  // let product;
-  // const { message: msg1, data: data1 } = await getAllProducts({
-  //   slug,
-  //   product_variants: true,
-  //   images: true,
-  // });
-  // if (msg1 === MSG_SUCCESS) {
-  //   product = JSON.parse(JSON.stringify(data1.items[0]));
-  // }
-
-  // return product
-  //   ? {
-  //       props: { product },
-  //     }
-  //   : {
-  //       notFound: true,
-  //     };
   const pApi = new ProductApi();
-  const product = JSON.parse(JSON.stringify(await pApi.getBySlug(slug)));
-  if (product.id > 0)
+  const productJson = await pApi.getBySlugJson(slug);
+  if (productJson)
     return {
-      props: { product },
+      props: { productJson },
     };
   return { notFound: true };
 }

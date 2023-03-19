@@ -1,20 +1,19 @@
+import { ButtonControl } from "@/components";
+import { DefaultLayout } from "@/layouts";
+import { OrderItemModel } from "@/models";
+import emptyCartPng from "@/public/empty-cart.png";
+import { cartActions, cartSelector } from "@/redux/slice/cartSlice";
+import { fetchSelector } from "@/redux/slice/fetchSlice";
+import { useAppDispatch } from "@/redux/store";
+import styles from "@/styles/_Cart.module.scss";
+import { publicRoutes } from "@/utils/routes";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { Container, IconButton } from "@mui/material";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo } from "react";
+import { memo } from "react";
 import { useSelector } from "react-redux";
-import { ButtonControl } from "../../components";
-import { DefaultLayout } from "../../layouts";
-import { OrderItemModel } from "../../models";
-import emptyCartPng from "../../public/empty-cart.png";
-import { cartActions, cartSelector } from "../../redux/slice/cartSlice";
-import { fetchSelector } from "../../redux/slice/fetchSlice";
-import { useAppDispatch } from "../../redux/store";
-import styles from "../../styles/_Cart.module.scss";
-import { publicRoutes } from "../../utils/routes";
-import { OrderItem } from "../../utils/types";
 
 type Props = {};
 
@@ -22,7 +21,7 @@ type CartItemProps = {
   item: OrderItemModel;
 };
 
-const CartItem = React.memo(({ item }: CartItemProps) => {
+const CartItem = memo(({ item }: CartItemProps) => {
   const appDispatch = useAppDispatch();
 
   const handleUpdateItem = (newQuantity: number) => {

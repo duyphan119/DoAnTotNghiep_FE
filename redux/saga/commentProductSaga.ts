@@ -14,7 +14,7 @@ import {
 } from "../slice/commentProductSlice";
 import { fetchActions } from "../slice/fetchSlice";
 import { snackbarActions } from "../slice/snackbarSlice";
-import { ActionPayload } from "../store";
+import { ActionPayload } from "@/redux/store";
 
 const cpApi = new CommentProductApi();
 const rcpApi = new RepCommentProductApi();

@@ -1,22 +1,21 @@
 import { Grid } from "@mui/material";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
-import { ChangeEvent, memo, useEffect, useState } from "react";
+import { ChangeEvent, Fragment, memo, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { ProductImageModel } from "../../../../models";
-import { productSelector } from "../../../../redux/slice/productSlice";
-import { variantSelector } from "../../../../redux/slice/variantSlice";
-import { ProductVariantImage } from "../../../../utils/types";
+import { ProductImageModel } from "@/models";
+import { productSelector } from "@/redux/slice/productSlice";
+import { variantSelector } from "@/redux/slice/variantSlice";
 import { ButtonControl } from "../../../common";
 import ImageItem from "./ImageItem";
 import styles from "./_style.module.scss";
-import { UploadApi } from "../../../../api";
+import { UploadApi } from "@/api";
 
 type Props = {
   uploadResults: any;
   setUploadResults: any;
   thumbnail: any;
   setThumbnail: any;
-  deletedImages: ProductVariantImage[];
+  deletedImages: ProductImageModel[];
   setDeletedImages: any;
   deleteImages: number[];
   setDeleteImages: any;
@@ -96,6 +95,7 @@ const ProductVariantImageForm = ({
           const results = await uApi.uploadMultiple(files);
           setUploadResults(results);
           setFiles(null);
+          if (results.length > 0) setThumbnail(results[0].secure_url);
         } catch (error) {}
       };
 
@@ -125,7 +125,7 @@ const ProductVariantImageForm = ({
                   (image) => image.id === result.id
                 );
                 if (deleteImages.includes(result.id))
-                  return <React.Fragment key={result.id}></React.Fragment>;
+                  return <Fragment key={result.id}></Fragment>;
                 return (
                   <Grid item xs={2} key={result.id}>
                     <ImageItem

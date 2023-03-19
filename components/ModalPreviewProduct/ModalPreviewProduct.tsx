@@ -1,12 +1,6 @@
 import { useState, useEffect, memo } from "react";
 import Image from "next/image";
 import { Modal, Box, Rating } from "@mui/material";
-import {
-  ProductVariant,
-  ProductVariantImage,
-  VariantValue,
-} from "../../utils/types";
-import helper from "../../utils/helpers";
 import { useAppDispatch } from "../../redux/store";
 import { useSelector } from "react-redux";
 import {
@@ -14,7 +8,11 @@ import {
   productSelector,
 } from "../../redux/slice/productSlice";
 import styles from "./_style.module.scss";
-import { ProductImageModel, VariantValueModel } from "../../models";
+import {
+  ProductImageModel,
+  ProductVariantModel,
+  VariantValueModel,
+} from "../../models";
 import ImageFill from "../common/ImageFill";
 
 type Props = Partial<{}>;
@@ -27,7 +25,7 @@ const ModalPreviewProduct = (props: Props) => {
     VariantValueModel[]
   >([]);
   const [selectedProductVariant, setSelectedProductVariant] =
-    useState<ProductVariant>();
+    useState<ProductVariantModel>();
   const [variants, setVariants] = useState<{
     keys: string[];
     values: {
@@ -63,13 +61,11 @@ const ModalPreviewProduct = (props: Props) => {
       selectedVariantValues.length === variants.keys.length
     ) {
       setSelectedProductVariant(
-        product?.productVariants?.find((pv: ProductVariant) =>
+        product?.productVariants?.find((pv) =>
           pv.variantValues.every(
-            (vv: VariantValue) =>
+            (vv) =>
               selectedVariantValues &&
-              selectedVariantValues.findIndex(
-                (_vv: VariantValue) => vv.id === _vv.id
-              ) !== -1
+              selectedVariantValues.findIndex((_vv) => vv.id === _vv.id) !== -1
           )
         )
       );
@@ -77,7 +73,7 @@ const ModalPreviewProduct = (props: Props) => {
   }, [selectedVariantValues]);
   if (!product || !openModalPreview) return null;
 
-  let images: ProductVariantImage[] = product.images || [];
+  let images: ProductImageModel[] = product.images || [];
   let imgSrc =
     images.length > 0 && index > -1 ? images[index].path : product.thumbnail;
 

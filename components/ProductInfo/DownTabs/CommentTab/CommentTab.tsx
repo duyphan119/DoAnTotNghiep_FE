@@ -3,16 +3,19 @@ import { useSelector } from "react-redux";
 import {
   productDetailActions,
   productDetailSelector,
-} from "../../../../redux/slice/productDetailSlice";
-import { useAppDispatch } from "../../../../redux/store";
+} from "@/redux/slice/productDetailSlice";
+import { useAppDispatch } from "@/redux/store";
 import CommentInput from "./CommentInput";
 import Comments from "./Comments";
+import { ProductModel } from "@/models";
 
-type Props = {};
+type Props = {
+  product: ProductModel;
+};
 
-const CommentTab = (props: Props) => {
+const CommentTab = ({ product }: Props) => {
   const appDispatch = useAppDispatch();
-  const { product, page, totalPage } = useSelector(productDetailSelector);
+  const { page, totalPage } = useSelector(productDetailSelector);
 
   const changePage = (newPage: number) => {
     appDispatch(productDetailActions.setPage({ page: newPage, product }));
@@ -48,7 +51,7 @@ const CommentTab = (props: Props) => {
         borderLeft={1}
         borderColor="rgba(0, 0, 0, 0.12)"
       >
-        <CommentInput />
+        <CommentInput product={product} />
       </Grid>
     </Grid>
   );

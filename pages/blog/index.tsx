@@ -1,30 +1,25 @@
+import { BlogCategoryApi } from "@/api";
+import { BlogCategoryCard } from "@/components";
+import { DefaultLayout } from "@/layouts";
+import { BlogModel, ResponseGetAllModel } from "@/models";
+import styles from "@/styles/_Blog.module.scss";
+import { BlogCategoryJson } from "@/types/json";
+import helper from "@/utils/helpers";
+import { publicRoutes } from "@/utils/routes";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { Box, Container, Grid, Typography, useTheme } from "@mui/material";
 import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
-import Link from "next/link";
 import Image from "next/image";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import { getAllBlogCategories } from "../../apis/blogCategory";
-import { BlogCategoryCard } from "../../components";
-import { DefaultLayout } from "../../layouts";
-import { EMPTY_ITEMS, MSG_SUCCESS } from "../../utils/constants";
-import { publicRoutes } from "../../utils/routes";
-import { Blog, BlogCategory, ResponseItems } from "../../utils/types";
-import {
-  BlogCategoryModel,
-  BlogModel,
-  ResponseGetAllModel,
-} from "../../models";
-import helper from "../../utils/helpers";
-import { BlogCategoryApi } from "../../api";
+import Link from "next/link";
 
 type Props = {
-  blogCategoryData: ResponseItems<BlogCategoryModel>;
+  blogCategoryDataJson: { items: BlogCategoryJson[]; count: number };
 };
 
 const LIMIT = 5;
 const bcApi = new BlogCategoryApi();
-const getNewBlogs = (blogCategories: BlogCategoryModel[]) => {
+const getNewBlogs = (blogCategories: BlogCategoryJson[]): BlogModel[] => {
   let blogs: BlogModel[] = [];
   const newBlogCategories = [...blogCategories].map((blogCategory) => ({
     ...blogCategory,
@@ -34,31 +29,30 @@ const getNewBlogs = (blogCategories: BlogCategoryModel[]) => {
   newBlogCategories.forEach((blogCategory) => {
     if (blogCategory.blogs) {
       blogCategory.blogs.forEach((blog) => {
-        blogs.push({ ...blog, blogCategory });
+        blogs.push(new BlogModel({ ...blog, blogCategory }));
       });
     }
   });
   return blogs;
 };
 
-const NewBlogs = ({ blogCategoryData }: Props) => {
-  let [firstBlog, ...others] = getNewBlogs(blogCategoryData.items);
+const NewBlogs = ({ blogCategoryDataJson: { items } }: Props) => {
+  let [firstBlog, ...others] = getNewBlogs(items);
   if (!firstBlog) {
     firstBlog = new BlogModel();
   }
   return (
-    <Grid container columnSpacing={2} rowSpacing={2}>
-      <Grid item xs={12} md={7}>
+    <Grid
+      container
+      columnSpacing={2}
+      rowSpacing={2}
+      className={styles.newBlogs}
+    >
+      <Grid item xs={12} md={7} className={styles.firstBlog}>
         <Box>
           <Link
             href={publicRoutes.blogDetail(firstBlog.slug)}
-            style={{
-              position: "relative",
-              display: "block",
-              height: 0,
-              paddingBottom: "66.7%",
-              overflow: "hidden",
-            }}
+            className={styles.firstBlogImageLink}
           >
             <Image
               src={firstBlog.thumbnail}
@@ -67,41 +61,15 @@ const NewBlogs = ({ blogCategoryData }: Props) => {
               sizes="(max-width:600px) 100vw"
               priority={true}
             />
-            <Box
-              sx={{
-                position: "absolute",
-                bottom: "20px",
-                left: "20px",
-                zIndex: 2,
-                width: "66.7%",
-                backgroundColor: "rgba(0,0,0,0.4)",
-                color: "#fff",
-                p: 4,
-              }}
-            >
-              <div
-                style={{
-                  fontWeight: 500,
-                }}
-              >
+            <Box className={styles.firstBlogInfos}>
+              <div className={styles.firstBlogName}>
                 {firstBlog.blogCategory ? firstBlog.blogCategory.name : ""}
               </div>
-              <div
-                className="three-dot three-dot-2"
-                style={{
-                  textTransform: "uppercase",
-                  fontWeight: 600,
-                  marginBlock: "8px",
-                  fontSize: "20px",
-                }}
-              >
+              <div className={`${styles.firstBlogTitle} three-dot three-dot-2`}>
                 {firstBlog.title}
               </div>
               <div
-                style={{
-                  fontWeight: "thin",
-                }}
-                className="three-dot three-dot-3"
+                className={`${styles.firstBlogHeading} three-dot three-dot-3`}
               >
                 {firstBlog.heading}
               </div>
@@ -110,27 +78,14 @@ const NewBlogs = ({ blogCategoryData }: Props) => {
         </Box>
       </Grid>
       <Grid item xs={12} md={5}>
-        <Box
-          height="400px"
-          overflow="hidden auto"
-          className="custom-scrollbar"
-          display="flex"
-          flexDirection="column"
-          gap="12px"
-        >
+        <Box className={`${styles.otherBlogs} custom-scrollbar`}>
           {others.map((blog) => {
             return (
-              <Grid container columnSpacing={1}>
+              <Grid container columnSpacing={1} key={blog.id}>
                 <Grid item xs={5}>
                   <Link
                     href={publicRoutes.blogDetail(blog.slug)}
-                    style={{
-                      position: "relative",
-                      display: "block",
-                      height: 0,
-                      paddingBottom: "66.7%",
-                      overflow: "hidden",
-                    }}
+                    className={styles.otherBlogImageLink}
                   >
                     <Image
                       src={blog.thumbnail}
@@ -142,46 +97,18 @@ const NewBlogs = ({ blogCategoryData }: Props) => {
                   </Link>
                 </Grid>
                 <Grid item xs={7}>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "space-between",
-                      height: "100%",
-                      padding: 8,
-                    }}
-                  >
+                  <div className={styles.otherBlogInfos}>
                     <Box>
-                      <Box
-                        className="three-dot"
-                        sx={{
-                          textTransform: "uppercase",
-                          fontWeight: 600,
-                        }}
-                      >
+                      <Box className={`${styles.otherBlogTitle} three-dot`}>
                         {blog.title}
                       </Box>
                       <Box
-                        className="three-dot three-dot-3"
-                        sx={{
-                          color: "gray",
-                          fontSize: "14px",
-                          my: 1,
-                        }}
+                        className={`${styles.otherBlogHeading} three-dot three-dot-3`}
                       >
                         {blog.heading}
                       </Box>
                     </Box>
-                    <div
-                      style={{
-                        fontSize: 12,
-                        color: "gray",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "4px",
-                        justifyContent: "flex-end",
-                      }}
-                    >
+                    <div className={styles.otherBlogTime}>
                       <AccessTimeIcon sx={{ fontSize: "14px" }} />
                       {helper.formatDate(blog.createdAt)}
                     </div>
@@ -196,7 +123,7 @@ const NewBlogs = ({ blogCategoryData }: Props) => {
   );
 };
 
-const Page = ({ blogCategoryData: { items, count } }: Props) => {
+const Page = ({ blogCategoryDataJson: { items, count } }: Props) => {
   const blogCategoryData = new ResponseGetAllModel(
     bcApi.getListFromJson(items),
     count
@@ -216,23 +143,11 @@ const Page = ({ blogCategoryData: { items, count } }: Props) => {
       </Head>
       <DefaultLayout>
         <Container maxWidth="lg">
-          <Typography
-            variant="subtitle1"
-            style={{
-              textAlign: "center",
-              margin: "36px 0 12px 0",
-            }}
-          >
+          <Typography variant="subtitle1" className={styles.typography}>
             BÀI VIẾT MỚI NHẤT
           </Typography>
-          <NewBlogs blogCategoryData={blogCategoryData} />
-          <Typography
-            variant="subtitle1"
-            style={{
-              textAlign: "center",
-              margin: "36px 0 12px 0",
-            }}
-          >
+          <NewBlogs blogCategoryDataJson={{ items, count }} />
+          <Typography variant="subtitle1" className={styles.typography}>
             DANH MỤC BÀI VIẾT
           </Typography>
           <Grid container columnSpacing={2} rowSpacing={2}>
@@ -269,12 +184,14 @@ const Page = ({ blogCategoryData: { items, count } }: Props) => {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   try {
-    const data = await bcApi.getAll({
+    const data = await bcApi.getAllJson({
       limit: LIMIT,
       blogs: true,
       sortType: "asc",
     });
-    return { props: { blogCategoryData: JSON.parse(JSON.stringify(data)) } };
+    return {
+      props: { blogCategoryDataJson: data },
+    };
   } catch (error) {
     return { notFound: true };
   }

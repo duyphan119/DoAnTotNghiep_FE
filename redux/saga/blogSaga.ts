@@ -1,189 +1,102 @@
 import { call, put, takeEvery } from "redux-saga/effects";
-import {
-  createBlog,
-  deleteBlog,
-  getAllBlogs,
-  getAllBlogsClient,
-  getBlogById,
-  restoreBlog,
-  softDeleteBlog,
-  updateBlog,
-} from "../../apis/blog";
-import { ProductQueryParams } from "../../apis/product";
-import { uploadSingle } from "../../apis/upload";
-import { MSG_SUCCESS } from "../../utils/constants";
-import {
-  blogActions,
-  blogReducers,
-  CreateBlogPayload,
-  UpdateBlogPayload,
-} from "../slice/blogSlice";
-import { fetchActions } from "../slice/fetchSlice";
-import { ActionPayload } from "../store";
+import { MSG_SUCCESS } from "@/utils/constants";
+import { blogActions, blogReducers } from "@/redux/slice/blogSlice";
+import { fetchActions } from "@/redux/slice/fetchSlice";
+import { ActionPayload } from "@/redux/store";
+import { BlogApi } from "@/api";
+import { BlogParams } from "@/types/params";
+import { CreateBlogDTO } from "@/types/dtos";
+import { BlogModel } from "@/models";
 
-function* fetchBlogData({
-  payload: params,
-}: ActionPayload<ProductQueryParams>): any {
+const bApi = new BlogApi();
+
+function* fetchGetAll({ payload: params }: ActionPayload<BlogParams>): any {
   let isError = true;
-  yield put(fetchActions.start(blogReducers.fetchBlogData));
+  yield put(fetchActions.start(blogReducers.fetchGetAll));
   try {
-    const { p, sortBy, sortType, limit } = params;
-    const { message, data } = yield call(() =>
-      getAllBlogsClient({
-        p: p || 1,
-        limit,
-        sortBy,
-        sortType,
-        withDeleted: true,
-      })
-    );
-    if (message === MSG_SUCCESS) {
-      isError = false;
-      yield put(blogActions.setBlogData(data));
-      yield put(fetchActions.endAndSuccess());
-    }
+    const data = yield call(() => bApi.getAll(params));
+    isError = false;
+    yield put(blogActions.setBlogData(data));
+    yield put(fetchActions.endAndSuccess());
   } catch (error) {
-    console.log("blogActions.fetchBlogData", error);
+    console.log("blogActions.fetchGetAll error", error);
   }
   if (isError) yield put(fetchActions.endAndError());
 }
 
-function* fetchCreateBlog({ payload }: ActionPayload<CreateBlogPayload>) {
+function* fetchCreate({
+  payload: { files, dto },
+}: ActionPayload<{ files: FileList | null; dto: CreateBlogDTO }>) {
   let isError = true;
-  yield put(fetchActions.start(blogReducers.fetchCreateBlog));
+  yield put(fetchActions.start(blogReducers.fetchCreate));
   try {
-    const { files, dto } = payload;
-    let url = "";
-    if (files) {
-      const formData = new FormData();
-      formData.append("image", files[0]);
-      const { message, data: dataImage } = yield call(() =>
-        uploadSingle(formData)
-      );
-      if (message === MSG_SUCCESS) {
-        url = dataImage.secure_url;
-      }
-    }
-    const { message: msg } = yield call(() =>
-      createBlog({
-        ...dto,
-        ...(url !== "" ? { thumbnail: url } : {}),
-      })
-    );
-    if (msg === MSG_SUCCESS) {
+    const data: BlogModel = yield call(() => bApi.create({ files, dto }));
+    if (data.id > 0) {
       isError = false;
-      yield put(fetchActions.endAndSuccess());
-      yield put(blogActions.back());
+      yield put(fetchActions.endAndSuccessAndBack());
     }
   } catch (error) {
-    console.log("blogActions.fetchCreateBlog", error);
+    console.log("blogActions.fetchCreate error", error);
   }
   if (isError) yield put(fetchActions.endAndError());
 }
 
-function* fetchUpdateBlog({ payload }: ActionPayload<UpdateBlogPayload>) {
+function* fetchUpdate({
+  payload: { id, files, dto },
+}: ActionPayload<{
+  id: number;
+  files: FileList | null;
+  dto: Partial<CreateBlogDTO>;
+}>) {
   let isError = true;
-  yield put(fetchActions.start(blogReducers.fetchUpdateBlog));
+  yield put(fetchActions.start(blogReducers.fetchUpdate));
   try {
-    const { files, dto, id } = payload;
-    let url = "";
-    if (files) {
-      const formData = new FormData();
-      formData.append("image", files[0]);
-      const { message, data: dataImage } = yield call(() =>
-        uploadSingle(formData)
-      );
-      if (message === MSG_SUCCESS) {
-        url = dataImage.secure_url;
-      }
-    }
-    const { message: msg } = yield call(() =>
-      updateBlog(id, {
-        ...dto,
-        ...(url !== "" ? { thumbnail: url } : {}),
-      })
-    );
-    if (msg === MSG_SUCCESS) {
+    const data: BlogModel = yield call(() => bApi.update({ id, dto, files }));
+    if (data.id > 0) {
       isError = false;
-      yield put(fetchActions.endAndSuccess());
-      yield put(blogActions.back());
+      yield put(fetchActions.endAndSuccessAndBack());
     }
   } catch (error) {
-    console.log("blogActions.fetchUpdateBlog", error);
+    console.log("blogActions.fetchUpdate error", error);
   }
   if (isError) yield put(fetchActions.endAndError());
 }
 
-function* fetchGetBlogById({ payload }: ActionPayload<number>) {
+function* fetchGetById({ payload: id }: ActionPayload<number>) {
   let isError = true;
-  yield put(fetchActions.start(blogReducers.fetchGetBlogById));
+  yield put(fetchActions.start(blogReducers.fetchGetById));
   try {
-    const { message, data } = yield call(() => getBlogById(payload));
-    if (message === MSG_SUCCESS) {
+    const data: BlogModel = yield call(() => bApi.getById(id));
+    if (data.id > 0) {
       isError = false;
+      yield put(blogActions.setCurrent(data));
       yield put(fetchActions.endAndSuccess());
-      yield put(blogActions.setBlogEditing(data));
     }
   } catch (error) {
-    console.log("blogActions.fetchGetBlogById", error);
+    console.log("blogActions.fetchGetById error", error);
   }
   if (isError) yield put(fetchActions.endAndError());
 }
 
-function* fetchDeleteBlog({ payload }: ActionPayload<number>) {
+function* fetchSoftDeleteSingle({ payload: id }: ActionPayload<number>) {
   let isError = true;
-  yield put(fetchActions.start(blogReducers.fetchDeleteBlog));
+  yield put(fetchActions.start(blogReducers.fetchSoftDeleteSingle));
   try {
-    const { message } = yield call(() => deleteBlog(payload));
-    if (message === MSG_SUCCESS) {
+    const result: boolean = yield call(() => bApi.softDeleteSingle(id));
+    if (result) {
       isError = false;
       yield put(fetchActions.endAndSuccess());
-      yield put(blogActions.deleted());
     }
   } catch (error) {
-    console.log("blogActions.fetchDeleteBlog", error);
-  }
-  if (isError) yield put(fetchActions.endAndError());
-}
-
-function* fetchRestoreBlog({ payload }: ActionPayload<number>) {
-  let isError = true;
-  yield put(fetchActions.start(blogReducers.fetchRestoreBlog));
-  try {
-    const { message } = yield call(() => restoreBlog(payload));
-    if (message === MSG_SUCCESS) {
-      isError = false;
-      yield put(fetchActions.endAndSuccess());
-      yield put(blogActions.restore(payload));
-    }
-  } catch (error) {
-    console.log("blogActions.fetchRestoreBlog", error);
-  }
-  if (isError) yield put(fetchActions.endAndError());
-}
-
-function* fetchSoftDeleteBlog({ payload }: ActionPayload<number>) {
-  let isError = true;
-  yield put(fetchActions.start(blogReducers.fetchSoftDeleteBlog));
-  try {
-    const { message } = yield call(() => softDeleteBlog(payload));
-    if (message === MSG_SUCCESS) {
-      isError = false;
-      yield put(fetchActions.endAndSuccess());
-      yield put(blogActions.softDelete(payload));
-    }
-  } catch (error) {
-    console.log("blogActions.fetchSoftDeleteBlog", error);
+    console.log("blogActions.fetchSoftDeleteSingle error", error);
   }
   if (isError) yield put(fetchActions.endAndError());
 }
 
 export function* blogManamentSaga() {
-  yield takeEvery(blogReducers.fetchBlogData, fetchBlogData);
-  yield takeEvery(blogReducers.fetchCreateBlog, fetchCreateBlog);
-  yield takeEvery(blogReducers.fetchUpdateBlog, fetchUpdateBlog);
-  yield takeEvery(blogReducers.fetchGetBlogById, fetchGetBlogById);
-  yield takeEvery(blogReducers.fetchDeleteBlog, fetchDeleteBlog);
-  yield takeEvery(blogReducers.fetchRestoreBlog, fetchRestoreBlog);
-  yield takeEvery(blogReducers.fetchSoftDeleteBlog, fetchSoftDeleteBlog);
+  yield takeEvery(blogReducers.fetchGetAll, fetchGetAll);
+  yield takeEvery(blogReducers.fetchCreate, fetchCreate);
+  yield takeEvery(blogReducers.fetchUpdate, fetchUpdate);
+  yield takeEvery(blogReducers.fetchGetById, fetchGetById);
+  yield takeEvery(blogReducers.fetchSoftDeleteSingle, fetchSoftDeleteSingle);
 }

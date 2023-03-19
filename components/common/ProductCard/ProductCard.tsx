@@ -1,3 +1,4 @@
+import { memo } from "react";
 import StarIcon from "@mui/icons-material/Star";
 import Link from "next/link";
 import { ProductModel } from "@/models";
@@ -45,4 +46,4 @@ const ProductCard = ({ product }: Props) => {
   ) : null;
 };
 
-export default ProductCard;
+export default memo(ProductCard);
