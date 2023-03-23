@@ -8,6 +8,7 @@ import { ICrudApi } from "./interfaces";
 class RepCommentProductApi
   implements
     ICrudApi<
+      ResponseGetAllModel<RepCommentProductModel>,
       RepCommentProductModel,
       RepCommentProductParams,
       CreateRepCommentProductDTO
