@@ -7,7 +7,12 @@ import { ICrudApi } from "./interfaces";
 
 class OrderDiscountApi
   implements
-    ICrudApi<OrderDiscountModel, OrderDiscountParams, CreateOrderDiscountDTO>
+    ICrudApi<
+      ResponseGetAllModel<OrderDiscountModel>,
+      OrderDiscountModel,
+      OrderDiscountParams,
+      CreateOrderDiscountDTO
+    >
 {
   nameApi: string;
   constructor() {
