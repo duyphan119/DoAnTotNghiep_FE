@@ -17,7 +17,6 @@ const ProductInfo: FC<Props> = () => {
   if (!product) return <></>;
 
   const images = useMemo(() => {
-    if (!product.images) return [];
     const imgs = [...product.images];
     const newImages = imgs.filter((i) =>
       selectedVariantValues.length > 0
@@ -28,7 +27,7 @@ const ProductInfo: FC<Props> = () => {
     );
     if (newImages.length === 0) return imgs;
     return newImages;
-  }, [product]);
+  }, [product, selectedVariantValues]);
 
   return (
     <>

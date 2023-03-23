@@ -1,72 +1,29 @@
-import { CreateGroupProductDTO } from "@/types/dtos";
-import { Grid } from "@mui/material";
+import { DashboardPaper, GroupProductForm } from "@/components";
+import { AdminLayout } from "@/layouts";
+import { requireAdminProps } from "@/lib";
+import { UserModel } from "@/models";
+import { groupProductActions } from "@/redux/slice/groupProductSlice";
+import { useAppDispatch } from "@/redux/store";
+import { UserJson } from "@/types/json";
+import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { ChangeEvent, useEffect, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
-import {
-  DashboardPaper,
-  FooterForm,
-  InputControl,
-  NotFound,
-  SelectControl,
-} from "@/components";
-import { AdminLayout } from "@/layouts";
-import { fetchSelector } from "@/redux/slice/fetchSlice";
-import {
-  groupProductActions,
-  groupProductSelector,
-} from "@/redux/slice/groupProductSlice";
-import { useAppDispatch } from "@/redux/store";
+import { useEffect } from "react";
 
-type Props = {};
+type Props = { profile: UserJson | null };
 
-const UpdateGroupProduct = (props: Props) => {
-  const router = useRouter();
+const Page = ({ profile }: Props) => {
   const appDispatch = useAppDispatch();
-  const { isBack, isLoading, isSuccess } = useSelector(fetchSelector);
-  const { current: groupProduct } = useSelector(groupProductSelector);
-  const [files, setFiles] = useState<FileList | null>(null);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-  } = useForm<CreateGroupProductDTO>();
-
-  const onSubmit: SubmitHandler<CreateGroupProductDTO> = (data) => {
-    if (groupProduct)
-      appDispatch(
-        groupProductActions.fetchUpdate({
-          id: groupProduct.id,
-          dto: {
-            ...data,
-            isAdult: "" + data.isAdult === "true" ? true : false,
-          },
-          files,
-        })
-      );
-  };
+  const router = useRouter();
 
   useEffect(() => {
-    const { id } = router.query;
-    appDispatch(groupProductActions.fetchGetById(+`${id}`));
+    if (router.query.id) {
+      appDispatch(groupProductActions.fetchGetById(+`${router.query.id}`));
+    }
   }, [router.query]);
 
-  useEffect(() => {
-    if (groupProduct) {
-      setValue("name", groupProduct.name);
-      setValue("description", groupProduct.description);
-      setValue("isAdult", groupProduct.isAdult);
-      setValue("sex", groupProduct.sex);
-    }
-  }, [groupProduct]);
-
-  if (isSuccess && !groupProduct) return <NotFound />;
-
   return (
-    <AdminLayout pageTitle="Sản phẩm">
+    <AdminLayout pageTitle="Sản phẩm" profile={new UserModel(profile)}>
       <>
         <Head>
           <title>Cập nhật nhóm sản phẩm</title>
@@ -74,66 +31,16 @@ const UpdateGroupProduct = (props: Props) => {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <DashboardPaper title="Thông tin nhóm sản phẩm">
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Grid container rowSpacing={3} columnSpacing={3}>
-              <Grid item xs={12}>
-                <InputControl
-                  label="Tên nhóm sản phẩm"
-                  error={errors.name}
-                  register={register("name", {
-                    required: {
-                      value: true,
-                      message: "Tên không được để trống",
-                    },
-                  })}
-                  required={true}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <InputControl
-                  label="Mô tả"
-                  error={errors.description}
-                  register={register("description")}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <SelectControl
-                  label="Giới tính"
-                  register={register("sex")}
-                  options={[{ value: "Nam" }, { value: "Nữ" }]}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <SelectControl
-                  label="Đối tượng"
-                  register={register("isAdult")}
-                  options={[
-                    { value: true, display: "Người lớn" },
-                    { value: false, display: "Trẻ em" },
-                  ]}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <InputControl
-                  label="Ảnh đại diện"
-                  error={errors.description}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    setFiles(e.target.files)
-                  }
-                  type="file"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <FooterForm
-                  isLoading={groupProduct && isLoading ? true : false}
-                />
-              </Grid>
-            </Grid>
-          </form>
+          <GroupProductForm />
         </DashboardPaper>
       </>
     </AdminLayout>
   );
 };
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  return requireAdminProps(context);
+};
 
-export default UpdateGroupProduct;
+export default Page;

@@ -3,18 +3,21 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { ButtonControl, DataManagement, DataTable } from "../../../components";
-import { AdminLayout } from "../../../layouts";
-import { OrderModel } from "../../../models";
-import { confirmDialogActions } from "../../../redux/slice/confirmDialogSlice";
-import { orderActions, orderSelector } from "../../../redux/slice/orderSlice";
-import { useAppDispatch } from "../../../redux/store";
-import helper from "../../../utils/helpers";
-import { protectedRoutes } from "../../../utils/routes";
+import { ButtonControl, DataManagement, DataTable } from "@/components";
+import { AdminLayout } from "@/layouts";
+import { confirmDialogActions } from "@/redux/slice/confirmDialogSlice";
+import { orderActions, orderSelector } from "@/redux/slice/orderSlice";
+import { useAppDispatch } from "@/redux/store";
+import helper from "@/utils/helpers";
+import { protectedRoutes } from "@/utils/routes";
+import { UserJson } from "@/types/json";
+import { UserModel, OrderModel } from "@/models";
+import { requireAdminProps } from "@/lib";
+import { GetServerSidePropsContext } from "next";
 
-type Props = {};
+type Props = { profile: UserJson | null };
 const LIMIT = 10;
-const Orders = (props: Props) => {
+const Orders = ({ profile }: Props) => {
   const appDispatch = useAppDispatch();
   const router = useRouter();
   const { orderData } = useSelector(orderSelector);
@@ -26,13 +29,13 @@ const Orders = (props: Props) => {
         p: +`${p}` || 1,
         limit: LIMIT,
         sortBy: `${sortBy || "id"}`,
-        sortType: `${sortType}` === "asc" ? "asc" : "desc",
+        sortType: `${sortType}` === "ASC" ? "ASC" : "DESC",
       })
     );
   }, [router.query]);
 
   return (
-    <AdminLayout pageTitle="Đơn hàng">
+    <AdminLayout pageTitle="Đơn hàng" profile={new UserModel(profile)}>
       <>
         <Head>
           <title>Quản lý đơn hàng</title>
@@ -49,30 +52,54 @@ const Orders = (props: Props) => {
             hasCheck={true}
             columns={[
               {
-                style: { width: 70, textAlign: "center" },
-                display: "ID",
-                key: "id",
+                style: { textAlign: "center" },
+                key: "code",
+                display: "Mã đơn hàng",
               },
               {
-                style: { textAlign: "left" },
+                style: { textAlign: "center" },
                 key: "fullName",
                 display: "Họ tên",
               },
               {
-                style: { textAlign: "center" },
+                style: { width: 100, textAlign: "center" },
                 key: "phone",
                 display: "Số điện thoại",
               },
               {
-                style: { width: 180, textAlign: "center" },
-                key: "createdAt",
-                display: "Ngày tạo",
-                render: (row: any) => helper.formatDateTime(row.createdAt),
+                style: { textAlign: "center" },
+                key: "address",
+                display: "Địa chỉ",
+                render: (row: OrderModel) => row.getFullAddress(),
               },
               {
-                style: { width: 180, textAlign: "center" },
+                style: { width: 100, textAlign: "center" },
+                key: "createdAt",
+                display: "Ngày tạo",
+                render: (row: OrderModel) =>
+                  helper.formatDateTime(row.createdAt),
+              },
+              {
+                style: { width: 120, textAlign: "center" },
                 key: "status",
                 display: "Trạng thái",
+                render: (row: OrderModel) => (
+                  <span
+                    style={{
+                      background: row.isPaid
+                        ? "var(--green)"
+                        : row.allowCannceled
+                        ? "var(--blue)"
+                        : "var(--purple)",
+                      padding: "3px 6px",
+                      borderRadius: "5px",
+                      color: "#fff",
+                      fontSize: "12px",
+                    }}
+                  >
+                    {row.status}
+                  </span>
+                ),
               },
               {
                 style: { width: 100 },
@@ -110,7 +137,7 @@ const Orders = (props: Props) => {
             ]}
             rows={orderData.items}
             sortable={[
-              "id",
+              "code",
               "fullName",
               "phone",
               "createdAt",
@@ -122,6 +149,11 @@ const Orders = (props: Props) => {
       </>
     </AdminLayout>
   );
+};
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  return requireAdminProps(context);
 };
 
 export default Orders;

@@ -2,6 +2,7 @@
   --blue: #1976d2;
   --green: #30ce30;
   --gray: #bec8cc;
+  --purple: #9c27b0;
 }
 html,
 body {
@@ -59,6 +60,9 @@ button {
   width: 100%;
   font-size: 14px;
   background: #fff;
+}
+.flex {
+  display: flex;
 }
 .flex-center {
   display: flex;

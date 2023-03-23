@@ -1,6 +1,7 @@
-import { privateAxios } from "@/config/configAxios";
+import { privateAxios, serverSideAxios } from "@/config/configAxios";
 import { OrderItemModel, OrderModel } from "@/models";
 import { CreateCartItemDTO } from "@/types/dtos";
+import { OrderJson } from "@/types/json";
 import { MSG_SUCCESS } from "@/utils/constants";
 
 class CartApi {
@@ -22,6 +23,24 @@ class CartApi {
             ? new OrderModel(data)
             : new OrderModel()
         );
+      } catch (error) {
+        console.log(error);
+        reject(error);
+      }
+    });
+  }
+
+  getCartJson(accessToken?: string): Promise<OrderJson | null> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const { message, data } = await (serverSideAxios(accessToken).get(
+          `${this.nameApi}/user`,
+          {
+            params: { items: true },
+          }
+        ) as Promise<{ message: string; data: OrderJson }>);
+
+        resolve(message === MSG_SUCCESS ? data : null);
       } catch (error) {
         console.log(error);
         reject(error);

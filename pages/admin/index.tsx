@@ -1,7 +1,9 @@
 import { StatisticsApi } from "@/api";
 import { AdminLayout } from "@/layouts";
-import { StatisticsModel } from "@/models";
+import { requireAdminProps } from "@/lib";
+import { StatisticsModel, UserModel } from "@/models";
 import styles from "@/styles/_Dashboard.module.scss";
+import { UserJson } from "@/types/json";
 import helper from "@/utils/helpers";
 import { protectedRoutes } from "@/utils/routes";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
@@ -12,6 +14,7 @@ import { Box, Grid, Paper, Typography } from "@mui/material";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import { GetServerSidePropsContext } from "next/types";
 import { ReactElement, useEffect, useState } from "react";
 import {
   Bar,
@@ -24,7 +27,7 @@ import {
   YAxis,
 } from "recharts";
 
-type Props = {};
+type Props = { profile: UserJson | null };
 
 type WidgetProps = Partial<{
   title: string;
@@ -165,7 +168,7 @@ const Chart = ({ tabs }: ChartProps) => {
   );
 };
 
-const Dashboard = (props: Props) => {
+const Dashboard = ({ profile }: Props) => {
   const [statisticsData, setStatisticsData] = useState<StatisticsModel>(
     new StatisticsModel()
   );
@@ -186,17 +189,16 @@ const Dashboard = (props: Props) => {
     const fetchData = async () => {
       try {
         const data = await sApi.getStatistics();
-        console.log(data);
         setStatisticsData(data);
       } catch (error) {
-        console.log("GET STATISTICS ERROR", error);
+        console.log("sApi.getStatistics error", error);
       }
     };
     fetchData();
   }, []);
 
   return (
-    <AdminLayout pageTitle="Trang chủ">
+    <AdminLayout pageTitle="Trang chủ" profile={new UserModel(profile)}>
       <>
         <Head>
           <title>Trang chủ</title>
@@ -266,6 +268,7 @@ const Dashboard = (props: Props) => {
               <thead>
                 <tr>
                   <th style={{ width: 40 }}>#</th>
+                  <td>Mã đơn hàng</td>
                   <th style={{ textAlign: "left" }}>Họ tên</th>
                   <th>Ngày đặt</th>
                   <th>Trạng thái</th>
@@ -276,6 +279,7 @@ const Dashboard = (props: Props) => {
                   return (
                     <tr key={order.id}>
                       <td style={{ textAlign: "center" }}>{index + 1}</td>
+                      <td>{order.code}</td>
                       <td>{order.user.fullName}</td>
                       <td style={{ textAlign: "center", width: 200 }}>
                         {helper.formatDateTime(order.orderDate)}
@@ -287,7 +291,7 @@ const Dashboard = (props: Props) => {
                               ? "var(--green)"
                               : order.allowCannceled
                               ? "var(--blue)"
-                              : "var(--gray)",
+                              : "var(--purple)",
                           }}
                           className={styles.spanStatus}
                         >
@@ -358,6 +362,12 @@ const Dashboard = (props: Props) => {
       </Grid>
     </AdminLayout>
   );
+};
+
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  return requireAdminProps(context);
 };
 
 export default Dashboard;

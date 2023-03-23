@@ -1,27 +1,30 @@
+import { ButtonControl, DataManagement, DataTable } from "@/components";
+import { AdminLayout } from "@/layouts";
+import { GroupProductModel } from "@/models";
+import { confirmDialogActions } from "@/redux/slice/confirmDialogSlice";
+import {
+  groupProductActions,
+  groupProductSelector,
+} from "@/redux/slice/groupProductSlice";
+import { useAppDispatch } from "@/redux/store";
+import helper from "@/utils/helpers";
+import { protectedRoutes } from "@/utils/routes";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
-import { Button } from "@mui/material";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { ButtonControl, DataManagement, DataTable } from "../../../components";
-import { AdminLayout } from "../../../layouts";
-import { GroupProductModel } from "../../../models";
-import { confirmDialogActions } from "../../../redux/slice/confirmDialogSlice";
-import {
-  groupProductActions,
-  groupProductSelector,
-} from "../../../redux/slice/groupProductSlice";
-import { useAppDispatch } from "../../../redux/store";
-import helper from "../../../utils/helpers";
-import { protectedRoutes } from "../../../utils/routes";
+import { UserJson } from "@/types/json";
+import { UserModel } from "@/models";
+import { requireAdminProps } from "@/lib";
+import { GetServerSidePropsContext } from "next";
 
-type Props = {};
+type Props = { profile: UserJson | null };
 const LIMIT = 10;
-const GroupProducts = (props: Props) => {
+const GroupProducts = ({ profile }: Props) => {
   const appDispatch = useAppDispatch();
   const router = useRouter();
   const { groupProductData, isDeleted } = useSelector(groupProductSelector);
@@ -42,13 +45,13 @@ const GroupProducts = (props: Props) => {
         p: +`${p}` || 1,
         limit: LIMIT,
         sortBy: `${sortBy || "id"}`,
-        sortType: `${sortType}` === "asc" ? "asc" : "desc",
+        sortType: `${sortType}` === "ASC" ? "ASC" : "DESC",
       })
     );
   }, [router.query, isDeleted]);
 
   return (
-    <AdminLayout pageTitle="Nhóm sản phẩm">
+    <AdminLayout pageTitle="Nhóm sản phẩm" profile={new UserModel(profile)}>
       <>
         <Head>
           <title>Quản lý nhóm sản phẩm</title>
@@ -172,6 +175,11 @@ const GroupProducts = (props: Props) => {
       </>
     </AdminLayout>
   );
+};
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  return requireAdminProps(context);
 };
 
 export default GroupProducts;

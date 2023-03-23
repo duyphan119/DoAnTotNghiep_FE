@@ -62,9 +62,9 @@ type State = {
 
 enum Actions {
   SELECT_GROUP_PRODUCT = "Chọn nhóm sản phẩm",
-  SELECT_VARIANT_VALUE = "Chọn thuộc tính biến thể",
+  SELECT_VARIANT_VALUE = "Chọn thuộc tính",
   SELECT_PRICE = "Chọn khoảng giá",
-  INIT_VARIANT_VALUES = "Hiển thị các thuộc tính biến thể ban đầu",
+  INIT_VARIANT_VALUES = "Hiển thị các thuộc tính ban đầu",
   INIT_SELECTED = "Hiển thị ban đầu lọc gì",
 }
 
@@ -220,7 +220,7 @@ const Sidebar = ({ params, onFilter, groupProductData }: Props) => {
     const fetchData = async () => {
       try {
         const vvApi = new VariantValueApi();
-        const data = await vvApi.getAll({ sortType: "asc", variant: true });
+        const data = await vvApi.getAll({ sortType: "ASC", variant: true });
         dispatch({
           type: Actions.INIT_VARIANT_VALUES,
           payload: helper.formatVariants(data.items),

@@ -8,6 +8,7 @@ import commentProductSlice from "./slice/commentProductSlice";
 import confirmDialogSlice from "./slice/confirmDialogSlice";
 import fetchSlice from "./slice/fetchSlice";
 import groupProductSlice from "./slice/groupProductSlice";
+import notificationTypeSlice from "./slice/notificationTypeSlice";
 import orderDiscountSlice from "./slice/orderDiscountSlice";
 import orderSlice from "./slice/orderSlice";
 import productDetailSlice from "./slice/productDetailSlice";
@@ -17,6 +18,7 @@ import snackbarSlice from "./slice/snackbarSlice";
 import userAddressSlice from "./slice/userAddressSlice";
 import userSlice from "./slice/userSlice";
 import variantSlice from "./slice/variantSlice";
+import variantValueSlice from "./slice/variantValueSlice";
 export const rootReducer = combineReducers({
   cart: cartSlice,
   groupProduct: groupProductSlice,
@@ -36,4 +38,6 @@ export const rootReducer = combineReducers({
   user: userSlice,
   commentProduct: commentProductSlice,
   orderDiscount: orderDiscountSlice,
+  notificationType: notificationTypeSlice,
+  variantValue: variantValueSlice,
 });

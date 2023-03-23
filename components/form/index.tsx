@@ -1,5 +1,12 @@
-export { default as ProductForm } from "./ProductForm";
 export { default as AdvertisementForm } from "./AdvertisementForm";
-export { default as ChangePasswordForm } from "./ChangePasswordForm";
-export { default as OrderDiscountForm } from "./OrderDiscountForm";
+export { default as AuthForm } from "./AuthForm";
+export { default as BlogCategoryForm } from "./BlogCategoryForm";
 export { default as BlogForm } from "./BlogForm";
+export { default as ChangePasswordForm } from "./ChangePasswordForm";
+export { default as GroupProductForm } from "./GroupProductForm";
+export { default as NotificationTypeForm } from "./NotificationTypeForm";
+export { default as OrderDiscountForm } from "./OrderDiscountForm";
+export { default as ProductForm } from "./ProductForm";
+export { default as ProfileForm } from "./ProfileForm";
+export { default as VariantForm } from "./VariantForm";
+export { default as VariantValueForm } from "./VariantValueForm";

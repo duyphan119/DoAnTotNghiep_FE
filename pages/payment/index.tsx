@@ -5,6 +5,7 @@ import {
   RadioControl,
   SelectControl,
 } from "@/components";
+import { useDefaultLayoutContext } from "@/context/DefaultLayoutContext";
 import { OrderDiscountModel, UserAddressModel } from "@/models";
 import provinces from "@/province.json";
 import { authSelector } from "@/redux/slice/authSlice";
@@ -35,11 +36,6 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 
 type Props = {};
-
-type Action = {
-  payload: any;
-  type?: string;
-};
 
 type State = {
   districts: DistrictJson[];
@@ -88,8 +84,10 @@ const Payment = (props: Props) => {
   const { cart } = useSelector(cartSelector);
   const { isCheckoutSuccess } = useSelector(orderSelector);
   const { userAddressData } = useSelector(userAddressSelector);
-  const { profile } = useSelector(authSelector);
+  // const { profile } = useSelector(authSelector);
   const { reducers: stateReducers } = useSelector(fetchSelector);
+
+  const { profile } = useDefaultLayoutContext();
 
   const total = useMemo(() => cart.getTotalPrice(), [cart]);
 
@@ -98,6 +96,10 @@ const Payment = (props: Props) => {
     state as State;
 
   const discountRef = useRef<HTMLInputElement>(null);
+
+  const disabled = useMemo(() => {
+    return profile.id === 0;
+  }, [profile]);
 
   const {
     register,
@@ -137,7 +139,6 @@ const Payment = (props: Props) => {
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const id = +e.target.value;
     const result = userAddressData.items.find((_) => _.id === id);
-
     if (result) {
       dispatch({ payload: { userAddress: result } });
     }
@@ -231,6 +232,21 @@ const Payment = (props: Props) => {
       <Container maxWidth="lg" sx={{ marginBlock: "24px" }}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container columnSpacing={2} rowSpacing={2}>
+            <Grid item xs={12}>
+              {disabled ? (
+                <div className="flex">
+                  Bạn cần đăng nhập để có thể đặt hàng.&nbsp;
+                  <Link
+                    style={{ color: "var(--blue)" }}
+                    href={publicRoutes.userSignin}
+                  >
+                    Đăng nhập
+                  </Link>
+                </div>
+              ) : (
+                <></>
+              )}
+            </Grid>
             <Grid item xs={12} md={8}>
               <h1 className={styles.h1}>Thông tin đặt hàng</h1>
               <Grid container columnSpacing={2} rowSpacing={2}>
@@ -248,6 +264,7 @@ const Payment = (props: Props) => {
                         message: "Mật khẩu ít nhất 6 kí tự",
                       },
                     })}
+                    disabled
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>
@@ -264,6 +281,7 @@ const Payment = (props: Props) => {
                         message: "Số điện thoại không hợp lệ",
                       },
                     })}
+                    disabled
                   />
                 </Grid>
                 {visible && userAddress ? (
@@ -278,17 +296,22 @@ const Payment = (props: Props) => {
                       )}
                       value={userAddress.id}
                       onChange={handleChange}
+                      disabled
                     />
                   </Grid>
                 ) : null}
-                <Grid item xs={12}>
-                  <div
-                    style={{ cursor: "pointer", color: "var(--blue)" }}
-                    onClick={() => dispatch({ payload: { visible: !visible } })}
-                  >
-                    {visible ? "+ Thêm địa chỉ khác" : "Sổ địa chỉ"}
-                  </div>
-                </Grid>
+                {!disabled ? (
+                  <Grid item xs={12}>
+                    <div
+                      style={{ cursor: "pointer", color: "var(--blue)" }}
+                      onClick={() =>
+                        dispatch({ payload: { visible: !visible } })
+                      }
+                    >
+                      {visible ? "+ Thêm địa chỉ khác" : "Sổ địa chỉ"}
+                    </div>
+                  </Grid>
+                ) : null}
                 {!visible ? (
                   <>
                     <Grid item xs={12}>
@@ -350,6 +373,7 @@ const Payment = (props: Props) => {
                             message: "Địa chỉ không được để trống",
                           },
                         })}
+                        disabled
                       />
                     </Grid>
                   </>
@@ -363,6 +387,7 @@ const Payment = (props: Props) => {
                     register={register("paymentMethod")}
                     label="Thanh toán khi nhận hàng (COD)"
                     value="COD"
+                    disabled
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -370,6 +395,7 @@ const Payment = (props: Props) => {
                     register={register("paymentMethod")}
                     label="Thanh toán qua MOMO"
                     value="MOMO"
+                    disabled
                   />
                 </Grid>
               </Grid>
@@ -421,8 +447,16 @@ const Payment = (props: Props) => {
                     Sử dụng mã giảm giá
                   </div>
                   <div className={styles.discount}>
-                    <input placeholder="Nhập mã giảm giá" ref={discountRef} />
-                    <button type="button" onClick={handleUse}>
+                    <input
+                      placeholder="Nhập mã giảm giá"
+                      ref={discountRef}
+                      disabled={disabled}
+                    />
+                    <button
+                      type="button"
+                      onClick={handleUse}
+                      disabled={disabled}
+                    >
                       Sử dụng
                     </button>
                   </div>
@@ -452,9 +486,14 @@ const Payment = (props: Props) => {
                       defaultValue={0}
                       placeholder="Nhập số lượng D-point"
                       min={0}
+                      disabled={disabled}
                       {...register("point")}
                     />
-                    <button type="button" onClick={handleUsePoint}>
+                    <button
+                      type="button"
+                      onClick={handleUsePoint}
+                      disabled={disabled}
+                    >
                       Sử dụng
                     </button>
                   </div>
@@ -479,7 +518,9 @@ const Payment = (props: Props) => {
                 </li>
                 <li className={styles.actions}>
                   <Link href={publicRoutes.cart}>Quay lại giỏ hàng</Link>
-                  <ButtonControl type="submit">Thanh toán</ButtonControl>
+                  <ButtonControl type="submit" disabled={disabled}>
+                    Thanh toán
+                  </ButtonControl>
                 </li>
               </ul>
             </Grid>

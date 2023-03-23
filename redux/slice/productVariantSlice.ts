@@ -44,7 +44,9 @@ const productVariantSlice = createSlice({
     fetchCreateMany: (
       state,
       action: ActionPayload<CreateProductVariantDTO[]>
-    ) => {},
+    ) => {
+      state.inputs = [];
+    },
     fetchUpdateMany: (
       state,
       action: ActionPayload<
@@ -85,14 +87,6 @@ const productVariantSlice = createSlice({
       let newInventory = Math.floor(inventory / lengthResults);
       state.inputs = results.map((variantValues: VariantValueModel[]) => {
         return new ProductVariantModel({
-          name: (() => {
-            variantValues.sort(
-              (a: VariantValueModel, b: VariantValueModel) => a.id - b.id
-            );
-            return variantValues
-              .map((variantValue: VariantValueModel) => variantValue.value)
-              .join(" / ");
-          })(),
           price,
           inventory: newInventory,
           variantValues,

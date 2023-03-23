@@ -30,7 +30,7 @@ const DataTable = ({ isLoading, columns, hasCheck, rows, sortable }: Props) => {
 
   const SORT_BY = router.query.sortBy ? `${router.query.sortBy}` : "";
   const SORT_TYPE =
-    router.query.sortType && router.query.sortType === "asc" ? "asc" : "desc";
+    router.query.sortType && router.query.sortType === "ASC" ? "ASC" : "DESC";
 
   const handleColumnClick = (column: Column) => {
     if (sortable) {
@@ -43,7 +43,7 @@ const DataTable = ({ isLoading, columns, hasCheck, rows, sortable }: Props) => {
         let obj: any = {
           ...(PAGE && PAGE > 1 ? { p: PAGE } : {}),
           sortBy: key,
-          ...(SORT_TYPE === "desc" ? { sortType: "asc" } : {}),
+          ...(SORT_TYPE === "DESC" ? { sortType: "ASC" } : {}),
           ...(q !== "" ? { q } : {}),
         };
         let url = new URLSearchParams(obj).toString();
@@ -79,14 +79,14 @@ const DataTable = ({ isLoading, columns, hasCheck, rows, sortable }: Props) => {
   };
 
   return (
-    <table className="table" style={{ fontSize: "12px" }}>
+    <table className="table" style={{ fontSize: "14px" }}>
       <thead>
         <tr>
           {hasCheck ? (
             <th
               style={{
                 backgroundColor: "rgb(250, 250, 250)",
-                width: 40,
+                width: 32,
               }}
             >
               <div className="flex-center">

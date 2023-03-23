@@ -6,6 +6,7 @@ export { default as CommentProductModel } from "./CommentProductModel";
 export { default as GroupProductHeaderModel } from "./GroupProductHeaderModel";
 export { default as GroupProductModel } from "./GroupProductModel";
 export { default as NotificationModel } from "./NotificationModel";
+export { default as NotificationTypeModel } from "./NotificationTypeModel";
 export { default as OrderDiscountModel } from "./OrderDiscountModel";
 export { default as OrderItemModel } from "./OrderItemModel";
 export { default as OrderModel } from "./OrderModel";

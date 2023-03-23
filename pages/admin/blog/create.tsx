@@ -1,12 +1,15 @@
 import Head from "next/head";
 import { AdminLayout } from "@/layouts";
 import { BlogForm, DashboardPaper } from "@/components";
+import { UserJson } from "@/types/json";
+import { UserModel } from "@/models";
+import { requireAdminProps } from "@/lib";
+import { GetServerSidePropsContext } from "next";
+type Props = { profile: UserJson | null };
 
-type Props = {};
-
-const CreateBlog = (props: Props) => {
+const CreateBlog = ({ profile }: Props) => {
   return (
-    <AdminLayout pageTitle="Thêm mới bài viết">
+    <AdminLayout pageTitle="Thêm mới bài viết" profile={new UserModel(profile)}>
       <>
         <Head>
           <title>Thêm mới bài viết</title>
@@ -19,6 +22,11 @@ const CreateBlog = (props: Props) => {
       </>
     </AdminLayout>
   );
+};
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  return requireAdminProps(context);
 };
 
 export default CreateBlog;

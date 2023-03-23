@@ -1,4 +1,8 @@
-import { privateAxios, publicAxios } from "@/config/configAxios";
+import {
+  privateAxios,
+  publicAxios,
+  serverSideAxios,
+} from "@/config/configAxios";
 import { ResponseGetAllModel, UserModel } from "@/models";
 import {
   ChangePasswordDTO,
@@ -6,6 +10,7 @@ import {
   LoginDTO,
   RegisterDTO,
 } from "@/types/dtos";
+import { UserJson } from "@/types/json";
 import { UserParams } from "@/types/params";
 import { MSG_SUCCESS } from "@/utils/constants";
 
@@ -99,6 +104,27 @@ class UserApi {
     });
   }
 
+  getProfileJson(
+    accessToken?: string,
+    refreshToken?: string
+  ): Promise<UserJson | null> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const { data, message } = await (serverSideAxios(
+          accessToken,
+          refreshToken
+        ).get(`${this.nameApiAuth}/profile`) as Promise<{
+          data: UserJson | null;
+          message: string;
+        }>);
+        if (message === MSG_SUCCESS) resolve(data);
+      } catch (error) {
+        console.log("UserApi.getProfileJson error", error);
+      }
+      resolve(null);
+    });
+  }
+
   getProfile(): Promise<UserModel> {
     return new Promise(async (resolve, reject) => {
       try {
@@ -134,11 +160,14 @@ class UserApi {
     });
   }
 
-  refreshToken(): Promise<string> {
+  refreshToken(refreshToken?: string): Promise<string> {
     return new Promise(async (resolve, reject) => {
       try {
         const { data, message } = await (publicAxios().patch(
-          `${this.nameApiAuth}/refresh`
+          `${this.nameApiAuth}/refresh`,
+          {
+            refreshToken,
+          }
         ) as Promise<{ data: { accessToken: string }; message: string }>);
         resolve(message === MSG_SUCCESS ? data.accessToken : "");
       } catch (error) {

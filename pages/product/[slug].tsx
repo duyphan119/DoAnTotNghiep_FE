@@ -1,23 +1,26 @@
-import { Container, Grid } from "@mui/material";
-import { useRouter } from "next/router";
-import Head from "next/head";
-import { Fragment, useEffect, useState } from "react";
 import { ProductApi } from "@/api";
 import { ProductCard, ProductInfo } from "@/components";
 import { DefaultLayout } from "@/layouts";
-import { ProductModel, ResponseGetAllModel } from "@/models";
+import { getProfileProps } from "@/lib";
+import { ProductModel, ResponseGetAllModel, UserModel } from "@/models";
 import { productDetailActions } from "@/redux/slice/productDetailSlice";
 import { useAppDispatch } from "@/redux/store";
 import styles from "@/styles/_ProductDetail.module.scss";
-import { ProductJson } from "@/types/json";
+import { ProductJson, UserJson } from "@/types/json";
+import { Container, Grid } from "@mui/material";
+import { GetServerSidePropsContext } from "next";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { Fragment, useEffect, useState } from "react";
 
 type Props = {
   productJson: ProductJson;
+  profile: UserJson | null;
 };
 
 const RECOMMEND_LIMIT = 20;
 
-const ProductDetail = ({ productJson }: Props) => {
+const ProductDetail = ({ productJson, profile }: Props) => {
   const router = useRouter();
   const appDispatch = useAppDispatch();
   const product = new ProductModel(productJson);
@@ -38,7 +41,7 @@ const ProductDetail = ({ productJson }: Props) => {
           slug: `${router.query.slug}`,
           limit: RECOMMEND_LIMIT,
           sortBy: "star",
-          sortType: "desc",
+          sortType: "DESC",
         });
         setRecommendedProductData(res);
       } catch (error) {}
@@ -48,7 +51,7 @@ const ProductDetail = ({ productJson }: Props) => {
   }, [router.query]);
 
   return product.id > 0 ? (
-    <DefaultLayout>
+    <DefaultLayout profile={new UserModel(profile)}>
       <>
         <Head>
           <title>{product.name}</title>
@@ -98,13 +101,14 @@ const ProductDetail = ({ productJson }: Props) => {
     <Fragment></Fragment>
   );
 };
-export async function getServerSideProps(context: any) {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { slug } = context.query;
   const pApi = new ProductApi();
-  const productJson = await pApi.getBySlugJson(slug);
+  const productJson = await pApi.getBySlugJson(`${slug}`);
+  const { props } = await getProfileProps(context);
   if (productJson)
     return {
-      props: { productJson },
+      props: { ...props, productJson },
     };
   return { notFound: true };
 }

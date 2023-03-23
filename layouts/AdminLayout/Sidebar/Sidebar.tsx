@@ -32,7 +32,11 @@ const Sidebar = ({ open }: Props) => {
       anchor="left"
       open={open}
     >
-      <Box component="aside" className={styles.sidebar} id={theme}>
+      <Box
+        component="aside"
+        className={`${styles.sidebar} custom-scrollbar`}
+        id={theme}
+      >
         <Box component="nav" className={styles.nav}>
           <ul
             className={`${styles.navItems} ${

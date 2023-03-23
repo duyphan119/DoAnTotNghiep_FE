@@ -1,21 +1,26 @@
 import { ButtonControl, ModalUserAddress } from "@/components";
 import { AccountLayout } from "@/layouts";
-import { UserAddressModel } from "@/models";
+import { requireLoginProps } from "@/lib";
+import { UserAddressModel, UserModel } from "@/models";
 import { confirmDialogActions } from "@/redux/slice/confirmDialogSlice";
 import {
   userAddressActions,
   userAddressSelector,
 } from "@/redux/slice/userAddressSlice";
 import { useAppDispatch } from "@/redux/store";
+import { UserJson } from "@/types/json";
 import AddIcon from "@mui/icons-material/Add";
+import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 
-type Props = {};
+type Props = {
+  profile: UserJson | null;
+};
 
 const LIMIT = 10;
-const Page = (props: Props) => {
+const Page = ({ profile }: Props) => {
   const appDispatch = useAppDispatch();
   const { userAddressData, current, openModal } =
     useSelector(userAddressSelector);
@@ -35,7 +40,7 @@ const Page = (props: Props) => {
   }, []);
 
   return (
-    <AccountLayout titleHeading="Sổ địa chỉ">
+    <AccountLayout profile={new UserModel(profile)} titleHeading="Sổ địa chỉ">
       <>
         <Head>
           <title>Sổ địa chỉ</title>
@@ -105,6 +110,12 @@ const Page = (props: Props) => {
       </main>
     </AccountLayout>
   );
+};
+
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  return requireLoginProps(context);
 };
 
 export default Page;

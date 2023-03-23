@@ -10,6 +10,9 @@ type State = {
   reducer: string;
   isBack: boolean;
   reducers: string[];
+  pathNavigate: string;
+  deleted: boolean;
+  resetForm: boolean;
 };
 
 const INITIAL_STATE: State = {
@@ -19,6 +22,9 @@ const INITIAL_STATE: State = {
   reducer: "",
   isBack: false,
   reducers: [],
+  pathNavigate: "",
+  deleted: false,
+  resetForm: false,
 };
 
 const fetchSlice = createSlice({
@@ -31,10 +37,12 @@ const fetchSlice = createSlice({
       state.isSuccess = false;
       state.reducer = name;
       state.isBack = false;
+      state.deleted = false;
       state.reducers = [
         ...state.reducers.filter((name) => name !== name),
         name,
       ];
+      state.resetForm = false;
     },
     endAndError: (state) => {
       state.isError = true;
@@ -54,6 +62,27 @@ const fetchSlice = createSlice({
       state.isSuccess = true;
       state.isLoading = false;
       state.isBack = true;
+    },
+    endAndSuccessAndNavigate: (state, { payload }: ActionPayload<string>) => {
+      state.isSuccess = true;
+      state.isLoading = false;
+      state.pathNavigate = payload;
+    },
+    endNavigate: (state) => {
+      state.pathNavigate = "";
+    },
+    endAndSuccessAndDeleted: (state) => {
+      state.isSuccess = true;
+      state.isLoading = false;
+      state.deleted = true;
+    },
+    endAndSuccessAndResetForm: (state) => {
+      state.isSuccess = true;
+      state.isLoading = false;
+      state.resetForm = true;
+    },
+    endResetForm: (state) => {
+      state.resetForm = false;
     },
   },
 });

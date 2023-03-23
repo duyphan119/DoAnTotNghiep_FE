@@ -10,6 +10,7 @@ type ProductVariantJson = {
   product: ProductJson;
   name: string;
   variantValues: VariantValueJson[];
+  code: string;
 } & DateJson;
 
 export default ProductVariantJson;

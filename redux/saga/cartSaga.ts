@@ -33,12 +33,7 @@ function* fetchAddToCart({ payload: dto }: ActionPayload<CreateCartItemDTO>) {
     if (data.id > 0) {
       isError = false;
       yield put(cartActions.addToCart(data));
-      yield put(
-        snackbarActions.show({
-          msg: "Sản phẩm đã được thêm vào giỏ hàng",
-          type: "success",
-        })
-      );
+      yield put(snackbarActions.success("Sản phẩm đã được thêm vào giỏ hàng"));
       yield put(fetchActions.endAndSuccess());
     }
   } catch (error) {

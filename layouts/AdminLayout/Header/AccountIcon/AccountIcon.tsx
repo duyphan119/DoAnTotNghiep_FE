@@ -5,11 +5,14 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { authSelector } from "@/redux/slice/authSlice";
 import { protectedRoutes } from "@/utils/routes";
 import styles from "../_style.module.scss";
+import { useDefaultLayoutContext } from "@/context/DefaultLayoutContext";
 
 type Props = {};
 
 const AccountIcon = (props: Props) => {
-  const { profile } = useSelector(authSelector);
+  // const { profile } = useSelector(authSelector);
+  const { profile } = useDefaultLayoutContext();
+
   return !profile || profile.id > 0 ? (
     <Link href={protectedRoutes.settingProfile}>
       <span className={styles.iconSpan}>

@@ -1,5 +1,5 @@
 import { ButtonControl, TextAreaControl } from "@/components";
-import { ProductModel } from "@/models";
+import { useDefaultLayoutContext } from "@/context/DefaultLayoutContext";
 import { authActions, authSelector } from "@/redux/slice/authSlice";
 import {
   productDetailActions,
@@ -19,9 +19,10 @@ type Props = {};
 const CommentInput: FC<Props> = () => {
   const appDispatch = useAppDispatch();
   const { userCommentProduct, product } = useSelector(productDetailSelector);
-  const { profile } = useSelector(authSelector);
+  // const { profile } = useSelector(authSelector);
   // const { userComment } = commentProductData;
   // const userComment = new CommentProductModel();
+  const { profile } = useDefaultLayoutContext();
 
   const { register, handleSubmit, setValue, getValues } =
     useForm<CreateCommentProductDTO>();

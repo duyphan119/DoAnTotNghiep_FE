@@ -1,7 +1,7 @@
-import Link from "next/link";
-import { useSelector } from "react-redux";
 import { groupProductSelector } from "@/redux/slice/groupProductSlice";
 import { publicRoutes } from "@/utils/routes";
+import Link from "next/link";
+import { useSelector } from "react-redux";
 import styles from "./_style.module.scss";
 type Props = {};
 

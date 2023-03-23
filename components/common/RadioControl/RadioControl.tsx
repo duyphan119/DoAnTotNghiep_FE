@@ -9,6 +9,7 @@ type Props = Partial<{
   circleClassName: string;
   defaultChecked: boolean;
   value: string | number;
+  disabled: boolean;
 }>;
 
 const RadioControl = ({
@@ -19,6 +20,7 @@ const RadioControl = ({
   circleClassName,
   defaultChecked,
   value,
+  disabled,
 }: Props) => {
   const id = useId();
   return (
@@ -29,6 +31,7 @@ const RadioControl = ({
         hidden
         defaultChecked={defaultChecked || false}
         value={value}
+        disabled={disabled}
         {...register}
       />
       <div className={`${styles.circle} ${circleClassName || ""}`}></div>

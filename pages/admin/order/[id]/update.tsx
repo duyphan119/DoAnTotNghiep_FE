@@ -1,6 +1,5 @@
 import { DashboardPaper, FooterForm } from "@/components";
 import { AdminLayout } from "@/layouts";
-import { OrderItemModel } from "@/models";
 import { fetchSelector } from "@/redux/slice/fetchSlice";
 import {
   orderActions,
@@ -14,9 +13,14 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect } from "react";
 import { useSelector } from "react-redux";
-type Props = {};
+import { UserJson } from "@/types/json";
+import { UserModel, OrderItemModel } from "@/models";
+import { requireAdminProps } from "@/lib";
+import { GetServerSidePropsContext } from "next";
 
-const Page = (props: Props) => {
+type Props = { profile: UserJson | null };
+
+const Page = ({ profile }: Props) => {
   const router = useRouter();
   const appDispatch = useAppDispatch();
   const { current } = useSelector(orderSelector);
@@ -43,7 +47,7 @@ const Page = (props: Props) => {
   }, [router.query]);
 
   return (
-    <AdminLayout pageTitle="Đơn hàng">
+    <AdminLayout pageTitle="Đơn hàng" profile={new UserModel(profile)}>
       <>
         <Head>
           <title>Cập nhật đơn hàng</title>
@@ -164,5 +168,10 @@ const Page = (props: Props) => {
       </>
     </AdminLayout>
   );
+};
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  return requireAdminProps(context);
 };
 export default Page;

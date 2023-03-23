@@ -27,6 +27,7 @@ class OrderModel extends AddressModel {
   user: UserModel;
   items: OrderItemModel[];
   discount: OrderDiscountModel;
+  code: string;
   constructor(obj?: any) {
     super(obj);
     this.id = obj?.id ?? 0;
@@ -50,6 +51,7 @@ class OrderModel extends AddressModel {
     this.user = new UserModel(obj?.user);
     this.items = obj?.items?.map((item: any) => new OrderItemModel(item)) ?? [];
     this.discount = new OrderDiscountModel(obj?.discount);
+    this.code = obj?.code ?? "";
   }
 
   getTotalPrice() {

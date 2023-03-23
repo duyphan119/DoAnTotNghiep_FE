@@ -13,6 +13,7 @@ import {
 } from "../slice/groupProductSlice";
 import { ActionPayload } from "@/redux/store";
 import { CreateGroupProductDTO } from "../../types/dtos";
+import { snackbarActions } from "../slice/snackbarSlice";
 
 const gpApi = new GroupProductApi();
 const gphApi = new GroupProductHeaderApi();
@@ -84,7 +85,8 @@ function* fetchCreate({
     );
     if (data.id > 0) {
       isError = false;
-      yield put(fetchActions.endAndSuccessAndBack());
+      yield put(fetchActions.endAndSuccessAndResetForm());
+      yield put(snackbarActions.success("Thêm thành công"));
     }
   } catch (error) {
     console.log("error:::", error);
@@ -110,7 +112,8 @@ function* fetchUpdate({
     );
     if (data.id > 0) {
       isError = false;
-      yield put(fetchActions.endAndSuccessAndBack());
+      yield put(fetchActions.endAndSuccessAndResetForm());
+      yield put(snackbarActions.success("Cập nhật thành công"));
     }
   } catch (error) {
     console.log("error:::", error);

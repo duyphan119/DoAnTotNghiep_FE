@@ -24,10 +24,9 @@ export const serverSideAxios = (accessToken?: string, rToken?: string) => {
       if (config.headers) {
         if (accessToken) {
           config.headers.authorization = `Bearer ${accessToken}`;
-          return config;
         } else {
           const uApi = new UserApi();
-          const newAccessToken: string = await uApi.refreshToken();
+          const newAccessToken: string = await uApi.refreshToken(rToken);
           if (newAccessToken) {
             setCookie(COOKIE_ACCESSTOKEN_NAME, newAccessToken, {
               maxAge: 6000,
@@ -36,7 +35,6 @@ export const serverSideAxios = (accessToken?: string, rToken?: string) => {
           }
         }
       }
-      config.withCredentials = true;
       return config;
     },
     (err) => Promise.reject(err)

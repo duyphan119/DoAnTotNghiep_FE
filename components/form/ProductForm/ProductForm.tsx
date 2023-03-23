@@ -123,6 +123,12 @@ const ProductForm = (props: Props) => {
     }
   }, [current]);
 
+  useEffect(() => {
+    if (current.id === 0 && groupProductData.items.length > 0) {
+      setValue("groupProductId", groupProductData.items[0].id);
+    }
+  }, [groupProductData, current]);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container rowSpacing={3} columnSpacing={3}>

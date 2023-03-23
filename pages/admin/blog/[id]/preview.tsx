@@ -8,10 +8,14 @@ import { BlogContent, DashboardPaper } from "@/components";
 import { AdminLayout } from "@/layouts";
 import { blogActions, blogSelector } from "@/redux/slice/blogSlice";
 import { useAppDispatch } from "@/redux/store";
+import { UserJson } from "@/types/json";
+import { UserModel } from "@/models";
+import { requireAdminProps } from "@/lib";
+import { GetServerSidePropsContext } from "next";
 
-type Props = {};
+type Props = { profile: UserJson | null };
 
-const Page = (props: Props) => {
+const Page = ({ profile }: Props) => {
   const router = useRouter();
   const appDispatch = useAppDispatch();
   const { current } = useSelector(blogSelector);
@@ -22,7 +26,10 @@ const Page = (props: Props) => {
   }, [router.query]);
 
   return (
-    <AdminLayout pageTitle="Chỉnh sửa bài viết">
+    <AdminLayout
+      pageTitle="Chỉnh sửa bài viết"
+      profile={new UserModel(profile)}
+    >
       <>
         <Head>
           <title>Chỉnh sửa bài viết</title>
@@ -41,5 +48,9 @@ const Page = (props: Props) => {
     </AdminLayout>
   );
 };
-
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  return requireAdminProps(context);
+};
 export default Page;

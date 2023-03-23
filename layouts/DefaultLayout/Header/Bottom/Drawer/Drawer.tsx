@@ -1,3 +1,4 @@
+import { useDefaultLayoutContext } from "@/context/DefaultLayoutContext";
 import { groupProductSelector } from "@/redux/slice/groupProductSlice";
 import { publicRoutes } from "@/utils/routes";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -11,6 +12,7 @@ type Props = {};
 
 const Drawer = (props: Props) => {
   const { groupProductHeaders } = useSelector(groupProductSelector);
+
   const [state, setState] = useState<boolean>(false);
   const toggleDrawer = (newState: boolean) => {
     setState(newState);

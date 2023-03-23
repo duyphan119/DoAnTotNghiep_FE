@@ -16,14 +16,17 @@ import { useSelector } from "react-redux";
 import { ProductApi } from "@/api";
 import { DataManagement, ImageFill, ModalPreviewProduct } from "@/components";
 import { AdminLayout } from "@/layouts";
-import { ProductModel, ResponseGetAllModel } from "@/models";
+import { ProductModel, ResponseGetAllModel, UserModel } from "@/models";
 import { productActions, productSelector } from "@/redux/slice/productSlice";
 import { snackbarActions } from "@/redux/slice/snackbarSlice";
 import { useAppDispatch } from "@/redux/store";
 import { protectedRoutes } from "@/utils/routes";
+import { UserJson } from "@/types/json";
+import { requireAdminProps } from "@/lib";
+import { GetServerSidePropsContext } from "next";
 
-type Props = {};
-const LIMIT = 10;
+type Props = { profile: UserJson | null };
+const LIMIT = 12;
 const ulStyle: CSSProperties = {
   backgroundColor: "#fff",
   border: "1px solid lightgray",
@@ -152,7 +155,7 @@ const ProductItem = ({ product }: { product: ProductModel }) => {
   );
 };
 
-const Page = () => {
+const Page = ({ profile }: Props) => {
   const router = useRouter();
   const appDispatch = useAppDispatch();
   const { productData, openModalPreview } = useSelector(productSelector);
@@ -165,14 +168,14 @@ const Page = () => {
         p: +`${p}` || 1,
         limit: LIMIT,
         sortBy: `${sortBy || "id"}`,
-        sortType: `${sortType}` === "asc" ? "asc" : "desc",
+        sortType: `${sortType}` === "ASC" ? "ASC" : "DESC",
         group_product: true,
       })
     );
   }, [router.query]);
 
   return (
-    <AdminLayout pageTitle="Sản phẩm">
+    <AdminLayout pageTitle="Sản phẩm" profile={new UserModel(profile)}>
       <>
         <Head>
           <title>Quản lý sản phẩm</title>
@@ -187,22 +190,22 @@ const Page = () => {
             {
               label: "Tên tăng dần",
               sortBy: "name",
-              sortType: "asc",
+              sortType: "ASC",
             },
             {
               label: "Tên giảm dần",
               sortBy: "name",
-              sortType: "desc",
+              sortType: "DESC",
             },
             {
               label: "Giá tăng dần",
               sortBy: "price",
-              sortType: "asc",
+              sortType: "ASC",
             },
             {
               label: "Giá giảm dần",
               sortBy: "price",
-              sortType: "desc",
+              sortType: "DESC",
             },
           ]}
         >
@@ -220,6 +223,11 @@ const Page = () => {
       </>
     </AdminLayout>
   );
+};
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  return requireAdminProps(context);
 };
 
 export default Page;

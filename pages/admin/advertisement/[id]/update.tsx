@@ -1,12 +1,19 @@
 import Head from "next/head";
 import { AdminLayout } from "@/layouts";
 import { AdvertisementForm, DashboardPaper } from "@/components";
+import { UserJson } from "@/types/json";
+import { UserModel } from "@/models";
+import { requireAdminProps } from "@/lib";
+import { GetServerSidePropsContext } from "next";
 
-type Props = {};
+type Props = { profile: UserJson | null };
 
-const Page = (props: Props) => {
+const Page = ({ profile }: Props) => {
   return (
-    <AdminLayout pageTitle="Chỉnh sửa quảng cáo">
+    <AdminLayout
+      pageTitle="Chỉnh sửa quảng cáo"
+      profile={new UserModel(profile)}
+    >
       <>
         <Head>
           <title>Chỉnh sửa quảng cáo</title>
@@ -19,6 +26,11 @@ const Page = (props: Props) => {
       </>
     </AdminLayout>
   );
+};
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  return requireAdminProps(context);
 };
 
 export default Page;

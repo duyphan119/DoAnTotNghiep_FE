@@ -8,10 +8,13 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
+import { UserJson } from "@/types/json";
+import { requireAdminProps } from "@/lib";
+import { GetServerSidePropsContext } from "next";
 
-type Props = {};
+type Props = { profile: UserJson | null };
 const LIMIT = 10;
-const Page = (props: Props) => {
+const Page = ({ profile }: Props) => {
   const router = useRouter();
   const appDispatch = useAppDispatch();
   const { userData } = useSelector(userSelector);
@@ -23,13 +26,13 @@ const Page = (props: Props) => {
         p: +`${p}` || 1,
         limit: limit ? `${limit}` : LIMIT,
         sortBy: `${sortBy || "id"}`,
-        sortType: `${sortType}` === "asc" ? "asc" : "desc",
+        sortType: `${sortType}` === "ASC" ? "ASC" : "DESC",
       })
     );
   }, [router.query]);
 
   return (
-    <AdminLayout pageTitle="Tài khoản">
+    <AdminLayout pageTitle="Tài khoản" profile={new UserModel(profile)}>
       <>
         <Head>
           <title>Quản lý tài khoản</title>
@@ -79,6 +82,11 @@ const Page = (props: Props) => {
       </>
     </AdminLayout>
   );
+};
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  return requireAdminProps(context);
 };
 
 export default Page;

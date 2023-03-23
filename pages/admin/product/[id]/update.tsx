@@ -4,18 +4,19 @@ import { useEffect } from "react";
 
 import "react-quill/dist/quill.snow.css";
 import { useSelector } from "react-redux";
-import { DashboardPaper, ProductForm } from "../../../../components";
-import { AdminLayout } from "../../../../layouts";
-import { groupProductActions } from "../../../../redux/slice/groupProductSlice";
-import {
-  productActions,
-  productSelector,
-} from "../../../../redux/slice/productSlice";
-import { useAppDispatch } from "../../../../redux/store";
+import { DashboardPaper, ProductForm } from "@/components";
+import { AdminLayout } from "@/layouts";
+import { groupProductActions } from "@/redux/slice/groupProductSlice";
+import { productActions, productSelector } from "@/redux/slice/productSlice";
+import { useAppDispatch } from "@/redux/store";
+import { UserJson } from "@/types/json";
+import { UserModel } from "@/models";
+import { requireAdminProps } from "@/lib";
+import { GetServerSidePropsContext } from "next";
 
-type Props = {};
+type Props = { profile: UserJson | null };
 
-const Page = (props: Props) => {
+const Page = ({ profile }: Props) => {
   const router = useRouter();
   const appDispatch = useAppDispatch();
   const { current: product } = useSelector(productSelector);
@@ -28,14 +29,14 @@ const Page = (props: Props) => {
   useEffect(() => {
     appDispatch(
       groupProductActions.fetchGetAll({
-        sortType: "asc",
+        sortType: "ASC",
         sortBy: "id",
       })
     );
   }, []);
 
   return (
-    <AdminLayout pageTitle="Sản phẩm">
+    <AdminLayout pageTitle="Sản phẩm" profile={new UserModel(profile)}>
       <>
         <Head>
           <title>Cập nhật sản phẩm</title>
@@ -48,6 +49,11 @@ const Page = (props: Props) => {
       </>
     </AdminLayout>
   );
+};
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  return requireAdminProps(context);
 };
 
 export default Page;

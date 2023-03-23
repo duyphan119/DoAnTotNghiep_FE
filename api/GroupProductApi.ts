@@ -83,9 +83,10 @@ class GroupProductApi {
           data: any;
           message: string;
         }>);
-        const groupProduct = this.getListFromJson([data])[0];
         resolve(
-          message === MSG_SUCCESS ? groupProduct : new GroupProductModel()
+          message === MSG_SUCCESS
+            ? new GroupProductModel(data)
+            : new GroupProductModel()
         );
       } catch (error) {
         console.log(error);
@@ -120,9 +121,10 @@ class GroupProductApi {
           data: any;
           message: string;
         }>);
-        const groupProduct = this.getListFromJson([data])[0];
         resolve(
-          message === MSG_SUCCESS ? groupProduct : new GroupProductModel()
+          message === MSG_SUCCESS
+            ? new GroupProductModel(data)
+            : new GroupProductModel()
         );
       } catch (error) {
         console.log(error);

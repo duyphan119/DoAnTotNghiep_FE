@@ -12,10 +12,14 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
+import { UserJson } from "@/types/json";
+import { UserModel } from "@/models";
+import { requireAdminProps } from "@/lib";
+import { GetServerSidePropsContext } from "next";
 
-type Props = {};
+type Props = { profile: UserJson | null };
 const LIMIT = 10;
-const Page = (props: Props) => {
+const Page = ({ profile }: Props) => {
   const appDispatch = useAppDispatch();
   const { blogData } = useSelector(blogSelector);
   const router = useRouter();
@@ -27,13 +31,13 @@ const Page = (props: Props) => {
         p: +`${p}` || 1,
         limit: limit ? `${limit}` : LIMIT,
         sortBy: `${sortBy || "id"}`,
-        sortType: `${sortType}` === "asc" ? "asc" : "desc",
+        sortType: `${sortType}` === "ASC" ? "ASC" : "DESC",
       })
     );
   }, [router.query]);
 
   return (
-    <AdminLayout pageTitle="Bài viết">
+    <AdminLayout pageTitle="Bài viết" profile={new UserModel(profile)}>
       <>
         <Head>
           <title>Quản lý bài viết</title>
@@ -135,6 +139,11 @@ const Page = (props: Props) => {
       </>
     </AdminLayout>
   );
+};
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  return requireAdminProps(context);
 };
 
 export default Page;

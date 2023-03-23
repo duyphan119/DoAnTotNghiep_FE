@@ -1,19 +1,24 @@
-import Head from "next/head";
-import Image from "next/image";
-import { Grid, Pagination } from "@mui/material";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
 import { AccountLayout } from "@/layouts";
-import { OrderItemModel, OrderModel } from "@/models";
+import { requireLoginProps } from "@/lib";
+import { OrderItemModel, OrderModel, UserModel } from "@/models";
 import { authActions, authSelector } from "@/redux/slice/authSlice";
 import { useAppDispatch } from "@/redux/store";
-import helper from "@/utils/helpers";
 import styles from "@/styles/_FollowOrder.module.scss";
+import { UserJson } from "@/types/json";
+import helper from "@/utils/helpers";
+import { Grid, Pagination } from "@mui/material";
+import Head from "next/head";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { GetServerSidePropsContext } from "next/types";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 const LIMIT = 10;
 
-type Props = {};
+type Props = {
+  profile: UserJson | null;
+};
 
 type OrderProps = {
   order: OrderModel;
@@ -104,7 +109,7 @@ const MyOrder = ({ order }: OrderProps) => {
   ) : null;
 };
 
-const FollowOrder = (props: Props) => {
+const FollowOrder = ({ profile }: Props) => {
   const router = useRouter();
   const appDispatch = useAppDispatch();
   const { orderData } = useSelector(authSelector);
@@ -131,7 +136,10 @@ const FollowOrder = (props: Props) => {
   }, [router.query]);
 
   return (
-    <AccountLayout titleHeading="Đơn hàng của tôi">
+    <AccountLayout
+      profile={new UserModel(profile)}
+      titleHeading="Đơn hàng của tôi"
+    >
       <>
         <Head>
           <title>Đơn hàng của tôi</title>
@@ -158,12 +166,19 @@ const FollowOrder = (props: Props) => {
               showFirstButton
               page={router.query && router.query.p ? +router.query.p : 1}
               onChange={(e, page) => handleChange(page)}
+              color="primary"
             />
           </Grid>
         ) : null}
       </Grid>
     </AccountLayout>
   );
+};
+
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  return requireLoginProps(context);
 };
 
 export default FollowOrder;

@@ -1,0 +1,36 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .formWrapper {
+    background-color: #fff;
+    .form {
+      width: 440px;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      justify-content: center;
+      background-color: #fff;
+      outline: none;
+      gap: 24px;
+      padding: 32px;
+      .link {
+        a {
+          color: var(--blue);
+        }
+      }
+      .btn {
+        border: none;
+        outline: none;
+        box-shadow: 0 0 1px 1px var(--blue);
+        padding: 16px 24px;
+        width: 100%;
+        background-color: var(--blue);
+        color: #fff;
+        &:hover {
+          box-shadow: 0 0 1px 2px var(--blue);
+        }
+      }
+    }
+  }
+}

@@ -4,14 +4,14 @@ import SearchIcon from "@mui/icons-material/Search";
 import { Badge, IconButton, Box } from "@mui/material";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import MenuIcon from "@mui/icons-material/Menu";
-import NotifyIcon from "./NotifyIcon";
+import NotificationIcon from "./NotificationIcon";
 import AccountIcon from "./AccountIcon";
 import { DarkLightButton } from "@/components";
 import { useThemeContext } from "@/context/ThemeContext";
 import Link from "next/link";
 import { protectedRoutes } from "@/utils/routes";
 import Image from "next/image";
-import logoPng from "../../../public/logo.png";
+import logoPng from "@/public/logo.png";
 type Props = Partial<{
   pageTitle: string;
   onToggle: any;
@@ -49,7 +49,7 @@ const Header = ({ pageTitle, onToggle }: Props) => {
       </Box>
       <div className={styles.right}>
         <DarkLightButton />
-        <NotifyIcon />
+        <NotificationIcon />
         <span className={styles.iconSpan}>
           <Badge badgeContent={3} color="error">
             <ChatBubbleOutlineIcon className={styles.icon} />

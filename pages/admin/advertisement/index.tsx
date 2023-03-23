@@ -1,6 +1,5 @@
 import { ButtonControl, DataManagement, DataTable } from "@/components";
 import { AdminLayout } from "@/layouts";
-import { AdvertisementModel } from "@/models";
 import {
   advertisementActions,
   advertisementSelector,
@@ -14,10 +13,14 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
+import { UserJson } from "@/types/json";
+import { UserModel, AdvertisementModel } from "@/models";
+import { requireAdminProps } from "@/lib";
+import { GetServerSidePropsContext } from "next";
 
-type Props = {};
+type Props = { profile: UserJson | null };
 const LIMIT = 10;
-const Orders = (props: Props) => {
+const Orders = ({ profile }: Props) => {
   const router = useRouter();
   const appDispatch = useAppDispatch();
   const { advertisementData, isDeleted } = useSelector(advertisementSelector);
@@ -39,13 +42,13 @@ const Orders = (props: Props) => {
         p: +`${p}` || 1,
         limit: limit ? `${limit}` : LIMIT,
         sortBy: `${sortBy || "id"}`,
-        sortType: `${sortType}` === "asc" ? "asc" : "desc",
+        sortType: `${sortType}` === "ASC" ? "ASC" : "DESC",
       })
     );
   }, [router.query, isDeleted]);
 
   return (
-    <AdminLayout pageTitle="Quảng cáo">
+    <AdminLayout pageTitle="Quảng cáo" profile={new UserModel(profile)}>
       <>
         <Head>
           <title>Quản lý quảng cáo</title>
@@ -129,6 +132,11 @@ const Orders = (props: Props) => {
       </>
     </AdminLayout>
   );
+};
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  return requireAdminProps(context);
 };
 
 export default Orders;

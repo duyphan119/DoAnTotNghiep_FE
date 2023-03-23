@@ -9,10 +9,12 @@ import { protectedRoutes } from "@/utils/routes";
 import { SettingWebsite } from "@/utils/types";
 import AccountIcon from "./AccountIcon";
 import styles from "./_style.module.scss";
+import { useDefaultLayoutContext } from "@/context/DefaultLayoutContext";
 type Props = {};
 
 const Top = (props: Props) => {
-  const { profile } = useSelector(authSelector);
+  // const { profile } = useSelector(authSelector);
+  const { profile } = useDefaultLayoutContext();
   const [settings, setSettings] = useState<SettingWebsite[]>([]);
 
   const PhoneContact = () => {

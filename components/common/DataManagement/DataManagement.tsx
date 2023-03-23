@@ -1,31 +1,13 @@
+import helper from "@/utils/helpers";
 import AddIcon from "@mui/icons-material/Add";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import DeleteIcon from "@mui/icons-material/Delete";
-import SearchIcon from "@mui/icons-material/Search";
-import {
-  Box,
-  Button,
-  ClickAwayListener,
-  FormControl,
-  IconButton,
-  Input,
-  InputAdornment,
-  Paper,
-  Popper,
-  Typography,
-  InputLabel,
-  Select,
-  MenuItem,
-  SelectChangeEvent,
-} from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import {
   createContext,
-  FormEvent,
+  FC,
   memo,
-  MouseEvent,
   ReactNode,
   useContext,
   useEffect,
@@ -33,25 +15,28 @@ import {
   useState,
 } from "react";
 import ButtonControl from "../ButtonControl";
+import Pagination from "./Pagination";
+import SearchWrapper from "./SearchWrapper";
+import Sort from "./Sort";
 import styles from "./_style.module.scss";
 
 type Props = Partial<{
   paperTitle: string;
   count: number;
   limit: number;
-  onDeleteAll: any;
+  onDeleteAll: (ids: number[]) => void;
   children: ReactNode;
   sorts: Array<{
     label: string;
     sortBy: string;
-    sortType: "asc" | "desc";
+    sortType: "ASC" | "DESC";
   }>;
   hideCreateBtn: boolean;
 }>;
 
 const DataManagementContext = createContext<any>({});
 
-const DataManagement = ({
+const DataManagement: FC<Props> = ({
   paperTitle,
   count,
   limit,
@@ -59,151 +44,57 @@ const DataManagement = ({
   children,
   sorts,
   hideCreateBtn,
-}: Props) => {
+}) => {
   const router = useRouter();
   const { p } = router.query;
   const PAGE = p ? +p : 1;
   const TOTAL_PAGE = count && limit ? Math.ceil(count / limit) : 0;
   const SORT_BY = router.query.sortBy ? `${router.query.sortBy}` : "";
   const SORT_TYPE =
-    router.query.sortType && router.query.sortType === "asc" ? "asc" : "desc";
+    router.query.sortType && router.query.sortType === "ASC" ? "ASC" : "DESC";
 
-  const goToRef = useRef<HTMLInputElement>(null);
-
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [ids, setIds] = useState<number[]>([]);
-  const [openPopper, setOpenPopper] = useState<boolean>(false);
   const [sortValue, setSortValue] = useState<string>("");
 
-  const handleClick = (event: MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-    setOpenPopper((state) => !state);
-  };
-
-  const handleSearch = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const q = searchInputRef.current ? searchInputRef.current.value : "";
-    let obj: any = {
+  const handleSearch = (q: string) => {
+    let obj = {
       ...(PAGE && PAGE > 1 ? { p: PAGE } : {}),
       ...(q !== "" ? { q } : {}),
     };
-    let url = new URLSearchParams(obj).toString();
-    router.push(`${router.pathname}${url ? "?" : ""}${url}`);
-    setIds([]);
+    router.push(helper.getPathFromSearchParams(router.pathname, obj));
   };
 
   const handleChangePage = (p: number) => {
-    let obj: any = {
+    let obj = {
       ...(p && p > 1 ? { p } : {}),
       ...(SORT_BY ? { sortBy: SORT_BY } : {}),
-      ...(SORT_TYPE === "asc" ? { sortType: "asc" } : {}),
+      ...(SORT_TYPE === "ASC" ? { sortType: "ASC" } : {}),
     };
-    let url = new URLSearchParams(obj).toString();
-    router.push(`${router.pathname}${url ? "?" : ""}${url}`);
-    setIds([]);
+    router.push(helper.getPathFromSearchParams(router.pathname, obj));
   };
-
-  const handleGoToPage = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (goToRef.current) {
-      const page = +goToRef.current.value;
-      if (page > 0 && page <= TOTAL_PAGE) {
-        handleChangePage(page);
-        setOpenPopper(false);
-        setIds([]);
-      }
-    }
-  };
-
-  const pagination = (
-    <Box display="flex">
-      <IconButton
-        onClick={() => handleChangePage(PAGE - 1)}
-        disabled={PAGE <= 1}
-      >
-        <ChevronLeftIcon />
-      </IconButton>
-      <ButtonControl
-        variant="text"
-        onClick={handleClick}
-        disabled={TOTAL_PAGE <= 1}
-      >
-        Trang {PAGE} / {TOTAL_PAGE || 1}
-      </ButtonControl>
-      {openPopper ? (
-        <ClickAwayListener onClickAway={() => setOpenPopper(false)}>
-          <Popper open={openPopper} anchorEl={anchorEl}>
-            <Box
-              sx={{
-                border: 1,
-                p: 1,
-                bgcolor: "background.paper",
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                fontSize: "12px",
-              }}
-            >
-              <span>Đi tới trang</span>
-              <form onSubmit={handleGoToPage}>
-                <input
-                  type="number"
-                  ref={goToRef}
-                  className={styles.goToPageInput}
-                />
-              </form>
-            </Box>
-          </Popper>
-        </ClickAwayListener>
-      ) : null}
-
-      <IconButton
-        onClick={() => handleChangePage(PAGE + 1)}
-        disabled={count && limit ? PAGE >= TOTAL_PAGE : true}
-      >
-        <ChevronRightIcon />
-      </IconButton>
-    </Box>
-  );
 
   const handleDeleteAll = () => {
     if (PAGE > 1 && PAGE <= TOTAL_PAGE) {
       handleChangePage(PAGE - 1);
     }
-    onDeleteAll(ids);
+    onDeleteAll && onDeleteAll(ids);
   };
 
-  const searchWrapper = (
-    <form className={styles.searchWrapper} onSubmit={handleSearch}>
-      <FormControl variant="standard">
-        <Input
-          id="input-with-icon-adornment"
-          startAdornment={
-            <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          }
-          inputRef={searchInputRef}
-          placeholder="Tìm kiếm"
-        />
-      </FormControl>
-    </form>
-  );
-
-  const handleChangeSort = (e: SelectChangeEvent<string>) => {
-    const value = e.target.value;
+  const handleChangeSort = (value: string) => {
     setSortValue(value);
     const [sortBy, sortType] = value.split("-");
-    let obj: any = {
+    let obj = {
       ...(PAGE > 1 ? { p: PAGE } : {}),
       sortBy,
       sortType,
     };
-    let url = new URLSearchParams(obj).toString();
-    router.push(`${router.pathname}${url ? "?" : ""}${url}`);
-    setIds([]);
+    router.push(helper.getPathFromSearchParams(router.pathname, obj));
   };
+
+  useEffect(() => {
+    setIds([]);
+  }, [router.query]);
 
   useEffect(() => {
     if (SORT_BY) {
@@ -251,27 +142,13 @@ const DataManagement = ({
                 </ButtonControl>
               </Link>
             )}
-            {searchWrapper}
+            <SearchWrapper onSearch={handleSearch} />
             {sorts ? (
-              <FormControl size="small" sx={{ minWidth: "200px" }}>
-                <InputLabel>Sắp xếp theo</InputLabel>
-                <Select
-                  value={sortValue}
-                  label="Sắp xếp theo"
-                  onChange={handleChangeSort}
-                >
-                  {sorts.map((sortItem) => {
-                    return (
-                      <MenuItem
-                        key={sortItem.label}
-                        value={`${sortItem.sortBy}-${sortItem.sortType}`}
-                      >
-                        {sortItem.label}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              </FormControl>
+              <Sort
+                sorts={sorts}
+                value={sortValue}
+                onChange={handleChangeSort}
+              />
             ) : null}
           </Box>
           <Box
@@ -295,7 +172,11 @@ const DataManagement = ({
             >
               Xoá
             </ButtonControl>
-            {pagination}
+            <Pagination
+              onChangePage={handleChangePage}
+              page={PAGE}
+              totalPage={TOTAL_PAGE}
+            />
           </Box>
         </Box>
         {children}

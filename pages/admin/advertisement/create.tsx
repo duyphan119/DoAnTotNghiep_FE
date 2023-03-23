@@ -11,10 +11,16 @@ import { advertisementActions } from "@/redux/slice/advertisementSlice";
 import { useAppDispatch } from "@/redux/store";
 import { fetchSelector } from "@/redux/slice/fetchSlice";
 import { CreateAdvertisementDTO } from "@/types/dtos";
+import { UserJson } from "@/types/json";
+import { UserModel } from "@/models";
+import { requireAdminProps } from "@/lib";
+import { GetServerSidePropsContext } from "next";
 
-type Props = {};
+type Props = {
+  profile: UserJson | null;
+};
 
-const CreateAdvertisement = (props: Props) => {
+const CreateAdvertisement = ({ profile }: Props) => {
   const router = useRouter();
   const appDispatch = useAppDispatch();
   const { isLoading } = useSelector(fetchSelector);
@@ -41,7 +47,10 @@ const CreateAdvertisement = (props: Props) => {
   };
 
   return (
-    <AdminLayout pageTitle="Thêm mới quảng cáo">
+    <AdminLayout
+      pageTitle="Thêm mới quảng cáo"
+      profile={new UserModel(profile)}
+    >
       <>
         <Head>
           <title>Thêm mới quảng cáo</title>
@@ -88,6 +97,11 @@ const CreateAdvertisement = (props: Props) => {
       </>
     </AdminLayout>
   );
+};
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  return requireAdminProps(context);
 };
 
 export default CreateAdvertisement;

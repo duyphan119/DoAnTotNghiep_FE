@@ -14,6 +14,10 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import WebIcon from "@mui/icons-material/Web";
 import LockResetIcon from "@mui/icons-material/LockReset";
 import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import WorkspacesIcon from "@mui/icons-material/Workspaces";
+import ColorLensIcon from "@mui/icons-material/ColorLens";
+import PublicIcon from "@mui/icons-material/Public";
 
 export type NavItem = {
   id?: string;
@@ -23,6 +27,9 @@ export type NavItem = {
   children?: NavItem[];
   tooltip?: string;
 };
+//["Tài khoản", "Loại thông báo", "Thông báo", "Đơn hàng", "Giảm giá đơn hàng", "Loại thuộc tính", "Thuộc tính", "Nhóm sản phẩm", "Sản phẩm", "Đánh giá sản phẩm", "Danh mục bài viết", "Bài viết", "Quảng cáo"].sort((a,b) => a > b ? 1 : a<b?-1:0)
+
+//['Bài viết', 'Danh mục bài viết', 'Giảm giá đơn hàng', 'Loại thuộc tính', 'Loại thông báo', 'Nhóm sản phẩm', 'Quảng cáo', 'Sản phẩm', 'Thuộc tính', 'Thông báo', 'Tài khoản', 'Đánh giá sản phẩm', 'Đơn hàng']
 
 export const navItems: NavItem[] = [
   {
@@ -34,21 +41,33 @@ export const navItems: NavItem[] = [
   {
     href: publicRoutes.home,
     label: "Trang bán hàng",
-    icon: <HomeIcon />,
+    icon: <PublicIcon />,
     tooltip: "Trang bán hàng",
   },
   {
-    href: protectedRoutes.userManagement,
-    label: "Tài khoản",
-    icon: <AccountBoxIcon />,
-    tooltip: "Quản lý tài khoản",
-  },
-  {
-    label: "Quản lý đơn hàng",
-    icon: <TableRowsIcon />,
-    id: "order",
     href: "",
+    label: "Quản lý",
+    icon: <TableRowsIcon />,
+    id: "management",
     children: [
+      {
+        href: protectedRoutes.blog,
+        label: "Bài viết",
+        icon: <FeedIcon />,
+        tooltip: "Quản lý bài viết",
+      },
+      {
+        href: protectedRoutes.blogCategoryManagement,
+        label: "Danh mục bài viết",
+        icon: <CategoryIcon />,
+        tooltip: "Quản lý danh mục bài viết",
+      },
+      {
+        href: protectedRoutes.commentProductManagement,
+        label: "Đánh giá sản phẩm",
+        icon: <ChatBubbleIcon />,
+        tooltip: "Quản lý đánh giá sản phẩm",
+      },
       {
         href: protectedRoutes.orderManagement,
         label: "Đơn hàng",
@@ -61,20 +80,29 @@ export const navItems: NavItem[] = [
         icon: <DiscountIcon />,
         tooltip: "Quản lý giảm giá đơn hàng",
       },
-    ],
-  },
-
-  {
-    label: "Quản lý sản phẩm",
-    icon: <TableRowsIcon />,
-    id: "product",
-    href: "",
-    children: [
+      {
+        href: protectedRoutes.variantManagement,
+        label: "Loại thuộc tính",
+        icon: <WorkspacesIcon />,
+        tooltip: "Quản lý loại thuộc tính",
+      },
+      {
+        href: protectedRoutes.notificationTypeManagement,
+        label: "Loại thông báo",
+        icon: <CategoryIcon />,
+        tooltip: "Quản lý loại thông báo",
+      },
       {
         href: protectedRoutes.groupProductManagement,
         label: "Nhóm sản phẩm",
         icon: <CategoryIcon />,
         tooltip: "Quản lý nhóm sản phẩm",
+      },
+      {
+        href: protectedRoutes.advertisementManagement,
+        label: "Quảng cáo",
+        icon: <CampaignIcon />,
+        tooltip: "Quản lý quảng cáo",
       },
       {
         href: protectedRoutes.productManagement,
@@ -83,38 +111,24 @@ export const navItems: NavItem[] = [
         tooltip: "Quản lý sản phẩm",
       },
       {
-        href: protectedRoutes.commentProductManagement,
-        label: "Đánh giá sản phẩm",
-        icon: <ChatBubbleIcon />,
-        tooltip: "Quản lý đánh giá sản phẩm",
-      },
-    ],
-  },
-  {
-    label: "Quản lý bài viết",
-    icon: <TableRowsIcon />,
-    id: "blog",
-    href: "",
-    children: [
-      {
-        href: protectedRoutes.blogCategoryManagement,
-        label: "Danh mục bài viết",
-        icon: <CategoryIcon />,
-        tooltip: "Quản lý danh mục bài viết",
+        href: protectedRoutes.variantValueManagement,
+        label: "Thuộc tính",
+        icon: <ColorLensIcon />,
+        tooltip: "Quản lý thuộc tính",
       },
       {
-        href: protectedRoutes.blog,
-        label: "Bài viết",
-        icon: <FeedIcon />,
-        tooltip: "Quản lý bài viết",
+        href: protectedRoutes.notificationManagement,
+        label: "Thông báo",
+        icon: <NotificationsIcon />,
+        tooltip: "Quản lý thông báo",
+      },
+      {
+        href: protectedRoutes.userManagement,
+        label: "Tài khoản",
+        icon: <AccountBoxIcon />,
+        tooltip: "Quản lý tài khoản",
       },
     ],
-  },
-  {
-    href: protectedRoutes.advertisementManagement,
-    label: "Quảng cáo",
-    icon: <CampaignIcon />,
-    tooltip: "Quản lý quảng cáo",
   },
   {
     href: "",

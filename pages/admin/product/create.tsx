@@ -1,32 +1,31 @@
 import Head from "next/head";
-import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-import { useSelector } from "react-redux";
-import { DashboardPaper, ProductForm } from "../../../components";
-import { AdminLayout } from "../../../layouts";
-import { fetchSelector } from "../../../redux/slice/fetchSlice";
-import { groupProductActions } from "../../../redux/slice/groupProductSlice";
-import { useAppDispatch } from "../../../redux/store";
+import { DashboardPaper, ProductForm } from "@/components";
+import { AdminLayout } from "@/layouts";
+import { requireAdminProps } from "@/lib";
+import { UserModel } from "@/models";
+import { groupProductActions } from "@/redux/slice/groupProductSlice";
+import { useAppDispatch } from "@/redux/store";
+import { UserJson } from "@/types/json";
+import { GetServerSidePropsContext } from "next";
 
-type Props = {};
+type Props = { profile: UserJson | null };
 
-const AddProduct = (props: Props) => {
-  const router = useRouter();
+const AddProduct = ({ profile }: Props) => {
   const appDispatch = useAppDispatch();
-  const { isBack } = useSelector(fetchSelector);
 
   useEffect(() => {
     appDispatch(
       groupProductActions.fetchGetAll({
-        sortType: "asc",
+        sortType: "ASC",
         sortBy: "id",
       })
     );
   }, []);
 
   return (
-    <AdminLayout pageTitle="Sản phẩm">
+    <AdminLayout pageTitle="Sản phẩm" profile={new UserModel(profile)}>
       <>
         <Head>
           <title>Thêm mới sản phẩm</title>
@@ -39,6 +38,12 @@ const AddProduct = (props: Props) => {
       </>
     </AdminLayout>
   );
+};
+
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  return requireAdminProps(context);
 };
 
 export default AddProduct;

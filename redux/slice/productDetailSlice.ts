@@ -56,6 +56,16 @@ const productDetailSlice = createSlice({
       state.product = product;
       if (product.id)
         state.renderVariantValues = product.formatProductVariants();
+      if (product.productVariants.length > 0) {
+        const selectedProductVariant = product.productVariants.find(
+          (item) => item.inventory > 0
+        );
+
+        if (selectedProductVariant) {
+          state.selectedProductVariant = selectedProductVariant;
+          state.selectedVariantValues = selectedProductVariant.variantValues;
+        }
+      }
     },
     clickVariantValue: (state, action: ActionPayload<VariantValueModel>) => {
       let variantValue = action.payload;

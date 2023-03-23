@@ -1,9 +1,10 @@
 import { BlogCategoryApi } from "@/api";
 import { BlogCategoryCard } from "@/components";
 import { DefaultLayout } from "@/layouts";
-import { BlogModel, ResponseGetAllModel } from "@/models";
+import { getProfileProps } from "@/lib";
+import { BlogModel, ResponseGetAllModel, UserModel } from "@/models";
 import styles from "@/styles/_Blog.module.scss";
-import { BlogCategoryJson } from "@/types/json";
+import { BlogCategoryJson, UserJson } from "@/types/json";
 import helper from "@/utils/helpers";
 import { publicRoutes } from "@/utils/routes";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -15,6 +16,7 @@ import Link from "next/link";
 
 type Props = {
   blogCategoryDataJson: { items: BlogCategoryJson[]; count: number };
+  profile: UserJson | null;
 };
 
 const LIMIT = 5;
@@ -36,7 +38,7 @@ const getNewBlogs = (blogCategories: BlogCategoryJson[]): BlogModel[] => {
   return blogs;
 };
 
-const NewBlogs = ({ blogCategoryDataJson: { items } }: Props) => {
+const NewBlogs = ({ items }: { items: BlogCategoryJson[] }) => {
   let [firstBlog, ...others] = getNewBlogs(items);
   if (!firstBlog) {
     firstBlog = new BlogModel();
@@ -123,7 +125,7 @@ const NewBlogs = ({ blogCategoryDataJson: { items } }: Props) => {
   );
 };
 
-const Page = ({ blogCategoryDataJson: { items, count } }: Props) => {
+const Page = ({ blogCategoryDataJson: { items, count }, profile }: Props) => {
   const blogCategoryData = new ResponseGetAllModel(
     bcApi.getListFromJson(items),
     count
@@ -141,12 +143,12 @@ const Page = ({ blogCategoryDataJson: { items, count } }: Props) => {
       <Head>
         <title>Danh sách bài viết</title>
       </Head>
-      <DefaultLayout>
+      <DefaultLayout profile={new UserModel(profile)}>
         <Container maxWidth="lg">
           <Typography variant="subtitle1" className={styles.typography}>
             BÀI VIẾT MỚI NHẤT
           </Typography>
-          <NewBlogs blogCategoryDataJson={{ items, count }} />
+          <NewBlogs items={items} />
           <Typography variant="subtitle1" className={styles.typography}>
             DANH MỤC BÀI VIẾT
           </Typography>
@@ -187,10 +189,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     const data = await bcApi.getAllJson({
       limit: LIMIT,
       blogs: true,
-      sortType: "asc",
+      sortType: "ASC",
     });
+    const { props } = await getProfileProps(context);
     return {
-      props: { blogCategoryDataJson: data },
+      props: { ...props, blogCategoryDataJson: data },
     };
   } catch (error) {
     return { notFound: true };

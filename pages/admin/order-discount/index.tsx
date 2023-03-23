@@ -1,28 +1,29 @@
-import { NextPage } from "next/types";
-import { Avatar, Box, Divider, Rating } from "@mui/material";
-import moment from "moment";
 import "moment/locale/vi";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { NextPage } from "next/types";
+import { Fragment, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { FormEvent, Fragment, useEffect, useRef, useState } from "react";
-import { AdminLayout } from "../../../layouts";
-import { ButtonControl, DataManagement, DataTable } from "../../../components";
-import { useAppDispatch } from "../../../redux/store";
+import { ButtonControl, DataManagement, DataTable } from "@/components";
+import { AdminLayout } from "@/layouts";
+import { OrderDiscountModel, UserModel } from "@/models";
+import { UserJson } from "@/types/json";
+import { requireAdminProps } from "@/lib";
+import { GetServerSidePropsContext } from "next";
+import { confirmDialogActions } from "@/redux/slice/confirmDialogSlice";
 import {
   orderDiscountActions,
   orderDiscountSelector,
-} from "../../../redux/slice/orderDiscountSlice";
-import helper from "../../../utils/helpers";
-import { OrderDiscountModel } from "../../../models";
-import { protectedRoutes } from "../../../utils/routes";
-import { confirmDialogActions } from "../../../redux/slice/confirmDialogSlice";
+} from "@/redux/slice/orderDiscountSlice";
+import { useAppDispatch } from "@/redux/store";
+import helper from "@/utils/helpers";
+import { protectedRoutes } from "@/utils/routes";
 
-type Props = {};
+type Props = { profile: UserJson | null };
 
 const LIMIT = 10;
-const Page: NextPage = (props: Props) => {
+const Page: NextPage<Props> = ({ profile }) => {
   const router = useRouter();
   const appDispatch = useAppDispatch();
 
@@ -35,13 +36,13 @@ const Page: NextPage = (props: Props) => {
         p: +`${p}` || 1,
         limit: LIMIT,
         sortBy: `${sortBy || "id"}`,
-        sortType: `${sortType}` === "asc" ? "asc" : "desc",
+        sortType: `${sortType}` === "ASC" ? "ASC" : "DESC",
       })
     );
   }, [router.query]);
 
   return (
-    <AdminLayout pageTitle="Giảm giá đơn hàng">
+    <AdminLayout pageTitle="Giảm giá đơn hàng" profile={new UserModel(profile)}>
       <Fragment>
         <Head>
           <title>Quản lý giảm giá đơn hàng</title>
@@ -150,4 +151,9 @@ const Page: NextPage = (props: Props) => {
   );
 };
 
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  return requireAdminProps(context);
+};
 export default Page;

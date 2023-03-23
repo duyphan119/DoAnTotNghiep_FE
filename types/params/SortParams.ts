@@ -1,6 +1,6 @@
 type SortParams = {
   sortBy?: string;
-  sortType?: "asc" | "desc";
+  sortType?: "ASC" | "DESC";
 };
 
 export default SortParams;

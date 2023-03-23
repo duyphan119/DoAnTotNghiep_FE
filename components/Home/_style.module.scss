@@ -1,0 +1,89 @@
+.main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  // gap: 24px;
+  .h1 {
+    margin-top: 32px;
+    margin-bottom: 16px;
+  }
+  .groupProductHeadings {
+    margin-bottom: 16px;
+    gap: 24px;
+    .groupProductHeading {
+      border-bottom: 2px solid #000;
+      color: #000;
+      min-width: 15%;
+      text-align: center;
+      padding: 8px 0;
+      cursor: pointer;
+      text-transform: uppercase;
+      &.active {
+        color: var(--blue);
+        border-bottom: 2px solid var(--blue);
+        font-weight: 500;
+      }
+    }
+  }
+  .groupProduct {
+    flex-direction: column;
+    &:hover {
+      transform: translateY(-2px);
+      transition: all linear 0.1s;
+      span : {
+        color: var(--blue);
+      }
+    }
+    .thumbnailWrapper {
+      margin: 20px;
+      background-color: #00aaff85;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+    }
+    span : {
+      text-transform: uppercase;
+    }
+  }
+  .viewAllWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .viewAll {
+      padding: 12px 24px;
+      background-color: var(--blue);
+      color: #fff;
+      border-radius: 5px;
+    }
+    .viewAll:hover {
+      box-shadow: 0 0 1px 1px var(--blue);
+    }
+  }
+  .blogThumbnail {
+    position: relative;
+    min-height: 280px;
+    overflow: hidden;
+    display: block;
+    &:hover + .blogTitle {
+      color: var(--blue);
+    }
+    &:hover {
+      img {
+        transform: scale(1.01);
+      }
+    }
+  }
+  .blogTitle {
+    font-weight: 600;
+    padding: 8px 0;
+    font-size: 20px;
+    display: block;
+    &:hover {
+      color: var(--blue);
+    }
+  }
+  .blogCreatedAt {
+    color: gray;
+  }
+}

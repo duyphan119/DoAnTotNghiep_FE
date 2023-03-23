@@ -21,27 +21,27 @@ const items: Item[] = [
   {
     label: "Mặc định",
     sortBy: "id",
-    sortType: "desc",
+    sortType: "DESC",
   },
   {
     label: "Tên A-Z",
     sortBy: "name",
-    sortType: "asc",
+    sortType: "ASC",
   },
   {
     label: "Tên Z-A",
     sortBy: "name",
-    sortType: "desc",
+    sortType: "DESC",
   },
   {
     label: "Giá tăng dần",
     sortBy: "price",
-    sortType: "asc",
+    sortType: "ASC",
   },
   {
     label: "Giá giảm dần",
     sortBy: "price",
-    sortType: "desc",
+    sortType: "DESC",
   },
 ];
 
@@ -84,7 +84,7 @@ const Header = ({ onSort, totalProducts }: Props) => {
   const handleClick = (item: Item) => {
     onSort({
       sortBy: item.sortBy,
-      sortType: item.sortType === "desc" ? "desc" : "asc",
+      sortType: item.sortType === "DESC" ? "DESC" : "ASC",
     });
     // dispatch({ type: Actions.SELECT_MENU_ITEM, payload: item });
   };

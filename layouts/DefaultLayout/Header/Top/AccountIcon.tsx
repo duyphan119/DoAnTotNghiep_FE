@@ -1,26 +1,24 @@
+import { useDefaultLayoutContext } from "@/context/DefaultLayoutContext";
 import { authActions, authSelector } from "@/redux/slice/authSlice";
 import { useAppDispatch } from "@/redux/store";
-import { protectedRoutes } from "@/utils/routes";
+import { protectedRoutes, publicRoutes } from "@/utils/routes";
 import PersonIcon from "@mui/icons-material/Person";
 import Link from "next/link";
-import { MouseEvent } from "react";
 import { useSelector } from "react-redux";
 import styles from "./_style.module.scss";
 type Props = {};
 
 const AccountIcon = (props: Props) => {
-  const { profile } = useSelector(authSelector);
+  // const { profile } = useSelector(authSelector);
+  const { profile } = useDefaultLayoutContext();
   const appDispatch = useAppDispatch();
-  const handleClick = (e: MouseEvent<HTMLSpanElement>) => {
-    e.preventDefault();
-    appDispatch(authActions.showModalAuth());
-  };
+  const { logout } = useDefaultLayoutContext();
 
   const handleLogout = () => {
     appDispatch(authActions.fetchLogout());
   };
 
-  return !profile || profile.id > 0 ? (
+  return profile.id > 0 ? (
     <div className={styles.accountWrapper}>
       <Link href={protectedRoutes.profile} className={styles.authLink}>
         <PersonIcon />
@@ -38,16 +36,16 @@ const AccountIcon = (props: Props) => {
             Đổi mật khẩu
           </Link>
         </li>
-        <li className="text-hover" onClick={handleLogout}>
+        <li className="text-hover" onClick={logout}>
           Đăng xuất
         </li>
       </ul>
     </div>
   ) : (
-    <span onClick={handleClick} className={styles.authLink}>
+    <Link href={publicRoutes.userSignin} className={styles.authLink}>
       <PersonIcon />
       Đăng nhập
-    </span>
+    </Link>
   );
 };
 

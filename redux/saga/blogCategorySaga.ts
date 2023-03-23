@@ -7,7 +7,7 @@ import { call, put, takeEvery } from "redux-saga/effects";
 import { MSG_SUCCESS } from "@/utils/constants";
 import {
   blogCategoryActions,
-  blogCategoryReducers,
+  blogCategoryReducer,
 } from "@/redux/slice/blogCategorySlice";
 import { fetchActions } from "@/redux/slice/fetchSlice";
 
@@ -15,7 +15,7 @@ const bcApi = new BlogCategoryApi();
 
 function* fetchGetAll({ payload: params }: ActionPayload<BlogCategoryParams>) {
   let isError = true;
-  yield put(fetchActions.start(blogCategoryReducers.fetchGetAll));
+  yield put(fetchActions.start(blogCategoryReducer.fetchGetAll));
   try {
     const data: ResponseGetAllModel<BlogCategoryModel> = yield call(() =>
       bcApi.getAll(params)
@@ -31,7 +31,7 @@ function* fetchGetAll({ payload: params }: ActionPayload<BlogCategoryParams>) {
 
 function* fetchCreate({ payload: dto }: ActionPayload<CreateBlogCategoryDTO>) {
   let isError = true;
-  yield put(fetchActions.start(blogCategoryReducers.fetchCreate));
+  yield put(fetchActions.start(blogCategoryReducer.fetchCreate));
   try {
     const { message } = yield call(() => bcApi.create(dto));
     if (message === MSG_SUCCESS) {
@@ -48,7 +48,7 @@ function* fetchUpdate({
   payload: { id, ...dto },
 }: ActionPayload<{ id: number } & Partial<CreateBlogCategoryDTO>>) {
   let isError = true;
-  yield put(fetchActions.start(blogCategoryReducers.fetchUpdate));
+  yield put(fetchActions.start(blogCategoryReducer.fetchUpdate));
   try {
     const { message } = yield call(() => bcApi.update({ id, dto }));
     if (message === MSG_SUCCESS) {
@@ -63,7 +63,7 @@ function* fetchUpdate({
 
 function* fetchSoftDeleteSingle({ payload: id }: ActionPayload<number>) {
   let isError = true;
-  yield put(fetchActions.start(blogCategoryReducers.fetchSoftDeleteSingle));
+  yield put(fetchActions.start(blogCategoryReducer.fetchSoftDeleteSingle));
   try {
     const { message } = yield call(() => bcApi.softDeleteSingle(id));
     if (message === MSG_SUCCESS) {
@@ -78,7 +78,7 @@ function* fetchSoftDeleteSingle({ payload: id }: ActionPayload<number>) {
 
 function* fetchGetById({ payload: id }: ActionPayload<number>) {
   let isError = true;
-  yield put(fetchActions.start(blogCategoryReducers.fetchGetById));
+  yield put(fetchActions.start(blogCategoryReducer.fetchGetById));
   try {
     const { message, data } = yield call(() => bcApi.getById(id));
     if (message === MSG_SUCCESS) {
@@ -93,12 +93,12 @@ function* fetchGetById({ payload: id }: ActionPayload<number>) {
 }
 
 export function* blogCategorySaga() {
-  yield takeEvery(blogCategoryReducers.fetchGetAll, fetchGetAll);
-  yield takeEvery(blogCategoryReducers.fetchCreate, fetchCreate);
-  yield takeEvery(blogCategoryReducers.fetchUpdate, fetchUpdate);
+  yield takeEvery(blogCategoryReducer.fetchGetAll, fetchGetAll);
+  yield takeEvery(blogCategoryReducer.fetchCreate, fetchCreate);
+  yield takeEvery(blogCategoryReducer.fetchUpdate, fetchUpdate);
   yield takeEvery(
-    blogCategoryReducers.fetchSoftDeleteSingle,
+    blogCategoryReducer.fetchSoftDeleteSingle,
     fetchSoftDeleteSingle
   );
-  yield takeEvery(blogCategoryReducers.fetchGetById, fetchGetById);
+  yield takeEvery(blogCategoryReducer.fetchGetById, fetchGetById);
 }

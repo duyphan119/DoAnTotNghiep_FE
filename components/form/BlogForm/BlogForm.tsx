@@ -81,7 +81,7 @@ const BlogForm = (props: Props) => {
   useEffect(() => {
     appDispatch(
       blogCategoryActions.fetchGetAll({
-        sortType: "asc",
+        sortType: "ASC",
         sortBy: "name",
       })
     );

@@ -1,48 +1,16 @@
-import { Grid } from "@mui/material";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { ChangeEvent, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
-import {
-  DashboardPaper,
-  FooterForm,
-  InputControl,
-  SelectControl,
-} from "@/components";
+import { DashboardPaper, GroupProductForm } from "@/components";
 import { AdminLayout } from "@/layouts";
-import { fetchSelector } from "@/redux/slice/fetchSlice";
-import { groupProductActions } from "@/redux/slice/groupProductSlice";
-import { useAppDispatch } from "@/redux/store";
-import { CreateGroupProductDTO } from "@/types/dtos";
+import { requireAdminProps } from "@/lib";
+import { UserModel } from "@/models";
+import { UserJson } from "@/types/json";
+import { GetServerSidePropsContext } from "next";
+import Head from "next/head";
 
-type Props = {};
+type Props = { profile: UserJson | null };
 
-const Page = (props: Props) => {
-  const router = useRouter();
-  const appDispatch = useAppDispatch();
-  // const { isBack, isLoading } = useSelector(groupProductManagementSelector);
-  const { isBack, isLoading } = useSelector(fetchSelector);
-  const [files, setFiles] = useState<FileList | null>(null);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<CreateGroupProductDTO>();
-  const onSubmit: SubmitHandler<CreateGroupProductDTO> = (data) => {
-    appDispatch(
-      groupProductActions.fetchCreate({
-        files,
-        dto: {
-          ...data,
-          isAdult: "" + data.isAdult === "true" ? true : false,
-        },
-      })
-    );
-  };
-
+const Page = ({ profile }: Props) => {
   return (
-    <AdminLayout pageTitle="Nhóm sản phẩm">
+    <AdminLayout pageTitle="Nhóm sản phẩm" profile={new UserModel(profile)}>
       <>
         <Head>
           <title>Thêm mới nhóm sản phẩm</title>
@@ -50,69 +18,16 @@ const Page = (props: Props) => {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <DashboardPaper title="Thông tin thêm nhóm mới sản phẩm">
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Grid container rowSpacing={3} columnSpacing={3}>
-              <Grid item xs={12}>
-                <InputControl
-                  label="Tên nhóm sản phẩm"
-                  error={errors.name}
-                  register={register("name", {
-                    required: {
-                      value: true,
-                      message: "Tên không được để trống",
-                    },
-                  })}
-                  required={true}
-                  disabled={isLoading}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <InputControl
-                  label="Mô tả"
-                  error={errors.description}
-                  register={register("description")}
-                  disabled={isLoading}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <SelectControl
-                  label="Giới tính"
-                  register={register("sex")}
-                  options={[{ value: "Nam" }, { value: "Nữ" }]}
-                  disabled={isLoading}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <SelectControl
-                  label="Đối tượng"
-                  register={register("isAdult")}
-                  options={[
-                    { value: true, display: "Người lớn" },
-                    { value: false, display: "Trẻ em" },
-                  ]}
-                  disabled={isLoading}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <InputControl
-                  label="Ảnh đại diện"
-                  error={errors.description}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    setFiles(e.target.files)
-                  }
-                  type="file"
-                  disabled={isLoading}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <FooterForm isLoading={isLoading} />
-              </Grid>
-            </Grid>
-          </form>
+          <GroupProductForm />
         </DashboardPaper>
       </>
     </AdminLayout>
   );
+};
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  return requireAdminProps(context);
 };
 
 export default Page;

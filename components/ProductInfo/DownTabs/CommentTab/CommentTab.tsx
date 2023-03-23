@@ -41,6 +41,7 @@ const CommentTab = ({ product }: Props) => {
             showFirstButton
             page={page}
             onChange={(e, p) => changePage(p)}
+            color="primary"
           />
         ) : null}
       </Grid>
@@ -51,7 +52,7 @@ const CommentTab = ({ product }: Props) => {
         borderLeft={1}
         borderColor="rgba(0, 0, 0, 0.12)"
       >
-        <CommentInput product={product} />
+        <CommentInput />
       </Grid>
     </Grid>
   );

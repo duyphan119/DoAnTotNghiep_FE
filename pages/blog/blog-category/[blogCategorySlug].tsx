@@ -6,14 +6,16 @@ import { useRouter } from "next/router";
 import { BlogApi, BlogCategoryApi } from "@/api";
 import { DefaultLayout } from "@/layouts";
 import { BlogCard, Breadcrumbs, ButtonControl } from "@/components";
-import { BlogModel, ResponseGetAllModel } from "@/models";
-import { BlogJson } from "@/types/json";
+import { BlogModel, ResponseGetAllModel, UserModel } from "@/models";
+import { BlogJson, UserJson } from "@/types/json";
 import styles from "@/styles/_BlogCategory.module.scss";
 import { publicRoutes } from "@/utils/routes";
+import { getProfileProps } from "@/lib";
 
 type Props = {
   blogDataJson: { items: BlogJson[]; count: number };
   blogCategoryName: string;
+  profile: UserJson | null;
 };
 
 const LIMIT = 12;
@@ -48,7 +50,11 @@ const reducer = (state: State, action: { type: string; payload?: any }) => {
   }
 };
 
-const Page = ({ blogDataJson: { items, count }, blogCategoryName }: Props) => {
+const Page = ({
+  blogDataJson: { items, count },
+  blogCategoryName,
+  profile,
+}: Props) => {
   const router = useRouter();
   const [state, dispatch] = useReducer(reducer, {
     limit: LIMIT,
@@ -82,7 +88,7 @@ const Page = ({ blogDataJson: { items, count }, blogCategoryName }: Props) => {
   };
 
   return (
-    <DefaultLayout>
+    <DefaultLayout profile={new UserModel(profile)}>
       <>
         <Head>
           <title>{blogCategoryName || "Danh mục bài viết"}</title>
@@ -142,8 +148,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           slug: `${blogCategorySlug}`,
         }),
       ]);
+      const { props } = await getProfileProps(context);
       return {
         props: {
+          ...props,
           blogDataJson,
           blogCategoryName:
             blogCategoryDataJson.count > 0

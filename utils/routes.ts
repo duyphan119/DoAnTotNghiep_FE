@@ -1,6 +1,6 @@
 export const publicRoutes = {
   home: "/",
-  search: (q: string) => `/search?q=${q}`,
+  search: (q?: string) => (q ? `/search?q=${q}` : "/search"),
   payment: "/payment",
   productDetail: (slug: string) => `/product/${slug}`,
   products: (slug?: string) =>
@@ -13,6 +13,8 @@ export const publicRoutes = {
   blogCategory: (slug: string) => `/blog/blog-category/${slug}`,
   blogDetail: (slug: string) => `/blog/${slug}`,
   adminSignin: "/admin/signin",
+  userSignin: "/signin",
+  userSignup: "/signup",
 };
 
 export const protectedRoutes = {
@@ -59,6 +61,23 @@ export const protectedRoutes = {
   orderDiscountManagement: "/admin/order-discount",
   createOrderDiscount: "/admin/order-discount/create",
   updateOrderDiscount: (id: number) => `/admin/order-discount/${id}/update`,
+
+  notificationTypeManagement: "/admin/notification-type",
+  createNotificationType: "/admin/notification-type/create",
+  updateNotificationType: (id: number) =>
+    `/admin/notification-type/${id}/update`,
+
+  notificationManagement: "/admin/notification",
+  createNotification: "/admin/notification/create",
+  updateNotification: (id: number) => `/admin/notification/${id}/update`,
+
+  variantManagement: "/admin/variant",
+  createVariant: "/admin/variant/create",
+  updateVariant: (id: number) => `/admin/variant/${id}/update`,
+
+  variantValueManagement: "/admin/variant-value",
+  createVariantValue: "/admin/variant-value/create",
+  updateVariantValue: (id: number) => `/admin/variant-value/${id}/update`,
 
   statistics: "/admin/statistics",
 };

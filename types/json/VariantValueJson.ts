@@ -6,6 +6,7 @@ type VariantValueJson = {
   value: string;
   variantId: number;
   variant: VariantJson;
+  code: string;
 } & DateJson;
 
 export default VariantValueJson;

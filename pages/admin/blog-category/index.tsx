@@ -15,12 +15,16 @@ import { useAppDispatch } from "@/redux/store";
 import helper from "@/utils/helpers";
 import { protectedRoutes } from "@/utils/routes";
 import { useSelector } from "react-redux";
+import { UserJson } from "@/types/json";
+import { UserModel } from "@/models";
+import { requireAdminProps } from "@/lib";
+import { GetServerSidePropsContext } from "next";
 
-type Props = {};
+type Props = { profile: UserJson | null };
 
 const LIMIT = 10;
 
-const Page = (props: Props) => {
+const Page = ({ profile }: Props) => {
   const router = useRouter();
   const appDispatch = useAppDispatch();
   const { blogCategoryData } = useSelector(blogCategorySeletor);
@@ -32,13 +36,13 @@ const Page = (props: Props) => {
         p: +`${p}` || 1,
         limit: limit ? `${limit}` : LIMIT,
         sortBy: `${sortBy || "id"}`,
-        sortType: `${sortType}` === "asc" ? "asc" : "desc",
+        sortType: `${sortType}` === "ASC" ? "ASC" : "DESC",
       })
     );
   }, [router.query]);
 
   return (
-    <AdminLayout pageTitle="Danh mục bài viết">
+    <AdminLayout pageTitle="Danh mục bài viết" profile={new UserModel(profile)}>
       <Head>
         <title>Quản lý danh mục bài viết</title>
       </Head>
@@ -112,4 +116,9 @@ const Page = (props: Props) => {
   );
 };
 
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  return requireAdminProps(context);
+};
 export default Page;

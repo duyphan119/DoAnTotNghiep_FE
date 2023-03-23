@@ -14,6 +14,7 @@ import { authActions, authReducer } from "@/redux/slice/authSlice";
 import { cartActions } from "@/redux/slice/cartSlice";
 import { fetchActions } from "@/redux/slice/fetchSlice";
 import { snackbarActions } from "@/redux/slice/snackbarSlice";
+import { protectedRoutes, publicRoutes } from "@/utils/routes";
 
 const uApi = new UserApi();
 const cApi = new CartApi();
@@ -26,13 +27,22 @@ function* fetchGetProfile() {
     const data: UserModel = yield call(() => uApi.getProfile());
     if (data.id > 0) {
       isError = false;
+      let order: OrderModel = yield call(() => cApi.getCart());
+      if (order.id === 0) {
+        isError = true;
+      } else {
+        yield put(cartActions.setCart(order));
+      }
       yield put(authActions.setProfile(data));
       yield put(fetchActions.endAndSuccess());
     }
   } catch (error) {
     console.log("authActions.fetchGetProfile error", error);
   }
-  if (isError) yield put(fetchActions.endAndError());
+  if (isError) {
+    yield put(cartActions.getCart());
+    yield put(fetchActions.endAndError());
+  }
 }
 
 function* fetchLogin({ payload: dto }: ActionPayload<LoginDTO>) {
@@ -55,7 +65,11 @@ function* fetchLogin({ payload: dto }: ActionPayload<LoginDTO>) {
 
       yield put(cartActions.setCart(cart));
       localStorage.removeItem("cart");
-      yield put(fetchActions.endAndSuccess());
+      yield put(
+        fetchActions.endAndSuccessAndNavigate(
+          user.isAdmin ? protectedRoutes.admin : publicRoutes.home
+        )
+      );
     }
   } catch (error) {
     console.log("authActions.fetchLogin", error);
@@ -87,7 +101,7 @@ function* fetchRegister({ payload }: ActionPayload<RegisterDTO>) {
       localStorage.removeItem("cart");
       //
 
-      yield put(fetchActions.endAndSuccess());
+      yield put(fetchActions.endAndSuccessAndNavigate(publicRoutes.home));
     }
   } catch (error) {
     console.log("authActions.fetchLogin", error);

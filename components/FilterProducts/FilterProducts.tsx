@@ -1,5 +1,4 @@
 import { Breadcrumbs, ProductCard } from "@/components";
-import { DefaultLayout } from "@/layouts";
 import { GroupProductModel, ProductModel, ResponseGetAllModel } from "@/models";
 import { ProductParams, SortParams } from "@/types/params";
 import helper from "@/utils/helpers";
@@ -145,69 +144,79 @@ const FilterProducts: FC<Props> = ({
   };
 
   return (
-    <DefaultLayout>
-      <Container maxWidth="lg">
-        <Box>
-          <Breadcrumbs
-            links={breadcrumbs.links}
-            current={breadcrumbs.current}
-            currentWrap={true}
-            currentstyle={{ marginBlock: 8, fontSize: 24 }}
-          />
+    <Container maxWidth="lg">
+      <Box>
+        <Breadcrumbs
+          links={breadcrumbs.links}
+          current={breadcrumbs.current}
+          currentWrap={true}
+          currentstyle={{ marginBlock: 8, fontSize: 24 }}
+        />
+      </Box>
+      <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+        <Box sx={{ mr: 1 }}>
+          <IconButton onClick={handleClick}>
+            <Badge badgeContent={countParams} color="secondary">
+              <FilterAltOutlinedIcon />
+            </Badge>
+          </IconButton>
+          <Drawer open={open} onClose={handleClose} anchor="left">
+            <Box sx={{ maxWidth: "50vw", padding: "16px" }}>
+              <Sidebar
+                onFilter={handleFilter}
+                onClose={handleClose}
+                groupProductData={groupProductData}
+                params={params}
+              />
+            </Box>
+          </Drawer>
         </Box>
-        <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-          <Box sx={{ mr: 1 }}>
-            <IconButton onClick={handleClick}>
-              <Badge badgeContent={countParams} color="secondary">
-                <FilterAltOutlinedIcon />
-              </Badge>
-            </IconButton>
-            <Drawer open={open} onClose={handleClose} anchor="left">
-              <Box sx={{ maxWidth: "50vw", padding: "16px" }}>
-                <Sidebar
-                  onFilter={handleFilter}
-                  onClose={handleClose}
-                  groupProductData={groupProductData}
-                  params={params}
-                />
-              </Box>
-            </Drawer>
-          </Box>
-          <Header onSort={handleSort} totalProducts={totalProducts} />
-        </Box>
-        <Grid container columnSpacing={2} rowSpacing={2}>
-          {productData.items.map((product) => {
-            return (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
-                <ProductCard product={product} />
-              </Grid>
-            );
-          })}
-          {productData.count > 0 ? (
-            totalPages > 1 ? (
-              <Grid item xs={12}>
-                <Pagination
-                  count={totalPages}
-                  sx={{ ul: { justifyContent: "center" } }}
-                  variant="outlined"
-                  shape="rounded"
-                  showLastButton
-                  showFirstButton
-                  page={params.p || 1}
-                  onChange={(e, page) => handleChangePage(page)}
-                />
-              </Grid>
-            ) : null
-          ) : (
-            <Grid item xs={12}>
-              <Box sx={{ bgcolor: "#f8bbd0", p: 2 }}>
-                Không có sản phẩm phù hợp
-              </Box>
+        <Header onSort={handleSort} totalProducts={totalProducts} />
+      </Box>
+      <Grid container columnSpacing={2} rowSpacing={2}>
+        {productData.items.map((product) => {
+          return (
+            <Grid
+              item
+              xs={6}
+              sm={4}
+              md={3}
+              sx={{
+                flexBasis: {
+                  lg: "20%",
+                },
+              }}
+              key={product.id}
+            >
+              <ProductCard product={product} />
             </Grid>
-          )}
-        </Grid>
-      </Container>
-    </DefaultLayout>
+          );
+        })}
+        {productData.count > 0 ? (
+          totalPages > 1 ? (
+            <Grid item xs={12}>
+              <Pagination
+                count={totalPages}
+                sx={{ ul: { justifyContent: "center" } }}
+                variant="outlined"
+                shape="rounded"
+                showLastButton
+                showFirstButton
+                page={params.p || 1}
+                onChange={(e, page) => handleChangePage(page)}
+                color="primary"
+              />
+            </Grid>
+          ) : null
+        ) : (
+          <Grid item xs={12}>
+            <Box sx={{ bgcolor: "#f8bbd0", p: 2 }}>
+              Không có sản phẩm phù hợp
+            </Box>
+          </Grid>
+        )}
+      </Grid>
+    </Container>
   );
 };
 

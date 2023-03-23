@@ -1,24 +1,22 @@
-import { Grid } from "@mui/material";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
-import { CreateBlogCategoryDTO } from "@/types/dtos";
 import {
-  blogCategorySeletor,
   blogCategoryActions,
-  blogCategoryReducers,
+  blogCategoryReducer,
+  blogCategorySeletor,
 } from "@/redux/slice/blogCategorySlice";
 import { fetchActions, fetchSelector } from "@/redux/slice/fetchSlice";
 import { useAppDispatch } from "@/redux/store";
-import { FooterForm, InputControl, TextAreaControl } from "../common";
+import { CreateBlogCategoryDTO } from "@/types/dtos";
+import { Grid } from "@mui/material";
+import { useEffect } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
+import { FooterForm, InputControl, TextAreaControl } from "../../common";
 
 type Props = {};
 
 const BlogCategoryForm = (props: Props) => {
-  const router = useRouter();
   const appDispatch = useAppDispatch();
-  const { blogCategoryEditing, isBack } = useSelector(blogCategorySeletor);
+  const { current } = useSelector(blogCategorySeletor);
   const { isLoading, reducer } = useSelector(fetchSelector);
   const {
     register,
@@ -28,26 +26,26 @@ const BlogCategoryForm = (props: Props) => {
   } = useForm<CreateBlogCategoryDTO>();
 
   const onSubmit: SubmitHandler<CreateBlogCategoryDTO> = (data) => {
-    if (blogCategoryEditing) {
-      appDispatch(fetchActions.start(blogCategoryReducers.fetchUpdate));
+    if (current.id > 0) {
+      appDispatch(fetchActions.start(blogCategoryReducer.fetchUpdate));
       appDispatch(
         blogCategoryActions.fetchUpdate({
-          id: blogCategoryEditing.id,
+          id: current.id,
           ...data,
         })
       );
     } else {
-      appDispatch(fetchActions.start(blogCategoryReducers.fetchCreate));
+      appDispatch(fetchActions.start(blogCategoryReducer.fetchCreate));
       appDispatch(blogCategoryActions.fetchCreate(data));
     }
   };
 
   useEffect(() => {
-    if (blogCategoryEditing) {
-      setValue("name", blogCategoryEditing.name);
-      setValue("description", blogCategoryEditing.description);
+    if (current.id > 0) {
+      setValue("name", current.name);
+      setValue("description", current.description);
     }
-  }, [blogCategoryEditing]);
+  }, [current]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -76,8 +74,8 @@ const BlogCategoryForm = (props: Props) => {
         <Grid item xs={12}>
           <FooterForm
             isLoading={
-              (reducer === blogCategoryReducers.fetchCreate ||
-                reducer === blogCategoryReducers.fetchUpdate) &&
+              (reducer === blogCategoryReducer.fetchCreate ||
+                reducer === blogCategoryReducer.fetchUpdate) &&
               isLoading
             }
           />

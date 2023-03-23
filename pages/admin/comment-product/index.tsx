@@ -6,26 +6,30 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import { FormEvent, Fragment, useEffect, useRef, useState } from "react";
+import { ButtonControl, DataManagement, TextAreaControl } from "@/components";
+import { AdminLayout } from "@/layouts";
 import {
-  ButtonControl,
-  DataManagement,
-  TextAreaControl,
-} from "../../../components";
-import { AdminLayout } from "../../../layouts";
-import { CommentProductModel, RepCommentProductModel } from "../../../models";
-import { authSelector } from "../../../redux/slice/authSlice";
+  CommentProductModel,
+  RepCommentProductModel,
+  UserModel,
+} from "@/models";
+import { authSelector } from "@/redux/slice/authSlice";
 import {
   commentProductActions,
   commentProductReducer,
   commentProductSelector,
-} from "../../../redux/slice/commentProductSlice";
-import { confirmDialogActions } from "../../../redux/slice/confirmDialogSlice";
-import { fetchSelector } from "../../../redux/slice/fetchSlice";
-import { useAppDispatch } from "../../../redux/store";
-import helper from "../../../utils/helpers";
-import { publicRoutes } from "../../../utils/routes";
+} from "@/redux/slice/commentProductSlice";
+import { confirmDialogActions } from "@/redux/slice/confirmDialogSlice";
+import { fetchSelector } from "@/redux/slice/fetchSlice";
+import { useAppDispatch } from "@/redux/store";
+import helper from "@/utils/helpers";
+import { publicRoutes } from "@/utils/routes";
+import { UserJson } from "@/types/json";
+import { requireAdminProps } from "@/lib";
+import { GetServerSidePropsContext } from "next";
+import { useDefaultLayoutContext } from "@/context/DefaultLayoutContext";
 
-type Props = {};
+type Props = { profile: UserJson | null };
 
 const LIMIT = 10;
 
@@ -37,7 +41,8 @@ const Comment = ({
   onClickRep: (id: number) => void;
 }) => {
   const appDispatch = useAppDispatch();
-  const { profile } = useSelector(authSelector);
+  const { profile } = useDefaultLayoutContext();
+  // const { profile } = useSelector(authSelector);
 
   const handleRep = (id: number) => {
     onClickRep(id);
@@ -134,7 +139,8 @@ const RepComment = ({
   onClickUpdate: (id: number) => void;
 }) => {
   const appDispatch = useAppDispatch();
-  const { profile } = useSelector(authSelector);
+  const { profile } = useDefaultLayoutContext();
+  // const { profile } = useSelector(authSelector);
 
   const textRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -267,7 +273,7 @@ const FormRep = ({ commentProductId }: { commentProductId: number }) => {
   );
 };
 
-const Page = (props: Props) => {
+const Page = ({ profile }: Props) => {
   const router = useRouter();
   const appDispatch = useAppDispatch();
   const { isSuccess, reducer } = useSelector(fetchSelector);
@@ -299,7 +305,7 @@ const Page = (props: Props) => {
         p: +`${p}` || 1,
         limit: LIMIT,
         sortBy: `${sortBy || "id"}`,
-        sortType: `${sortType}` === "asc" ? "asc" : "desc",
+        sortType: `${sortType}` === "ASC" ? "ASC" : "DESC",
         product: true,
         repComments: true,
       })
@@ -307,7 +313,7 @@ const Page = (props: Props) => {
   }, [router.query]);
 
   return (
-    <AdminLayout pageTitle="Đánh giá sản phẩm">
+    <AdminLayout pageTitle="Đánh giá sản phẩm" profile={new UserModel(profile)}>
       <Fragment>
         <Head>
           <title>Danh sách các bài đánh giá sản phẩm</title>
@@ -321,22 +327,22 @@ const Page = (props: Props) => {
             {
               label: "Ngày đăng tăng đần",
               sortBy: "createdAt",
-              sortType: "asc",
+              sortType: "ASC",
             },
             {
               label: "Ngày đăng giảm đần",
               sortBy: "createdAt",
-              sortType: "desc",
+              sortType: "DESC",
             },
             {
               label: "Tên sản phẩm tăng đần",
               sortBy: "productName",
-              sortType: "asc",
+              sortType: "ASC",
             },
             {
               label: "Tên sản phẩm giảm đần",
               sortBy: "productName",
-              sortType: "desc",
+              sortType: "DESC",
             },
           ]}
         >
@@ -369,6 +375,11 @@ const Page = (props: Props) => {
       </Fragment>
     </AdminLayout>
   );
+};
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  return requireAdminProps(context);
 };
 
 export default Page;

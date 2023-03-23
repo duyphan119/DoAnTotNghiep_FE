@@ -5,18 +5,26 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { ButtonControl } from "../../../components";
-import { AdminLayout } from "../../../layouts";
-import { authActions, authSelector } from "../../../redux/slice/authSlice";
-import { useAppDispatch } from "../../../redux/store";
-import styles from "../../../styles/_SettingProfile.module.scss";
-import { ChangeProfileDTO } from "../../../types/dtos";
+import { ButtonControl } from "@/components";
+import { AdminLayout } from "@/layouts";
+import { authActions, authSelector } from "@/redux/slice/authSlice";
+import { useAppDispatch } from "@/redux/store";
+import styles from "@/styles/_SettingProfile.module.scss";
+import { ChangeProfileDTO } from "@/types/dtos";
+import { GetServerSidePropsContext } from "next";
+import { UserJson } from "@/types/json";
+import { UserModel } from "@/models";
+import { requireAdminProps } from "@/lib";
+import { useDefaultLayoutContext } from "@/context/DefaultLayoutContext";
 
-type Props = {};
+type Props = {
+  profile: UserJson;
+};
 
 const Profile = () => {
   const appDispatch = useAppDispatch();
-  const { profile } = useSelector(authSelector);
+  // const { profile } = useSelector(authSelector);
+  const { profile } = useDefaultLayoutContext();
 
   const [enabledForm, setEnabledForm] = useState<boolean>(false);
 
@@ -118,9 +126,12 @@ const Profile = () => {
   );
 };
 
-const Page = (props: Props) => {
+const Page = ({ profile }: Props) => {
   return (
-    <AdminLayout pageTitle="Thông tin tài khoản">
+    <AdminLayout
+      pageTitle="Thông tin tài khoản"
+      profile={new UserModel(profile)}
+    >
       <>
         <Head>
           <title>Thông tin tài khoản</title>
@@ -131,6 +142,12 @@ const Page = (props: Props) => {
       </>
     </AdminLayout>
   );
+};
+
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  return requireAdminProps(context);
 };
 
 export default Page;

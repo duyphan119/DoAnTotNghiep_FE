@@ -9,10 +9,14 @@ import {
   blogCategorySeletor,
 } from "@/redux/slice/blogCategorySlice";
 import { useAppDispatch } from "@/redux/store";
+import { UserJson } from "@/types/json";
+import { UserModel } from "@/models";
+import { requireAdminProps } from "@/lib";
+import { GetServerSidePropsContext } from "next";
 
-type Props = {};
+type Props = { profile: UserJson | null };
 
-const Page = (props: Props) => {
+const Page = ({ profile }: Props) => {
   const router = useRouter();
   const appDispatch = useAppDispatch();
   const { current } = useSelector(blogCategorySeletor);
@@ -24,7 +28,7 @@ const Page = (props: Props) => {
   }, [router.query.id, current]);
 
   return current.id > 0 ? (
-    <AdminLayout pageTitle="Danh mục bài viết">
+    <AdminLayout pageTitle="Danh mục bài viết" profile={new UserModel(profile)}>
       <Head>
         <title>Thêm mới danh mục viết</title>
       </Head>
@@ -35,6 +39,11 @@ const Page = (props: Props) => {
   ) : (
     <></>
   );
+};
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  return requireAdminProps(context);
 };
 
 export default Page;

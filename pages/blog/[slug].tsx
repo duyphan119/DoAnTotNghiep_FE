@@ -1,8 +1,9 @@
 import { BlogApi } from "@/api";
 import { BlogContent, ImageFill } from "@/components";
 import { DefaultLayout } from "@/layouts";
-import { BlogModel } from "@/models";
-import { BlogJson } from "@/types/json";
+import { getProfileProps } from "@/lib";
+import { BlogModel, UserModel } from "@/models";
+import { BlogJson, UserJson } from "@/types/json";
 import { Box, Container, Grid } from "@mui/material";
 import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
@@ -10,17 +11,22 @@ import Head from "next/head";
 type Props = {
   blog: BlogJson | null;
   relatedBlogs: BlogJson[];
+  profile: UserJson | null;
 };
 
 const bApi = new BlogApi();
-const BlogBySlug = ({ blog: _blog, relatedBlogs: _relatedBlogs }: Props) => {
+const BlogBySlug = ({
+  blog: _blog,
+  relatedBlogs: _relatedBlogs,
+  profile,
+}: Props) => {
   const blog = new BlogModel(_blog);
   const relatedBlogs = bApi.getListFromJson(_relatedBlogs);
 
   const hasRelated = relatedBlogs.length > 0;
 
   return (
-    <DefaultLayout>
+    <DefaultLayout profile={new UserModel()}>
       <>
         <Head>
           <title>{blog.id > 0 ? blog.title : "Bài viết"}</title>
@@ -105,8 +111,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         );
       }
     }
+    const { props } = await getProfileProps(context);
     return {
       props: {
+        ...props,
         blog,
         relatedBlogs,
       },

@@ -26,6 +26,7 @@ type OrderJson = {
   user: UserJson;
   items: OrderItemJson[];
   discount: OrderDiscountJson;
+  code: string;
 };
 
 export default OrderJson;

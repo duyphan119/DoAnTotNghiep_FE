@@ -10,7 +10,7 @@ import {
   RegisterDTO,
 } from "@/types/dtos";
 import { OrderParams } from "@/types/params";
-import { COOKIE_ACCESSTOKEN_NAME } from "@/utils/constants";
+import { COOKIE_ACCESSTOKEN_NAME, COOKIE_PROFILE } from "@/utils/constants";
 
 type State = {
   profile: UserModel;

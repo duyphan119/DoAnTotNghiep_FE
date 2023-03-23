@@ -40,7 +40,7 @@ const blogCategorySlice = createSlice({
   },
 });
 
-export const blogCategoryReducers = {
+export const blogCategoryReducer = {
   fetchGetAll: `${NAME_SLICE}/fetchGetAll`,
   fetchCreate: `${NAME_SLICE}/fetchCreate`,
   fetchUpdate: `${NAME_SLICE}/fetchUpdate`,

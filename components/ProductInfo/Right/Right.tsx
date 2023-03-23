@@ -1,4 +1,5 @@
 import { ButtonControl } from "@/components";
+import { useDefaultLayoutContext } from "@/context/DefaultLayoutContext";
 import {
   OrderItemModel,
   ProductVariantModel,
@@ -10,8 +11,11 @@ import {
   productDetailActions,
   productDetailSelector,
 } from "@/redux/slice/productDetailSlice";
+import { snackbarActions } from "@/redux/slice/snackbarSlice";
 import { useAppDispatch } from "@/redux/store";
+import { publicRoutes } from "@/utils/routes";
 import { Rating } from "@mui/material";
+import { useRouter } from "next/router";
 import { FC, useState } from "react";
 import { useSelector } from "react-redux";
 import styles from "./_style.module.scss";
@@ -20,7 +24,9 @@ type Props = {};
 
 const Right: FC<Props> = () => {
   const appDispatch = useAppDispatch();
-  const { profile } = useSelector(authSelector);
+  const router = useRouter();
+  // const { profile } = useSelector(authSelector);
+  const { profile } = useDefaultLayoutContext();
 
   const {
     product,
@@ -30,13 +36,13 @@ const Right: FC<Props> = () => {
   } = useSelector(productDetailSelector);
   const [quantity, setQuantity] = useState<number>(1);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (qtt?: number) => {
     if (selectedProductVariant) {
       if (profile.id > 0) {
         // Thêm vào giỏ hàng khi đã đăng nhập
         appDispatch(
           cartActions.fetchAddToCart({
-            quantity,
+            quantity: qtt || quantity,
             productVariantId: selectedProductVariant.id,
             price: selectedProductVariant.price,
           })
@@ -46,7 +52,7 @@ const Right: FC<Props> = () => {
         appDispatch(
           cartActions.addToCart(
             new OrderItemModel({
-              quantity,
+              quantity: qtt || quantity,
               productVariantId: selectedProductVariant.id,
               price: selectedProductVariant.price,
               productVariant: new ProductVariantModel({
@@ -56,9 +62,18 @@ const Right: FC<Props> = () => {
             })
           )
         );
+        appDispatch(
+          snackbarActions.success("Sản phẩm đã được thêm vào giỏ hàng")
+        );
       }
     }
   };
+
+  const handlePurchaseNow = () => {
+    handleAddToCart(1);
+    router.push(publicRoutes.cart);
+  };
+
   const changeQuantity = (newQuantity: number) => {
     newQuantity > 0 && setQuantity(newQuantity);
   };
@@ -85,18 +100,16 @@ const Right: FC<Props> = () => {
             <div className={styles.title}>{key}</div>
             <ul className={styles.variant}>
               {renderVariantValues.values[key].map((variantValue) => {
+                const active =
+                  selectedVariantValues.findIndex(
+                    (i) => i.id === variantValue.id
+                  ) !== -1;
+
                 return (
                   <li
                     key={variantValue.id}
                     onClick={() => handleClickVariantValue(variantValue)}
-                    className={
-                      selectedVariantValues &&
-                      selectedVariantValues.findIndex(
-                        (i) => i.id === variantValue.id
-                      ) !== -1
-                        ? styles.active
-                        : ""
-                    }
+                    className={active ? styles.active : ""}
                   >
                     {variantValue.value}
                   </li>
@@ -112,8 +125,10 @@ const Right: FC<Props> = () => {
         <button onClick={() => changeQuantity(quantity + 1)}>+</button>
       </div>
       <div className={styles.buttons}>
-        <ButtonControl color="secondary">Mua ngay</ButtonControl>
-        <ButtonControl variant="outlined" onClick={handleAddToCart}>
+        <ButtonControl color="secondary" onClick={handlePurchaseNow}>
+          Mua ngay
+        </ButtonControl>
+        <ButtonControl variant="outlined" onClick={() => handleAddToCart()}>
           Thêm vào giỏ hàng
         </ButtonControl>
       </div>

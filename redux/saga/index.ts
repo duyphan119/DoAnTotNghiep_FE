@@ -14,6 +14,8 @@ import { variantSaga } from "./variantSaga";
 import { userSaga } from "./userSaga";
 import { commentProductSaga } from "./commentProductSaga";
 import { orderDiscountSaga } from "./orderDiscountSaga";
+import { notificationTypeSaga } from "./notificationTypeSaga";
+import { variantValueSaga } from "./variantValueSaga";
 
 export default function* rootSaga() {
   yield all([
@@ -32,5 +34,7 @@ export default function* rootSaga() {
     userSaga(),
     commentProductSaga(),
     orderDiscountSaga(),
+    notificationTypeSaga(),
+    variantValueSaga(),
   ]);
 }

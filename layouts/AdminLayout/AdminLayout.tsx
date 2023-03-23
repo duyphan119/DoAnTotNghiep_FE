@@ -9,6 +9,9 @@ import { useAppDispatch } from "@/redux/store";
 import { publicRoutes } from "@/utils/routes";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
+import { AdminLayoutWrapper } from "@/context";
+import { UserJson } from "@/types/json";
+import { UserModel } from "@/models";
 
 export const DRAWER_WIDTH = 280;
 
@@ -37,12 +40,13 @@ const Content = styled("div", {
 type Props = Partial<{
   children: ReactNode;
   pageTitle: string;
+  profile: UserModel;
 }>;
 
-const AdminLayout = ({ children, pageTitle }: Props) => {
+const AdminLayout = ({ children, pageTitle, profile }: Props) => {
   const router = useRouter();
   const appDispatch = useAppDispatch();
-  const { profile } = useSelector(authSelector);
+  // const { profile } = useSelector(authSelector);
   const { isError, isBack } = useSelector(fetchSelector);
   const [open, setOpen] = useState(true);
 
@@ -60,24 +64,26 @@ const AdminLayout = ({ children, pageTitle }: Props) => {
 
   if (!profile) return null;
   return (
-    <Box display="flex" flexDirection="column" minHeight="100vh">
-      <Header
-        pageTitle={pageTitle}
-        onToggle={() => {
-          setOpen((o) => !o);
-        }}
-      />
-      <Box
-        display="flex"
-        sx={{
-          flex: 1,
-          marginTop: "80px",
-        }}
-      >
-        <Sidebar open={open} />
-        <Content open={open}>{children}</Content>
+    <AdminLayoutWrapper profile={profile}>
+      <Box display="flex" flexDirection="column" minHeight="100vh">
+        <Header
+          pageTitle={pageTitle}
+          onToggle={() => {
+            setOpen((o) => !o);
+          }}
+        />
+        <Box
+          display="flex"
+          sx={{
+            flex: 1,
+            marginTop: "80px",
+          }}
+        >
+          <Sidebar open={open} />
+          <Content open={open}>{children}</Content>
+        </Box>
       </Box>
-    </Box>
+    </AdminLayoutWrapper>
   );
 };
 export default AdminLayout;

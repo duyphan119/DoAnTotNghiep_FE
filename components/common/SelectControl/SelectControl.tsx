@@ -1,5 +1,13 @@
 import { useId, ChangeEvent, memo } from "react";
 import { FieldError } from "react-hook-form";
+import {
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  SelectChangeEvent,
+  FormHelperText,
+} from "@mui/material";
 
 type Props = Partial<{
   error: FieldError;
@@ -7,12 +15,17 @@ type Props = Partial<{
   label: string;
   register: any;
   onChange: (e: ChangeEvent<HTMLSelectElement>) => void;
+  onChangeMuiCustom: (e: SelectChangeEvent) => void;
   value: any;
   options: {
-    value: string | number;
+    value: string | number | readonly string[];
     display?: string | number;
   }[];
   disabled: boolean;
+  useMuiCustom: boolean;
+  fullWidth: boolean;
+  variant: "outlined" | "standard" | "filled";
+  defaultValue: string;
 }>;
 
 const SelectControl = ({
@@ -24,9 +37,45 @@ const SelectControl = ({
   value,
   options,
   disabled,
+  useMuiCustom,
+  fullWidth,
+  onChangeMuiCustom,
+  defaultValue,
+  variant,
 }: Props) => {
   const id = useId();
-  return (
+  const labelId = useId();
+  return useMuiCustom ? (
+    <FormControl fullWidth={fullWidth || true} error={error ? true : false}>
+      <InputLabel id={labelId}>{label}</InputLabel>
+      <Select
+        id={id}
+        labelId={labelId}
+        label={label}
+        variant={variant || "standard"}
+        required={required}
+        disabled={disabled}
+        value={value || ""}
+        onChange={onChangeMuiCustom}
+        defaultValue={defaultValue}
+        {...register}
+      >
+        {!options || options.length === 0 ? (
+          <MenuItem value={""}>
+            <em>{label}</em>
+          </MenuItem>
+        ) : null}
+        {options?.map((item, index) => {
+          return (
+            <MenuItem value={item.value} key={index}>
+              {item.display || item.value}
+            </MenuItem>
+          );
+        })}
+      </Select>
+      {error ? <FormHelperText>{error.message}</FormHelperText> : null}
+    </FormControl>
+  ) : (
     <div className="form-group">
       {error ? <div className="form-error">{error.message}</div> : null}
       <select
@@ -37,7 +86,7 @@ const SelectControl = ({
         disabled={disabled}
         {...register}
       >
-        {options?.map((item, index: number) => {
+        {options?.map((item, index) => {
           return (
             <option value={item.value} key={index}>
               {item.display || item.value}
