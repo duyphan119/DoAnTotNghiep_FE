@@ -1,9 +1,13 @@
+import { confirmDialogActions } from "@/redux/slice/confirmDialogSlice";
+import { fetchSelector } from "@/redux/slice/fetchSlice";
+import { useAppDispatch } from "@/redux/store";
 import helper from "@/utils/helpers";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box, Paper, Typography } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { ParsedUrlQuery } from "querystring";
 import {
   createContext,
   FC,
@@ -14,6 +18,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { useSelector } from "react-redux";
 import ButtonControl from "../ButtonControl";
 import Pagination from "./Pagination";
 import SearchWrapper from "./SearchWrapper";
@@ -32,6 +37,7 @@ type Props = Partial<{
     sortType: "ASC" | "DESC";
   }>;
   hideCreateBtn: boolean;
+  onFetch: () => void;
 }>;
 
 const DataManagementContext = createContext<any>({});
@@ -44,6 +50,7 @@ const DataManagement: FC<Props> = ({
   children,
   sorts,
   hideCreateBtn,
+  onFetch,
 }) => {
   const router = useRouter();
   const { p } = router.query;
@@ -52,10 +59,13 @@ const DataManagement: FC<Props> = ({
   const SORT_BY = router.query.sortBy ? `${router.query.sortBy}` : "";
   const SORT_TYPE =
     router.query.sortType && router.query.sortType === "ASC" ? "ASC" : "DESC";
+  const { deleted } = useSelector(fetchSelector);
 
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [ids, setIds] = useState<number[]>([]);
   const [sortValue, setSortValue] = useState<string>("");
+
+  const appDispatch = useAppDispatch();
 
   const handleSearch = (q: string) => {
     let obj = {
@@ -75,10 +85,16 @@ const DataManagement: FC<Props> = ({
   };
 
   const handleDeleteAll = () => {
-    if (PAGE > 1 && PAGE <= TOTAL_PAGE) {
-      handleChangePage(PAGE - 1);
-    }
-    onDeleteAll && onDeleteAll(ids);
+    appDispatch(
+      confirmDialogActions.show({
+        onConfirm: () => {
+          if (PAGE > 1 && PAGE <= TOTAL_PAGE) {
+            handleChangePage(PAGE - 1);
+          }
+          onDeleteAll && onDeleteAll(ids);
+        },
+      })
+    );
   };
 
   const handleChangeSort = (value: string) => {
@@ -93,8 +109,18 @@ const DataManagement: FC<Props> = ({
   };
 
   useEffect(() => {
+    if (onFetch) {
+      onFetch();
+    }
     setIds([]);
   }, [router.query]);
+
+  useEffect(() => {
+    if (deleted && onFetch) {
+      onFetch();
+      setIds([]);
+    }
+  }, [deleted]);
 
   useEffect(() => {
     if (SORT_BY) {
@@ -136,7 +162,7 @@ const DataManagement: FC<Props> = ({
               <Link href={router.pathname + "/create"}>
                 <ButtonControl
                   startIcon={<AddIcon />}
-                  tooltip="Đi tới trang thêm mới sản phẩm"
+                  tooltip="Đi tới trang thêm mới"
                 >
                   Thêm mới
                 </ButtonControl>

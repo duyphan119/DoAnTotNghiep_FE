@@ -11,23 +11,29 @@ import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { FooterForm, InputControl, TextAreaControl } from "../../common";
+import { useRouter } from "next/router";
 
 type Props = {};
 
 const BlogCategoryForm = (props: Props) => {
+  const router = useRouter();
   const appDispatch = useAppDispatch();
   const { current } = useSelector(blogCategorySeletor);
-  const { isLoading, reducer } = useSelector(fetchSelector);
+  const { isLoading, reducer, resetForm } = useSelector(fetchSelector);
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
-  } = useForm<CreateBlogCategoryDTO>();
+  } = useForm<CreateBlogCategoryDTO>({
+    defaultValues: {
+      name: "",
+      description: "",
+    },
+  });
 
   const onSubmit: SubmitHandler<CreateBlogCategoryDTO> = (data) => {
     if (current.id > 0) {
-      appDispatch(fetchActions.start(blogCategoryReducer.fetchUpdate));
       appDispatch(
         blogCategoryActions.fetchUpdate({
           id: current.id,
@@ -35,7 +41,6 @@ const BlogCategoryForm = (props: Props) => {
         })
       );
     } else {
-      appDispatch(fetchActions.start(blogCategoryReducer.fetchCreate));
       appDispatch(blogCategoryActions.fetchCreate(data));
     }
   };
@@ -46,6 +51,24 @@ const BlogCategoryForm = (props: Props) => {
       setValue("description", current.description);
     }
   }, [current]);
+
+  useEffect(() => {
+    if (router.query.id) {
+      appDispatch(blogCategoryActions.fetchGetById(+`${router.query.id}`));
+    }
+  }, [router.query.id]);
+
+  const handleResetForm = () => {
+    setValue("name", "");
+    setValue("description", "");
+  };
+
+  useEffect(() => {
+    if (resetForm) {
+      handleResetForm();
+      appDispatch(fetchActions.endResetForm());
+    }
+  }, [resetForm]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

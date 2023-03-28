@@ -46,6 +46,7 @@ export const blogSlice = createSlice({
     ) => {},
     fetchGetById: (state, action: ActionPayload<number>) => {},
     fetchSoftDeleteSingle: (state, action: ActionPayload<number>) => {},
+    fetchSoftDeleteMultiple: (state, action: ActionPayload<number[]>) => {},
   },
 });
 
@@ -55,6 +56,7 @@ export const blogReducers = {
   fetchGetById: `${NAME_SLICE}/fetchGetById`,
   fetchUpdate: `${NAME_SLICE}/fetchUpdate`,
   fetchSoftDeleteSingle: `${NAME_SLICE}/fetchSoftDeleteSingle`,
+  fetchSoftDeleteMultiple: `${NAME_SLICE}/fetchSoftDeleteMultiple`,
 };
 export const blogSelector = (state: RootState): State => state.blog;
 export const blogActions = blogSlice.actions;

@@ -14,7 +14,7 @@ class BlogModel extends DateModel {
   blogCategory: BlogCategoryModel;
   metaDescription: string;
   metaKeywords: string;
-  constructor(obj?: Partial<BlogJson>) {
+  constructor(obj?: Partial<BlogJson> | null) {
     super(obj);
     this.id = obj?.id ?? 0;
     this.title = obj?.title ?? "";

@@ -28,6 +28,7 @@ const blogCategorySlice = createSlice({
     ) => {},
     fetchGetById: (state, action: ActionPayload<number>) => {},
     fetchSoftDeleteSingle: (state, action: ActionPayload<number>) => {},
+    fetchSoftDeleteMultiple: (state, action: ActionPayload<number[]>) => {},
     setBlogCategoryData: (
       state,
       action: ActionPayload<ResponseGetAllModel<BlogCategoryModel>>
@@ -46,6 +47,7 @@ export const blogCategoryReducer = {
   fetchUpdate: `${NAME_SLICE}/fetchUpdate`,
   fetchGetById: `${NAME_SLICE}/fetchGetById`,
   fetchSoftDeleteSingle: `${NAME_SLICE}/fetchSoftDeleteSingle`,
+  fetchSoftDeleteMultiple: `${NAME_SLICE}/fetchSoftDeleteMultiple`,
 };
 export const blogCategorySeletor = (state: RootState): State =>
   state.blogCategory;

@@ -1,15 +1,15 @@
 import { BlogCategoryApi } from "@/api";
 import { BlogCategoryModel, ResponseGetAllModel } from "@/models";
-import { ActionPayload } from "@/redux/store";
-import { CreateBlogCategoryDTO } from "@/types/dtos";
-import { BlogCategoryParams } from "@/types/params";
-import { call, put, takeEvery } from "redux-saga/effects";
-import { MSG_SUCCESS } from "@/utils/constants";
 import {
   blogCategoryActions,
   blogCategoryReducer,
 } from "@/redux/slice/blogCategorySlice";
 import { fetchActions } from "@/redux/slice/fetchSlice";
+import { ActionPayload } from "@/redux/store";
+import { CreateBlogCategoryDTO } from "@/types/dtos";
+import { BlogCategoryParams } from "@/types/params";
+import { call, put, takeEvery } from "redux-saga/effects";
+import { snackbarActions } from "../slice/snackbarSlice";
 
 const bcApi = new BlogCategoryApi();
 
@@ -33,15 +33,19 @@ function* fetchCreate({ payload: dto }: ActionPayload<CreateBlogCategoryDTO>) {
   let isError = true;
   yield put(fetchActions.start(blogCategoryReducer.fetchCreate));
   try {
-    const { message } = yield call(() => bcApi.create(dto));
-    if (message === MSG_SUCCESS) {
+    const data: BlogCategoryModel = yield call(() => bcApi.create(dto));
+    if (data.id > 0) {
       isError = false;
-      yield put(fetchActions.endAndSuccessAndBack());
+      yield put(fetchActions.endAndSuccessAndResetForm());
+      yield put(snackbarActions.success("Thêm thành công"));
     }
   } catch (error) {
     console.log("blogCategorySaga.fetchCreate error", error);
   }
-  if (isError) yield put(fetchActions.endAndError());
+  if (isError) {
+    yield put(fetchActions.endAndError());
+    yield put(snackbarActions.error("Thêm không thành công"));
+  }
 }
 
 function* fetchUpdate({
@@ -50,25 +54,29 @@ function* fetchUpdate({
   let isError = true;
   yield put(fetchActions.start(blogCategoryReducer.fetchUpdate));
   try {
-    const { message } = yield call(() => bcApi.update({ id, dto }));
-    if (message === MSG_SUCCESS) {
+    const data: BlogCategoryModel = yield call(() => bcApi.update({ id, dto }));
+    if (data.id > 0) {
       isError = false;
-      yield put(fetchActions.endAndSuccessAndBack());
+      yield put(fetchActions.endAndSuccessAndResetForm());
+      yield put(snackbarActions.success("Cập nhật thành công"));
     }
   } catch (error) {
     console.log("blogCategorySaga.fetchUpdate error", error);
   }
-  if (isError) yield put(fetchActions.endAndError());
+  if (isError) {
+    yield put(fetchActions.endAndError());
+    yield put(snackbarActions.error("Cập nhật không thành công"));
+  }
 }
 
 function* fetchSoftDeleteSingle({ payload: id }: ActionPayload<number>) {
   let isError = true;
   yield put(fetchActions.start(blogCategoryReducer.fetchSoftDeleteSingle));
   try {
-    const { message } = yield call(() => bcApi.softDeleteSingle(id));
-    if (message === MSG_SUCCESS) {
+    const result: boolean = yield call(() => bcApi.softDeleteSingle(id));
+    if (result) {
       isError = false;
-      yield put(fetchActions.endAndSuccess());
+      yield put(fetchActions.endAndSuccessAndDeleted());
     }
   } catch (error) {
     console.log("blogCategorySaga.fetchSoftDeleteSingle error", error);
@@ -80,14 +88,31 @@ function* fetchGetById({ payload: id }: ActionPayload<number>) {
   let isError = true;
   yield put(fetchActions.start(blogCategoryReducer.fetchGetById));
   try {
-    const { message, data } = yield call(() => bcApi.getById(id));
-    if (message === MSG_SUCCESS) {
+    const data: BlogCategoryModel = yield call(() => bcApi.getById(id));
+    if (data.id > 0) {
       isError = false;
       yield put(blogCategoryActions.setCurrent(data));
       yield put(fetchActions.endAndSuccess());
     }
   } catch (error) {
     console.log("blogCategorySaga.fetchGetById error", error);
+  }
+  if (isError) yield put(fetchActions.endAndError());
+}
+
+function* fetchSoftDeleteMultiple({
+  payload: listId,
+}: ActionPayload<number[]>) {
+  let isError = true;
+  yield put(fetchActions.start(blogCategoryReducer.fetchSoftDeleteMultiple));
+  try {
+    const result: boolean = yield call(() => bcApi.softDeleteMultiple(listId));
+    if (result) {
+      isError = false;
+      yield put(fetchActions.endAndSuccessAndDeleted());
+    }
+  } catch (error) {
+    console.log("blogCategorySaga.fetchSoftDeleteMultiple error", error);
   }
   if (isError) yield put(fetchActions.endAndError());
 }
@@ -101,4 +126,8 @@ export function* blogCategorySaga() {
     fetchSoftDeleteSingle
   );
   yield takeEvery(blogCategoryReducer.fetchGetById, fetchGetById);
+  yield takeEvery(
+    blogCategoryReducer.fetchSoftDeleteMultiple,
+    fetchSoftDeleteMultiple
+  );
 }

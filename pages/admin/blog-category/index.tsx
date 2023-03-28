@@ -1,13 +1,14 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 import { ButtonControl, DataManagement, DataTable } from "@/components";
 import { AdminLayout } from "@/layouts";
 import { BlogCategoryModel } from "@/models";
 import {
   blogCategoryActions,
+  blogCategoryReducer,
   blogCategorySeletor,
 } from "@/redux/slice/blogCategorySlice";
 import { confirmDialogActions } from "@/redux/slice/confirmDialogSlice";
@@ -19,6 +20,7 @@ import { UserJson } from "@/types/json";
 import { UserModel } from "@/models";
 import { requireAdminProps } from "@/lib";
 import { GetServerSidePropsContext } from "next";
+import { fetchActions, fetchSelector } from "@/redux/slice/fetchSlice";
 
 type Props = { profile: UserJson | null };
 
@@ -28,8 +30,9 @@ const Page = ({ profile }: Props) => {
   const router = useRouter();
   const appDispatch = useAppDispatch();
   const { blogCategoryData } = useSelector(blogCategorySeletor);
+  const { reducer, isLoading, reducers } = useSelector(fetchSelector);
 
-  useEffect(() => {
+  const handleFetch = useCallback(() => {
     const { p, limit, sortBy, sortType } = router.query;
     appDispatch(
       blogCategoryActions.fetchGetAll({
@@ -41,12 +44,22 @@ const Page = ({ profile }: Props) => {
     );
   }, [router.query]);
 
+  const handleDeleteAll = (listId: number[]) => {
+    appDispatch(blogCategoryActions.fetchSoftDeleteMultiple(listId));
+  };
+
   return (
     <AdminLayout pageTitle="Danh mục bài viết" profile={new UserModel(profile)}>
       <Head>
         <title>Quản lý danh mục bài viết</title>
       </Head>
-      <DataManagement paperTitle="Danh sách danh mục bài viết">
+      <DataManagement
+        paperTitle="Danh sách danh mục bài viết"
+        limit={LIMIT}
+        count={blogCategoryData.count}
+        onFetch={handleFetch}
+        onDeleteAll={handleDeleteAll}
+      >
         <DataTable
           rows={blogCategoryData.items}
           sortable={["id", "name", "slug", "sex", "isAdult", "createdAt"]}
@@ -110,6 +123,7 @@ const Page = ({ profile }: Props) => {
               ),
             },
           ]}
+          isLoading={reducer === blogCategoryReducer.fetchGetAll && isLoading}
         />
       </DataManagement>
     </AdminLayout>

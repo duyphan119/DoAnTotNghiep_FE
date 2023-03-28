@@ -51,7 +51,10 @@ const advertisementSlice = createSlice({
     setCurrent: (state, action: ActionPayload<AdvertisementModel>) => {
       state.current = action.payload;
     },
-    fetchDelete: (state, action: ActionPayload<number>) => {
+    fetchDeleteSingle: (state, action: ActionPayload<number>) => {
+      state.isDeleted = false;
+    },
+    fetchDeleteMultiple: (state, action: ActionPayload<number[]>) => {
       state.isDeleted = false;
     },
   },
@@ -63,6 +66,7 @@ export const advertisementReducer = {
   fetchCreate: `${NAME_SLICE}/fetchCreate`,
   fetchUpdate: `${NAME_SLICE}/fetchUpdate`,
   fetchDeleteSingle: `${NAME_SLICE}/fetchDeleteSingle`,
+  fetchDeleteMultiple: `${NAME_SLICE}/fetchDeleteMultiple`,
 };
 export const advertisementActions = advertisementSlice.actions;
 export const advertisementSelector = (state: RootState): State =>

@@ -22,9 +22,11 @@ export const protectedRoutes = {
   profile: "/profile",
   address: "/address",
   myOrders: "/order",
-  userManagement: "/admin/account",
   customerChangePassword: "/change-password",
   changePassword: "/admin/setting/change-password",
+
+  userManagement: "/admin/account",
+  createUser: "/admin/account/create",
 
   advertisementManagement: "/admin/advertisement",
   createAdvertisement: "/admin/advertisement/create",

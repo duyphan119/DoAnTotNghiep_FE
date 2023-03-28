@@ -61,7 +61,9 @@ const Categories = (props: Props) => {
           <Link
             href={publicRoutes.blogs}
             className={`${styles.navItemLink} ${
-              router.pathname === publicRoutes.blogs ? styles.active : ""
+              router.pathname.startsWith(publicRoutes.blogs)
+                ? styles.active
+                : ""
             }`}
           >
             Bài viết

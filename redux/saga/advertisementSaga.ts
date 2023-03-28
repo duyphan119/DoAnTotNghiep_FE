@@ -9,6 +9,7 @@ import {
 } from "@/redux/slice/advertisementSlice";
 import { fetchActions } from "@/redux/slice/fetchSlice";
 import { ActionPayload } from "@/redux/store";
+import { snackbarActions } from "../slice/snackbarSlice";
 
 const advApi = new AdvertisementApi();
 
@@ -45,12 +46,16 @@ function* fetchCreate({
     );
     if (data.id > 0) {
       isError = false;
-      yield put(fetchActions.endAndSuccessAndBack());
+      yield put(fetchActions.endAndSuccessAndResetForm());
+      yield put(snackbarActions.success("Thêm thành công"));
     }
   } catch (error) {
     console.log("advertisementActions.fetchCreate", error);
   }
-  if (isError) yield put(fetchActions.endAndError());
+  if (isError) {
+    yield put(fetchActions.endAndError());
+    yield put(snackbarActions.success("Thêm không thành công"));
+  }
 }
 
 function* fetchUpdate({
@@ -69,12 +74,16 @@ function* fetchUpdate({
     );
     if (data.id > 0) {
       isError = false;
-      yield put(fetchActions.endAndSuccessAndBack());
+      yield put(fetchActions.endAndSuccessAndResetForm());
+      yield put(snackbarActions.success("Cập nhật thành công"));
     }
   } catch (error) {
     console.log("advertisementActions.fetchUpdate", error);
   }
-  if (isError) yield put(fetchActions.endAndError());
+  if (isError) {
+    yield put(fetchActions.endAndError());
+    yield put(snackbarActions.success("Cập nhật không thành công"));
+  }
 }
 
 function* fetchGetById({ payload }: ActionPayload<number>) {
@@ -99,11 +108,24 @@ function* fetchDeleteSingle({ payload: id }: ActionPayload<number>) {
     const result: boolean = yield call(() => advApi.deleteSingle(id));
     if (result) {
       isError = false;
-      yield put(advertisementActions.deleted());
-      yield put(fetchActions.endAndSuccess());
+      yield put(fetchActions.endAndSuccessAndDeleted());
     }
   } catch (error) {
     console.log("advertisementActions.fetchDeleteSingle", error);
+  }
+  if (isError) yield put(fetchActions.endAndError());
+}
+
+function* fetchDeleteMultiple({ payload: listId }: ActionPayload<number[]>) {
+  let isError = true;
+  try {
+    const result: boolean = yield call(() => advApi.deleteMultiple(listId));
+    if (result) {
+      isError = false;
+      yield put(fetchActions.endAndSuccessAndDeleted());
+    }
+  } catch (error) {
+    console.log("advertisementActions.fetchDeleteMulti", error);
   }
   if (isError) yield put(fetchActions.endAndError());
 }
@@ -114,4 +136,8 @@ export function* advertisementSaga() {
   yield takeEvery(advertisementReducer.fetchUpdate, fetchUpdate);
   yield takeEvery(advertisementReducer.fetchGetById, fetchGetById);
   yield takeEvery(advertisementReducer.fetchDeleteSingle, fetchDeleteSingle);
+  yield takeEvery(
+    advertisementReducer.fetchDeleteMultiple,
+    fetchDeleteMultiple
+  );
 }

@@ -1,6 +1,12 @@
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import { Box, ClickAwayListener, IconButton, Popper } from "@mui/material";
+import {
+  Box,
+  ClickAwayListener,
+  IconButton,
+  Popper,
+  Tooltip,
+} from "@mui/material";
 import { FC, FormEvent, memo, MouseEvent, useRef, useState } from "react";
 import ButtonControl from "../ButtonControl";
 import styles from "./_style.module.scss";
@@ -34,11 +40,28 @@ const Pagination: FC<Props> = ({ onChangePage, page, totalPage }) => {
     }
   };
 
+  const prevBtn = (
+    <IconButton onClick={() => onChangePage(page - 1)} disabled={page <= 1}>
+      <ChevronLeftIcon />
+    </IconButton>
+  );
+
+  const nextBtn = (
+    <IconButton
+      onClick={() => onChangePage(page + 1)}
+      disabled={page >= totalPage}
+    >
+      <ChevronRightIcon />
+    </IconButton>
+  );
+
   return (
     <Box display="flex">
-      <IconButton onClick={() => onChangePage(page - 1)} disabled={page <= 1}>
-        <ChevronLeftIcon />
-      </IconButton>
+      {page <= 1 ? (
+        prevBtn
+      ) : (
+        <Tooltip title="Đi tới trang trước">{prevBtn}</Tooltip>
+      )}
       <ButtonControl
         variant="text"
         onClick={handleClick}
@@ -72,13 +95,11 @@ const Pagination: FC<Props> = ({ onChangePage, page, totalPage }) => {
           </Popper>
         </ClickAwayListener>
       ) : null}
-
-      <IconButton
-        onClick={() => onChangePage(page + 1)}
-        disabled={page >= totalPage}
-      >
-        <ChevronRightIcon />
-      </IconButton>
+      {page >= totalPage ? (
+        nextBtn
+      ) : (
+        <Tooltip title="Đi tới trang sau">{nextBtn}</Tooltip>
+      )}
     </Box>
   );
 };

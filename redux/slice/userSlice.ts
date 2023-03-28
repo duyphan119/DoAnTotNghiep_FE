@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { ResponseGetAllModel, UserModel } from "../../models";
 import { UserParams } from "../../types/params";
 import { ActionPayload, RootState } from "@/redux/store";
+import { CreateUserDTO } from "@/types/dtos";
 
 type State = {
   userData: ResponseGetAllModel<UserModel>;
@@ -29,11 +30,13 @@ const userSlice = createSlice({
     setCurrent: (state, action: ActionPayload<UserModel>) => {
       state.current = action.payload;
     },
+    fetchCreate: (state, action: ActionPayload<CreateUserDTO>) => {},
   },
 });
 
 export const userReducer = {
   fetchGetAll: `${NAME_SLICE}/fetchGetAll`,
+  fetchCreate: `${NAME_SLICE}/fetchCreate`,
 };
 export const userSelector = (state: RootState): State => state.user;
 export const userActions = userSlice.actions;

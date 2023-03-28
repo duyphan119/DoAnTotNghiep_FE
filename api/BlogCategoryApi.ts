@@ -68,7 +68,7 @@ class BlogCategoryApi {
           this.nameApi,
           dto
         ) as Promise<{
-          data: any;
+          data: BlogCategoryJson;
           message: string;
         }>);
         resolve(
@@ -96,7 +96,7 @@ class BlogCategoryApi {
           `${this.nameApi}/${id}`,
           dto
         ) as Promise<{
-          data: any;
+          data: BlogCategoryJson;
           message: string;
         }>);
         resolve(
@@ -151,9 +151,9 @@ class BlogCategoryApi {
   softDeleteMultiple(ids: number[]): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
       try {
-        const { message } = await (privateAxios().put(
-          `${this.nameApi}/delete-multiple`,
-          { ids }
+        const { message } = await (privateAxios().delete(
+          `${this.nameApi}/many`,
+          { params: { listId: JSON.stringify(ids) } }
         ) as Promise<{ message: string }>);
 
         resolve(message === MSG_SUCCESS);

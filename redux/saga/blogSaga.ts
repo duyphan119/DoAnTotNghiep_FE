@@ -85,7 +85,7 @@ function* fetchSoftDeleteSingle({ payload: id }: ActionPayload<number>) {
     const result: boolean = yield call(() => bApi.softDeleteSingle(id));
     if (result) {
       isError = false;
-      yield put(fetchActions.endAndSuccess());
+      yield put(fetchActions.endAndSuccessAndDeleted());
     }
   } catch (error) {
     console.log("blogActions.fetchSoftDeleteSingle error", error);
@@ -93,10 +93,30 @@ function* fetchSoftDeleteSingle({ payload: id }: ActionPayload<number>) {
   if (isError) yield put(fetchActions.endAndError());
 }
 
+function* fetchSoftDeleteMultiple({
+  payload: listId,
+}: ActionPayload<number[]>) {
+  let isError = true;
+  yield put(fetchActions.start(blogReducers.fetchSoftDeleteMultiple));
+  try {
+    const result: boolean = yield call(() => bApi.softDeleteMultiple(listId));
+    if (result) {
+      isError = false;
+      yield put(fetchActions.endAndSuccessAndDeleted());
+    }
+  } catch (error) {
+    console.log("blogActions.fetchSoftDeleteMultiple error", error);
+  }
+  if (isError) yield put(fetchActions.endAndError());
+}
 export function* blogManamentSaga() {
   yield takeEvery(blogReducers.fetchGetAll, fetchGetAll);
   yield takeEvery(blogReducers.fetchCreate, fetchCreate);
   yield takeEvery(blogReducers.fetchUpdate, fetchUpdate);
   yield takeEvery(blogReducers.fetchGetById, fetchGetById);
   yield takeEvery(blogReducers.fetchSoftDeleteSingle, fetchSoftDeleteSingle);
+  yield takeEvery(
+    blogReducers.fetchSoftDeleteMultiple,
+    fetchSoftDeleteMultiple
+  );
 }

@@ -7,6 +7,7 @@ import { ResponseGetAllModel, UserModel } from "@/models";
 import {
   ChangePasswordDTO,
   ChangeProfileDTO,
+  CreateUserDTO,
   LoginDTO,
   RegisterDTO,
 } from "@/types/dtos";
@@ -198,6 +199,27 @@ class UserApi {
         );
       } catch (error) {
         console.log(error);
+        reject(error);
+      }
+    });
+  }
+
+  createOne(dto: CreateUserDTO): Promise<UserModel> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const { data, message } = await (privateAxios().post(
+          this.nameApiUser,
+          dto
+        ) as Promise<{
+          data: UserJson;
+          message: string;
+        }>);
+        resolve(
+          message === MSG_SUCCESS ? new UserModel(data) : new UserModel()
+        );
+      } catch (error) {
+        console.log(error);
+        reject(error);
       }
     });
   }

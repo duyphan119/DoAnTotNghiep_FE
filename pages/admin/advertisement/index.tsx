@@ -1,41 +1,44 @@
 import { ButtonControl, DataManagement, DataTable } from "@/components";
 import { AdminLayout } from "@/layouts";
+import { requireAdminProps } from "@/lib";
+import { AdvertisementModel, UserModel } from "@/models";
 import {
   advertisementActions,
+  advertisementReducer,
   advertisementSelector,
 } from "@/redux/slice/advertisementSlice";
 import { confirmDialogActions } from "@/redux/slice/confirmDialogSlice";
+import { fetchSelector } from "@/redux/slice/fetchSlice";
 import { useAppDispatch } from "@/redux/store";
+import { UserJson } from "@/types/json";
 import helper from "@/utils/helpers";
+import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useCallback } from "react";
 import { useSelector } from "react-redux";
-import { UserJson } from "@/types/json";
-import { UserModel, AdvertisementModel } from "@/models";
-import { requireAdminProps } from "@/lib";
-import { GetServerSidePropsContext } from "next";
 
 type Props = { profile: UserJson | null };
 const LIMIT = 10;
 const Orders = ({ profile }: Props) => {
   const router = useRouter();
   const appDispatch = useAppDispatch();
-  const { advertisementData, isDeleted } = useSelector(advertisementSelector);
+  const { advertisementData } = useSelector(advertisementSelector);
+  const { isLoading, reducer } = useSelector(fetchSelector);
 
   const handleDelete = (id: number) => {
     appDispatch(
       confirmDialogActions.show({
         onConfirm: () => {
-          appDispatch(advertisementActions.fetchDelete(id));
+          appDispatch(advertisementActions.fetchDeleteSingle(id));
         },
       })
     );
   };
 
-  useEffect(() => {
+  const handleFetch = useCallback(() => {
     const { p, sortBy, sortType, limit } = router.query;
     appDispatch(
       advertisementActions.fetchGetAll({
@@ -45,7 +48,11 @@ const Orders = ({ profile }: Props) => {
         sortType: `${sortType}` === "ASC" ? "ASC" : "DESC",
       })
     );
-  }, [router.query, isDeleted]);
+  }, [router.query]);
+
+  const handleDeleteAll = (listId: number[]) => {
+    appDispatch(advertisementActions.fetchDeleteMultiple(listId));
+  };
 
   return (
     <AdminLayout pageTitle="Quảng cáo" profile={new UserModel(profile)}>
@@ -59,6 +66,8 @@ const Orders = ({ profile }: Props) => {
           paperTitle="Danh sách quảng cáo"
           count={advertisementData.count}
           limit={LIMIT}
+          onFetch={handleFetch}
+          onDeleteAll={handleDeleteAll}
         >
           <DataTable
             hasCheck={true}
@@ -127,6 +136,9 @@ const Orders = ({ profile }: Props) => {
                 ),
               },
             ]}
+            isLoading={
+              reducer === advertisementReducer.fetchGetAll && isLoading
+            }
           />
         </DataManagement>
       </>

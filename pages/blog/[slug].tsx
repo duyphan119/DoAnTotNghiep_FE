@@ -26,7 +26,7 @@ const BlogBySlug = ({
   const hasRelated = relatedBlogs.length > 0;
 
   return (
-    <DefaultLayout profile={new UserModel()}>
+    <DefaultLayout profile={new UserModel(profile)}>
       <>
         <Head>
           <title>{blog.id > 0 ? blog.title : "Bài viết"}</title>

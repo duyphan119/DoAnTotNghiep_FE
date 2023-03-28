@@ -170,6 +170,22 @@ class AdvertisementApi {
       }
     });
   }
+
+  deleteMultiple(listId: number[]): Promise<boolean> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const { message } = await (privateAxios().delete(
+          `${this.nameApi}/many`,
+          { params: { listId: JSON.stringify(listId) } }
+        ) as Promise<{ message: string }>);
+
+        resolve(message === MSG_SUCCESS);
+      } catch (error) {
+        console.log(error);
+        reject(error);
+      }
+    });
+  }
 }
 
 export default AdvertisementApi;

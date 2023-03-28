@@ -1,6 +1,8 @@
-import { Checkbox } from "@mui/material";
+import { fetchSelector } from "@/redux/slice/fetchSlice";
+import { Checkbox, CircularProgress } from "@mui/material";
 import { useRouter } from "next/router";
 import { CSSProperties, memo, ReactNode, useRef } from "react";
+import { useSelector } from "react-redux";
 import { useDataManamentContext } from "../DataManagement/DataManagement";
 
 type Column = { key: string } & Partial<{
@@ -27,6 +29,7 @@ const DataTable = ({ isLoading, columns, hasCheck, rows, sortable }: Props) => {
   const PAGE = p ? +p : 1;
   const searchInputRef = useRef<HTMLInputElement>(null);
   const { ids, setIds } = useDataManamentContext();
+  const { isSuccess } = useSelector(fetchSelector);
 
   const SORT_BY = router.query.sortBy ? `${router.query.sortBy}` : "";
   const SORT_TYPE =
@@ -120,38 +123,51 @@ const DataTable = ({ isLoading, columns, hasCheck, rows, sortable }: Props) => {
         {isLoading ? (
           <tr>
             <td colSpan={columns ? columns.length + (hasCheck ? 1 : 0) : 0}>
-              Đang tải dữ liệu
+              <CircularProgress
+                style={{
+                  color: "#000",
+                  width: "16px",
+                  height: "16px",
+                }}
+              />
+              Đang tải dữ liệu...
             </td>
           </tr>
-        ) : rows && rows.length > 0 ? (
-          rows.map((row: any, index: number) => {
-            return (
-              <tr key={row.id}>
-                {hasCheck ? (
-                  <td style={{ textAlign: "center" }}>
-                    <div className="flex-center">
-                      <input
-                        type="checkbox"
-                        checked={ids.includes(row.id)}
-                        onChange={() => handleCheck(row.id)}
-                        name="checkbox"
-                      />
-                    </div>
-                  </td>
-                ) : null}
-                {columns?.map((column: Column) => (
-                  <td key={column.key} style={column.style}>
-                    {showRow(column, row, index)}
-                  </td>
-                ))}
-              </tr>
-            );
-          })
+        ) : isSuccess ? (
+          rows && rows.length > 0 ? (
+            rows.map((row: any, index: number) => {
+              return (
+                <tr key={row.id}>
+                  {hasCheck ? (
+                    <td style={{ textAlign: "center" }}>
+                      <div className="flex-center">
+                        <input
+                          type="checkbox"
+                          checked={ids.includes(row.id)}
+                          onChange={() => handleCheck(row.id)}
+                          name="checkbox"
+                        />
+                      </div>
+                    </td>
+                  ) : null}
+                  {columns?.map((column: Column) => (
+                    <td key={column.key} style={column.style}>
+                      {showRow(column, row, index)}
+                    </td>
+                  ))}
+                </tr>
+              );
+            })
+          ) : (
+            <tr>
+              <td colSpan={columns ? columns.length + (hasCheck ? 1 : 0) : 0}>
+                Không có bản ghi nào!
+              </td>
+            </tr>
+          )
         ) : (
           <tr>
-            <td colSpan={columns ? columns.length + (hasCheck ? 1 : 0) : 0}>
-              Không có bản ghi nào!
-            </td>
+            <td></td>
           </tr>
         )}
         {}

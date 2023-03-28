@@ -14,6 +14,7 @@ export type { default as CreateProductDTO } from "./CreateProductDTO";
 export type { default as CreateProductVariantDTO } from "./CreateProductVariantDTO";
 export type { default as CreateRepCommentProductDTO } from "./CreateRepCommentProductDTO";
 export type { default as CreateUserAddressDTO } from "./CreateUserAddressDTO";
+export type { default as CreateUserDTO } from "./CreateUserDTO";
 export type { default as CreateVariantDTO } from "./CreateVariantDTO";
 export type { default as CreateVariantValueDTO } from "./CreateVariantValueDTO";
 export type { default as LoginDTO } from "./LoginDTO";

@@ -4,29 +4,36 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import { useSelector } from "react-redux";
-import { FooterForm, InputControl } from "../../../components";
+import { FooterForm, InputControl } from "@/components";
 import {
   advertisementActions,
   advertisementReducer,
   advertisementSelector,
-} from "../../../redux/slice/advertisementSlice";
-import { fetchSelector } from "../../../redux/slice/fetchSlice";
-import { useAppDispatch } from "../../../redux/store";
-import { CreateAdvertisementDTO } from "../../../types/dtos";
+} from "@/redux/slice/advertisementSlice";
+import { fetchActions, fetchSelector } from "@/redux/slice/fetchSlice";
+import { useAppDispatch } from "@/redux/store";
+import { CreateAdvertisementDTO } from "@/types/dtos";
 type Props = {};
 
 const AdvertisementForm = (props: Props) => {
   const router = useRouter();
   const appDispatch = useAppDispatch();
   const { current } = useSelector(advertisementSelector);
-  const { isLoading, reducer } = useSelector(fetchSelector);
+  const { isLoading, reducer, resetForm } = useSelector(fetchSelector);
   const [files, setFiles] = useState<FileList | null>(null);
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
-  } = useForm<CreateAdvertisementDTO>();
+  } = useForm<CreateAdvertisementDTO>({
+    defaultValues: {
+      href: "/",
+      page: "Trang chủ",
+      title: "",
+      path: "",
+    },
+  });
 
   const onSubmit: SubmitHandler<CreateAdvertisementDTO> = (data) => {
     if (current) {
@@ -59,8 +66,23 @@ const AdvertisementForm = (props: Props) => {
       setValue("href", current.href);
       setValue("title", current.title);
       setValue("page", current.page);
+      setValue("path", current.path);
     }
   }, [current]);
+
+  const handleResetForm = () => {
+    setValue("title", "");
+    setValue("path", "");
+    setValue("href", "/");
+    setValue("page", "Trang chủ");
+  };
+
+  useEffect(() => {
+    if (resetForm) {
+      handleResetForm();
+      appDispatch(fetchActions.endResetForm());
+    }
+  }, [resetForm]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

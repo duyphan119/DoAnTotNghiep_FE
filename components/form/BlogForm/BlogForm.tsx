@@ -45,7 +45,7 @@ const BlogForm = (props: Props) => {
   const appDispatch = useAppDispatch();
   const { blogCategoryData } = useSelector(blogCategorySeletor);
   const { current } = useSelector(blogSelector);
-  const { isLoading, reducer } = useSelector(fetchSelector);
+  const { isLoading, reducer, resetForm } = useSelector(fetchSelector);
 
   const [files, setFiles] = useState<FileList | null>(null);
   const {
@@ -61,6 +61,8 @@ const BlogForm = (props: Props) => {
       heading: "",
       metaDescription: "",
       metaKeywords: "",
+      blogCategoryId: 0,
+      thumbnail: "",
     },
   });
 
@@ -105,6 +107,22 @@ const BlogForm = (props: Props) => {
     }
   }, [current]);
 
+  const handleResetForm = () => {
+    setValue("blogCategoryId", 0);
+    setValue("title", "");
+    setValue("heading", "");
+    setValue("content", "");
+    setValue("metaDescription", "");
+    setValue("metaKeywords", "");
+  };
+
+  useEffect(() => {
+    if (resetForm) {
+      handleResetForm();
+      appDispatch(fetchActions.endResetForm());
+    }
+  }, [resetForm]);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container rowSpacing={3} columnSpacing={3}>
@@ -113,16 +131,20 @@ const BlogForm = (props: Props) => {
             required={true}
             error={errors.blogCategoryId}
             register={register("blogCategoryId", {
-              required: {
-                value: true,
-                message: "Danh mục bài viết không được để trống",
-              },
+              validate: (value) =>
+                value > 0 || "Danh mục bài viết không được để trống",
             })}
             label="Danh mục bài viết"
-            options={blogCategoryData.items.map((blogCategory) => ({
-              value: blogCategory.id,
-              display: blogCategory.name,
-            }))}
+            options={[
+              {
+                display: "Chọn danh mục bài viết",
+                value: 0,
+              },
+              ...blogCategoryData.items.map((blogCategory) => ({
+                value: blogCategory.id,
+                display: blogCategory.name,
+              })),
+            ]}
           />
         </Grid>
         <Grid item xs={12}>
@@ -139,8 +161,7 @@ const BlogForm = (props: Props) => {
           />
         </Grid>
         <Grid item xs={12}>
-          <InputControl
-            required={true}
+          <TextAreaControl
             error={errors.heading}
             register={register("heading")}
             label="Mở đầu bài viết"
@@ -165,8 +186,9 @@ const BlogForm = (props: Props) => {
               name="content"
               rules={{
                 validate: (value) => {
-                  if (value === "<p><br></p>") {
-                    return "Nội dung không được để trống";
+                  console.log(value);
+                  if (value === "") {
+                    return "Nội dung bài viết không được để trống";
                   }
                 },
               }}

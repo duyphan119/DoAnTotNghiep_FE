@@ -1,5 +1,5 @@
 import SearchIcon from "@mui/icons-material/Search";
-import { FormControl, Input, InputAdornment } from "@mui/material";
+import { FormControl, Input, InputAdornment, Tooltip } from "@mui/material";
 import { useRouter } from "next/router";
 import { FC, FormEvent, useEffect, useRef } from "react";
 import styles from "./_style.module.scss";
@@ -26,16 +26,18 @@ const SearchWrapper: FC<Props> = ({ onSearch }) => {
   return (
     <form className={styles.searchWrapper} onSubmit={handleSearch}>
       <FormControl variant="standard">
-        <Input
-          id="input-with-icon-adornment"
-          startAdornment={
-            <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          }
-          inputRef={searchInputRef}
-          placeholder="Tìm kiếm"
-        />
+        <Tooltip title="Tìm kiếm">
+          <Input
+            id="input-with-icon-adornment"
+            startAdornment={
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            }
+            inputRef={searchInputRef}
+            placeholder="Tìm kiếm"
+          />
+        </Tooltip>
       </FormControl>
     </form>
   );

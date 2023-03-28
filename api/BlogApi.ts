@@ -163,9 +163,11 @@ class BlogApi {
   softDeleteMultiple(ids: number[]): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
       try {
-        const { message } = await (privateAxios().put(
-          `${this.nameApi}/delete-multiple`,
-          { ids }
+        const { message } = await (privateAxios().delete(
+          `${this.nameApi}/many`,
+          {
+            params: { listId: JSON.stringify(ids) },
+          }
         ) as Promise<{ message: string }>);
 
         resolve(message === MSG_SUCCESS);
