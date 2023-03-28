@@ -21,8 +21,8 @@ const TableCart = (props: Props) => {
         </tr>
       </thead>
       <tbody>
-        {cart.items.map((item) => {
-          return <CartItem key={item.id} item={item} />;
+        {cart.items.map((item, index) => {
+          return <CartItem key={index} item={item} />;
         })}
       </tbody>
     </table>

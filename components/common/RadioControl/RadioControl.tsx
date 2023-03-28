@@ -1,4 +1,4 @@
-import { useId, memo } from "react";
+import { useId, memo, CSSProperties } from "react";
 import styles from "./_style.module.scss";
 
 type Props = Partial<{
@@ -8,8 +8,10 @@ type Props = Partial<{
   wrapperClassname: string;
   circleClassName: string;
   defaultChecked: boolean;
-  value: string | number;
+  value: string | number | boolean;
   disabled: boolean;
+  wrapperStyle: CSSProperties;
+  labelStyle: CSSProperties;
 }>;
 
 const RadioControl = ({
@@ -21,10 +23,15 @@ const RadioControl = ({
   defaultChecked,
   value,
   disabled,
+  wrapperStyle,
+  labelStyle,
 }: Props) => {
   const id = useId();
   return (
-    <div className={`${styles.radio} ${wrapperClassname || ""}`}>
+    <div
+      className={`${styles.radio} ${wrapperClassname || ""}`}
+      style={{ ...wrapperStyle }}
+    >
       <input
         type={type || "radio"}
         id={id}
@@ -35,7 +42,9 @@ const RadioControl = ({
         {...register}
       />
       <div className={`${styles.circle} ${circleClassName || ""}`}></div>
-      <label htmlFor={id}>{label}</label>
+      <label htmlFor={id} style={{ ...labelStyle }}>
+        {label}
+      </label>
     </div>
   );
 };

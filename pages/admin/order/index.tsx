@@ -28,8 +28,10 @@ const Orders = ({ profile }: Props) => {
       orderActions.fetchGetAll({
         p: +`${p}` || 1,
         limit: LIMIT,
-        sortBy: `${sortBy || "id"}`,
+        sortBy: `${sortBy || "orderDate"}`,
         sortType: `${sortType}` === "ASC" ? "ASC" : "DESC",
+        discount: true,
+        items: true,
       })
     );
   }, [router.query]);
@@ -67,6 +69,13 @@ const Orders = ({ profile }: Props) => {
                 display: "Số điện thoại",
               },
               {
+                style: { width: 100, textAlign: "center" },
+                key: "total",
+                display: "Tổng",
+                render: (row: OrderModel) =>
+                  row.getTotalPrice() - row.discount.value,
+              },
+              {
                 style: { textAlign: "center" },
                 key: "address",
                 display: "Địa chỉ",
@@ -74,10 +83,10 @@ const Orders = ({ profile }: Props) => {
               },
               {
                 style: { width: 100, textAlign: "center" },
-                key: "createdAt",
-                display: "Ngày tạo",
+                key: "orderDate",
+                display: "Ngày đặt",
                 render: (row: OrderModel) =>
-                  helper.formatDateTime(row.createdAt),
+                  helper.formatDateTime(row.orderDate),
               },
               {
                 style: { width: 120, textAlign: "center" },

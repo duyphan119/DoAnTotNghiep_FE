@@ -12,7 +12,7 @@ import { Rating } from "@mui/material";
 import { FC, useEffect, useMemo, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import styles from "../../../_style.module.scss";
+import styles from "./_style.module.scss";
 
 type Props = {};
 

@@ -42,7 +42,6 @@ class OrderDiscountApi
         );
       } catch (error) {
         console.log("OrderDiscountApi.getAll error", error);
-        reject(error);
       }
     });
   }
@@ -60,7 +59,6 @@ class OrderDiscountApi
         );
       } catch (error) {
         console.log("OrderDiscountApi.getById error", error);
-        reject(error);
       }
     });
   }
@@ -82,7 +80,6 @@ class OrderDiscountApi
         );
       } catch (error) {
         console.log("OrderDiscountApi.createOne error", error);
-        reject(error);
       }
     });
   }
@@ -99,7 +96,6 @@ class OrderDiscountApi
         resolve(message === MSG_SUCCESS ? this.getListFromJson(data) : []);
       } catch (error) {
         console.log("OrderDiscountApi.createMany error", error);
-        reject(error);
       }
     });
   }
@@ -127,7 +123,6 @@ class OrderDiscountApi
         );
       } catch (error) {
         console.log("OrderDiscountApi.updateOne error", error);
-        reject(error);
       }
     });
   }
@@ -146,7 +141,6 @@ class OrderDiscountApi
         resolve(message === MSG_SUCCESS ? this.getListFromJson(data) : []);
       } catch (error) {
         console.log("OrderDiscountApi.updateMany error", error);
-        reject(error);
       }
     });
   }
@@ -161,7 +155,6 @@ class OrderDiscountApi
         resolve(message === MSG_SUCCESS);
       } catch (error) {
         console.log("OrderDiscountApi.deleteOne error", error);
-        reject(error);
       }
     });
   }
@@ -179,7 +172,6 @@ class OrderDiscountApi
         resolve(message === MSG_SUCCESS);
       } catch (error) {
         console.log("OrderDiscountApi.deleteMany error", error);
-        reject(error);
       }
     });
   }
@@ -194,7 +186,6 @@ class OrderDiscountApi
         resolve(message === MSG_SUCCESS);
       } catch (error) {
         console.log("OrderDiscountApi.softDeleteOne error", error);
-        reject(error);
       }
     });
   }
@@ -212,7 +203,6 @@ class OrderDiscountApi
         resolve(message === MSG_SUCCESS);
       } catch (error) {
         console.log("OrderDiscountApi.softDeleteMany error", error);
-        reject(error);
       }
     });
   }
@@ -227,7 +217,6 @@ class OrderDiscountApi
         resolve(message === MSG_SUCCESS);
       } catch (error) {
         console.log("OrderDiscountApi.restoreOne error", error);
-        reject(error);
       }
     });
   }
@@ -245,7 +234,6 @@ class OrderDiscountApi
         resolve(message === MSG_SUCCESS);
       } catch (error) {
         console.log("OrderDiscountApi.restoreMany error", error);
-        reject(error);
       }
     });
   }
@@ -276,7 +264,6 @@ class OrderDiscountApi
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }

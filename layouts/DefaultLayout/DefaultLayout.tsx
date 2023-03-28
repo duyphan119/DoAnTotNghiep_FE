@@ -2,7 +2,7 @@ import { DefaultLayoutWrapper } from "@/context";
 import { GroupProductHeaderModel, OrderModel, UserModel } from "@/models";
 import { groupProductActions } from "@/redux/slice/groupProductSlice";
 import { useAppDispatch } from "@/redux/store";
-import { CSSProperties, ReactNode, useEffect } from "react";
+import { CSSProperties, FC, ReactNode, useEffect } from "react";
 import Footer from "./Footer";
 import Header from "./Header";
 
@@ -12,19 +12,30 @@ type Props = Partial<{
   children: ReactNode;
   contentStyle: CSSProperties;
   profile: UserModel;
+  hideHeader: boolean;
+  hideFooter: boolean;
 }>;
 
-const DefaultLayout = ({ children, contentStyle, profile }: Props) => {
+const DefaultLayout: FC<Props> = ({
+  children,
+  contentStyle,
+  profile,
+  hideFooter,
+  hideHeader,
+}) => {
   const appDispatch = useAppDispatch();
 
   useEffect(() => {
-    appDispatch(groupProductActions.fetchGetGroupProductHeaders());
-  }, []);
+    if (!hideHeader)
+      appDispatch(groupProductActions.fetchGetGroupProductHeaders());
+  }, [hideHeader]);
+
+  console.log(profile);
 
   return (
     <DefaultLayoutWrapper profile={profile || new UserModel()}>
       <div className={styles.wrapper}>
-        <Header />
+        {hideHeader ? null : <Header />}
         <div className={styles.body}>
           <div
             className={styles.content}
@@ -32,7 +43,7 @@ const DefaultLayout = ({ children, contentStyle, profile }: Props) => {
           >
             {children}
           </div>
-          <Footer />
+          {hideFooter ? null : <Footer />}
         </div>
       </div>
     </DefaultLayoutWrapper>

@@ -8,5 +8,6 @@ type CheckoutDTO = {
   fullName: string;
   phone: string;
   point: number;
+  total: number;
 };
 export default CheckoutDTO;

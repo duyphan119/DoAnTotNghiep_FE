@@ -15,7 +15,6 @@ class UploadApi {
         resolve(data);
       } catch (error) {
         console.log("error:::", error);
-        reject(error);
       }
     });
   }
@@ -38,7 +37,6 @@ class UploadApi {
         resolve(message === MSG_SUCCESS ? data : []);
       } catch (error) {
         console.log("error:::", error);
-        reject(error);
       }
     });
   }

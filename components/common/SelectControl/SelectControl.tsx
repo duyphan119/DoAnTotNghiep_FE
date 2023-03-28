@@ -84,6 +84,7 @@ const SelectControl = ({
         value={value}
         onChange={onChange}
         disabled={disabled}
+        defaultValue={defaultValue}
         {...register}
       >
         {options?.map((item, index) => {

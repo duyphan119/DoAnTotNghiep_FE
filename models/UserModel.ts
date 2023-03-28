@@ -1,3 +1,4 @@
+import { UserJson } from "@/types/json";
 import DateModel from "./DateModel";
 
 class UserModel extends DateModel {
@@ -8,7 +9,7 @@ class UserModel extends DateModel {
   isAdmin: boolean;
   point: number;
 
-  constructor(obj?: any) {
+  constructor(obj?: Partial<UserJson> | null) {
     super(obj);
     this.id = obj?.id ?? 0;
     this.fullName = obj?.fullName ?? "";

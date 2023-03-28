@@ -1,3 +1,5 @@
+import DateJson from "./DateJson";
+
 type UserJson = {
   id: number;
   fullName: string;
@@ -5,6 +7,6 @@ type UserJson = {
   phone: string;
   isAdmin: boolean;
   point: number;
-};
+} & DateJson;
 
 export default UserJson;

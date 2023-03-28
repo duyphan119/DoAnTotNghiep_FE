@@ -141,6 +141,13 @@ const productDetailSlice = createSlice({
     ) => {
       state.userCommentProduct = action.payload;
     },
+    updateStar: (
+      state,
+      { payload: { id, star } }: ActionPayload<{ id: number; star: number }>
+    ) => {
+      if (id === state.product.id)
+        state.product = new ProductModel({ ...state.product, star });
+    },
   },
 });
 export const productDetailReducer = {

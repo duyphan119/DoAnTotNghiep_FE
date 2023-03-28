@@ -36,7 +36,7 @@ function* fetchCreate({ payload: dto }: ActionPayload<CreateUserAddressDTO>) {
     const data: UserAddressModel = yield call(() => udApi.create(dto));
     if (data.id > 0) {
       isError = false;
-      yield put(userAddressActions.createUserAddress(data));
+      yield put(userAddressActions.createOne(data));
       yield put(userAddressActions.closeModal());
       yield put(fetchActions.endAndSuccess());
       yield put(

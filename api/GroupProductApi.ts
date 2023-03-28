@@ -30,7 +30,6 @@ class GroupProductApi {
         resolve(response);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -57,7 +56,6 @@ class GroupProductApi {
         resolve(response);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -90,7 +88,6 @@ class GroupProductApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -128,7 +125,6 @@ class GroupProductApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -150,7 +146,6 @@ class GroupProductApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -165,7 +160,6 @@ class GroupProductApi {
         resolve(message === MSG_SUCCESS);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -181,7 +175,6 @@ class GroupProductApi {
         resolve(message === MSG_SUCCESS);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }

@@ -195,6 +195,23 @@ function* fetchUserOrderData({
   if (isError) yield put(fetchActions.endAndError());
 }
 
+function* fetchCancel({ payload: id }: ActionPayload<number>) {
+  let isError = true;
+  try {
+    yield put(fetchActions.start(authReducer.fetchUserOrderData));
+    const result: boolean = yield call(() => oApi.cancel(id));
+    if (result) {
+      isError = false;
+      yield put(authActions.cancel(id));
+      yield put(fetchActions.endAndSuccess());
+      yield put(snackbarActions.success("Đơn hàng đã bị huỷ thành công"));
+    }
+  } catch (error) {
+    console.log("authActions.fetchCancel", error);
+  }
+  if (isError) yield put(fetchActions.endAndError());
+}
+
 export function* authSaga() {
   yield takeEvery(authReducer.fetchGetProfile, fetchGetProfile);
   yield takeEvery(authReducer.fetchLogin, fetchLogin);
@@ -203,4 +220,5 @@ export function* authSaga() {
   yield takeEvery(authReducer.fetchLogout, fetchLogout);
   yield takeEvery(authReducer.fetchChangePassword, fetchChangePassword);
   yield takeEvery(authReducer.fetchUserOrderData, fetchUserOrderData);
+  yield takeEvery(authReducer.fetchCancel, fetchCancel);
 }

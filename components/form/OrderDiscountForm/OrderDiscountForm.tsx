@@ -29,15 +29,22 @@ const OrderDiscountForm = (props: Props) => {
   } = useForm<CreateOrderDiscountDTO>();
 
   const onSubmit: SubmitHandler<CreateOrderDiscountDTO> = (data) => {
+    const reqData: CreateOrderDiscountDTO = {
+      ...data,
+      minPrice: +data.minPrice,
+      value: +data.value,
+      start: new Date(data.start),
+      end: new Date(data.end),
+    };
     if (current.id > 0) {
       appDispatch(
         orderDiscountActions.fetchUpdate({
           id: current.id,
-          dto: data,
+          dto: reqData,
         })
       );
     } else {
-      appDispatch(orderDiscountActions.fetchCreate(data));
+      appDispatch(orderDiscountActions.fetchCreate(reqData));
     }
   };
 
@@ -45,8 +52,8 @@ const OrderDiscountForm = (props: Props) => {
     if (current) {
       setValue("minPrice", current.minPrice);
       setValue("value", current.value);
-      setValue("start", current.start);
-      setValue("end", current.end);
+      setValue("start", new Date(current.start));
+      setValue("end", new Date(current.end));
       setValue("code", current.code);
     }
   }, [current]);
@@ -97,7 +104,7 @@ const OrderDiscountForm = (props: Props) => {
         <Grid item xs={12}>
           <InputControl
             register={register("end")}
-            label="Bắt đầu"
+            label="Kết thúc"
             type="date"
           />
         </Grid>

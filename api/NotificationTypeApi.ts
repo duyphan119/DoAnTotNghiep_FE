@@ -44,7 +44,6 @@ class NotificationTypeApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -76,7 +75,6 @@ class NotificationTypeApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -114,7 +112,6 @@ class NotificationTypeApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -136,7 +133,6 @@ class NotificationTypeApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -151,7 +147,6 @@ class NotificationTypeApi {
         resolve(message === MSG_SUCCESS);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -167,7 +162,6 @@ class NotificationTypeApi {
         resolve(message === MSG_SUCCESS);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }

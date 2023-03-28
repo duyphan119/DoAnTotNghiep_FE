@@ -36,7 +36,7 @@ const DownTabs: FC<Props> = () => {
 
   useEffect(() => {
     if (
-      value === 1 &&
+      value === 0 &&
       product.id > 0 &&
       !reducers.includes(productDetailReducer.fetchGetAllCommentProduct)
     ) {

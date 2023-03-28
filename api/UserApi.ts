@@ -198,7 +198,6 @@ class UserApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }

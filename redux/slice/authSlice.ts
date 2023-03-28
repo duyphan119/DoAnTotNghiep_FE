@@ -74,6 +74,13 @@ const authSlice = createSlice({
     ) => {
       state.orderData = action.payload;
     },
+    fetchCancel: (state, action: ActionPayload<number>) => {},
+    cancel: (state, { payload: id }: ActionPayload<number>) => {
+      state.orderData = new ResponseGetAllModel(
+        state.orderData.items.filter((item) => item.id !== id),
+        state.orderData.count - 1
+      );
+    },
   },
 });
 export const authReducer = {
@@ -84,6 +91,7 @@ export const authReducer = {
   fetchLogout: `${NAME_SLICE}/fetchLogout`,
   fetchChangePassword: `${NAME_SLICE}/fetchChangePassword`,
   fetchUserOrderData: `${NAME_SLICE}/fetchUserOrderData`,
+  fetchCancel: `${NAME_SLICE}/fetchCancel`,
 };
 export const authSelector = (state: RootState): State => state.auth;
 export const authActions = authSlice.actions;

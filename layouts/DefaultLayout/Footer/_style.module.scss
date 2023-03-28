@@ -1,46 +1,94 @@
 .footer {
-  background-color: #000;
-  color: #fff;
-  padding: 24px;
-}
-.footer p {
-  margin: 0;
-}
-.email-register {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.email-register h1 {
-  margin: 0;
-}
-.email-register .description {
-  margin: 8px 0 16px 0;
-}
-.email-register form {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.email-register form button {
-  width: 120px;
-  align-self: stretch;
-  background-color: gray;
-  color: #fff;
-}
-.footer .title {
-  margin-bottom: 16px;
-  text-transform: uppercase;
-  font-weight: 600;
-}
-.footer .title ~ p {
-  margin-bottom: 8px;
-}
-.footer a:hover {
-  color: var(--blue);
-}
-.footer ul {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  background-color: #f5f5f5;
+  color: gray;
+  font-weight: 300;
+  .wrapper {
+    padding: 72px 40px;
+    font-size: 14px;
+    border-left: 1px solid lightgray;
+    .title {
+      font-weight: 600;
+      margin-bottom: 24px;
+      color: #000;
+      font-size: 16px;
+    }
+    .about {
+      .overview {
+        line-height: 21px;
+        text-align: justify;
+      }
+      .socialIcons {
+        margin-top: 16px;
+        display: flex;
+        gap: 8px;
+        .socialIcon {
+          border: 1px solid gray;
+          border-radius: 5px;
+          a {
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+        }
+      }
+    }
+    .contact {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      span {
+        &:first-child {
+          font-weight: 500;
+        }
+      }
+    }
+    .policies {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      list-style: initial;
+      margin-left: 16px;
+    }
+    .registerGiveNotification {
+      p {
+        line-height: 21px;
+        text-align: justify;
+      }
+      form {
+        margin-top: 16px;
+        background-color: #fff;
+        display: flex;
+        .formControl {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          border: 1px solid #000;
+          border-top-left-radius: 5px;
+          border-bottom-left-radius: 5px;
+          flex: 1;
+          padding: 0 8px;
+          cursor: text;
+          .icon {
+            display: flex;
+            align-items: center;
+          }
+          .input {
+            border: none;
+            flex: 1;
+            width: 0;
+          }
+        }
+        button {
+          background-color: #000;
+          color: #fff;
+          text-transform: uppercase;
+          white-space: nowrap;
+          padding: 12px 16px;
+          border-top-right-radius: 5px;
+          border-bottom-right-radius: 5px;
+        }
+      }
+    }
+  }
 }

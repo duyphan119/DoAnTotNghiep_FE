@@ -34,7 +34,6 @@ class UserAddressApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -53,7 +52,6 @@ class UserAddressApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -81,7 +79,6 @@ class UserAddressApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -97,7 +94,6 @@ class UserAddressApi {
         resolve(message === MSG_SUCCESS);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }

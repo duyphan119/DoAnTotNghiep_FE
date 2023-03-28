@@ -10,7 +10,9 @@ type BlogJson = {
   slug: string;
   userId: number;
   blogCategoryId: number;
-  blogCategory: BlogCategoryJson;
+  blogCategory: BlogCategoryJson | null;
+  metaDescription: string;
+  metaKeywords: string;
 } & DateJson;
 
 export default BlogJson;

@@ -2,7 +2,7 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { Container, IconButton } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import logoPng from "@/public/logo.png";
 import moneyPng from "@/public/money.png";
@@ -15,12 +15,25 @@ import Drawer from "./Drawer";
 import SearchInput from "./SearchInput";
 import styles from "./_style.module.scss";
 import { useDefaultLayoutContext } from "@/context/DefaultLayoutContext";
+import { useSocketContext } from "@/context/SocketContext";
+import { UserModel } from "@/models";
 
 type Props = {};
 
 const DPoint = () => {
   // const { profile } = useSelector(authSelector);
-  const { profile } = useDefaultLayoutContext();
+  const { profile, setState } = useDefaultLayoutContext();
+
+  const { socket } = useSocketContext();
+
+  useEffect(() => {
+    socket.on("Update point", (point: number) => {
+      setState &&
+        setState((state) => ({
+          profile: new UserModel({ ...state.profile, point }),
+        }));
+    });
+  }, [socket]);
 
   return profile.id > 0 ? (
     <li className={styles.item}>

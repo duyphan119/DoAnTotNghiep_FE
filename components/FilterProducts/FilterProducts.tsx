@@ -107,10 +107,27 @@ const FilterProducts: FC<Props> = ({
     return count;
   }, [params]);
 
-  const filter = (params: SortParams | ProductParams) => {
-    const path = window.location.origin + pathName;
+  const filter = (params: ProductParams) => {
+    const { group_product_slug, ...newParams } = params;
+    console.log(params, router.query);
+    let path = window.location.origin;
+    if (!group_product_slug && router.query.group_product_slug) {
+      path += `/product/group-product/${router.query.group_product_slug}`;
+    } else if (group_product_slug) {
+      path += `/product/group-product/${group_product_slug}`;
+    } else {
+      path += "/product";
+    }
+    console.log(helper.getPathFromSearchParams(path, newParams));
+    // const path =
+    //   window.location.origin +
+    //   (group_product_slug && group_product_slug !== "undefined")
+    //     ? `/product/group-product/${group_product_slug}`
+    //     : router.query.group_product_slug
+    //     ? `/product/group-product/${router.query.group_product_slug}`
+    //     : pathName;
 
-    router.push(helper.getPathFromSearchParams(path, params));
+    router.push(helper.getPathFromSearchParams(path, newParams));
 
     dispatch({ type: Actions.FILTER, payload: params });
   };
@@ -120,12 +137,6 @@ const FilterProducts: FC<Props> = ({
   };
 
   const handleFilter = (newParams: ProductParams) => {
-    if (
-      newParams.group_product_slug &&
-      pathName.endsWith(newParams.group_product_slug)
-    )
-      delete newParams.group_product_slug;
-
     if (newParams.p && newParams.p <= 1) delete newParams.p;
 
     filter(newParams);

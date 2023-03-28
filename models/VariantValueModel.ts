@@ -8,6 +8,7 @@ class VariantValueModel extends DateModel {
   variantId: number;
   variant: VariantModel;
   code: string;
+  hasThumbnail: boolean;
 
   constructor(obj?: Partial<VariantValueJson>) {
     super(obj);
@@ -16,6 +17,7 @@ class VariantValueModel extends DateModel {
     this.variantId = obj?.variantId ?? 0;
     this.variant = new VariantModel(obj?.variant);
     this.code = obj?.code ?? "";
+    this.hasThumbnail = obj?.hasThumbnail ?? false;
   }
 }
 

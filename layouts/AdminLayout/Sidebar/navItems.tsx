@@ -18,6 +18,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import WorkspacesIcon from "@mui/icons-material/Workspaces";
 import ColorLensIcon from "@mui/icons-material/ColorLens";
 import PublicIcon from "@mui/icons-material/Public";
+import BarChartIcon from "@mui/icons-material/BarChart";
 
 export type NavItem = {
   id?: string;
@@ -129,6 +130,12 @@ export const navItems: NavItem[] = [
         tooltip: "Quản lý tài khoản",
       },
     ],
+  },
+  {
+    href: publicRoutes.home,
+    label: "Thống kê",
+    icon: <BarChartIcon />,
+    tooltip: "Trang thống kê",
   },
   {
     href: "",

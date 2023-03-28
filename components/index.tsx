@@ -33,6 +33,7 @@ export { default as OrderDiscountForm } from "./form/OrderDiscountForm";
 export { default as ProductForm } from "./form/ProductForm";
 export { default as ProfileForm } from "./form/ProfileForm";
 export { default as VariantForm } from "./form/VariantForm";
+export { default as PaymentForm } from "./form/PaymentForm";
 export { default as VariantValueForm } from "./form/VariantValueForm";
 export { default as ModalAuth } from "./ModalAuth";
 export { default as ModalPreviewProduct } from "./ModalPreviewProduct";

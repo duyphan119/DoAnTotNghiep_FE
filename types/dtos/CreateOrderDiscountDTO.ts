@@ -1,7 +1,7 @@
 type CreateOrderDiscountDTO = {
   code: string;
-  start: string;
-  end: string;
+  start: Date;
+  end: Date;
   minPrice: number;
   value: number;
 };

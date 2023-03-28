@@ -48,13 +48,13 @@ const Header = ({ pageTitle, onToggle }: Props) => {
         </form>
       </Box>
       <div className={styles.right}>
-        <DarkLightButton />
+        {/* <DarkLightButton /> */}
         <NotificationIcon />
-        <span className={styles.iconSpan}>
+        {/* <span className={styles.iconSpan}>
           <Badge badgeContent={3} color="error">
             <ChatBubbleOutlineIcon className={styles.icon} />
           </Badge>
-        </span>
+        </span> */}
         <AccountIcon />
       </div>
     </Box>

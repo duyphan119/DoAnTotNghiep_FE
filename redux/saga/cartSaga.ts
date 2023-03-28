@@ -18,7 +18,7 @@ function* fetchCart() {
     if (data.id > 0) {
       isError = false;
       yield put(cartActions.setCart(data));
-      yield put(fetchActions.endAndSuccess());
+      yield put(fetchActions.fetchSuccess(cartReducer.fetchCart));
     }
   } catch (error) {
     console.log("cartReducer.fetchCart error", error);

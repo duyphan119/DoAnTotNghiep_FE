@@ -45,7 +45,6 @@ class NotificationApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -65,7 +64,6 @@ class NotificationApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -93,7 +91,6 @@ class NotificationApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -114,7 +111,6 @@ class NotificationApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -136,7 +132,6 @@ class NotificationApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -151,7 +146,6 @@ class NotificationApi {
         resolve(message === MSG_SUCCESS);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -167,7 +161,6 @@ class NotificationApi {
         resolve(message === MSG_SUCCESS);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }

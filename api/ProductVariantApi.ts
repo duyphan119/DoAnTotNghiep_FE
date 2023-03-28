@@ -35,7 +35,6 @@ class ProductVariantApi {
         resolve(response);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -56,7 +55,6 @@ class ProductVariantApi {
         resolve(message === MSG_SUCCESS ? items : []);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -83,7 +81,6 @@ class ProductVariantApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -102,7 +99,6 @@ class ProductVariantApi {
         resolve(message === MSG_SUCCESS ? items : []);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -124,7 +120,6 @@ class ProductVariantApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -139,7 +134,6 @@ class ProductVariantApi {
         resolve(message === MSG_SUCCESS);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -155,7 +149,6 @@ class ProductVariantApi {
         resolve(message === MSG_SUCCESS);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }

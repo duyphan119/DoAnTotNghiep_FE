@@ -41,7 +41,6 @@ class ProductApi {
         resolve(response);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -61,7 +60,6 @@ class ProductApi {
         resolve(message === MSG_SUCCESS && items.length > 0 ? items[0] : null);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -85,7 +83,6 @@ class ProductApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -105,7 +102,6 @@ class ProductApi {
         resolve(response);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -130,7 +126,6 @@ class ProductApi {
         resolve(response);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -160,7 +155,6 @@ class ProductApi {
         resolve(response);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -179,7 +173,6 @@ class ProductApi {
         resolve(message === MSG_SUCCESS ? Product : new ProductModel());
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -204,7 +197,6 @@ class ProductApi {
         resolve(message === MSG_SUCCESS ? Product : new ProductModel());
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -224,7 +216,6 @@ class ProductApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -239,7 +230,6 @@ class ProductApi {
         resolve(message === MSG_SUCCESS);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -255,7 +245,6 @@ class ProductApi {
         resolve(message === MSG_SUCCESS);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }

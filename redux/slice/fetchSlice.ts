@@ -31,18 +31,15 @@ const fetchSlice = createSlice({
   name: NAME_SLICE,
   initialState: INITIAL_STATE,
   reducers: {
-    start: (state, { payload: name }: ActionPayload<string>) => {
+    start: (state, { payload }: ActionPayload<string>) => {
       state.isError = false;
       state.isLoading = true;
       state.isSuccess = false;
-      state.reducer = name;
+      state.reducer = payload;
       state.isBack = false;
       state.deleted = false;
-      state.reducers = [
-        ...state.reducers.filter((name) => name !== name),
-        name,
-      ];
       state.resetForm = false;
+      state.reducers = state.reducers.filter((name) => name !== payload);
     },
     endAndError: (state) => {
       state.isError = true;
@@ -51,6 +48,14 @@ const fetchSlice = createSlice({
     endAndSuccess: (state) => {
       state.isSuccess = true;
       state.isLoading = false;
+    },
+    fetchSuccess: (state, action: ActionPayload<string>) => {
+      state.isSuccess = true;
+      state.isLoading = false;
+      if (action) {
+        const { payload } = action;
+        state.reducers.push(payload);
+      }
     },
     back: (state) => {
       state.isBack = true;

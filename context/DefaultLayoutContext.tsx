@@ -1,11 +1,23 @@
 import { UserModel } from "@/models";
 import { authActions } from "@/redux/slice/authSlice";
 import { useAppDispatch } from "@/redux/store";
-import { createContext, ReactNode, useContext, useState } from "react";
+import {
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useContext,
+  useState,
+} from "react";
 
 const DefaultLayoutContext = createContext<{
   profile: UserModel;
   logout: () => void;
+  setState?: Dispatch<
+    SetStateAction<{
+      profile: UserModel;
+    }>
+  >;
 }>({
   profile: new UserModel(),
   logout: () => {},
@@ -32,6 +44,7 @@ const DefaultLayoutWrapper = ({
       value={{
         profile: state.profile,
         logout: handleLogout,
+        setState,
       }}
     >
       {children}

@@ -9,6 +9,7 @@ type OrderParams = {
   phone?: string;
   items?: boolean;
   q?: string;
+  discount?: boolean;
 } & PaginationParams &
   SortParams;
 

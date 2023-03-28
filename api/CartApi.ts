@@ -25,7 +25,6 @@ class CartApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -43,7 +42,6 @@ class CartApi {
         resolve(message === MSG_SUCCESS ? data : null);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -63,7 +61,6 @@ class CartApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -83,7 +80,6 @@ class CartApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -114,7 +110,6 @@ class CartApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -129,7 +124,6 @@ class CartApi {
         resolve(message === MSG_SUCCESS);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }

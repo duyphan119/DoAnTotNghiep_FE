@@ -33,7 +33,6 @@ class VariantApi {
         resolve(response);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -52,7 +51,6 @@ class VariantApi {
         resolve(message === MSG_SUCCESS ? Variant : new VariantModel());
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -77,7 +75,6 @@ class VariantApi {
         resolve(message === MSG_SUCCESS ? Variant : new VariantModel());
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -97,7 +94,6 @@ class VariantApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -112,7 +108,6 @@ class VariantApi {
         resolve(message === MSG_SUCCESS);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -128,7 +123,6 @@ class VariantApi {
         resolve(message === MSG_SUCCESS);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }

@@ -26,6 +26,9 @@
         display: block;
         padding: 16px 0;
         white-space: nowrap;
+        &.active {
+          color: var(--blue);
+        }
       }
       &:hover {
         .navItemLink {

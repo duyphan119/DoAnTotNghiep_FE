@@ -11,7 +11,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 
 const roboto = Roboto({
-  weight: ["400", "700", "500", "900"],
+  weight: ["300", "400", "700", "500", "900"],
   style: ["normal", "italic"],
   subsets: ["latin", "vietnamese"],
 });

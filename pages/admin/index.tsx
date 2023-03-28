@@ -67,10 +67,11 @@ const Widget = ({
       className={styles.widgetWrapper}
       sx={{
         backgroundColor: wrapperColor || "#fff",
-        width: {
-          xs: "calc(100% - 8px)",
-          sm: "calc(50% - 8px)",
-        },
+        // width: {
+        //   xs: "calc(100% - 8px)",
+        //   sm: "calc(50% - 8px)",
+        // },
+        flex: 1,
         height: 192,
       }}
     >
@@ -207,7 +208,7 @@ const Dashboard = ({ profile }: Props) => {
         </Head>
       </>
       <Grid container columnSpacing={2} rowSpacing={2}>
-        <Grid item xs={12} lg={4}>
+        <Grid item xs={12}>
           <Box display="flex" flexWrap="wrap" gap="16px">
             <Widget
               title="Người dùng"
@@ -240,7 +241,7 @@ const Dashboard = ({ profile }: Props) => {
             />
           </Box>
         </Grid>
-        <Grid item xs={12} lg={8}>
+        <Grid item xs={12}>
           <Chart
             tabs={(() => {
               const date = new Date();

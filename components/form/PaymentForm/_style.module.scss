@@ -1,0 +1,94 @@
+.items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.center {
+  flex: 1;
+}
+.name {
+  font-weight: 500;
+  font-size: 18px;
+}
+.right {
+  text-align: right;
+}
+.variants {
+  color: gray;
+  font-size: 14px;
+}
+.right .total {
+  font-weight: 500;
+}
+.first-row {
+  margin-top: 16px;
+}
+.first-row,
+.row,
+.last-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.last-row {
+  font-weight: 500;
+  font-size: 18px;
+}
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+.actions a {
+  text-decoration: underline;
+  color: var(--blue);
+}
+.dPointTitle,
+.discountTitle {
+  font-weight: 500;
+  margin-bottom: 4px;
+  margin-top: 16px;
+}
+.dPointTitle span {
+  color: gray;
+  font-weight: normal;
+}
+.dPoint,
+.discount {
+  display: flex;
+  gap: 16px;
+}
+.dPoint input,
+.discount input {
+  flex: 1;
+  padding: 8px;
+  outline: none;
+}
+.dPoint button,
+.discount button {
+  padding: 8px 16px;
+  box-shadow: 0 0 1px 0px #000;
+}
+.usingDPoint,
+.usingDiscount {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.cancelDPoint,
+.cancelDiscount {
+  color: red;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.h1 {
+  margin-bottom: 12px;
+  margin-top: 12px;
+}

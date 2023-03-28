@@ -1,12 +1,28 @@
 import { groupProductSelector } from "@/redux/slice/groupProductSlice";
 import { publicRoutes } from "@/utils/routes";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import styles from "./_style.module.scss";
 type Props = {};
 
 const Categories = (props: Props) => {
+  const router = useRouter();
+
   const { groupProductHeaders } = useSelector(groupProductSelector);
+
+  const active = useMemo(() => {
+    if (router.pathname === "/product/group-product/[group_product_slug]") {
+      const { group_product_slug: slug } = router.query;
+
+      const index = groupProductHeaders.findIndex(
+        (item) => slug && `${slug}`.indexOf(item.slug) !== -1
+      );
+      if (index !== -1) return groupProductHeaders[index].slug;
+    }
+    return "";
+  }, [router.pathname, router.query, groupProductHeaders]);
 
   return (
     <nav className={styles.categories}>
@@ -16,7 +32,9 @@ const Categories = (props: Props) => {
             <li className={styles.navItem} key={headerItem.slug}>
               <Link
                 href={publicRoutes.products(headerItem.slug)}
-                className={styles.navItemLink}
+                className={`${styles.navItemLink} ${
+                  active === headerItem.slug ? styles.active : ""
+                }`}
               >
                 {headerItem.name}
               </Link>
@@ -40,7 +58,12 @@ const Categories = (props: Props) => {
           );
         })}
         <li className={styles.navItem}>
-          <Link href={publicRoutes.blogs} className={styles.navItemLink}>
+          <Link
+            href={publicRoutes.blogs}
+            className={`${styles.navItemLink} ${
+              router.pathname === publicRoutes.blogs ? styles.active : ""
+            }`}
+          >
             Bài viết
           </Link>
         </li>

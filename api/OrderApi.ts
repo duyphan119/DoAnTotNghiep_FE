@@ -34,7 +34,6 @@ class OrderApi {
         resolve(response);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -53,7 +52,6 @@ class OrderApi {
         resolve(response);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -73,7 +71,6 @@ class OrderApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -103,7 +100,6 @@ class OrderApi {
         resolve(response);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -122,7 +118,21 @@ class OrderApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
+      }
+    });
+  }
+
+  cancel(id: number): Promise<boolean> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const { message } = await (privateAxios().delete(
+          `${this.nameApi}/user/${id}`
+        ) as Promise<{
+          message: string;
+        }>);
+        resolve(message === MSG_SUCCESS);
+      } catch (error) {
+        console.log(error);
       }
     });
   }

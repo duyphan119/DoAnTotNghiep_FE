@@ -1,4 +1,9 @@
-import { FooterForm, InputControl, SelectControl } from "@/components";
+import {
+  FooterForm,
+  InputControl,
+  RadioControl,
+  SelectControl,
+} from "@/components";
 import { fetchActions, fetchSelector } from "@/redux/slice/fetchSlice";
 import { variantActions, variantSelector } from "@/redux/slice/variantSlice";
 import {
@@ -8,7 +13,7 @@ import {
 } from "@/redux/slice/variantValueSlice";
 import { useAppDispatch } from "@/redux/store";
 import { CreateVariantValueDTO } from "@/types/dtos";
-import { Grid } from "@mui/material";
+import { Grid, Box } from "@mui/material";
 import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
@@ -29,16 +34,22 @@ const VariantValueForm = (props: Props) => {
       value: "",
       variantId: 0,
       code: "",
+      hasThumbnail: false,
     },
   });
 
   const onSubmit: SubmitHandler<CreateVariantValueDTO> = (data) => {
+    const dto: CreateVariantValueDTO = {
+      ...data,
+      hasThumbnail: "" + data.hasThumbnail === "true" ? true : false,
+      variantId: +data.variantId,
+    };
     if (current.id > 0) {
       appDispatch(
-        variantValueActions.fetchUpdate({ id: current.id, dto: data })
+        variantValueActions.fetchUpdate({ id: current.id, dto: dto })
       );
     } else {
-      appDispatch(variantValueActions.fetchCreate(data));
+      appDispatch(variantValueActions.fetchCreate(dto));
     }
   };
 
@@ -51,6 +62,7 @@ const VariantValueForm = (props: Props) => {
     setValue("value", "");
     setValue("variantId", 0);
     setValue("code", "");
+    setValue("hasThumbnail", false);
   };
 
   useEffect(() => {
@@ -62,8 +74,15 @@ const VariantValueForm = (props: Props) => {
       setValue("value", current.value);
       setValue("variantId", current.variantId);
       setValue("code", current.code);
+      setValue("hasThumbnail", current.hasThumbnail);
     }
   }, [current]);
+
+  useEffect(() => {
+    if (current.id === 0 && variantData.items[0]) {
+      setValue("variantId", variantData.items[0].id);
+    }
+  }, [current, variantData]);
 
   useEffect(() => {
     if (resetForm) {
@@ -120,6 +139,26 @@ const VariantValueForm = (props: Props) => {
             required={true}
             disabled={formLoading}
           />
+        </Grid>
+        <Grid item xs={12}>
+          <Box sx={{ display: "flex" }}>
+            <RadioControl
+              register={register("hasThumbnail")}
+              label="Không hình ảnh"
+              value={false}
+              wrapperStyle={{ border: "none" }}
+              labelStyle={{ padding: "8px 8px 8px 32px" }}
+              defaultChecked={current.id === 0 ? true : current.hasThumbnail}
+            />
+            <RadioControl
+              register={register("hasThumbnail")}
+              label="Có hình ảnh"
+              value={true}
+              wrapperStyle={{ border: "none" }}
+              labelStyle={{ padding: "8px 8px 8px 32px" }}
+              defaultChecked={current.id === 0 ? false : current.hasThumbnail}
+            />
+          </Box>
         </Grid>
         <Grid item xs={12}>
           <FooterForm isLoading={formLoading} />

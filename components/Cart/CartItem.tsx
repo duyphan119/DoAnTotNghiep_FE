@@ -20,11 +20,19 @@ const CartItem = ({ item }: Props) => {
 
   const handleUpdateItem = (newQuantity: number) => {
     if (profile.id > 0) {
-      appDispatch(
-        cartActions.fetchUpdateCartItem({ id: item.id, newQuantity })
-      );
+      if (newQuantity < 1) {
+        appDispatch(cartActions.fetchDeleteCartItem(item.id));
+      } else {
+        appDispatch(
+          cartActions.fetchUpdateCartItem({ id: item.id, newQuantity })
+        );
+      }
     } else {
-      appDispatch(cartActions.updateCartItem({ id: item.id, newQuantity }));
+      if (newQuantity < 1) {
+        appDispatch(cartActions.deleteCartItemPv(item.productVariantId));
+      } else {
+        appDispatch(cartActions.updateCartItem({ id: item.id, newQuantity }));
+      }
     }
   };
 
@@ -32,7 +40,7 @@ const CartItem = ({ item }: Props) => {
     if (profile.id > 0) {
       appDispatch(cartActions.fetchDeleteCartItem(item.id));
     } else {
-      appDispatch(cartActions.deleteCartItem(item.id));
+      appDispatch(cartActions.deleteCartItemPv(item.productVariantId));
     }
   };
 
@@ -57,12 +65,12 @@ const CartItem = ({ item }: Props) => {
           <div>
             <Link
               href={publicRoutes.productDetail(
-                `${item.productVariant?.product?.slug}`
+                `${item.productVariant.product.slug}`
               )}
             >
-              {item.productVariant?.product?.name}
+              {item.productVariant.product.name}
             </Link>
-            {item.productVariant ? (
+            {item.productVariant.id > 0 ? (
               <div className={styles.variant}>{item.productVariant.name}</div>
             ) : null}
           </div>

@@ -1,4 +1,9 @@
-import { FooterForm, InputControl, SelectControl } from "@/components";
+import {
+  FooterForm,
+  InputControl,
+  SelectControl,
+  TextAreaControl,
+} from "@/components";
 import {
   blogCategoryActions,
   blogCategorySeletor,
@@ -54,6 +59,8 @@ const BlogForm = (props: Props) => {
       content: "",
       title: "",
       heading: "",
+      metaDescription: "",
+      metaKeywords: "",
     },
   });
 
@@ -93,6 +100,8 @@ const BlogForm = (props: Props) => {
       setValue("title", current.title);
       setValue("heading", current.heading);
       setValue("content", current.content);
+      setValue("metaDescription", current.metaDescription);
+      setValue("metaKeywords", current.metaKeywords);
     }
   }, [current]);
 
@@ -173,6 +182,19 @@ const BlogForm = (props: Props) => {
               }}
             />
           </div>
+        </Grid>
+        <Grid item xs={12}>
+          <InputControl
+            register={register("metaKeywords")}
+            label="Meta Từ khoá"
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextAreaControl
+            register={register("metaDescription")}
+            rows={6}
+            label="Meta Mô tả"
+          />
         </Grid>
         <Grid item xs={12}>
           <FooterForm

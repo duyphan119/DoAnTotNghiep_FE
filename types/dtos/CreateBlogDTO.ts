@@ -4,6 +4,8 @@ type CreateBlogDTO = {
   blogCategoryId: number;
   thumbnail?: string;
   heading?: string;
+  metaDescription?: string;
+  metaKeywords?: string;
 };
 
 export default CreateBlogDTO;

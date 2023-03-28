@@ -18,7 +18,6 @@ class StatisticsApi {
         resolve(new StatisticsModel(data));
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }

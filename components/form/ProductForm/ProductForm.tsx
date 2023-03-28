@@ -120,6 +120,8 @@ const ProductForm = (props: Props) => {
       setValue("inventory", current.inventory);
       setValue("description", current.description);
       setValue("detail", current.detail);
+      setValue("metaDescription", current.metaDescription);
+      setValue("metaKeywords", current.metaKeywords);
     }
   }, [current]);
 

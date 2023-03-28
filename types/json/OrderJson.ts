@@ -27,6 +27,7 @@ type OrderJson = {
   items: OrderItemJson[];
   discount: OrderDiscountJson;
   code: string;
+  total: number;
 };
 
 export default OrderJson;

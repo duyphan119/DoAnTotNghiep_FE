@@ -41,7 +41,6 @@ class CommentProductApi {
         });
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -63,7 +62,6 @@ class CommentProductApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -91,7 +89,6 @@ class CommentProductApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -113,7 +110,6 @@ class CommentProductApi {
         );
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -128,7 +124,6 @@ class CommentProductApi {
         resolve(message === MSG_SUCCESS);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }
@@ -144,7 +139,6 @@ class CommentProductApi {
         resolve(message === MSG_SUCCESS);
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     });
   }

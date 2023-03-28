@@ -32,7 +32,7 @@ const cartSlice = createSlice({
     addToCart: (state, action: ActionPayload<OrderItemModel>) => {
       const orderItem = action.payload;
       const index = state.cart.items.findIndex(
-        (item) => item.id === orderItem.id
+        (item) => item.productVariantId === orderItem.productVariantId
       );
       if (state.cart.id === 0) state.cart.id = orderItem.orderId;
       if (index !== -1) {
@@ -59,6 +59,17 @@ const cartSlice = createSlice({
         (item) => item.id !== action.payload
       );
       state.cart = new OrderModel(state.cart);
+      localStorage.setItem("cart", JSON.stringify(state.cart));
+    },
+    deleteCartItemPv: (
+      state,
+      { payload: productVariantId }: ActionPayload<number>
+    ) => {
+      state.cart.items = state.cart.items.filter(
+        (item) => item.productVariantId !== productVariantId
+      );
+      state.cart = new OrderModel(state.cart);
+      localStorage.setItem("cart", JSON.stringify(state.cart));
     },
     getCart: (state) => {
       state.cart = new OrderModel(

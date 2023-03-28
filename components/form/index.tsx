@@ -10,3 +10,4 @@ export { default as ProductForm } from "./ProductForm";
 export { default as ProfileForm } from "./ProfileForm";
 export { default as VariantForm } from "./VariantForm";
 export { default as VariantValueForm } from "./VariantValueForm";
+export { default as PaymentForm } from "./PaymentForm";

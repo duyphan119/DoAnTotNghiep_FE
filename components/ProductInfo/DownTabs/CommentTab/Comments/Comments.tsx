@@ -10,6 +10,7 @@ const Comments = (props: Props) => {
   const { commentProductData, userCommentProduct } = useSelector(
     productDetailSelector
   );
+
   return (
     <div className={styles.commentProducts}>
       {commentProductData.count <= 0 && userCommentProduct.id === 0

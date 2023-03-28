@@ -1,5 +1,6 @@
 import { ButtonControl } from "@/components";
 import { useDefaultLayoutContext } from "@/context/DefaultLayoutContext";
+import { useSocketContext } from "@/context/SocketContext";
 import {
   OrderItemModel,
   ProductVariantModel,
@@ -16,16 +17,16 @@ import { useAppDispatch } from "@/redux/store";
 import { publicRoutes } from "@/utils/routes";
 import { Rating } from "@mui/material";
 import { useRouter } from "next/router";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import styles from "./_style.module.scss";
 
 type Props = {};
 
 const Right: FC<Props> = () => {
+  const { socket } = useSocketContext();
   const appDispatch = useAppDispatch();
   const router = useRouter();
-  // const { profile } = useSelector(authSelector);
   const { profile } = useDefaultLayoutContext();
 
   const {
@@ -66,12 +67,13 @@ const Right: FC<Props> = () => {
           snackbarActions.success("Sản phẩm đã được thêm vào giỏ hàng")
         );
       }
+      router.push(publicRoutes.cart);
     }
   };
 
   const handlePurchaseNow = () => {
     handleAddToCart(1);
-    router.push(publicRoutes.cart);
+    router.push(publicRoutes.payment);
   };
 
   const changeQuantity = (newQuantity: number) => {
@@ -82,11 +84,21 @@ const Right: FC<Props> = () => {
     appDispatch(productDetailActions.clickVariantValue(variantValue));
   };
 
+  useEffect(() => {
+    socket.on(
+      "Update Star Product",
+      ({ id, star }: { id: number; star: number }) => {
+        console.log({ id, star });
+        appDispatch(productDetailActions.updateStar({ id, star }));
+      }
+    );
+  }, [socket]);
+
   return product.id > 0 ? (
     <div className={styles.right}>
       <div className={styles.name}>{product.name}</div>
       <div className={styles.star}>
-        <Rating value={product.star} readOnly />
+        <Rating value={product.star} readOnly precision={0.5} />
       </div>
       <div className={styles.price}>
         {selectedProductVariant.id > 0 || !selectedProductVariant

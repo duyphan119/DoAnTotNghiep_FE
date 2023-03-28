@@ -1,3 +1,4 @@
+import { OrderJson } from "@/types/json";
 import AddressModel from "./AddressModel";
 import OrderDiscountModel from "./OrderDiscountModel";
 import OrderItemModel from "./OrderItemModel";
@@ -28,7 +29,8 @@ class OrderModel extends AddressModel {
   items: OrderItemModel[];
   discount: OrderDiscountModel;
   code: string;
-  constructor(obj?: any) {
+  total: number;
+  constructor(obj?: Partial<OrderJson>) {
     super(obj);
     this.id = obj?.id ?? 0;
     this.fullName = obj?.fullName ?? "";
@@ -39,7 +41,7 @@ class OrderModel extends AddressModel {
     this.address = obj?.address ?? "";
     this.status = obj?.status ?? "Giỏ hàng";
     this.shippingPrice = obj?.shippingPrice ?? 0;
-    this.paymentMethod = obj?.paymentMethod ?? "COD";
+    this.paymentMethod = obj?.paymentMethod ?? "Thanh toán khi nhận hàng (COD)";
     this.note = obj?.note ?? "";
     this.point = obj?.point ?? 0;
     this.isOrdered = obj?.isOrdered ?? false;
@@ -52,6 +54,7 @@ class OrderModel extends AddressModel {
     this.items = obj?.items?.map((item: any) => new OrderItemModel(item)) ?? [];
     this.discount = new OrderDiscountModel(obj?.discount);
     this.code = obj?.code ?? "";
+    this.total = obj?.total ?? 0;
   }
 
   getTotalPrice() {

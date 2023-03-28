@@ -2,6 +2,7 @@ import { AccountLayout } from "@/layouts";
 import { requireLoginProps } from "@/lib";
 import { OrderItemModel, OrderModel, UserModel } from "@/models";
 import { authActions, authSelector } from "@/redux/slice/authSlice";
+import { confirmDialogActions } from "@/redux/slice/confirmDialogSlice";
 import { useAppDispatch } from "@/redux/store";
 import styles from "@/styles/_FollowOrder.module.scss";
 import { UserJson } from "@/types/json";
@@ -32,24 +33,17 @@ const Item = ({ item }: OrderItemProps) => {
   return item.id > 0 ? (
     <>
       <Image
-        width={100}
-        height={120}
+        width={82}
+        height={100}
         src={item.getThumbnail()}
         alt="thumbnail"
         priority={true}
       />
       <div className={styles.product}>
-        <div className={styles.name}>{item.productVariant?.product?.name}</div>
-        {item.productVariant?.variantValues?.map((variantValue) => {
-          return (
-            <div
-              className={styles.variantValue}
-              key={`${item?.productVariantId} - ${variantValue.id}`}
-            >
-              {variantValue.variant?.name}: {variantValue.value}
-            </div>
-          );
-        })}
+        <div className={styles.name}>{item.productVariant.product.name}</div>
+        <div className={styles.productVariantName}>
+          {item.productVariant.name}
+        </div>
         <div className={styles.quantity}>Số lượng: {item.quantity}</div>
         <div className={styles.price}>{item.price}</div>
       </div>
@@ -58,14 +52,24 @@ const Item = ({ item }: OrderItemProps) => {
 };
 
 const MyOrder = ({ order }: OrderProps) => {
+  const appDispatch = useAppDispatch();
+  const handleClick = () => {
+    appDispatch(
+      confirmDialogActions.show({
+        onConfirm: () => appDispatch(authActions.fetchCancel(order.id)),
+        text: "Bạn có chắc chắn muốn huỷ đơn hàng này?",
+      })
+    );
+  };
+
   return order.id > 0 ? (
     <div className={styles.order}>
       <div className={styles.title}>
         <div className={styles.left}>
           <div>
-            Đơn hàng {order.id} - {order.status}
+            Đơn hàng {order.code} - {order.status}
           </div>
-          <div>Ngày: {helper.formatDateTime(order.createdAt)}</div>
+          <div>Ngày: {helper.formatDateTime(order.orderDate)}</div>
           <div>Họ tên: {order.fullName}</div>
           <div>Điện thoại: {order.phone}</div>
           <div>Địa chỉ: {order.getFullAddress()}</div>
@@ -77,16 +81,17 @@ const MyOrder = ({ order }: OrderProps) => {
           </div>
           <div className={styles.row}>
             <span>Giảm giá: </span>
-            <span>0đ</span>
+            <span>{order.discount.value}đ</span>
           </div>
           <div className={styles.row}>
             <span>Tổng cộng: </span>
-            <span>{order.getTotalPrice()}</span>
+            <span>{order.getTotalPrice() - order.discount.value}</span>
           </div>
           <div>
             <button
               className={styles.btn}
               disabled={order.status !== "Đang xử lý"}
+              onClick={() => handleClick()}
             >
               Hủy
             </button>
@@ -131,6 +136,7 @@ const FollowOrder = ({ profile }: Props) => {
         ...router.query,
         limit: LIMIT,
         items: true,
+        discount: true,
       })
     );
   }, [router.query]);

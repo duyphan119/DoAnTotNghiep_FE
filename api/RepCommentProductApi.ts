@@ -43,7 +43,6 @@ class RepCommentProductApi
         );
       } catch (error) {
         console.log("RepCommentProductApi.getAll error", error);
-        reject(error);
       }
     });
   }
@@ -61,7 +60,6 @@ class RepCommentProductApi
         );
       } catch (error) {
         console.log("RepCommentProductApi.getById error", error);
-        reject(error);
       }
     });
   }
@@ -83,7 +81,6 @@ class RepCommentProductApi
         );
       } catch (error) {
         console.log("RepCommentProductApi.createOne error", error);
-        reject(error);
       }
     });
   }
@@ -102,7 +99,6 @@ class RepCommentProductApi
         resolve(message === MSG_SUCCESS ? this.getListFromJson(data) : []);
       } catch (error) {
         console.log("RepCommentProductApi.createMany error", error);
-        reject(error);
       }
     });
   }
@@ -130,7 +126,6 @@ class RepCommentProductApi
         );
       } catch (error) {
         console.log("RepCommentProductApi.updateOne error", error);
-        reject(error);
       }
     });
   }
@@ -149,7 +144,6 @@ class RepCommentProductApi
         resolve(message === MSG_SUCCESS ? this.getListFromJson(data) : []);
       } catch (error) {
         console.log("RepCommentProductApi.updateMany error", error);
-        reject(error);
       }
     });
   }
@@ -164,7 +158,6 @@ class RepCommentProductApi
         resolve(message === MSG_SUCCESS);
       } catch (error) {
         console.log("RepCommentProductApi.deleteOne error", error);
-        reject(error);
       }
     });
   }
@@ -182,7 +175,6 @@ class RepCommentProductApi
         resolve(message === MSG_SUCCESS);
       } catch (error) {
         console.log("RepCommentProductApi.deleteMany error", error);
-        reject(error);
       }
     });
   }
@@ -197,7 +189,6 @@ class RepCommentProductApi
         resolve(message === MSG_SUCCESS);
       } catch (error) {
         console.log("RepCommentProductApi.softDeleteOne error", error);
-        reject(error);
       }
     });
   }
@@ -215,7 +206,6 @@ class RepCommentProductApi
         resolve(message === MSG_SUCCESS);
       } catch (error) {
         console.log("RepCommentProductApi.softDeleteMany error", error);
-        reject(error);
       }
     });
   }
@@ -230,7 +220,6 @@ class RepCommentProductApi
         resolve(message === MSG_SUCCESS);
       } catch (error) {
         console.log("RepCommentProductApi.restoreOne error", error);
-        reject(error);
       }
     });
   }
@@ -248,7 +237,6 @@ class RepCommentProductApi
         resolve(message === MSG_SUCCESS);
       } catch (error) {
         console.log("RepCommentProductApi.restoreMany error", error);
-        reject(error);
       }
     });
   }
